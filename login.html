@@ -304,137 +304,119 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
+        <div class="navbar">
         <div class="logo-container">
             <img src="images/whiteclearcc.png" alt="Logo" class="logo">
             <div class="brand-text">
                 College<br>Climb
             </div>
         </div>
-    <div class="nav-buttons">
-       <button onclick="window.location.href='index.html'">Home</button>
-  <button onclick="window.location.href='about.html'">About</button>
-  <button onclick="window.location.href='pricing.html'">Pricing</button>
-  <button onclick="window.location.href='signup.html'">Sign Up</button>
-  <button onclick="window.location.href='login.html'">Log In</button>
-    </div>
-</div>
-
-<script>
-    function submitEmail() {
-      const email = document.getElementById('signupEmail').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      if (!email) {
-      alert("Please enter your email address!");
-      return;
-      }
-      
-      if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address!");
-      return;
-      }
-      
-      // Visual feedback
-      const button = document.querySelector('.signup-btn');
-      const originalText = button.textContent;
-      button.textContent = 'Signing up...';
-      button.disabled = true;
-      
-      // Simulate API call
-      setTimeout(() => {
-      alert(`Thanks for signing up with ${email}! Welcome to College Climb!`);
-      document.getElementById('signupEmail').value = '';
-      button.textContent = originalText;
-      button.disabled = false;
-      }, 1500);
-    }
-    
-    // Allow Enter key to submit
-    document.getElementById('signupEmail').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-      submitEmail();
-      }
-    });
-
-    // Profile dropdown functionality
-    function toggleDropdown() {
-      const dropdown = document.getElementById('profileDropdown');
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // Close dropdown when clicking outside
-    window.onclick = function(event) {
-      if (!event.target.matches('.profile-circle') && !event.target.closest('.profile-circle')) {
-        const dropdown = document.getElementById('profileDropdown');
-        if (dropdown.style.display === 'block') {
-          dropdown.style.display = 'none';
-        }
-      }
-    }
-  </script>
-
-  <style>
-    .profile-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .profile-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: white;
-      color: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.3s;
-      border: 2px solid black;
-    }
-
-    .profile-circle:hover {
-      background-color: black;
-      color: white;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 50px;
-      background-color: white;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      border-radius: 10px;
-      z-index: 1000;
-      border: 2px solid black;
-    }
-
-    .dropdown-menu a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .dropdown-menu a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .dropdown-menu a:first-child {
-      border-radius: 8px 8px 0 0;
-    }
-
-    .dropdown-menu a:last-child {
-      border-radius: 0 0 8px 8px;
-    }
-  </style>
+        <div class="nav-buttons desktop-nav">
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='about.html'">About</button>
+            <button onclick="window.location.href='pricing.html'">Pricing</button>
+            <button onclick="window.location.href='signup.html'">Sign Up</button>
+            <button onclick="window.location.href='login.html'">Log In</button>
         </div>
+        <div class="mobile-nav">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button onclick="window.location.href='index.html'">Home</button>
+                <button onclick="window.location.href='about.html'">About</button>
+                <button onclick="window.location.href='pricing.html'">Pricing</button>
+                <button onclick="window.location.href='signup.html'">Sign Up</button>
+                <button onclick="window.location.href='login.html'">Log In</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .mobile-nav {
+            display: none;
+            position: relative;
+        }
+
+        .hamburger {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .hamburger:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 150px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .dropdown-menu button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+        }
+    </style>
+
+    <script>
+        function toggleMenu() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdownMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
     </div>
     <div class="login-container">
         
