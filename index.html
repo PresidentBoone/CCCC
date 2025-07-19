@@ -268,60 +268,24 @@
       </div>
     </div>
     <div class="nav-buttons">
-      <button>Home</button>
-      <button>About</button>
-      <button>Pricing</button>
+      <button onclick="window.location.href='index.html'">Home</button>
+      <button onclick="window.location.href='about.html'">About</button>
+      <button onclick="window.location.href='pricing.html'">Pricing</button>
       <button onclick="window.location.href='signup.html'">Sign Up</button>
+      <button onclick="window.location.href='login.html'">Log In</button>
     </div>
   </div>
 
-  <div class="main-box" style="width: 100%; max-width: 100%; height: 550px ; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <img src="images/whiteclearcc.png" alt="Main Logo" class="main-logo" style="height: 200px">
-    <div class="main-title">Introducing College Climb</div>
-    <div class="subtitle">Your All in One College Admissions Assistant</div>
+  <div class="main-box">
+    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="main-logo">
+    <h1 class="main-title">College Climb</h1>
+    <p class="subtitle">Your AI-powered college application assistant</p>
     <div class="signup-container">
-      <input type="email" placeholder="Enter your email" id="signupEmail" required>
-      <button onclick="window.location.href='signup.html'" class="signup-btn">Sign Up Today for Free!</button>
+      <input type="email" placeholder="Enter your email">
+      <button onclick="window.location.href='signup.html'">Get Started</button>
     </div>
-    </div>
+  </div>
 
-    <script>
-    function submitEmail() {
-      const email = document.getElementById('signupEmail').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      if (!email) {
-      alert("Please enter your email address!");
-      return;
-      }
-      
-      if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address!");
-      return;
-      }
-      
-      // Visual feedback
-      const button = document.querySelector('.signup-btn');
-      const originalText = button.textContent;
-      button.textContent = 'Signing up...';
-      button.disabled = true;
-      
-      // Simulate API call
-      setTimeout(() => {
-      alert(`Thanks for signing up with ${email}! Welcome to College Climb!`);
-      document.getElementById('signupEmail').value = '';
-      button.textContent = originalText;
-      button.disabled = false;
-      }, 1500);
-    }
-    
-    // Allow Enter key to submit
-    document.getElementById('signupEmail').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-      submitEmail();
-      }
-    });
-  </script>
   <div style="margin-top: 80px; text-align: center;">
     <h2 style="font-family: 'Montserrat', sans-serif; font-weight: bold; font-style: italic; font-size: 2.2rem; margin-bottom: 40px;">
       What is College Climb?
@@ -360,10 +324,10 @@
           ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
           <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem; margin-bottom: 0.5rem;">AI</h3>
           <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">College Counselor</h3>
-            <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-              <img src="images/Computer.png" alt="AI College Counselor" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
-            </div>
-            <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+          <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+            <img src="images/Computer.png" alt="AI College Counselor" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
+          </div>
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
             Forget expensive private counselors, with College Climb have the answers to your college questions at your fingertips, personalized just for you!
           </p>
         </div>
@@ -448,30 +412,53 @@
           </p>
         </div>
       </button>
-    </div>
-    <style>
-  .feature-box:hover > div,
-  .feature-box:focus-visible > div {
-    transform: scale(1.07);
-    z-index: 2;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.3);
-  }
-  </style>
-</div>
 
-<!-- Call to Action Box -->
-<div class="cta-box">
-  <div class="cta-title" style="font-size:2rem; font-weight:900;">Get Started Today for Free!</div>
-  <button class="cta-button" onclick="window.location.href='signup.html'">
-    Get Started
-  </button>
-</div>
-<div style="margin-top: 50px; text-align: center;"></div>
-  <h2 style="font-family: 'Montserrat', sans-serif; font-weight: bold; font-style: italic; font-size: 3rem; margin-bottom: 40px;">
-    What Students are Saying
-  </h2>
-</div>
-<style>
+      <!-- Box 4 -->
+      <button class="feature-box" style="all: unset; cursor: pointer;">
+        <div style="background: linear-gradient(
+          135deg,
+          #2a357a 0%,
+          #3543a6 7%,
+          #3e4fc9 15%,
+          #4d5ae6 23%,
+          #5d4fdc 32%,
+          #6a5fdc 41%,
+          #7a6fff 50%,
+          #8e7fff 59%,
+          #a89bff 68%,
+          #c7bfff 77%,
+          #cbb6ff 86%,
+          #e0cfff 93%,
+          #f3e6ff 100%,
+          #e0cfff 93%,
+          #cbb6ff 86%,
+          #c7bfff 77%,
+          #a89bff 68%,
+          #8e7fff 59%,
+          #7a6fff 50%,
+          #6a5fdc 41%,
+          #5d4fdc 32%,
+          #4d5ae6 23%,
+          #3e4fc9 15%,
+          #3543a6 7%,
+          #2a357a 0%
+           ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
+          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">And So Much More!</h3>
+         <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/whiteclearcc.png" alt="College Climb Features" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
+            </div>
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+            Discover all the amazing features College Climb has to offer! From interview prep to scholarship searches, we've got everything you need for college success!
+          </p>
+        </div>
+      </button>
+    </div>
+  <style>
+.feature-box:hover > div,
+.feature-box:focus-visible > div {
+  transform: scale(1.07);
+}
+
 .cta-box {
   margin: 80px 0 100px 0;
   background: linear-gradient(
@@ -557,7 +544,21 @@
     padding: 0.6rem 1rem;
   }
 }
- </style>
+  </style>
+
+<!-- Call to Action Box -->
+<div class="cta-box">
+  <div class="cta-title" style="font-size:2rem; font-weight:900;">Get Started Today for Free!</div>
+  <button class="cta-button" onclick="window.location.href='signup.html'">
+    Get Started
+  </button>
+</div>
+
+<div style="margin-top: 50px; text-align: center;">
+  <h2 style="font-family: 'Montserrat', sans-serif; font-weight: bold; font-style: italic; font-size: 3rem; margin-bottom: 40px;">
+    What Students are Saying
+  </h2>
+</div>
 
 <!-- Carousel Container -->
 <div class="testimonial-container" style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; padding: 2rem;">
@@ -671,20 +672,13 @@
 }
 
 @media screen and (max-width: 600px) {
-  .testimonial-box {
-  width: 90%;
-  height: auto;
-  min-height: 400px;
-  }
-}
-@media screen and (max-width: 600px) {
   .testimonial-container {
     padding: 1rem;
   }
 }
 
 </style>
-</script>
+
 <footer class="footer">
   <div class="footer-content">
     <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">

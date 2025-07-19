@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - College Climb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.25);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .pricing-container {
+            margin-top: 120px;
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .pricing-header {
+            margin-bottom: 50px;
+        }
+
+        .pricing-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .pricing-header p {
+            font-size: 1.2rem;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .pricing-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 80px;
+        }
+
+        .pricing-card {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            background-size: 200% 200%;
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            width: 350px;
+            min-height: 500px;
+            box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            transition: transform 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.popular {
+            transform: scale(1.05);
+            border: 3px solid #7a6fff;
+        }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .popular-badge {
+            background-color: #7a6fff;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .plan-name {
+            font-size: 2rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .plan-period {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+
+        .plan-features li {
+            padding: 12px 0;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            text-align: left;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .plan-button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        @keyframes waveGlow {
+            0% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 0 0 0 rgba(127,0,255,0.0);
+            }
+            12.5% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            25% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            37.5% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, -20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            62.5% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            75% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            87.5% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            100% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 0 0 0 rgba(127,0,255,0.0);
+            }
+        }
+
+        @keyframes gradientWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pricing-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card {
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='about.html'">About</button>
+            <button onclick="window.location.href='pricing.html'">Pricing</button>
+            <button onclick="window.location.href='signup.html'">Sign Up</button>
+            <button onclick="window.location.href='login.html'">Log In</button>
+        </div>
+    </div>
+
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <h1>Choose Your Plan</h1>
+            <p>Select the perfect plan for your college journey</p>
+        </div>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div>
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">$0</div>
+                    <div class="plan-period">per month</div>
+                    <ul class="plan-features">
+                        <li>Basic AI College Counselor</li>
+                        <li>5 Essay Reviews per month</li>
+                        <li>Basic Resume Templates</li>
+                        <li>Community Support</li>
+                        <li>Limited College Search</li>
+                    </ul>
+                </div>
+                <button class="plan-button">Get Started</button>
+            </div>
+            
+            <div class="pricing-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <div>
+                    <div class="plan-name">Premium</div>
+                    <div class="plan-price">$19</div>
+                    <div class="plan-period">per month</div>
+                    <ul class="plan-features">
+                        <li>Advanced AI College Counselor</li>
+                        <li>Unlimited Essay Reviews</li>
+                        <li>Premium Resume Builder</li>
+                        <li>Priority Support</li>
+                        <li>Full College Database Access</li>
+                        <li>Interview Prep Tools</li>
+                    </ul>
+                </div>
+                <button class="plan-button">Choose Premium</button>
+            </div>
+            
+            <div class="pricing-card">
+                <div>
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price">$49</div>
+                    <div class="plan-period">per month</div>
+                    <ul class="plan-features">
+                        <li>Expert AI College Counselor</li>
+                        <li>Unlimited Everything</li>
+                        <li>Custom Resume Design</li>
+                        <li>24/7 Dedicated Support</li>
+                        <li>Scholarship Matching</li>
+                        <li>One-on-One Counseling</li>
+                        <li>Application Tracking</li>
+                    </ul>
+                </div>
+                <button class="plan-button">Choose Pro</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html></ul>

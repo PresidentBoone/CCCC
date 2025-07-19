@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - College Climb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.25);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .login-container {
+            margin-top: 120px;
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            background-size: 200% 200%;
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            border-radius: 25px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 450px;
+            box-shadow:
+                0 0 40px 10px rgba(64,81,181,0.5),
+                0 0 80px 20px rgba(127,0,255,0.25),
+                0 0 0 2px black;
+            text-align: center;
+        }
+
+        .login-logo {
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-form input {
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .login-btn {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .login-btn:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: white;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: white;
+            opacity: 0.5;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            font-weight: bold;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid white;
+            background-color: transparent;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .google-btn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .signup-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes waveGlow {
+            0% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 0 0 0 rgba(127,0,255,0.0);
+            }
+            12.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            25% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            37.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    -20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            62.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            75% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            87.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            100% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 0 0 0 rgba(127,0,255,0.0);
+            }
+        }
+
+        @keyframes gradientWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .login-container {
+                width: 95%;
+                padding: 2rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+    <div class="nav-buttons">
+       <button onclick="window.location.href='index.html'">Home</button>
+  <button onclick="window.location.href='about.html'">About</button>
+  <button onclick="window.location.href='pricing.html'">Pricing</button>
+  <button onclick="window.location.href='signup.html'">Sign Up</button>
+  <button onclick="window.location.href='login.html'">Log In</button>
+    </div>
+</div>
+
+<script>
+    function submitEmail() {
+      const email = document.getElementById('signupEmail').value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!email) {
+      alert("Please enter your email address!");
+      return;
+      }
+      
+      if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address!");
+      return;
+      }
+      
+      // Visual feedback
+      const button = document.querySelector('.signup-btn');
+      const originalText = button.textContent;
+      button.textContent = 'Signing up...';
+      button.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+      alert(`Thanks for signing up with ${email}! Welcome to College Climb!`);
+      document.getElementById('signupEmail').value = '';
+      button.textContent = originalText;
+      button.disabled = false;
+      }, 1500);
+    }
+    
+    // Allow Enter key to submit
+    document.getElementById('signupEmail').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+      submitEmail();
+      }
+    });
+
+    // Profile dropdown functionality
+    function toggleDropdown() {
+      const dropdown = document.getElementById('profileDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.profile-circle') && !event.target.closest('.profile-circle')) {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown.style.display === 'block') {
+          dropdown.style.display = 'none';
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .profile-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: white;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px solid black;
+    }
+
+    .profile-circle:hover {
+      background-color: black;
+      color: white;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background-color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      z-index: 1000;
+      border: 2px solid black;
+    }
+
+    .dropdown-menu a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown-menu a:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .dropdown-menu a:last-child {
+      border-radius: 0 0 8px 8px;
+    }
+  </style>
+        </div>
+    </div>
+    <div class="login-container">
+        
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <input type="email" id="loginEmail" placeholder="Email Address" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit" class="login-btn">Log In</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <button class="google-btn" onclick="handleGoogleLogin()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Continue with Google
+        </button>
+
+        <p>Don't have an account? <a href="signup.html" class="signup-link">Sign up here</a></p>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Visual feedback
+            const button = event.target.querySelector('.login-btn');
+            const originalText = button.textContent;
+            button.textContent = 'Logging in...';
+            button.disabled = true;
+            
+            // Simulate login process
+            setTimeout(() => {
+                alert(`Welcome back! Logging in with ${email}`);
+                // Here you would typically redirect to dashboard
+                // window.location.href = 'dashboard.html';
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        }
+
+        function handleGoogleLogin() {
+            const button = document.querySelector('.google-btn');
+            const originalText = button.textContent;
+            button.textContent = 'Connecting to Google...';
+            button.disabled = true;
+            
+            // Simulate Google login process
+            setTimeout(() => {
+                alert('Google login initiated! (This would integrate with Google OAuth)');
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin(e);
+            }
+        });
+    </script>
+</body>
+</html></svg></button></form></div></body>
+</html>

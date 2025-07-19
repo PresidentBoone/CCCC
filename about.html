@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - College Climb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.25);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .hero-section {
+            margin-top: 120px;
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            background-size: 200% 200%;
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            border-radius: 25px;
+            padding: 4rem 3rem;
+            margin: 120px auto 0;
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .story-card {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-item {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: scale(1.05);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin: 4rem auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .cta-button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        @keyframes waveGlow {
+            0% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            }
+            25% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, -20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            75% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            100% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            }
+        }
+
+        @keyframes gradientWave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .story-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-section {
+                padding: 3rem 2rem;
+                margin-top: 100px;
+            }
+        }
+
+        @keyframes logoExpand {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+        <div class="nav-buttons">
+        <button onclick="window.location.href='index.html'">Home</button>
+        <button onclick="window.location.href='about.html'">About</button>
+        <button onclick="window.location.href='pricing.html'">Pricing</button>
+        <button onclick="window.location.href='signup.html'">Sign Up</button>
+        <button onclick="window.location.href='login.html'">Log In</button>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 2rem;">
+            <img src="images/whiteclearcc.png" alt="College Climb Logo" style="height: 120px; opacity: 0; animation: logoExpand 1.5s ease-out 0.5s forwards;">
+        </div>
+        <h1 class="hero-title">About College Climb</h1>
+        <p class="hero-subtitle">Empowering every student to reach their dream college with AI-powered guidance</p>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">Our Mission</h2>
+        
+        <div class="story-grid">
+            <div class="story-card">
+            <h3 class="card-title">Breaking Down Barriers</h3>
+            <p class="card-text">
+                College admissions shouldn't be a privilege reserved for those who can afford expensive private counselors. 
+                College Climb democratizes access to premium admissions guidance, ensuring every student has the tools and 
+                knowledge needed to compete at the highest level.
+            </p>
+            </div>
+            
+            <div class="story-card">
+            <h3 class="card-title">AI-Powered Personalization</h3>
+            <p class="card-text">
+                Our advanced AI doesn't just provide generic advice, it learns your unique strengths, goals, and personality 
+                to deliver hyper-personalized recommendations. From essay feedback to college matches, every suggestion is 
+                tailored specifically for you.
+            </p>
+            </div>
+            
+            <div class="story-card">
+            <h3 class="card-title">24/7 Support</h3>
+            <p class="card-text">
+                College admissions don't sleep, and neither do we. Whether it's 3 AM essay panic or last-minute application 
+                questions, College Climb is always in your pocket, ready to provide expert guidance whenever inspiration strikes.
+            </p>
+            </div>
+            
+            <div class="story-card">
+            <h3 class="card-title">Beyond Admissions</h3>
+            <p class="card-text">
+                Your journey doesn't end with acceptance letters. College Climb continues to support you through college 
+                preparation, course selection, and career planning. We're building a lifelong partnership that grows with 
+                you from high school to graduation and beyond.
+            </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">What Makes Us Different</h2>
+        
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Precision Targeting</h3>
+                <p>Our AI analyzes thousands of data points to match you with colleges where you'll truly thrive, not just survive.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">📝</div>
+                <h3 class="feature-title">Essay Excellence</h3>
+                <p>Transform your essays from good to unforgettable with real-time feedback that captures your authentic voice.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">Scholarship Discovery</h3>
+                <p>Uncover hidden scholarship opportunities that align with your unique profile and interests.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Data-Driven Insights</h3>
+                <p>Make informed decisions with comprehensive analytics on admission rates, requirements, and trends.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <h3 class="feature-title">Test Prep Mastery</h3>
+                <p>Optimize your SAT/ACT scores with personalized study plans that adapt to your learning style.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🎤</div>
+                <h3 class="feature-title">Interview Confidence</h3>
+                <p>Practice with AI-powered mock interviews that prepare you for any admissions scenario.</p>
+            </div>
+        </div>
+
+        <div class="story-grid">
+            <div class="story-card">
+                <h3 class="card-title">The Vision Behind College Climb</h3>
+                <p class="card-text">
+                    We believe that every student deserves the opportunity to reach their full potential, regardless of their 
+                    background or resources. College Climb was born from the recognition that traditional admissions counseling 
+                    is often inaccessible, generic, and outdated. By harnessing the power of artificial intelligence, we're 
+                    creating a future where personalized, expert-level guidance is available to everyone.
+                </p>
+            </div>
+            
+            <div class="story-card">
+                <h3 class="card-title">Your Success is Our Success</h3>
+                <p class="card-text">
+                    Every acceptance letter, every scholarship won, every dream realized! These are the moments that drive us!
+                    College Climb isn't just a platform; it's your partner in one of life's most important journeys. We're here 
+                    to help you climb higher, faster, and smarter than you ever thought possible.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2 class="cta-title">Ready to Start Your Climb?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+            Join thousands of students who are already using College Climb to transform their college admissions journey.
+        </p>
+        <button class="cta-button" onclick="window.location.href='signup.html'">
+            Get Started for Free
+        </button>
+    </div>
+</body>
+</html></p></div></p></div></p></div></p></div></p></div>
