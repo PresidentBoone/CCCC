@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - College Climb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.25);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .signup-container {
+            margin-top: 120px;
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            background-size: 200% 200%;
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            border-radius: 25px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow:
+                0 0 40px 10px rgba(64,81,181,0.5),
+                0 0 80px 20px rgba(127,0,255,0.25),
+                0 0 0 2px black;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes waveGlow {
+            0% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 0 0 0 rgba(127,0,255,0.0);
+            }
+            12.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            25% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            37.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    -20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            62.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 -20px 40px 10px rgba(127,0,255,0.4);
+            }
+            75% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            87.5% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            100% {
+                box-shadow:
+                    0 0 40px 10px rgba(64,81,181,0.5),
+                    0 0 80px 20px rgba(127,0,255,0.25),
+                    0 0 0 2px black,
+                    0 0 0 0 rgba(127,0,255,0.0);
+            }
+        }
+
+        @keyframes gradientWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .signup-logo {
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .signup-title {
+            font-size: 2rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            background-color: white;
+            color: black;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #4285f4;
+            background-color: #4285f4;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .google-btn:hover {
+            background-color: #3367d6;
+            border-color: #3367d6;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: white;
+            opacity: 0.3;
+        }
+
+        .divider span {
+            background: linear-gradient(135deg, #2a357a 0%, #f3e6ff 100%);
+            padding: 0 1rem;
+            opacity: 0.8;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        .signup-btn:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .login-link {
+            margin-top: 1.5rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .login-link a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .login-link a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button>Home</button>
+            <button>About</button>
+            <button>Pricing</button>
+            <button>Sign Up</button>
+        </div>
+    </div>
+
+    <div class="signup-container">
+        <img src="images/whiteclearcc.png" alt="College Climb Logo" class="signup-logo">
+        <h1 class="signup-title">Create Your Account</h1>
+        
+        <button class="google-btn" onclick="signUpWithGoogle()">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Continue with Google
+        </button>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="contact">Email or Phone Number</label>
+                <input type="text" id="contact" name="contact" placeholder="Enter your email or phone number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="submit" class="signup-btn">Create Account</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="#" onclick="goToLogin()">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        function signUpWithGoogle() {
+            alert("Google Sign-Up integration would be implemented here!");
+        }
+
+        function goToLogin() {
+            alert("Redirect to login page would happen here!");
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhone(phone) {
+            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const contact = document.getElementById('contact').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!contact) {
+                alert("Please enter your email or phone number!");
+                return;
+            }
+            
+            if (!validateEmail(contact) && !validatePhone(contact)) {
+                alert("Please enter a valid email address or phone number!");
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long!");
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert("Passwords don't match!");
+                return;
+            }
+            
+            const button = document.querySelector('.signup-btn');
+            const originalText = button.textContent;
+            button.textContent = 'Creating Account...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Account created successfully for ${contact}! Welcome to College Climb!`);
+                document.getElementById('signupForm').reset();
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        });
+    </script>
+</body>
+</html></div>
