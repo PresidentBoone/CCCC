@@ -190,6 +190,7 @@
             font-size: 1rem;
             font-family: 'Montserrat', sans-serif;
             margin-bottom: 1.5rem;
+            width: 100%;
         }
 
         .google-btn:hover {
@@ -291,46 +292,6 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .login-container {
-                width: 95%;
-                padding: 2rem;
-            }
-            
-            .login-title {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-        <div class="navbar">
-        <div class="logo-container">
-            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
-            <div class="brand-text">
-                College<br>Climb
-            </div>
-        </div>
-        <div class="nav-buttons desktop-nav">
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='about.html'">About</button>
-            <button onclick="window.location.href='pricing.html'">Pricing</button>
-            <button onclick="window.location.href='signup.html'">Sign Up</button>
-            <button onclick="window.location.href='login.html'">Log In</button>
-        </div>
-        <div class="mobile-nav">
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
         .mobile-nav {
             display: none;
             position: relative;
@@ -399,7 +360,45 @@
                 display: block;
             }
         }
+
+        @media (max-width: 600px) {
+            .login-container {
+                width: 95%;
+                padding: 2rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
     </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+        <div class="nav-buttons desktop-nav">
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='about.html'">About</button>
+            <button onclick="window.location.href='pricing.html'">Pricing</button>
+            <button onclick="window.location.href='signup.html'">Sign Up</button>
+            <button onclick="window.location.href='login.html'">Log In</button>
+        </div>
+        <div class="mobile-nav">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button onclick="window.location.href='index.html'">Home</button>
+                <button onclick="window.location.href='about.html'">About</button>
+                <button onclick="window.location.href='pricing.html'">Pricing</button>
+                <button onclick="window.location.href='signup.html'">Sign Up</button>
+                <button onclick="window.location.href='login.html'">Log In</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         function toggleMenu() {
@@ -407,7 +406,6 @@
             dropdown.classList.toggle('show');
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('dropdownMenu');
             const hamburger = document.querySelector('.hamburger');
@@ -417,20 +415,12 @@
             }
         });
     </script>
-    </div>
+
     <div class="login-container">
+        <img src="images/whiteclearcc.png" alt="College Climb Logo" class="login-logo">
+        <h1 class="login-title">Welcome Back</h1>
         
-        <form class="login-form" onsubmit="handleLogin(event)">
-            <input type="email" id="loginEmail" placeholder="Email Address" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" class="login-btn">Log In</button>
-        </form>
-
-        <div class="divider">
-            <span>OR</span>
-        </div>
-
-        <button class="google-btn" onclick="handleGoogleLogin()">
+        <button class="google-btn" onclick="loginWithGoogle()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -440,67 +430,131 @@
             Continue with Google
         </button>
 
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email Address" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit" class="login-btn">Log In</button>
+        </form>
+
         <p>Don't have an account? <a href="signup.html" class="signup-link">Sign up here</a></p>
     </div>
 
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js';
+
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Google Login Function
+        window.loginWithGoogle = function() {
+            const provider = new GoogleAuthProvider();
+            const button = document.querySelector('.google-btn');
+            const originalText = button.textContent;
             
-            const email = document.getElementById('loginEmail').value;
+            button.textContent = 'Connecting to Google...';
+            button.disabled = true;
+
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("Google Login successful for:", user.email);
+                    alert(`Welcome back, ${user.displayName || user.email}!`);
+                    window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Google Login error:", error);
+                    if (error.code === 'auth/unauthorized-domain') {
+                        alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                    } else {
+                        alert("Google Login failed: " + error.message);
+                    }
+                })
+                .finally(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                });
+        };
+
+        // Email/Password Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
-            // Basic validation
             if (!email || !password) {
                 alert('Please fill in all fields');
                 return;
             }
             
-            // Visual feedback
-            const button = event.target.querySelector('.login-btn');
+            const button = e.target.querySelector('.login-btn');
             const originalText = button.textContent;
             button.textContent = 'Logging in...';
             button.disabled = true;
             
-            // Simulate login process
-            setTimeout(() => {
-                alert(`Welcome back! Logging in with ${email}`);
-                // Here you would typically redirect to dashboard
-                // window.location.href = 'dashboard.html';
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 1500);
-        }
-
-        function handleGoogleLogin() {
-            const button = document.querySelector('.google-btn');
-            const originalText = button.textContent;
-            button.textContent = 'Connecting to Google...';
-            button.disabled = true;
-            
-            // Simulate Google login process
-            setTimeout(() => {
-                alert('Google login initiated! (This would integrate with Google OAuth)');
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 1500);
-        }
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("Login successful for:", user.email);
+                    alert(`Welcome back, ${user.email}!`);
+                    window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    let errorMessage = "Login failed. Please try again.";
+                    
+                    switch (error.code) {
+                        case 'auth/invalid-credential':
+                            errorMessage = "Invalid email or password.";
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessage = "This account has been disabled.";
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = "Invalid email address.";
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = "Too many failed attempts. Please try again later.";
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMessage = "Network error. Please check your connection.";
+                            break;
+                        default:
+                            errorMessage = error.message || "Login failed. Please try again.";
+                    }
+                    
+                    alert(errorMessage);
+                })
+                .finally(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                });
+        });
 
         // Allow Enter key to submit
         document.getElementById('loginPassword').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                handleLogin(e);
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
             }
         });
     </script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js"></script>
-<script src="firebase-config.js"></script>
-
 </body>
-
-</html></svg></button></form></div></body>
-
 </html>
-/*
