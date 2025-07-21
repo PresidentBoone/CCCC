@@ -409,7 +409,7 @@
                 <div class="chatbot-container">
                     <div class="chatbot-header">
                         <h3>🤖 AI College Counselor</h3>
-                        <span style="font-size: 0.9rem; opacity: 0.8;">(Powered by OpenAI GPT)</span>
+                        <span style="font-size: 0.9rem; opacity: 0.8;">(Hypertailored To You! )</span>
                     </div>
                     <div class="chatbot-messages" id="chatMessages">
                         <div class="message ai-message">
@@ -503,7 +503,7 @@
 
     <script>
         // OpenAI API Configuration
-        const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        const OPENAI_API_KEY = 'your-api-key-here'; // Replace with your actual API key
         const API_URL = 'https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions';
 
         // College-specific system prompt
@@ -639,15 +639,6 @@
             alert('Logging out...');
             window.location.href = 'index.html';
         }
-
-        // Check if API key is configured
-        window.onload = function() {
-            if (OPENAI_API_KEY.includes('YOUR_API_KEY_HERE')) {
-                addMessage('⚠️ Please configure your OpenAI API key to enable the AI chatbot. Check the setup instructions below!', 'ai');
-            } else {
-                addMessage('✅ API key detected! If you encounter CORS errors, please visit https://cors-anywhere.herokuapp.com/corsdemo and click "Request temporary access" first.', 'ai');
-            }
-        };
     </script>
 </body>
 </html>
