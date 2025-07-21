@@ -249,26 +249,24 @@
         }
 
         .divider {
-            text-align: center;
+            display: flex;
+            align-items: center;
             margin: 1.5rem 0;
-            position: relative;
+            color: white;
         }
 
-        .divider::before {
+        .divider::before,
+        .divider::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
+            flex: 1;
             height: 1px;
-            background-color: white;
-            opacity: 0.3;
+            background: white;
+            opacity: 0.5;
         }
 
         .divider span {
-            background: linear-gradient(135deg, #2a357a 0%, #f3e6ff 100%);
             padding: 0 1rem;
-            opacity: 0.8;
+            font-weight: bold;
         }
 
         .signup-btn {
