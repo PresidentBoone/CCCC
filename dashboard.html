@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - College Climb</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.25);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .brand-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.5rem 1rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .dashboard-container {
+            margin-top: 120px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .welcome-section {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            background-size: 200% 200%;
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            border-radius: 25px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-panel {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-panel:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-panel h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .chatbot-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            max-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background-color: rgba(127, 0, 255, 0.3);
+            margin-right: auto;
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+        }
+
+        .chatbot-input button {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .chatbot-input button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+        }
+
+        .action-card:hover {
+            transform: scale(1.05);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .setup-instructions {
+            background: linear-gradient(
+                135deg,
+                #2a357a 0%,
+                #3543a6 7%,
+                #3e4fc9 15%,
+                #4d5ae6 23%,
+                #5d4fdc 32%,
+                #6a5fdc 41%,
+                #7a6fff 50%,
+                #8e7fff 59%,
+                #a89bff 68%,
+                #c7bfff 77%,
+                #cbb6ff 86%,
+                #e0cfff 93%,
+                #f3e6ff 100%
+            );
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+        }
+
+        .setup-step {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes waveGlow {
+            0% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            }
+            25% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, -20px 0 40px 10px rgba(127,0,255,0.4);
+            }
+            75% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
+            }
+            100% {
+                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            }
+        }
+
+        @keyframes gradientWave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+            <div class="brand-text">
+                College<br>Climb
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='about.html'">About</button>
+            <button onclick="window.location.href='pricing.html'">Pricing</button>
+            <button onclick="logout()">Log Out</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <h1 style="font-size: 2.5rem; font-weight: bold; font-style: italic; margin-bottom: 1rem;">Welcome to Your College Climb Dashboard</h1>
+            <p style="font-size: 1.2rem;">Your AI-powered college application assistant is ready to help you climb to success!</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="feature-panel">
+                <h3>Quick Actions</h3>
+                <div class="quick-actions">
+                    <div class="action-card" onclick="openEssayHelper()">
+                        <div class="action-icon">📝</div>
+                        <h4>Essay Helper</h4>
+                        <p>Get AI feedback on your essays</p>
+                    </div>
+                    <div class="action-card" onclick="openResumeBuilder()">
+                        <div class="action-icon">📊</div>
+                        <h4>Resume Builder</h4>
+                        <p>Create your perfect college resume</p>
+                    </div>
+                    <div class="action-card" onclick="openCollegeSearch()">
+                        <div class="action-icon">🎯</div>
+                        <h4>College Search</h4>
+                        <p>Find your perfect college match</p>
+                    </div>
+                    <div class="action-card" onclick="openScholarshipFinder()">
+                        <div class="action-icon">💰</div>
+                        <h4>Scholarship Finder</h4>
+                        <p>Discover funding opportunities</p>
+                    </div>
+                    <div class="action-card" onclick="openInterviewPrep()">
+                        <div class="action-icon">🎤</div>
+                        <h4>Interview Prep</h4>
+                        <p>Practice with AI mock interviews</p>
+                    </div>
+                    <div class="action-card" onclick="openTestPrep()">
+                        <div class="action-icon">📚</div>
+                        <h4>Test Prep</h4>
+                        <p>SAT/ACT preparation tools</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-panel">
+                <div class="chatbot-container">
+                    <div class="chatbot-header">
+                        <h3>🤖 AI College Counselor</h3>
+                        <span style="font-size: 0.9rem; opacity: 0.8;">(Powered by OpenAI GPT)</span>
+                    </div>
+                    <div class="chatbot-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
+                        </div>
+                    </div>
+                    <div class="chatbot-input">
+                        <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-instructions">
+            <h2 style="font-size: 2rem; font-weight: bold; font-style: italic; margin-bottom: 2rem; text-align: center;">🔧 OpenAI API Setup Instructions</h2>
+            
+            <div class="setup-step">
+                <h3>Step 1: Get Your OpenAI API Key</h3>
+                <p>1. Go to <a href="https://platform.openai.com/" target="_blank" style="color: #7a6fff;">https://platform.openai.com/</a></p>
+                <p>2. Sign up or log in to your OpenAI account</p>
+                <p>3. Navigate to the API section and create a new API key</p>
+                <p>4. Copy your API key (keep it secure!)</p>
+            </div>
+
+            <div class="setup-step">
+                <h3>Step 2: Add API Key to Your Code</h3>
+                <p>Replace 'YOUR_OPENAI_API_KEY' in the JavaScript code below with your actual API key:</p>
+                <div class="code-block">
+const OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY_HERE';
+                </div>
+            </div>
+
+            <div class="setup-step">
+                <h3>Step 3: Enable CORS (for local development)</h3>
+                <p>For local testing, you may need to use a CORS proxy or run a local server. For production, implement proper backend API calls.</p>
+            </div>
+
+            <div class="setup-step">
+                <h3>Step 4: Customize the AI Prompt</h3>
+                <p>Modify the system prompt in the code to customize how the AI responds to college-related questions.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+        <style>
+            .footer {
+                background: linear-gradient(135deg, #2a357a 0%, #3543a6 7%, #3e4fc9 15%, #4d5ae6 23%, #5d4fdc 32%, #6a5fdc 41%, #7a6fff 50%, #8e7fff 59%, #a89bff 68%, #c7bfff 77%, #cbb6ff 86%, #e0cfff 93%, #f3e6ff 100%);
+                padding: 1.2rem 0;
+                text-align: center;
+                margin-top: 40px;
+                border-radius: 0;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+                width: 100%;
+                position: relative;
+                box-sizing: border-box;
+                height: 100px;
+            }
+            .footer-content {
+                max-width: 1200px;
+                width: 100%;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 2.5rem;
+                flex-wrap: wrap;
+                height: 100%;
+                padding: 0 1rem;
+            }
+            .footer-logo {
+                height: 54px;
+                display: block;
+                flex-shrink: 0;
+            }
+            .footer-text {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 1.08rem;
+                color: #fff;
+                opacity: 0.85;
+                flex: 1 1 200px;
+                text-align: center;
+            }
+            .footer-socials {
+                display: flex;
+                justify-content: center;
+                gap: 1.5rem;
+                flex-shrink: 0;
+            }
+            .footer-socials a img {
+                height: 36px;
+                width: 36px;
+                filter: invert(1);
+                display: block;
+            }
+        </style>
+    </footer>
+
+    <script>
+        // OpenAI API Configuration
+        const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        const API_URL = 'https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions';
+
+        // College-specific system prompt
+        const SYSTEM_PROMPT = `You are an expert college admissions counselor and AI assistant for College Climb. You specialize in helping students with:
+        - College application strategies
+        - Essay writing and feedback
+        - Scholarship searches
+        - Resume building for college applications
+        - Interview preparation
+        - SAT/ACT test prep advice
+        - College selection and matching
+        - Financial aid guidance
+        
+        Always provide helpful, encouraging, and specific advice. Keep responses concise but informative. Be supportive and motivational while being realistic about college admissions.`;
+
+        async function sendToOpenAI(message) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT },
+                            { role: 'user', content: message }
+                        ],
+                        max_tokens: 500,
+                        temperature: 0.7
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('Error calling OpenAI API:', error);
+                return 'I apologize, but I\'m having trouble connecting right now. This might be due to CORS restrictions. For full functionality, please visit https://cors-anywhere.herokuapp.com/corsdemo and click "Request temporary access to the demo server" first, then try again.';
+            }
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            userInput.value = '';
+
+            // Add typing indicator
+            addMessage('Thinking...', 'ai', true);
+
+            // Get AI response
+            const response = await sendToOpenAI(message);
+            
+            // Remove typing indicator and add real response
+            const messages = document.getElementById('chatMessages');
+            messages.removeChild(messages.lastChild);
+            addMessage(response, 'ai');
+        }
+
+        function addMessage(text, sender, isTyping = false) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
+            } else {
+                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${text}`;
+                if (isTyping) {
+                    messageDiv.style.opacity = '0.6';
+                    messageDiv.style.fontStyle = 'italic';
+                }
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Feature panel functions
+        function openEssayHelper() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "I'd like help with essay writing and feedback.";
+            sendMessage();
+        }
+
+        function openResumeBuilder() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "Can you help me create a college application resume?";
+            sendMessage();
+        }
+
+        function openCollegeSearch() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "I need help finding colleges that match my profile.";
+            sendMessage();
+        }
+
+        function openScholarshipFinder() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "Can you help me find scholarships and financial aid opportunities?";
+            sendMessage();
+        }
+
+        function openInterviewPrep() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "I need help preparing for college interviews.";
+            sendMessage();
+        }
+
+        function openTestPrep() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "Can you give me advice on SAT/ACT test preparation?";
+            sendMessage();
+        }
+
+        function logout() {
+            alert('Logging out...');
+            window.location.href = 'index.html';
+        }
+
+        // Check if API key is configured
+        window.onload = function() {
+            if (OPENAI_API_KEY.includes('YOUR_API_KEY_HERE')) {
+                addMessage('⚠️ Please configure your OpenAI API key to enable the AI chatbot. Check the setup instructions below!', 'ai');
+            } else {
+                addMessage('✅ API key detected! If you encounter CORS errors, please visit https://cors-anywhere.herokuapp.com/corsdemo and click "Request temporary access" first.', 'ai');
+            }
+        };
+    </script>
+</body>
+</html>
