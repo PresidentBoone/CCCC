@@ -462,64 +462,91 @@
         </div>
     </div>
 
-    <script>
-        function signUpWithGoogle() {
-            alert("Google Sign-Up integration would be implemented here!");
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js';
+
+    // Your Firebase config
+    const firebaseConfig = {
+        // Add your Firebase config here
+       apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+  authDomain: "collegeclimb-ai.firebaseapp.com",
+  projectId: "collegeclimb-ai",
+  storageBucket: "collegeclimb-ai.firebasestorage.app",
+  messagingSenderId: "187139654658",
+  appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+  measurementId: "G-E0B2RQM9XS"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Make functions global so they can be called from HTML
+    window.signUpWithGoogle = function() {
+        const provider = new GoogleAuthProvider();
+
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                console.log("Google Sign-Up successful for:", user.email);
+                window.location.href = "dashboard.html";
+            })
+            .catch((error) => {
+                console.error("Google Sign-Up error:", error);
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                } else {
+                    alert("Google Sign-Up failed: " + error.message);
+                }
+            });
+    };
+
+    window.validateEmail = function(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const contact = document.getElementById('contact').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!contact || !window.validateEmail(contact)) {
+            alert("Please enter a valid email address.");
+            return;
         }
 
-        function goToLogin() {
-            alert("Redirect to login page would happen here!");
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters.");
+            return;
         }
 
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+        if (password !== confirmPassword) {
+            alert("Passwords don't match.");
+            return;
         }
 
-        function validatePhone(phone) {
-            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-            return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
-        }
+        const button = document.querySelector('.signup-btn');
+        button.textContent = 'Creating Account...';
+        button.disabled = true;
 
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const contact = document.getElementById('contact').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (!contact) {
-                alert("Please enter your email or phone number!");
-                return;
-            }
-            
-            if (!validateEmail(contact) && !validatePhone(contact)) {
-                alert("Please enter a valid email address or phone number!");
-                return;
-            }
-            
-            if (password.length < 6) {
-                alert("Password must be at least 6 characters long!");
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                alert("Passwords don't match!");
-                return;
-            }
-            
-            const button = document.querySelector('.signup-btn');
-            const originalText = button.textContent;
-            button.textContent = 'Creating Account...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                alert(`Account created successfully for ${contact}! Welcome to College Climb!`);
+        createUserWithEmailAndPassword(auth, contact, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                window.location.href = "dashboard.html";
+                alert(`Account created successfully for ${user.email}`);
                 document.getElementById('signupForm').reset();
-                button.textContent = originalText;
+            })
+            .catch((error) => {
+                alert("Error: " + error.message);
+            })
+            .finally(() => {
+                button.textContent = 'Create Account';
                 button.disabled = false;
-            }, 1500);
-        });
-    </script>
-</body>
-</html></div>
+            });
+    });
+</script>
