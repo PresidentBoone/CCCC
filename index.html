@@ -17,13 +17,64 @@
     }
 
     body {
-      background-color: #121212;
+      background: 
+      radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%),
+      radial-gradient(ellipse at center, rgba(255,255,255,0.8) 1px, transparent 1px);
+      background-size: 100% 100%, 3px 3px;
       font-family: 'Montserrat', sans-serif;
       color: white;
       height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+      radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      animation: twinkle 8s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+      radial-gradient(1px 1px at 25px 25px, rgba(255,255,255,0.9), transparent),
+      radial-gradient(1px 1px at 75px 75px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(2px 2px at 125px 25px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 175px 75px, rgba(255,255,255,0.8), transparent);
+      background-repeat: repeat;
+      background-size: 250px 150px;
+      animation: twinkle 12s linear infinite reverse;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      25% { opacity: 1; }
+      50% { opacity: 0.5; }
+      75% { opacity: 0.8; }
     }
 
     .navbar {
@@ -666,41 +717,41 @@
   <!-- Box 1 -->
   <div class="testimonial-box">
     <h3 class="testimonial-title">Student</h3>
-    <img src="images/Student1.png" alt="Student 1" class="testimonial-img">
-    <p class="testimonial-text">I wrote a cool testimonial, gimme money ooga booga</p>
+    <img src="images/h1.jpeg" alt="Student 1" class="testimonial-img">
+    <p class="testimonial-text">"College Climb helped me craft the perfect essay that got me into my dream school! The AI feedback was incredibly helpful."</p>
     <p class="testimonial-author">-Student</p>
   </div>
 
   <!-- Box 2 -->
   <div class="testimonial-box">
     <h3 class="testimonial-title">Student</h3>
-    <img src="images/Student2.png" alt="Student 2" class="testimonial-img">
-    <p class="testimonial-text">I wrote a cool testimonial, gimme money ooga booga</p>
+    <img src="images/h1.jpeg" alt="Student 2" class="testimonial-img">
+    <p class="testimonial-text">"The AI counselor answered all my questions about college applications. It's like having a personal advisor 24/7!"</p>
     <p class="testimonial-author">-Student</p>
   </div>
 
   <!-- Box 3 -->
   <div class="testimonial-box">
     <h3 class="testimonial-title">Student</h3>
-    <img src="images/Student3.png" alt="Student 3" class="testimonial-img">
-    <p class="testimonial-text">I wrote a cool testimonial, gimme money ooga booga</p>
+    <img src="images/h1.jpeg" alt="Student 3" class="testimonial-img">
+    <p class="testimonial-text">"I saved so much time creating my resume with College Climb. The AI made sure it highlighted all my best qualities!"</p>
     <p class="testimonial-author">-Student</p>
   </div>
 
   <!-- Box 4 -->
   <div class="testimonial-box">
     <h3 class="testimonial-title">Student</h3>
-    <img src="images/Student1.png" alt="Student 1" class="testimonial-img">
-    <p class="testimonial-text">I wrote a cool testimonial, gimme money ooga booga</p>
+    <img src="images/h1.jpeg" alt="Student 1" class="testimonial-img">
+    <p class="testimonial-text">"College Climb made the overwhelming application process so much easier. I got into multiple colleges thanks to their help!"</p>
     <p class="testimonial-author">-Student</p>
   </div>
 
   <!-- Box 5 -->
   <div class="testimonial-box">
-    <h3 class="testimonial-title">Student</h3>
-    <img src="images/Student2.png" alt="Student 2" class="testimonial-img">
-    <p class="testimonial-text">I wrote a cool testimonial, gimme money ooga booga</p>
-    <p class="testimonial-author">-Student</p>
+    <h3 class="testimonial-title">Hunter Earls</h3>
+    <img src="images/h1.jpeg" alt="Student 2" class="testimonial-img">
+    <p class="testimonial-text">"The scholarship search feature helped me find funding I never knew existed. College Climb truly changed my future!"</p>
+    <p class="testimonial-author">-Hunter Earls</p>
   </div>
 </div>
 
