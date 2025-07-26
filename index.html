@@ -1,1021 +1,1289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>College Climb</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: 
-      radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%),
-      radial-gradient(ellipse at center, rgba(255,255,255,0.8) 1px, transparent 1px);
-      background-size: 100% 100%, 3px 3px;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-      radial-gradient(2px 2px at 20px 30px, #eee, transparent),
-      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
-      radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
-      background-repeat: repeat;
-      background-size: 200px 100px;
-      animation: twinkle 8s linear infinite;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-      radial-gradient(1px 1px at 25px 25px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(1px 1px at 75px 75px, rgba(255,255,255,0.7), transparent),
-      radial-gradient(2px 2px at 125px 25px, rgba(255,255,255,0.6), transparent),
-      radial-gradient(1px 1px at 175px 75px, rgba(255,255,255,0.8), transparent);
-      background-repeat: repeat;
-      background-size: 250px 150px;
-      animation: twinkle 12s linear infinite reverse;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      25% { opacity: 1; }
-      50% { opacity: 0.5; }
-      75% { opacity: 0.8; }
-    }
-
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      position: fixed;
-      top: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: rgba(18, 18, 18, 0.25); /* lighter black, more grayish */
-      backdrop-filter: blur(8px);
-      z-index: 10;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo {
-      height: 60px;
-      margin-right: 10px;
-    }
-
-    .brand-text {
-      font-size: 1.2rem;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 1.2;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .nav-buttons button {
-      padding: 0.5rem 1rem;
-      border: 2px solid black;
-      background-color: white;
-      color: black;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .nav-buttons button:hover {
-      background-color: black;
-      color: white;
-    }
-
-    .main-box {
-      margin-top: 120px;
-      background: linear-gradient(
-      135deg,
-      #2a357a 0%,
-      #3543a6 7%,
-      #3e4fc9 15%,
-      #4d5ae6 23%,
-      #5d4fdc 32%,
-      #6a5fdc 41%,
-      #7a6fff 50%,
-      #8e7fff 59%,
-      #a89bff 68%,
-      #c7bfff 77%,
-      #cbb6ff 86%,
-      #e0cfff 93%,
-      #f3e6ff 100%,
-      #e0cfff 93%,
-      #cbb6ff 86%,
-      #c7bfff 77%,
-      #a89bff 68%,
-      #8e7fff 59%,
-      #7a6fff 50%,
-      #6a5fdc 41%,
-      #5d4fdc 32%,
-      #4d5ae6 23%,
-      #3e4fc9 15%,
-      #3543a6 7%,
-      #2a357a 0%
-      );
-      background-size: 200% 200%;
-      animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-      border-radius: 25px;
-      padding: 3rem;
-      width: 85%;
-      max-width: 1000px;
-      box-shadow:
-      0 0 40px 10px rgba(64,81,181,0.5),
-      0 0 80px 20px rgba(127,0,255,0.25),
-      0 0 0 2px black;
-      text-align: center;
-      opacity: 1;
-      position: relative;
-      z-index: 1;
-    }
-
-    @keyframes waveGlow {
-      0% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 0 0 0 rgba(127,0,255,0.0);
-      }
-      12.5% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 -20px 40px 10px rgba(127,0,255,0.4);
-      }
-      25% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        20px 0 40px 10px rgba(127,0,255,0.4);
-      }
-      37.5% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 20px 40px 10px rgba(127,0,255,0.4);
-      }
-      50% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        -20px 0 40px 10px rgba(127,0,255,0.4);
-      }
-      62.5% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 -20px 40px 10px rgba(127,0,255,0.4);
-      }
-      75% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        20px 0 40px 10px rgba(127,0,255,0.4);
-      }
-      87.5% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 20px 40px 10px rgba(127,0,255,0.4);
-      }
-      100% {
-      box-shadow:
-        0 0 40px 10px rgba(64,81,181,0.5),
-        0 0 80px 20px rgba(127,0,255,0.25),
-        0 0 0 2px black,
-        0 0 0 0 rgba(127,0,255,0.0);
-      }
-    }
-
-    @keyframes gradientWave {
-      0% {
-      background-position: 0% 50%;
-      }
-      50% {
-      background-position: 100% 50%;
-      }
-      100% {
-      background-position: 0% 50%;
-      }
-    }
-
-    .main-logo {
-      height: 100px;
-      margin-bottom: 1.5rem;
-    }
-
-    .main-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      font-style: italic;
-      margin-bottom: 2rem;
-    }
-
-    .signup-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .signup-container input {
-      padding: 0.7rem 1rem;
-      border: none;
-      border-radius: 10px;
-      outline: none;
-      width: 250px;
-      font-size: 1rem;
-    }
-
-    .signup-container button {
-      padding: 0.7rem 1.2rem;
-      border: 2px solid black;
-      background-color: white;
-      color: black;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .signup-container button:hover {
-      background-color: black;
-      color: white;
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-  </style>
-</head>
-<body>
-  <div class="navbar">
-        <div class="logo-container">
-            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
-            <div class="brand-text">
-                College<br>Climb
-            </div>
-        </div>
-        <div class="nav-buttons desktop-nav">
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='about.html'">About</button>
-            <button onclick="window.location.href='pricing.html'">Pricing</button>
-            <button onclick="window.location.href='signup.html'">Sign Up</button>
-            <button onclick="window.location.href='login.html'">Log In</button>
-        </div>
-        <div class="mobile-nav">
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
-            </div>
-        </div>
-    </div>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Climb - AI-Powered College Admissions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .mobile-nav {
-            display: none;
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f3e6ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
+            --border-radius: 12px;
+            --logo-image: url('blackcc.png');
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #c9d1d9;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+            --logo-image: url('images/whiteclearcc.png');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .animated-left {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        .animated-right {
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            overflow: hidden;
+        }
+
+        .logo img, .hero-logo img, .description-logo img, .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
             position: relative;
         }
 
-        .hamburger {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.2rem;
-        }
-
-        .hamburger:hover {
-            background-color: black;
-            color: white;
-        }
-
-        .dropdown-menu {
-            display: none;
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(8px);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            min-width: 150px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
         }
 
-        .dropdown-menu.show {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .dropdown-menu button {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
+        .nav-links a:hover::after {
             width: 100%;
         }
 
-        .dropdown-menu button:hover {
-            background-color: black;
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2rem;
+            background: var(--secondary-bg);
+            position: relative;
+        }
+
+        .hero-content {
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            animation: pulse 5s infinite;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #2a357a, #a07bcc, #bb86fc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(42, 53, 122, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
+            animation: none;
+        }
+
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .description {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .description-image {
+            width: 100%;
+            height: 300px;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+
+        .description-image:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .description-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+
+        .description-logo img {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .description-text h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .description-text p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .features {
+            background: var(--secondary-bg);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            animation: scroll 20s linear infinite;
+            gap: 2rem;
+        }
+
+        .carousel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .feature-card, .testimonial-card {
+            flex: 0 0 300px;
+            background: var(--primary-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover, .testimonial-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .testimonial-card {
+            border-left: 4px solid var(--accent-color);
+            text-align: left;
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .cta-section {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .signup-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .signup-form input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .signup-form input:focus {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .signup-form button {
+            background: white;
+            color: var(--accent-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signup-form button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            background: var(--accent-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+        }
+
+        .footer-logo img {
+            filter: brightness(0) invert(1);
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 768px) {
-            .desktop-nav {
-                display: none;
+            .nav-links {
+                gap: 1rem;
             }
+
+            .description {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .signup-form {
+                flex-direction: column;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .logo-section {
+                gap: 0.5rem;
+            }
+
+            .brand-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .brand-text h2 {
+                font-size: 0.9rem;
+            }
+
+            .feature-card, .testimonial-card {
+                flex: 0 0 280px;
+            }
+
+            .hero-logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .description-logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <nav class="navbar navbar-dark">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <img src="blackcc.png" alt="College Climb Logo" class="logo-img">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">College</h1>
+                <h2 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li class="dropdown">
+                <a href="#">Login/Sign Up</a>
+                <div class="dropdown-content">
+                    <a href="#login">Login</a>
+                    <a href="#signup">Sign Up</a>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <img src="blackcc.png" alt="College Climb Logo">
+            </div>
+            <h1 class="hero-title">College Climb</h1>
+            <p class="hero-subtitle">Your AI-powered admissions co-pilot</p>
+            <p class="hero-description">Transform your college dreams into reality with personalized guidance, winning essays, and strategic insights powered by cutting-edge AI technology.</p>
             
-            .mobile-nav {
-                display: block;
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">✍️</span>
+                    <span class="stat-label">Perfect Your Essays</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">🎯</span>
+                    <span class="stat-label">Find Your Match</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">💰</span>
+                    <span class="stat-label">Get Scholarships</span>
+                </div>
+            </div>
+
+            <div class="hero-form">
+                <h3>Start Your Journey Today</h3>
+                <form class="hero-signup-form">
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Email Address" required>
+                    <select required>
+                        <option value="">Class of...</option>
+                        <option value="2025">2026</option>
+                        <option value="2026">2027</option>
+                        <option value="2027">2028</option>
+                        <option value="2028">2029</option>
+                        <option value="2029">2030</option>
+                        <option value="2030">2031</option>
+                        <option value="2031">2032</option>
+                    </select>
+                    <button type="submit" class="hero-cta-button">Get Started Free</button>
+                </form>
+                <p class="form-note">🔒 No credit card required • Free trial for 7 days</p>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .hero {
+            padding-top: 100px;
+            padding-bottom: 2rem;
+        }
+
+        .hero-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #2a357a, #a07bcc, #bb86fc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.8rem 1rem;
+            background: rgba(42, 53, 122, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.2);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .hero-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        [data-theme="dark"] .hero-form {
+            background: rgba(33, 38, 45, 0.8);
+            border: 1px solid rgba(187, 134, 252, 0.3);
+        }
+
+        .hero-form h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .hero-signup-form {
+            display: grid;
+            gap: 0.8rem;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .hero-signup-form input,
+        .hero-signup-form select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid rgba(160, 123, 204, 0.3);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        [data-theme="dark"] .hero-signup-form input,
+        [data-theme="dark"] .hero-signup-form select {
+            background: rgba(33, 38, 45, 0.9);
+            color: var(--text-primary);
+        }
+
+        .hero-signup-form input:focus,
+        .hero-signup-form select:focus {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(160, 123, 204, 0.3);
+        }
+
+        .hero-cta-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.3rem;
+        }
+
+        .hero-cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
+        }
+
+        .form-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.8rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding-top: 80px;
+                padding-bottom: 1rem;
+            }
+
+            .hero-logo {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 0.8rem;
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-item {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .stat-number {
+                font-size: 1.4rem;
+            }
+
+            .hero-form {
+                padding: 1.2rem;
+                margin: 1rem;
+            }
+
+            .hero-form h3 {
+                font-size: 1.2rem;
             }
         }
     </style>
 
-    <script>
-        function toggleMenu() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
+    <section id="about" class="section description fade-in-up">
+        <div class="description-image animated-left">
+            <div class="description-logo">
+                <img src="blackcc.png" alt="College Climb Logo">
+            </div>
+        </div>
+        <div class="description-text animated-right">
+            <h2>Transform Your College Journey</h2>
+            <p>College Climb revolutionizes the college admissions process with cutting-edge AI technology. Our platform provides personalized guidance, essay feedback, and strategic insights to help you stand out in the competitive admissions landscape.</p>
+        </div>
+    </section>
+
+    <section class="section features fade-in-up">
+        <h2>Powerful Features</h2>
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>AI Essay Feedback</h3>
+                    <p>Get instant, detailed feedback on your application essays with our advanced AI writing assistant.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>College Match AI</h3>
+                    <p>Find your perfect college matches based on your academic profile, interests, and preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Scholarship Finder</h3>
+                    <p>Discover thousands of scholarship opportunities tailored to your unique background and achievements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Resume Builder</h3>
+                    <p>Create compelling resumes and activity lists that showcase your accomplishments effectively.</p>
+                </div>
+                <!-- Duplicate cards for infinite scroll -->
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>AI Essay Feedback</h3>
+                    <p>Get instant, detailed feedback on your application essays with our advanced AI writing assistant.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>College Match AI</h3>
+                    <p>Find your perfect college matches based on your academic profile, interests, and preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Scholarship Finder</h3>
+                    <p>Discover thousands of scholarship opportunities tailored to your unique background and achievements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Resume Builder</h3>
+                    <p>Create compelling resumes and activity lists that showcase your accomplishments effectively.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section testimonials fade-in-up">
+        <h2>Student Success Stories</h2>
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <div class="testimonial-card">
+                    <p>"College Climb helped me craft essays that truly reflected who I am. I got into my dream school!"</p>
+                    <div class="testimonial-author">- Sarah M., Stanford University</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The AI feedback was incredibly detailed and helped me improve my writing dramatically."</p>
+                    <div class="testimonial-author">- Michael L., MIT</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Found scholarships I never would have discovered on my own. Saved thousands on college costs!"</p>
+                    <div class="testimonial-author">- Emma R., Harvard University</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The college matching feature was spot-on. Applied to schools I never considered and got accepted!"</p>
+                    <div class="testimonial-author">- James K., University of Chicago</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"My essays went from average to extraordinary with their AI feedback system."</p>
+                    <div class="testimonial-author">- Lisa P., Yale University</div>
+                </div>
+                <!-- Duplicate cards for infinite scroll -->
+                <div class="testimonial-card">
+                    <p>"College Climb helped me craft essays that truly reflected who I am. I got into my dream school!"</p>
+                    <div class="testimonial-author">- Sarah M., Stanford University</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The AI feedback was incredibly detailed and helped me improve my writing dramatically."</p>
+                    <div class="testimonial-author">- Michael L., MIT</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Found scholarships I never would have discovered on my own. Saved thousands on college costs!"</p>
+                    <div class="testimonial-author">- Emma R., Harvard University</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="section fade-in-up">
+        <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 3rem;">Choose Your Plan</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto;">
+            <div style="background: var(--primary-bg); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Free Trial</h3>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 1rem;">$0<span style="font-size: 1rem; font-weight: 400;">/7 days</span></div>
+                <ul style="list-style: none; margin-bottom: 2rem; text-align: left;">
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Basic essay feedback</li>
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ College matching tool</li>
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Limited scholarship search</li>
+                </ul>
+                <button style="background: var(--gradient); color: white; border: none; padding: 0.8rem 2rem; border-radius: var(--border-radius); font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Start Free Trial</button>
+            </div>
+            <div style="background: var(--primary-bg); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center; transition: all 0.3s ease; border: 2px solid var(--accent-color);" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Pro Plan</h3>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 1rem;">$29<span style="font-size: 1rem; font-weight: 400;">/month</span></div>
+                <ul style="list-style: none; margin-bottom: 2rem; text-align: left;">
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Advanced AI essay feedback</li>
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Unlimited college matching</li>
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Full scholarship database</li>
+                    <li style="padding: 0.5rem 0; color: var(--text-secondary);">✓ Resume builder</li>
+                </ul>
+                <button style="background: var(--gradient); color: white; border: none; padding: 0.8rem 2rem; border-radius: var(--border-radius); font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Choose Pro</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="signup" class="cta-section fade-in-up">
+        <h2>Ready to Climb Higher?</h2>
+        <p>Join thousands of students who've transformed their college admissions journey with College Climb.</p>
+        <form class="signup-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <button type="submit">Try It Free</button>
+        </form>
+    </section>
+
+    <footer class="footer">
+    <footer class="footer">
+        <div class="footer-logo">
+            <img src="blackcc.png" alt="College Climb Logo">
+        </div>
+            <a href="https://instagram.com/collegeclimb" target="_blank" class="social-btn instagram">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+            </a>
+            <a href="https://x.com/collegeclimb" target="_blank" class="social-btn twitter">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <a href="https://tiktok.com/@collegeclimb" target="_blank" class="social-btn tiktok">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+            </a>
+        </div>
+        <p>&copy; 2025 College Climb. All rights reserved. | Contact: hello@collegeclimb.com</p>
+    </footer>
+
+    <style>
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
         }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('dropdownMenu');
-            const hamburger = document.querySelector('.hamburger');
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .social-btn.instagram:hover {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+        }
+
+        .social-btn.twitter:hover {
+            background: #000000;
+        }
+
+        .social-btn.tiktok:hover {
+            background: linear-gradient(45deg, #ff0050, #00f2ea);
+        }
+    </style>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const starryBg = document.getElementById('starryBg');
+
+        // Function to update logo images based on theme
+        // Function to update logo images based on theme
+        function updateLogos(theme) {
+            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            document.querySelectorAll('.logo-img, .hero-logo img, .description-logo img, .footer-logo img').forEach(img => {
+                img.src = logoSrc;
+            });
+        }
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateLogos(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             
-            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateLogos(newTheme);
+            
+            if (newTheme === 'dark') {
+                createStars();
             }
         });
+
+        function updateThemeIcon(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Create twinkling stars for dark mode
+        function createStars() {
+            starryBg.innerHTML = '';
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize stars for dark mode
+        if (savedTheme === 'dark') {
+            createStars();
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        document.querySelector('.signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            
+            if (name && email) {
+                // Add success animation
+                const button = this.querySelector('button');
+                button.textContent = '✓ Success!';
+                button.style.background = '#4caf50';
+                
+                setTimeout(() => {
+                    alert('Thank you for signing up! We\'ll be in touch soon.');
+                    this.reset();
+                    button.textContent = 'Try It Free';
+                    button.style.background = '';
+                }, 1000);
+            }
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+                navbar.style.transform = 'translateY(0)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in-up').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Add floating animation to CTA button
+        setInterval(() => {
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton && !ctaButton.matches(':hover')) {
+                ctaButton.style.animation = 'bounce 2s infinite';
+            }
+        }, 5000);
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const rate = scrolled * -0.5;
+            
+            if (hero) {
+                hero.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Add random delays to feature icons for staggered pulse animation
+        document.querySelectorAll('.feature-icon').forEach((icon, index) => {
+            icon.style.animationDelay = (index * 0.2) + 's';
+        });
     </script>
-
-  <div class="main-box">
-    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="main-logo">
-    <h1 class="main-title">College Climb</h1>
-    <p class="subtitle">Your AI-powered college application assistant</p>
-    <div class="signup-container">
-      <input type="email" placeholder="Enter your email">
-      <button onclick="window.location.href='signup.html'">Get Started</button>
-    </div>
-  </div>
-
-  <div style="margin-top: 80px; text-align: center;">
-    <h2 style="font-family: 'Montserrat', sans-serif; font-weight: bold; font-style: italic; font-size: 2.2rem; margin-bottom: 40px;">
-      What is College Climb?
-    </h2>
-
-    <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; padding: 0 2rem;">
-      <!-- Box 1 -->
-      <button class="feature-box" style="all: unset; cursor: pointer;">
-        <div style="background: linear-gradient(
-          135deg,
-          #2a357a 0%,
-          #3543a6 7%,
-          #3e4fc9 15%,
-          #4d5ae6 23%,
-          #5d4fdc 32%,
-          #6a5fdc 41%,
-          #7a6fff 50%,
-          #8e7fff 59%,
-          #a89bff 68%,
-          #c7bfff 77%,
-          #cbb6ff 86%,
-          #e0cfff 93%,
-          #f3e6ff 100%,
-          #e0cfff 93%,
-          #cbb6ff 86%,
-          #c7bfff 77%,
-          #a89bff 68%,
-          #8e7fff 59%,
-          #7a6fff 50%,
-          #6a5fdc 41%,
-          #5d4fdc 32%,
-          #4d5ae6 23%,
-          #3e4fc9 15%,
-          #3543a6 7%,
-          #2a357a 0%
-          ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
-          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem; margin-bottom: 0.5rem;">AI</h3>
-          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">College Counselor</h3>
-          <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-            <img src="images/Computer.png" alt="AI College Counselor" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
-          </div>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-            Forget expensive private counselors, with College Climb have the answers to your college questions at your fingertips, personalized just for you!
-          </p>
-        </div>
-      </button>
-
-      <!-- Box 2 -->
-      <button class="feature-box" style="all: unset; cursor: pointer;">
-        <div style="background: linear-gradient(
-          135deg,
-          #2a357a 0%,
-          #3543a6 7%,
-          #3e4fc9 15%,
-          #4d5ae6 23%,
-          #5d4fdc 32%,
-          #6a5fdc 41%,
-          #7a6fff 50%,
-          #8e7fff 59%,
-          #a89bff 68%,
-          #c7bfff 77%,
-          #cbb6ff 86%,
-          #e0cfff 93%,
-          #f3e6ff 100%,
-          #e0cfff 93%,
-          #cbb6ff 86%,
-          #c7bfff 77%,
-          #a89bff 68%,
-          #8e7fff 59%,
-          #7a6fff 50%,
-          #6a5fdc 41%,
-          #5d4fdc 32%,
-          #4d5ae6 23%,
-          #3e4fc9 15%,
-          #3543a6 7%,
-          #2a357a 0%
-          ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
-          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">Perfect Your Essays</h3>
-          <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-              <img src="images/EssayBot.png" alt="AI College Counselor" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
-            </div>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-            Save time with instant feedback, our AI can help your essay paint you as a student your dream college can't pass up!
-          </p>
-        </div>
-      </button>
-
-      <!-- Box 3 -->
-      <button class="feature-box" style="all: unset; cursor: pointer;">
-        <div style="background: linear-gradient(
-          135deg,
-          #2a357a 0%,
-          #3543a6 7%,
-          #3e4fc9 15%,
-          #4d5ae6 23%,
-          #5d4fdc 32%,
-          #6a5fdc 41%,
-          #7a6fff 50%,
-          #8e7fff 59%,
-          #a89bff 68%,
-          #c7bfff 77%,
-          #cbb6ff 86%,
-          #e0cfff 93%,
-          #f3e6ff 100%,
-          #e0cfff 93%,
-          #cbb6ff 86%,
-          #c7bfff 77%,
-          #a89bff 68%,
-          #8e7fff 59%,
-          #7a6fff 50%,
-          #6a5fdc 41%,
-          #5d4fdc 32%,
-          #4d5ae6 23%,
-          #3e4fc9 15%,
-          #3543a6 7%,
-          #2a357a 0%
-           ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
-          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">Craft Your Perfect Resume</h3>
-         <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-              <img src="images/Squarecc.png" alt="AI College Counselor" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
-            </div>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-            Save the long hours trying to craft your college resume, our AI can help you create a resume that will make you stand out from the crowd!
-          </p>
-        </div>
-      </button>
-
-      <!-- Box 4 -->
-      <button class="feature-box" style="all: unset; cursor: pointer;">
-        <div style="background: linear-gradient(
-          135deg,
-          #2a357a 0%,
-          #3543a6 7%,
-          #3e4fc9 15%,
-          #4d5ae6 23%,
-          #5d4fdc 32%,
-          #6a5fdc 41%,
-          #7a6fff 50%,
-          #8e7fff 59%,
-          #a89bff 68%,
-          #c7bfff 77%,
-          #cbb6ff 86%,
-          #e0cfff 93%,
-          #f3e6ff 100%,
-          #e0cfff 93%,
-          #cbb6ff 86%,
-          #c7bfff 77%,
-          #a89bff 68%,
-          #8e7fff 59%,
-          #7a6fff 50%,
-          #6a5fdc 41%,
-          #5d4fdc 32%,
-          #4d5ae6 23%,
-          #3e4fc9 15%,
-          #3543a6 7%,
-          #2a357a 0%
-           ); padding: 2rem; border-radius: 20px; width: 300px; height: 430px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite; transition: transform 0.3s cubic-bezier(.4,2,.6,1);">
-          <h3 style="font-family: 'Montserrat', sans-serif; font-style: italic; font-weight: bold; font-size: 1.5rem;">And So Much More!</h3>
-         <div style="margin: 1rem 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-              <img src="images/whiteclearcc.png" alt="College Climb Features" style="max-width: 100%; max-height: 160px; border-radius: 8px;">
-            </div>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-            Discover all the amazing features College Climb has to offer! From interview prep to scholarship searches, we've got everything you need for college success!
-          </p>
-        </div>
-      </button>
-    </div>
-  <style>
-.feature-box:hover > div,
-.feature-box:focus-visible > div {
-  transform: scale(1.07);
-}
-
-.cta-box {
-  margin: 80px 0 100px 0;
-  background: linear-gradient(
-    135deg,
-    #2a357a 0%,
-    #3543a6 7%,
-    #3e4fc9 15%,
-    #4d5ae6 23%,
-    #5d4fdc 32%,
-    #6a5fdc 41%,
-    #7a6fff 50%,
-    #8e7fff 59%,
-    #a89bff 68%,
-    #c7bfff 77%,
-    #cbb6ff 86%,
-    #e0cfff 93%,
-    #f3e6ff 100%
-  );
-  border-radius: 20px;
-  padding: 2rem;
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.cta-title {
-  font-weight: bold;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.cta-button {
-  padding: 0.8rem 1.5rem;
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  font-weight: bold;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.3s;
-  font-family: 'Montserrat', sans-serif;
-}
-.cta-button:hover,
-.cta-button:focus {
-  background-color: black;
-  color: white;
-}
-
-@media screen and (max-width: 900px) {
-  .cta-box {
-    padding: 1.2rem;
-  }
-  .cta-title {
-    font-size: 1.1rem;
-  }
-  .cta-button {
-    font-size: 0.95rem;
-    padding: 0.7rem 1.2rem;
-  }
-}
-@media screen and (max-width: 600px) {
-  .cta-box {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-  .cta-title {
-    font-size: 1rem;
-    text-align: center;
-    display: block;
-    width: 100%;
-  }
-  .cta-button {
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-  }
-}
-  </style>
-
-<!-- Call to Action Box -->
-<div class="cta-box">
-  <div class="cta-title" style="font-size:2rem; font-weight:900;">Get Started Today for Free!</div>
-  <button class="cta-button" onclick="window.location.href='signup.html'">
-    Get Started
-  </button>
-</div>
-
-<div style="margin-top: 50px; text-align: center;">
-  <h2 style="font-family: 'Montserrat', sans-serif; font-weight: bold; font-style: italic; font-size: 3rem; margin-bottom: 40px;">
-    What Students are Saying
-  </h2>
-</div>
-
-<!-- Carousel Container -->
-<div class="testimonial-container" style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; padding: 2rem;">
-  <!-- Box 1 -->
-  <div class="testimonial-box">
-    <h3 class="testimonial-title">Student</h3>
-    <img src="images/h1.jpeg" alt="Student 1" class="testimonial-img">
-    <p class="testimonial-text">"College Climb helped me craft the perfect essay that got me into my dream school! The AI feedback was incredibly helpful."</p>
-    <p class="testimonial-author">-Student</p>
-  </div>
-
-  <!-- Box 2 -->
-  <div class="testimonial-box">
-    <h3 class="testimonial-title">Student</h3>
-    <img src="images/h1.jpeg" alt="Student 2" class="testimonial-img">
-    <p class="testimonial-text">"The AI counselor answered all my questions about college applications. It's like having a personal advisor 24/7!"</p>
-    <p class="testimonial-author">-Student</p>
-  </div>
-
-  <!-- Box 3 -->
-  <div class="testimonial-box">
-    <h3 class="testimonial-title">Student</h3>
-    <img src="images/h1.jpeg" alt="Student 3" class="testimonial-img">
-    <p class="testimonial-text">"I saved so much time creating my resume with College Climb. The AI made sure it highlighted all my best qualities!"</p>
-    <p class="testimonial-author">-Student</p>
-  </div>
-
-  <!-- Box 4 -->
-  <div class="testimonial-box">
-    <h3 class="testimonial-title">Student</h3>
-    <img src="images/h1.jpeg" alt="Student 1" class="testimonial-img">
-    <p class="testimonial-text">"College Climb made the overwhelming application process so much easier. I got into multiple colleges thanks to their help!"</p>
-    <p class="testimonial-author">-Student</p>
-  </div>
-
-  <!-- Box 5 -->
-  <div class="testimonial-box">
-    <h3 class="testimonial-title">Hunter Earls</h3>
-    <img src="images/h1.jpeg" alt="Student 2" class="testimonial-img">
-    <p class="testimonial-text">"The scholarship search feature helped me find funding I never knew existed. College Climb truly changed my future!"</p>
-    <p class="testimonial-author">-Hunter Earls</p>
-  </div>
-</div>
-
-<style>
-.testimonial-box {
-  background: linear-gradient(
-  135deg,
-  #2a357a 0%,
-  #3543a6 7%,
-  #3e4fc9 15%,
-  #4d5ae6 23%,
-  #5d4fdc 32%,
-  #6a5fdc 41%,
-  #7a6fff 50%,
-  #8e7fff 59%,
-  #a89bff 68%,
-  #c7bfff 77%,
-  #cbb6ff 86%,
-  #e0cfff 93%,
-  #f3e6ff 100%
-  );
-  border-radius: 20px;
-  width: 300px;
-  height: 430px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-  transition: transform 0.3s cubic-bezier(.4,2,.6,1);
-  text-align: center;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.testimonial-box:hover {
-  transform: scale(1.07);
-  z-index: 2;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-
-.testimonial-title {
-  font-style: italic;
-  font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.testimonial-img {
-  max-width: 100%;
-  max-height: 160px;
-  border-radius: 10px;
-  margin: 1rem 0;
-}
-
-.testimonial-text {
-  font-size: 0.9rem;
-  margin: 1rem 0;
-}
-
-.testimonial-author {
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-@media screen and (max-width: 1600px) {
-  .testimonial-container {
-  gap: 1rem;
-  }
-  .testimonial-box {
-  width: 280px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .testimonial-container {
-    padding: 1rem;
-  }
-}
-
-</style>
-
-<footer class="footer">
-  <div class="footer-content">
-    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
-    <div class="footer-text">
-      &copy; 2025 College Climb. All rights reserved.
-    </div>
-    <div class="footer-socials">
-      <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-      </a>
-      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
-      </a>
-      <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
-      </a>
-      <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-      </a>
-    </div>
-  </div>
-  <style>
-    .footer {
-      background: linear-gradient(135deg, #2a357a 0%, #3543a6 7%, #3e4fc9 15%, #4d5ae6 23%, #5d4fdc 32%, #6a5fdc 41%, #7a6fff 50%, #8e7fff 59%, #a89bff 68%, #c7bfff 77%, #cbb6ff 86%, #e0cfff 93%, #f3e6ff 100%);
-      padding: 1.2rem 0;
-      text-align: center;
-      margin-top: 40px;
-      border-radius: 0;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
-      width: 100%;
-      position: relative;
-      box-sizing: border-box;
-      height: 100px;
-    }
-    .footer-content {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-      height: 100%;
-      padding: 0 1rem;
-    }
-    .footer-logo {
-      height: 54px;
-      display: block;
-      flex-shrink: 0;
-    }
-    .footer-text {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1.08rem;
-      color: #fff;
-      opacity: 0.85;
-      flex: 1 1 200px;
-      text-align: center;
-    }
-    .footer-socials {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-shrink: 0;
-    }
-    .footer-socials a img {
-      height: 36px;
-      width: 36px;
-      filter: invert(1);
-      display: block;
-    }
-    @media (max-width: 1200px) {
-      .footer {
-        width: 100vw;
-        min-width: 100vw;
-        left: 0;
-        transform: none;
-      }
-      .footer-content {
-        max-width: 99vw;
-        width: 99vw;
-        gap: 1.5rem;
-      }
-    }
-    @media (max-width: 900px) {
-      .footer-content {
-        flex-direction: column;
-        gap: 0.8rem;
-        align-items: center;
-        width: 99vw;
-        justify-content: center;
-      }
-      .footer-logo {
-        height: 45px;
-      }
-      .footer-text {
-        font-size: 1rem;
-      }
-      .footer-socials {
-        gap: 1.2rem;
-      }
-      .footer-socials a img {
-        height: 32px;
-        width: 32px;
-      }
-    }
-    @media (max-width: 700px) {
-      .footer-logo {
-        height: 38px;
-      }
-      .footer-text {
-        font-size: 0.93rem;
-      }
-      .footer-socials {
-        gap: 1rem;
-      }
-      .footer-socials a img {
-        height: 28px;
-        width: 28px;
-      }
-    }
-    @media (max-width: 480px) {
-      .footer-content {
-        gap: 0.6rem;
-        width: 100vw;
-      }
-      .footer-logo {
-        height: 32px;
-      }
-      .footer-text {
-        font-size: 0.85rem;
-      }
-      .footer-socials {
-        gap: 0.8rem;
-      }
-      .footer-socials a img {
-        height: 24px;
-        width: 24px;
-      }
-    }
-  </style>
-</footer>
-<script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-    authDomain: "collegeclimb-ai.firebaseapp.com",
-    projectId: "collegeclimb-ai",
-    storageBucket: "collegeclimb-ai.firebasestorage.app",
-    messagingSenderId: "187139654658",
-    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-    measurementId: "G-E0B2RQM9XS"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  const auth = firebase.auth();
-
-  // Sign up function
-  function signUp(email, password) {
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log("Signed up:", userCredential.user);
-        alert("Sign up successful");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(error.message);
-      });
-  }
-
-  // Login function
-  function login(email, password) {
-    auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log("Logged in:", userCredential.user);
-        alert("Login successful");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(error.message);
-      });
-  }
-</script>
-
+</body>
 </html>
