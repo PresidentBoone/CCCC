@@ -423,11 +423,10 @@
                 </div>
             </div>
         </div>
-
-      
+    </div>
 
     <footer class="footer">
-        <div class="footer-content">
+        <div class="footer-content"></div>
             <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
             <div class="footer-text">
                 &copy; 2025 College Climb. All rights reserved.
@@ -501,6 +500,150 @@
         </style>
     </footer>
 
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Make Firebase available globally
+        window.db = db;
+        window.auth = auth;
+        window.firestoreFunctions = {
+            collection,
+            addDoc,
+            doc,
+            setDoc,
+            getDoc,
+            query,
+            where,
+            getDocs,
+            orderBy,
+            serverTimestamp
+        };
+
+        // Check authentication state
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log('User is signed in:', user.uid);
+                await loadUserData(user.uid);
+                await loadChatHistory(user.uid);
+            } else {
+                console.log('User is signed out');
+                // Redirect to login page if needed
+                // window.location.href = 'login.html';
+            }
+        });
+
+        // Load user data from Firestore
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    console.log('User data loaded:', userData);
+                    // Update welcome message with user's name
+                    if (userData.name) {
+                        const welcomeSection = document.querySelector('.welcome-section h1');
+                        welcomeSection.textContent = `Welcome back, ${userData.name}!`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Load chat history
+        async function loadChatHistory(userId) {
+            try {
+                const chatQuery = query(
+                    collection(db, 'chatHistory'),
+                    where('userId', '==', userId),
+                    orderBy('timestamp', 'desc')
+                );
+                const querySnapshot = await getDocs(chatQuery);
+                
+                const chatMessages = document.getElementById('chatMessages');
+                // Clear existing messages except the welcome message
+                const welcomeMessage = chatMessages.firstElementChild;
+                chatMessages.innerHTML = '';
+                chatMessages.appendChild(welcomeMessage);
+
+                // Add recent chat messages (limit to last 10)
+                let messageCount = 0;
+                querySnapshot.forEach((doc) => {
+                    if (messageCount < 10) {
+                        const messageData = doc.data();
+                        addMessage(messageData.message, messageData.sender, false, false);
+                        messageCount++;
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        // Save chat message to Firestore
+        async function saveChatMessage(userId, message, sender) {
+            try {
+                await addDoc(collection(db, 'chatHistory'), {
+                    userId: userId,
+                    message: message,
+                    sender: sender,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error saving chat message:', error);
+            }
+        }
+
+        // Save user activity to Firestore
+        async function saveUserActivity(userId, activityType, details) {
+            try {
+                await addDoc(collection(db, 'userActivity'), {
+                    userId: userId,
+                    activityType: activityType,
+                    details: details,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error saving user activity:', error);
+            }
+        }
+
+        // Make functions available globally
+        window.saveChatMessage = saveChatMessage;
+        window.saveUserActivity = saveUserActivity;
+
+        // Logout function
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                alert('Logged out successfully!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error logging out. Please try again.');
+            }
+        };
+    </script>
+
     <script>
         // OpenAI API Configuration
         const OPENAI_API_KEY = 'your-api-key-here'; // Replace with your actual API key
@@ -561,6 +704,11 @@
             addMessage(message, 'user');
             userInput.value = '';
 
+            // Save user message to Firestore
+            if (window.auth && window.auth.currentUser) {
+                await window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
+            }
+
             // Add typing indicator
             addMessage('Thinking...', 'ai', true);
 
@@ -571,9 +719,14 @@
             const messages = document.getElementById('chatMessages');
             messages.removeChild(messages.lastChild);
             addMessage(response, 'ai');
+
+            // Save AI response to Firestore
+            if (window.auth && window.auth.currentUser) {
+                await window.saveChatMessage(window.auth.currentUser.uid, response, 'ai');
+            }
         }
 
-        function addMessage(text, sender, isTyping = false) {
+        function addMessage(text, sender, isTyping = false, saveToDb = true) {
             const messagesContainer = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message`;
@@ -598,61 +751,78 @@
             }
         }
 
-        // Feature panel functions
-        function openEssayHelper() {
+        // Feature panel functions with activity tracking
+        async function openEssayHelper() {
             const userInput = document.getElementById('userInput');
             userInput.value = "I'd like help with essay writing and feedback.";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'essay_helper', 'User opened essay helper');
+            }
+            
             sendMessage();
         }
 
-        function openResumeBuilder() {
+        async function openResumeBuilder() {
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you help me create a college application resume?";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'resume_builder', 'User opened resume builder');
+            }
+            
             sendMessage();
         }
 
-        function openCollegeSearch() {
+        async function openCollegeSearch() {
             const userInput = document.getElementById('userInput');
             userInput.value = "I need help finding colleges that match my profile.";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'college_search', 'User opened college search');
+            }
+            
             sendMessage();
         }
 
-        function openScholarshipFinder() {
+        async function openScholarshipFinder() {
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you help me find scholarships and financial aid opportunities?";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'scholarship_finder', 'User opened scholarship finder');
+            }
+            
             sendMessage();
         }
 
-        function openInterviewPrep() {
+        async function openInterviewPrep() {
             const userInput = document.getElementById('userInput');
             userInput.value = "I need help preparing for college interviews.";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'interview_prep', 'User opened interview prep');
+            }
+            
             sendMessage();
         }
 
-        function openTestPrep() {
+        async function openTestPrep() {
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you give me advice on SAT/ACT test preparation?";
+            
+            // Track user activity
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'test_prep', 'User opened test prep');
+            }
+            
             sendMessage();
         }
-
-        function logout() {
-            alert('Logging out...');
-            window.location.href = 'index.html';
-        }
-
-        import { collection, addDoc } from "firebase/firestore";
-
-try {
-  const docRef = await addDoc(collection(db, "users"), {
-    name: "DyLon",
-    email: "example@collegeclimb.com",
-    timestamp: new Date()
-  });
-  console.log("Document written with ID: ", docRef.id);
-} catch (e) {
-  console.error("Error adding document: ", e);
-}
-
     </script>
 </body>
 </html>
