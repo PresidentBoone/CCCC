@@ -999,6 +999,8 @@
 
         // Check authentication state
         onAuthStateChanged(auth, async (user) => {
+            updateAuthUI(user); // Add this line
+
             if (user) {
                 console.log('User is signed in:', user.uid);
                 await loadUserData(user.uid);
@@ -1010,6 +1012,25 @@
                 // window.location.href = 'login.html';
             }
         });
+
+        // Update the auth dropdown UI
+        function updateAuthUI(user) {
+            const authToggle = document.getElementById('authToggle');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            
+            if (user) {
+                // User is logged in
+                authToggle.textContent = 'Account';
+                notLoggedIn.style.display = 'none';
+                loggedIn.style.display = 'block';
+            } else {
+                // User is not logged in
+                authToggle.textContent = 'Login/Sign Up';
+                notLoggedIn.style.display = 'block';
+                loggedIn.style.display = 'none';
+            }
+        }
 
         // Load user data from Firestore
         async function loadUserData(userId) {
@@ -1548,25 +1569,41 @@
 
   // Track login state
   onAuthStateChanged(auth, (user) => {
+    updateAuthUI(user); // Add this line
+
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       console.log("Logged in as:", user.email);
       document.body.classList.add("logged-in");
-
-      const welcome = document.getElementById("welcome");
-      if (welcome) {
-        welcome.textContent = `Welcome, ${user.email}`;
-      }
     } else {
       sessionStorage.removeItem("user");
       document.body.classList.remove("logged-in");
-
+      
       // Redirect if the page is protected
       if (document.body.hasAttribute("data-auth")) {
         window.location.href = "/login.html";
       }
     }
   });
+
+  // Update the auth dropdown UI
+  function updateAuthUI(user) {
+    const authToggle = document.getElementById('authToggle');
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
+    
+    if (user) {
+        // User is logged in
+        authToggle.textContent = 'Account';
+        notLoggedIn.style.display = 'none';
+        loggedIn.style.display = 'block';
+    } else {
+        // User is not logged in
+        authToggle.textContent = 'Login/Sign Up';
+        notLoggedIn.style.display = 'block';
+        loggedIn.style.display = 'none';
+    }
+  }
 
   // Optional logout logic if you want it everywhere
   const logoutBtn = document.getElementById("logoutBtn");
