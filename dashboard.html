@@ -790,6 +790,8 @@
     </style>
 </head>
 <body data-theme="dark">
+    <body data-auth>
+
     <div class="starry-bg" id="starryBg"></div>
 
      <nav class="navbar navbar-dark">
@@ -810,9 +812,12 @@
             <li><a href="pricing.html">Pricing</a></li>
             <li class="dropdown">
                 <a href="#">Login/Sign Up</a>
+                <h2 id="welcome">Welcome!</h2>
+                <!-- Dropdown content -->
                 <div class="dropdown-content">
                     <a href="login.html">Login</a>
                     <a href="signup.html">Sign Up</a>
+                    <button id="logoutBtn">Logout</button>
                 </div>
             </li>
             <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
