@@ -851,22 +851,8 @@
             onAuthStateChanged 
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-        // Firebase configuration - Replace with your actual config
-        const firebaseConfig = {
-            apiKey: "AIzaSyChsaH8w7-sWYDlf3FjGOMYFNFrBQLNx8M",
-            authDomain: "college-climb-ai.firebaseapp.com",
-            projectId: "college-climb-ai",
-            storageBucket: "college-climb-ai.firebasestorage.app",
-            messagingSenderId: "139567084550",
-            appId: "1:139567084550:web:4a3fb86f49c93a40638b34",
-            measurementId: "G-DVFTF8WYM2"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-        const auth = getAuth(app);
+        // Use Firebase configuration from the bottom script
+        // Firebase will be initialized in the global script at the bottom
 
         let currentUser = null;
 
@@ -1194,5 +1180,61 @@
             }
         });
     </script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+    authDomain: "collegeclimb-ai.firebaseapp.com",
+    projectId: "collegeclimb-ai",
+    storageBucket: "collegeclimb-ai.firebasestorage.app",
+    messagingSenderId: "187139654658",
+    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+    measurementId: "G-E0B2RQM9XS"
+  };
+
+  // Initialize services
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Track login state
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      sessionStorage.setItem("user", JSON.stringify(user));
+      console.log("Logged in as:", user.email);
+      document.body.classList.add("logged-in");
+
+      const welcome = document.getElementById("welcome");
+      if (welcome) {
+        welcome.textContent = `Welcome, ${user.email}`;
+      }
+    } else {
+      sessionStorage.removeItem("user");
+      document.body.classList.remove("logged-in");
+
+      // Redirect if the page is protected
+      if (document.body.hasAttribute("data-auth")) {
+        window.location.href = "/login.html";
+      }
+    }
+  });
+
+  // Optional logout logic if you want it everywhere
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "/login.html";
+      });
+    });
+  }
+</script>
+
 </body>
 </html>

@@ -692,96 +692,134 @@
         });
     </script>
 
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js';
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-        // Your Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
+    // Your Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+        authDomain: "collegeclimb-ai.firebaseapp.com",
+        projectId: "collegeclimb-ai",
+        storageBucket: "collegeclimb-ai.firebasestorage.app",
+        messagingSenderId: "187139654658",
+        appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+        measurementId: "G-E0B2RQM9XS"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    // Initialize Firebase services
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // Make functions global
-        window.signUpWithGoogle = function() {
-            const provider = new GoogleAuthProvider();
+    // Make functions global
+    window.signUpWithGoogle = function() {
+        const provider = new GoogleAuthProvider();
 
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("Google Sign-Up successful for:", user.email);
-                    window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    console.error("Google Sign-Up error:", error);
-                    if (error.code === 'auth/unauthorized-domain') {
-                        alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
-                    } else {
-                        alert("Google Sign-Up failed: " + error.message);
-                    }
-                });
-        };
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                console.log("Google Sign-Up successful for:", user.email);
+                window.location.href = "dashboard.html";
+            })
+            .catch((error) => {
+                console.error("Google Sign-Up error:", error);
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                } else {
+                    alert("Google Sign-Up failed: " + error.message);
+                }
+            });
+    };
 
-        window.validateEmail = function(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        };
+    window.validateEmail = function(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Form submission handler
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            const contact = document.getElementById('contact').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+        const contact = document.getElementById('contact').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
-            if (!contact || !window.validateEmail(contact)) {
-                alert("Please enter a valid email address.");
-                return;
+        if (!contact || !window.validateEmail(contact)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert("Passwords don't match.");
+            return;
+        }
+
+        const button = document.querySelector('.signup-btn');
+        button.textContent = 'Creating Account...';
+        button.disabled = true;
+
+        createUserWithEmailAndPassword(auth, contact, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                button.textContent = '✓ Success!';
+                button.style.background = '#4caf50';
+                setTimeout(() => {
+                    window.location.href = "questions.html";
+                }, 1000);
+            })
+            .catch((error) => {
+                alert("Error: " + error.message);
+            })
+            .finally(() => {
+                if (button.textContent !== '✓ Success!') {
+                    button.textContent = 'Create Account';
+                    button.disabled = false;
+                }
+            });
+    });
+
+    // Track login state
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            sessionStorage.setItem("user", JSON.stringify(user));
+            console.log("Logged in as:", user.email);
+            document.body.classList.add("logged-in");
+
+            const welcome = document.getElementById("welcome");
+            if (welcome) {
+                welcome.textContent = `Welcome, ${user.email}`;
             }
+        } else {
+            sessionStorage.removeItem("user");
+            document.body.classList.remove("logged-in");
 
-            if (password.length < 6) {
-                alert("Password must be at least 6 characters.");
-                return;
+            // Redirect if the page is protected
+            if (document.body.hasAttribute("data-auth")) {
+                window.location.href = "/login.html";
             }
+        }
+    });
 
-            if (password !== confirmPassword) {
-                alert("Passwords don't match.");
-                return;
-            }
-
-            const button = document.querySelector('.signup-btn');
-            button.textContent = 'Creating Account...';
-            button.disabled = true;
-
-            createUserWithEmailAndPassword(auth, contact, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    button.textContent = '✓ Success!';
-                    button.style.background = '#4caf50';
-                    setTimeout(() => {
-                        window.location.href = "questions.html";
-                    }, 1000);
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                })
-                .finally(() => {
-                    if (button.textContent !== '✓ Success!') {
-                        button.textContent = 'Create Account';
-                        button.disabled = false;
-                    }
-                });
+    // Optional logout logic if you want it everywhere
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            signOut(auth).then(() => {
+                window.location.href = "/login.html";
+            });
         });
-    </script>
+    }
+</script>
+
 </body>
 </html></svg></button></div>

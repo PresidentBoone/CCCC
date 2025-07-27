@@ -585,24 +585,59 @@
     </div>
 
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js";
+  import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+    authDomain: "collegeclimb-ai.firebaseapp.com",
+    projectId: "collegeclimb-ai",
+    storageBucket: "collegeclimb-ai.firebasestorage.app",
+    messagingSenderId: "187139654658",
+    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+    measurementId: "G-E0B2RQM9XS"
+  };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+  // Initialize services
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Track login state
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      sessionStorage.setItem("user", JSON.stringify(user));
+      console.log("Logged in as:", user.email);
+      document.body.classList.add("logged-in");
+
+      const welcome = document.getElementById("welcome");
+      if (welcome) {
+        welcome.textContent = `Welcome, ${user.email}`;
+      }
+    } else {
+      sessionStorage.removeItem("user");
+      document.body.classList.remove("logged-in");
+
+      // Redirect if the page is protected
+      if (document.body.hasAttribute("data-auth")) {
+        window.location.href = "/login.html";
+      }
+    }
+  });
+
+  // Optional logout logic if you want it everywhere
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "/login.html";
+      });
+    });
+  }
 
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
