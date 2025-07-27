@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Questionnaire - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f3e6ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #c9d1d9;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* Login Prompt Styles */
+        .login-prompt {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--secondary-bg);
+        }
+
+        .login-card {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        [data-theme="dark"] .login-card {
+            border: 2px solid rgba(187, 134, 252, 0.3);
+        }
+
+        /* Main Container */
+        .questionnaire-container {
+            min-height: 100vh;
+            padding: 100px 1rem 2rem;
+            background: var(--secondary-bg);
+        }
+
+        .questionnaire-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--primary-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        [data-theme="dark"] .questionnaire-wrapper {
+            border: 2px solid rgba(187, 134, 252, 0.3);
+        }
+
+        /* Header */
+        .questionnaire-header {
+            background: var(--gradient);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .questionnaire-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.15)"/></svg>') repeat;
+            pointer-events: none;
+        }
+
+        .questionnaire-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .questionnaire-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Form Styles */
+        .questionnaire-form {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(160, 123, 204, 0.05);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .form-section {
+            background: rgba(187, 134, 252, 0.08);
+            border: 1px solid rgba(187, 134, 252, 0.2);
+        }
+
+        .form-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.15);
+        }
+
+        .form-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(160, 123, 204, 0.3));
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: var(--border-radius);
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        [data-theme="dark"] .form-input,
+        [data-theme="dark"] .form-textarea,
+        [data-theme="dark"] .form-select {
+            background: var(--secondary-bg);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            transform: translateY(-1px);
+        }
+
+        .radio-option input {
+            accent-color: var(--accent-color);
+        }
+
+        .conditional-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        [data-theme="dark"] .conditional-section {
+            background: rgba(33, 38, 45, 0.5);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1rem;
+            border: 2px dashed rgba(160, 123, 204, 0.3);
+            border-radius: var(--border-radius);
+            text-align: center;
+            background: rgba(160, 123, 204, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--accent-color);
+            background: rgba(160, 123, 204, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 2rem;
+            background: var(--secondary-bg);
+        }
+
+        .submit-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(42, 53, 122, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
+            animation: none;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .questionnaire-header h1 {
+                font-size: 2rem;
+            }
+
+            .questionnaire-form {
+                padding: 1.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .submit-button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script type="module">
+        // Firebase modules will be imported here
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Firebase configuration (replace with your config)
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-auth-domain",
+            projectId: "your-project-id",
+            storageBucket: "your-storage-bucket",
+            messagingSenderId: "your-messaging-sender-id",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+
+        // Global variables
+        let currentUser = null;
+        let formData = {
+            applicationTimeline: '',
+            targetSchools: '',
+            applicationStarted: '',
+            essayStarted: '',
+            essayText: '',
+            essayFile: null,
+            resumeStarted: '',
+            resumeFile: null,
+            additionalFiles: '',
+            additionalFile: null,
+            unweightedGPA: '',
+            weightedGPA: '',
+            graduationMonth: '',
+            graduationYear: '',
+            testTaken: '',
+            testScores: '',
+            intendedMajor: ''
+        };
+
+        // Authentication state listener
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (!user) {
+                document.getElementById('loginPrompt').style.display = 'flex';
+                document.getElementById('questionnaireForm').style.display = 'none';
+            } else {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('questionnaireForm').style.display = 'block';
+            }
+        });
+
+        // Form validation
+        function validateForm() {
+            const errors = {};
+            
+            if (!formData.applicationTimeline.trim()) {
+                errors.applicationTimeline = 'Application timeline is required';
+            }
+            
+            if (!formData.targetSchools.trim()) {
+                errors.targetSchools = 'Target schools are required';
+            }
+            
+            if (!formData.applicationStarted) {
+                errors.applicationStarted = 'Please select if you have started your application';
+            }
+            
+            if (!formData.unweightedGPA || formData.unweightedGPA < 0 || formData.unweightedGPA > 4.0) {
+                errors.unweightedGPA = 'Please enter a valid unweighted GPA (0.0-4.0)';
+            }
+            
+            if (!formData.weightedGPA || formData.weightedGPA < 0 || formData.weightedGPA > 5.0) {
+                errors.weightedGPA = 'Please enter a valid weighted GPA (0.0-5.0)';
+            }
+            
+            if (!formData.graduationMonth || !formData.graduationYear) {
+                errors.graduation = 'Graduation date is required';
+            }
+            
+            if (!formData.testTaken) {
+                errors.testTaken = 'Please specify if you have taken standardized tests';
+            }
+            
+            if (!formData.intendedMajor.trim()) {
+                errors.intendedMajor = 'Intended major is required';
+            }
+
+            return errors;
+        }
+
+        // File upload helper
+        async function uploadFile(file, path) {
+            if (!file) return null;
+            
+            const fileRef = ref(storage, `questionnaires/${currentUser.uid}/${path}`);
+            await uploadBytes(fileRef, file);
+            return await getDownloadURL(fileRef);
+        }
+
+        // Form submission handler
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Please log in to submit the questionnaire');
+                return;
+            }
+
+            const errors = validateForm();
+            if (Object.keys(errors).length > 0) {
+                showErrors(errors);
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                // Upload files to Firebase Storage
+                const essayFileURL = await uploadFile(formData.essayFile, 'essay');
+                const resumeFileURL = await uploadFile(formData.resumeFile, 'resume');
+                const additionalFileURL = await uploadFile(formData.additionalFile, 'additional');
+
+                // Prepare data for Firestore
+                const submissionData = {
+                    applicationTimeline: formData.applicationTimeline,
+                    targetSchools: formData.targetSchools.split(',').map(school => school.trim()),
+                    applicationStarted: formData.applicationStarted,
+                    essayStarted: formData.essayStarted,
+                    essayText: formData.essayText,
+                    essayFileURL,
+                    resumeStarted: formData.resumeStarted,
+                    resumeFileURL,
+                    additionalFiles: formData.additionalFiles,
+                    additionalFileURL,
+                    unweightedGPA: parseFloat(formData.unweightedGPA),
+                    weightedGPA: parseFloat(formData.weightedGPA),
+                    graduationDate: `${formData.graduationMonth} ${formData.graduationYear}`,
+                    testTaken: formData.testTaken,
+                    testScores: formData.testScores,
+                    intendedMajor: formData.intendedMajor,
+                    submittedAt: new Date().toISOString(),
+                    userId: currentUser.uid
+                };
+
+                // Save to Firestore
+                await setDoc(doc(db, 'questionnaires', currentUser.uid), submissionData);
+                
+                alert('Questionnaire submitted successfully!');
+                
+                // Reset form
+                document.getElementById('questionnaire').reset();
+                resetFormData();
+                hideConditionalFields();
+                
+            } catch (error) {
+                console.error('Error submitting questionnaire:', error);
+                alert('Error submitting questionnaire. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Questionnaire';
+            }
+        }
+
+        // Show validation errors
+        function showErrors(errors) {
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            
+            for (const [field, message] of Object.entries(errors)) {
+                const element = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
+                if (element) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    errorDiv.innerHTML = `⚠️ ${message}`;
+                    element.parentNode.appendChild(errorDiv);
+                }
+            }
+        }
+
+        // Reset form data
+        function resetFormData() {
+            formData = {
+                applicationTimeline: '',
+                targetSchools: '',
+                applicationStarted: '',
+                essayStarted: '',
+                essayText: '',
+                essayFile: null,
+                resumeStarted: '',
+                resumeFile: null,
+                additionalFiles: '',
+                additionalFile: null,
+                unweightedGPA: '',
+                weightedGPA: '',
+                graduationMonth: '',
+                graduationYear: '',
+                testTaken: '',
+                testScores: '',
+                intendedMajor: ''
+            };
+        }
+
+        // Handle input changes
+        function handleInputChange(e) {
+            const { name, value, type, files } = e.target;
+            
+            if (type === 'file') {
+                formData[name] = files[0] || null;
+            } else {
+                formData[name] = value;
+            }
+
+            // Handle conditional fields
+            if (name === 'applicationStarted') {
+                toggleConditionalFields('applicationConditional', value === 'yes');
+            } else if (name === 'essayStarted') {
+                toggleConditionalFields('essayConditional', value === 'yes');
+            } else if (name === 'resumeStarted') {
+                toggleConditionalFields('resumeConditional', value === 'yes');
+            } else if (name === 'additionalFiles') {
+                toggleConditionalFields('additionalConditional', value === 'yes');
+            } else if (name === 'testTaken') {
+                toggleConditionalFields('testConditional', value === 'yes');
+            }
+        }
+
+        // Toggle conditional field visibility
+        function toggleConditionalFields(fieldId, show) {
+            const element = document.getElementById(fieldId);
+            if (element) {
+                element.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        // Hide all conditional fields
+        function hideConditionalFields() {
+            ['applicationConditional', 'essayConditional', 'resumeConditional', 'additionalConditional', 'testConditional'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize form when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate year options
+            const currentYear = new Date().getFullYear();
+            const yearSelect = document.getElementById('graduationYear');
+            for (let i = 0; i < 10; i++) {
+                const option = document.createElement('option');
+                option.value = currentYear + i;
+                option.textContent = currentYear + i;
+                yearSelect.appendChild(option);
+            }
+
+            // Add event listeners
+            document.getElementById('questionnaire').addEventListener('submit', handleSubmit);
+            
+            // Add input change listeners
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.addEventListener('change', handleInputChange);
+                element.addEventListener('input', handleInputChange);
+            });
+
+            // Initialize conditional fields as hidden
+            hideConditionalFields();
+        });
+
+        // Export functions to global scope for inline event handlers
+        window.handleInputChange = handleInputChange;
+        window.handleSubmit = handleSubmit;
+    </script>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">College</h1>
+                <h2 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Login Prompt -->
+    <div id="loginPrompt" class="login-prompt" style="display: none;">
+        <div class="login-card">
+            <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">🔐 Please Log In</h2>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">You must be logged in to access the student questionnaire and save your progress.</p>
+            <a href="login.html" style="background: var(--gradient); color: white; padding: 1rem 2rem; border-radius: var(--border-radius); text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s ease;">Go to Login</a>
+        </div>
+    </div>
+
+    <!-- Questionnaire Form -->
+    <div id="questionnaireForm" class="questionnaire-container">
+        <div class="questionnaire-wrapper">
+            <!-- Header -->
+            <div class="questionnaire-header">
+                <h1>🎓 Student Onboarding Questionnaire</h1>
+                <p>Help us personalize your college admissions journey with AI-powered insights</p>
+            </div>
+
+            <!-- Form -->
+            <form id="questionnaire" class="questionnaire-form">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3><span class="section-icon">📅</span> Application Timeline</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            When are you planning on applying to college? <span class="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            name="applicationTimeline"
+                            id="applicationTimeline"
+                            class="form-input"
+                            placeholder="e.g., Fall 2025, Spring 2026"
+                        />
+                    </div>
+                </div>
+
+                <!-- Target Schools -->
+                <div class="form-section">
+                    <h3><span class="section-icon">🏫</span> Target Schools</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            What schools do you want to get into? <span class="required">*</span>
+                            <small style="color: var(--text-secondary); font-weight: 400;">(separate with commas)</small>
+                        </label>
+                        <textarea
+                            name="targetSchools"
+                            id="targetSchools"
+                            class="form-textarea"
+                            placeholder="e.g., Harvard University, Stanford University, MIT"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Application Progress -->
+                <div class="form-section">
+                    <h3><span class="section-icon">📝</span> Application Progress</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Have you started your application, essays, or resume? <span class="required">*</span>
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="applicationStarted" value="yes" />
+                                <span>✅ Yes, I've started</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="applicationStarted" value="no" />
+                                <span>❌ No, not yet</span>
+                            </label>
+                        </div>
+
+                        <!-- Conditional Application Details -->
+                        <div id="applicationConditional" class="conditional-section">
+                            <!-- Essays -->
+                            <div class="form-group">
+                                <label class="form-label">Have you begun your essays?</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="essayStarted" value="yes" />
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="essayStarted" value="no" />
+                                        <span>No</span>
+                                    </label>
+                                </div>
+
+                                <div id="essayConditional" class="conditional-section">
+                                    <label class="form-label">Share your essay with us:</label>
+                                    <textarea
+                                        name="essayText"
+                                        class="form-textarea"
+                                        placeholder="Paste your essay here..."
+                                        rows="6"
+                                    ></textarea>
+                                    <div style="text-align: center; margin: 1rem 0; color: var(--text-secondary);">OR</div>
+                                    <div class="file-upload">
+                                        <input type="file" name="essayFile" accept=".pdf,.doc,.docx" />
+                                        <label class="file-upload-label">
+                                            📎 Upload essay file (PDF, DOC, DOCX)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Resume -->
+                            <div class="form-group">
+                                <label class="form-label">Have you begun your resume?</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="resumeStarted" value="yes" />
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="resumeStarted" value="no" />
+                                        <span>No</span>
+                                    </label>
+                                </div>
+
+                                <div id="resumeConditional" class="conditional-section">
+                                    <div class="file-upload">
+                                        <input type="file" name="resumeFile" accept=".pdf,.doc,.docx" />
+                                        <label class="file-upload-label">
+                                            📄 Upload your resume (PDF, DOC, DOCX)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Files -->
+                            <div class="form-group">
+                                <label class="form-label">Any other files you wish to upload regarding your application?</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="additionalFiles" value="yes" />
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="additionalFiles" value="no" />
+                                        <span>No</span>
+                                    </label>
+                                </div>
+
+                                <div id="additionalConditional" class="conditional-section">
+                                    <div class="file-upload">
+                                        <input type="file" name="additionalFile" />
+                                        <label class="file-upload-label">
+                                            📁 Upload additional file
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Information -->
+                <div class="form-section">
+                    <h3><span class="section-icon">📊</span> Academic Information</h3>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Current Unweighted GPA <span class="required">*</span>
+                                <small style="color: var(--text-secondary); font-weight: 400;">(0.0 - 4.0)</small>
+                            </label>
+                            <input
+                                type="number"
+                                name="unweightedGPA"
+                                id="unweightedGPA"
+                                class="form-input"
+                                min="0"
+                                max="4.0"
+                                step="0.01"
+                                placeholder="3.75"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Current Weighted GPA <span class="required">*</span>
+                                <small style="color: var(--text-secondary); font-weight: 400;">(0.0 - 5.0)</small>
+                            </label>
+                            <input
+                                type="number"
+                                name="weightedGPA"
+                                id="weightedGPA"
+                                class="form-input"
+                                min="0"
+                                max="5.0"
+                                step="0.01"
+                                placeholder="4.25"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            When will you graduate? <span class="required">*</span>
+                        </label>
+                        <div class="grid-2">
+                            <select name="graduationMonth" id="graduationMonth" class="form-select">
+                                <option value="">Select Month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                            <select name="graduationYear" id="graduationYear" class="form-select">
+                                <option value="">Select Year</option>
+                                <!-- Years will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Scores -->
+                <div class="form-section">
+                    <h3><span class="section-icon">📝</span> Standardized Tests</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Have you taken the ACT or SAT? <span class="required">*</span>
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="testTaken" value="yes" />
+                                <span>✅ Yes</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="testTaken" value="no" />
+                                <span>❌ No</span>
+                            </label>
+                        </div>
+
+                        <div id="testConditional" class="conditional-section">
+                            <label class="form-label">Enter your score(s) and specify which test:</label>
+                            <input
+                                type="text"
+                                name="testScores"
+                                class="form-input"
+                                placeholder="e.g., SAT: 1450, ACT: 32"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Major -->
+                <div class="form-section">
+                    <h3><span class="section-icon">🎯</span> Academic Goals</h3>
+                    <div class="form-group">
+                        <label class="form-label">
+                            What do you intend to major in? <span class="required">*</span>
+                        </label>
+                        <select name="intendedMajor" id="intendedMajor" class="form-select">
+                            <option value="">Select Major</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Business">Business</option>
+                            <option value="Medicine/Pre-Med">Medicine/Pre-Med</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="English">English</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Economics">Economics</option>
+                            <option value="Political Science">Political Science</option>
+                            <option value="Art">Art</option>
+                            <option value="Music">Music</option>
+                            <option value="History">History</option>
+                            <option value="Undecided">Undecided</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="submit-section">
+                    <button type="submit" id="submitBtn" class="submit-button">
+                        🚀 Submit Questionnaire
+                    </button>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        🔒 Your information is secure and will only be used to personalize your experience
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const starryBg = document.getElementById('starryBg');
+
+        // Function to update logo images based on theme
+        function updateLogos(theme) {
+            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            document.querySelectorAll('.logo-img').forEach(img => {
+                img.src = logoSrc;
+            });
+        }
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateLogos(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateLogos(newTheme);
+            
+            if (newTheme === 'dark') {
+                createStars();
+            }
+        });
+
+        function updateThemeIcon(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Create twinkling stars for dark mode
+        function createStars() {
+            starryBg.innerHTML = '';
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize stars for dark mode
+        if (savedTheme === 'dark') {
+            createStars();
+        }
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html></p></div></label></div></label></div></a></body>
