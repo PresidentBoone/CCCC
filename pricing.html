@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f3e6ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #c9d1d9;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+        }
 
         * {
             margin: 0;
@@ -14,138 +36,271 @@
         }
 
         body {
-            background-color: #121212;
-            font-family: 'Montserrat', sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .navbar {
-            width: 100%;
-            padding: 1rem 2rem;
             position: fixed;
             top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(18, 18, 18, 0.25);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        .logo-container {
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo-section {
             display: flex;
             align-items: center;
-        }
-
-        .logo {
-            height: 60px;
-            margin-right: 10px;
-        }
-
-        .brand-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            font-style: italic;
-            line-height: 1.2;
-        }
-
-        .nav-buttons {
-            display: flex;
             gap: 1rem;
         }
 
-        .nav-buttons button {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            overflow: hidden;
         }
 
-        .nav-buttons button:hover {
-            background-color: black;
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
         }
 
         .pricing-container {
             margin-top: 120px;
-            width: 90%;
+            padding: 5rem 2rem;
             max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
             text-align: center;
         }
 
         .pricing-header {
             margin-bottom: 50px;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .pricing-header h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            font-style: italic;
-            margin-bottom: 10px;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #2a357a, #a07bcc, #bb86fc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
         }
 
         .pricing-header p {
             font-size: 1.2rem;
-            font-style: italic;
+            color: var(--text-secondary);
             opacity: 0.8;
         }
 
         .pricing-grid {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
         }
 
         .pricing-card {
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
-            background-size: 200% 200%;
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-            border-radius: 25px;
-            padding: 3rem 2rem;
-            width: 350px;
-            min-height: 500px;
-            box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
-            transition: transform 0.3s ease;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-height: 500px;
         }
 
         .pricing-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.2);
         }
 
         .pricing-card.popular {
+            border: 2px solid var(--accent-color);
             transform: scale(1.05);
-            border: 3px solid #7a6fff;
         }
 
         .pricing-card.popular:hover {
@@ -153,12 +308,12 @@
         }
 
         .popular-badge {
-            background-color: #7a6fff;
+            background: var(--gradient);
             color: white;
             padding: 8px 20px;
             border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: bold;
+            font-weight: 600;
             position: absolute;
             top: -15px;
             left: 50%;
@@ -166,22 +321,24 @@
         }
 
         .plan-name {
-            font-size: 2rem;
-            font-weight: bold;
-            font-style: italic;
+            font-size: 1.8rem;
+            font-weight: 700;
             margin-bottom: 10px;
+            color: var(--text-primary);
         }
 
         .plan-price {
-            font-size: 3.5rem;
-            font-weight: bold;
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 5px;
+            color: var(--accent-color);
         }
 
         .plan-period {
-            font-size: 1.1rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            color: var(--text-secondary);
             margin-bottom: 30px;
+            opacity: 0.8;
         }
 
         .plan-features {
@@ -191,9 +348,10 @@
         }
 
         .plan-features li {
-            padding: 12px 0;
-            font-size: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(160, 123, 204, 0.2);
             text-align: left;
         }
 
@@ -204,135 +362,106 @@
         .plan-button {
             width: 100%;
             padding: 15px;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
 
         .plan-button:hover {
-            background-color: black;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
+        }
+
+        .footer {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .footer-logo img {
+            height: 100%;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            font-size: 1rem;
+            opacity: 0.9;
+            flex: 1;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
             color: white;
         }
 
-        @keyframes waveGlow {
-            0% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 0 0 0 rgba(127,0,255,0.0);
-            }
-            12.5% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 -20px 40px 10px rgba(127,0,255,0.4);
-            }
-            25% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            37.5% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
-            }
-            50% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, -20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            62.5% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 -20px 40px 10px rgba(127,0,255,0.4);
-            }
-            75% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            87.5% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
-            }
-            100% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 0 0 0 rgba(127,0,255,0.0);
-            }
+        .footer-socials a:hover {
+            transform: translateY(-3px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        @keyframes gradientWave {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .footer-socials a img {
+            height: 20px;
+            width: 20px;
+            filter: invert(1);
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .pricing-grid {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .pricing-card {
-                width: 90%;
-                max-width: 400px;
-            }
-            
-            .pricing-card.popular {
-                transform: scale(1);
-            }
-        }
-    </style>
-</head>
-<body>
-       <div class="navbar">
-        <div class="logo-container">
-            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
-            <div class="brand-text">
-                College<br>Climb
-            </div>
-        </div>
-        <div class="nav-buttons desktop-nav">
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='about.html'">About</button>
-            <button onclick="window.location.href='pricing.html'">Pricing</button>
-            <button onclick="window.location.href='signup.html'">Sign Up</button>
-            <button onclick="window.location.href='login.html'">Log In</button>
-        </div>
-        <div class="mobile-nav">
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
         .mobile-nav {
             display: none;
             position: relative;
         }
 
         .hamburger {
+            background: var(--gradient);
+            border: none;
+            color: white;
             padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: 0.3s;
             font-size: 1.2rem;
+            transition: all 0.3s ease;
         }
 
         .hamburger:hover {
-            background-color: black;
-            color: white;
+            transform: scale(1.1);
         }
 
         .dropdown-menu {
@@ -340,13 +469,13 @@
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(8px);
-            border-radius: 10px;
+            background: var(--primary-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
             padding: 1rem;
             margin-top: 0.5rem;
             min-width: 150px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow);
         }
 
         .dropdown-menu.show {
@@ -357,48 +486,111 @@
 
         .dropdown-menu button {
             padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
+            border: 2px solid var(--accent-color);
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-weight: 500;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             width: 100%;
         }
 
         .dropdown-menu button:hover {
-            background-color: black;
+            background: var(--gradient);
             color: white;
+            transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
-            .desktop-nav {
+            .nav-links {
                 display: none;
             }
             
             .mobile-nav {
                 display: block;
             }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .pricing-card {
+                margin: 0 auto;
+                max-width: 400px;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+
+            .pricing-card.popular:hover {
+                transform: translateY(-10px);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .logo-section {
+                gap: 0.5rem;
+            }
+
+            .brand-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .brand-text h2 {
+                font-size: 0.9rem;
+            }
         }
     </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
 
-    <script>
-        function toggleMenu() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('dropdownMenu');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
-    </script>
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1 style="color: var(--text-primary);">College</h1>
+                <h2 style="color: var(--text-primary);">Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li class="dropdown">
+                <a href="#">Login/Sign Up</a>
+                <div class="dropdown-content">
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+        <div class="mobile-nav">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button onclick="window.location.href='index.html'">Home</button>
+                <button onclick="window.location.href='about.html'">About</button>
+                <button onclick="window.location.href='pricing.html'">Pricing</button>
+                <button onclick="window.location.href='signup.html'">Sign Up</button>
+                <button onclick="window.location.href='login.html'">Log In</button>
+            </div>
+        </div>
+    </nav>
 
     <div class="pricing-container">
         <div class="pricing-header">
@@ -413,11 +605,11 @@
                     <div class="plan-price">$0</div>
                     <div class="plan-period">per month</div>
                     <ul class="plan-features">
-                        <li>Basic AI College Counselor</li>
-                        <li>5 Essay Reviews per month</li>
-                        <li>Basic Resume Templates</li>
-                        <li>Community Support</li>
-                        <li>Limited College Search</li>
+                        <li>✓ Basic AI College Counselor</li>
+                        <li>✓ 5 Essay Reviews per month</li>
+                        <li>✓ Basic Resume Templates</li>
+                        <li>✓ Community Support</li>
+                        <li>✓ Limited College Search</li>
                     </ul>
                 </div>
                 <button class="plan-button">Get Started</button>
@@ -430,12 +622,12 @@
                     <div class="plan-price">$19</div>
                     <div class="plan-period">per month</div>
                     <ul class="plan-features">
-                        <li>Advanced AI College Counselor</li>
-                        <li>Unlimited Essay Reviews</li>
-                        <li>Premium Resume Builder</li>
-                        <li>Priority Support</li>
-                        <li>Full College Database Access</li>
-                        <li>Interview Prep Tools</li>
+                        <li>✓ Advanced AI College Counselor</li>
+                        <li>✓ Unlimited Essay Reviews</li>
+                        <li>✓ Premium Resume Builder</li>
+                        <li>✓ Priority Support</li>
+                        <li>✓ Full College Database Access</li>
+                        <li>✓ Interview Prep Tools</li>
                     </ul>
                 </div>
                 <button class="plan-button">Choose Premium</button>
@@ -447,161 +639,122 @@
                     <div class="plan-price">$49</div>
                     <div class="plan-period">per month</div>
                     <ul class="plan-features">
-                        <li>Expert AI College Counselor</li>
-                        <li>Unlimited Everything</li>
-                        <li>Custom Resume Design</li>
-                        <li>24/7 Dedicated Support</li>
-                        <li>Scholarship Matching</li>
-                        <li>One-on-One Counseling</li>
-                        <li>Application Tracking</li>
+                        <li>✓ Expert AI College Counselor</li>
+                        <li>✓ Unlimited Everything</li>
+                        <li>✓ Custom Resume Design</li>
+                        <li>✓ 24/7 Dedicated Support</li>
+                        <li>✓ Scholarship Matching</li>
+                        <li>✓ One-on-One Counseling</li>
+                        <li>✓ Application Tracking</li>
                     </ul>
                 </div>
                 <button class="plan-button">Choose Pro</button>
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const starryBg = document.getElementById('starryBg');
+
+        function updateLogos(theme) {
+            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            document.querySelectorAll('.logo-img').forEach(img => {
+                img.src = logoSrc;
+            });
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateLogos(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateLogos(newTheme);
+            
+            if (newTheme === 'dark') {
+                createStars();
+            }
+        });
+
+        function updateThemeIcon(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        function createStars() {
+            starryBg.innerHTML = '';
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        if (savedTheme === 'dark') {
+            createStars();
+        }
+
+        function toggleMenu() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdownMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
 </body>
-<footer class="footer">
-  <div class="footer-content">
-    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
-    <div class="footer-text">
-      &copy; 2025 College Climb. All rights reserved.
-    </div>
-    <div class="footer-socials">
-      <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-      </a>
-      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
-      </a>
-      <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
-      </a>
-      <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-      </a>
-    </div>
-  </div>
-  <style>
-    .footer {
-      background: linear-gradient(135deg, #2a357a 0%, #3543a6 7%, #3e4fc9 15%, #4d5ae6 23%, #5d4fdc 32%, #6a5fdc 41%, #7a6fff 50%, #8e7fff 59%, #a89bff 68%, #c7bfff 77%, #cbb6ff 86%, #e0cfff 93%, #f3e6ff 100%);
-      padding: 1.2rem 0;
-      text-align: center;
-      margin-top: 40px;
-      border-radius: 0;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
-      width: 100%;
-      position: relative;
-      box-sizing: border-box;
-      height: 100px;
-    }
-    .footer-content {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-      height: 100%;
-      padding: 0 1rem;
-    }
-    .footer-logo {
-      height: 54px;
-      display: block;
-      flex-shrink: 0;
-    }
-    .footer-text {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1.08rem;
-      color: #fff;
-      opacity: 0.85;
-      flex: 1 1 200px;
-      text-align: center;
-    }
-    .footer-socials {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-shrink: 0;
-    }
-    .footer-socials a img {
-      height: 36px;
-      width: 36px;
-      filter: invert(1);
-      display: block;
-    }
-    @media (max-width: 1200px) {
-      .footer {
-        width: 100vw;
-        min-width: 100vw;
-        left: 0;
-        transform: none;
-      }
-      .footer-content {
-        max-width: 99vw;
-        width: 99vw;
-        gap: 1.5rem;
-      }
-    }
-    @media (max-width: 900px) {
-      .footer-content {
-        flex-direction: column;
-        gap: 0.8rem;
-        align-items: center;
-        width: 99vw;
-        justify-content: center;
-      }
-      .footer-logo {
-        height: 45px;
-      }
-      .footer-text {
-        font-size: 1rem;
-      }
-      .footer-socials {
-        gap: 1.2rem;
-      }
-      .footer-socials a img {
-        height: 32px;
-        width: 32px;
-      }
-    }
-    @media (max-width: 700px) {
-      .footer-logo {
-        height: 38px;
-      }
-      .footer-text {
-        font-size: 0.93rem;
-      }
-      .footer-socials {
-        gap: 1rem;
-      }
-      .footer-socials a img {
-        height: 28px;
-        width: 28px;
-      }
-    }
-    @media (max-width: 480px) {
-      .footer-content {
-        gap: 0.6rem;
-        width: 100vw;
-      }
-      .footer-logo {
-        height: 32px;
-      }
-      .footer-text {
-        font-size: 0.85rem;
-      }
-      .footer-socials {
-        gap: 0.8rem;
-      }
-      .footer-socials a img {
-        height: 24px;
-        width: 24px;
-      }
-    }
-  </style>
-</footer>
-</html></ul>
+</html>

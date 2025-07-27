@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f3e6ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #c9d1d9;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+        }
 
         * {
             margin: 0;
@@ -14,109 +36,305 @@
         }
 
         body {
-            background-color: #121212;
-            font-family: 'Montserrat', sans-serif;
-            color: white;
-            height: 100vh;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .navbar {
-            width: 100%;
-            padding: 1rem 2rem;
             position: fixed;
             top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(18, 18, 18, 0.25);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out;
+            box-shadow: var(--shadow);
         }
 
-        .logo-container {
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo-section {
             display: flex;
             align-items: center;
-        }
-
-        .logo {
-            height: 60px;
-            margin-right: 10px;
-        }
-
-        .brand-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            font-style: italic;
-            line-height: 1.2;
-        }
-
-        .nav-buttons {
-            display: flex;
             gap: 1rem;
         }
 
-        .nav-buttons button {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .nav-buttons button:hover {
-            background-color: black;
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+        }
+
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
         }
 
         .login-container {
             margin-top: 120px;
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
-            background-size: 200% 200%;
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-            border-radius: 25px;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             padding: 3rem;
-            width: 90%;
+            width: 100%;
             max-width: 450px;
-            box-shadow:
-                0 0 40px 10px rgba(64,81,181,0.5),
-                0 0 80px 20px rgba(127,0,255,0.25),
-                0 0 0 2px black;
+            box-shadow: var(--shadow);
             text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        [data-theme="dark"] .login-card {
+            background: rgba(33, 38, 45, 0.8);
+            border: 1px solid rgba(187, 134, 252, 0.3);
         }
 
         .login-logo {
+            width: 80px;
             height: 80px;
-            margin-bottom: 1.5rem;
+            margin: 0 auto 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .login-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .login-title {
             font-size: 2rem;
-            font-weight: bold;
-            font-style: italic;
+            font-weight: 700;
             margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid var(--accent-color);
+            background-color: transparent;
+            color: var(--text-primary);
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .google-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.3);
+        }
+
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--text-secondary);
+            opacity: 0.3;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            font-weight: 600;
         }
 
         .login-form {
@@ -127,320 +345,230 @@
         }
 
         .login-form input {
+            width: 100%;
             padding: 0.8rem 1rem;
-            border: none;
-            border-radius: 10px;
+            border: 2px solid rgba(160, 123, 204, 0.3);
+            border-radius: var(--border-radius);
             outline: none;
             font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .login-form input {
+            background: rgba(33, 38, 45, 0.9);
+            color: var(--text-primary);
+        }
+
+        .login-form input:focus {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(160, 123, 204, 0.3);
         }
 
         .login-btn {
             padding: 0.8rem 1.2rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .login-btn:hover {
-            background-color: black;
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-            color: white;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: white;
-            opacity: 0.5;
-        }
-
-        .divider span {
-            padding: 0 1rem;
-            font-weight: bold;
-        }
-
-        .google-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.2rem;
-            border: 2px solid white;
-            background-color: transparent;
-            color: white;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            margin-bottom: 1.5rem;
-            width: 100%;
-        }
-
-        .google-btn:hover {
-            background-color: white;
-            color: black;
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .signup-link {
-            color: white;
+            color: var(--accent-color);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .signup-link:hover {
             text-decoration: underline;
+            transform: translateX(2px);
         }
 
-        @keyframes waveGlow {
-            0% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 0 0 0 rgba(127,0,255,0.0);
-            }
-            12.5% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 -20px 40px 10px rgba(127,0,255,0.4);
-            }
-            25% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            37.5% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 20px 40px 10px rgba(127,0,255,0.4);
-            }
-            50% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    -20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            62.5% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 -20px 40px 10px rgba(127,0,255,0.4);
-            }
-            75% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            87.5% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 20px 40px 10px rgba(127,0,255,0.4);
-            }
-            100% {
-                box-shadow:
-                    0 0 40px 10px rgba(64,81,181,0.5),
-                    0 0 80px 20px rgba(127,0,255,0.25),
-                    0 0 0 2px black,
-                    0 0 0 0 rgba(127,0,255,0.0);
-            }
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff4444;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: none;
         }
 
-        @keyframes gradientWave {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #44ff44;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: none;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
+        /* Mobile Navigation */
         .mobile-nav {
             display: none;
             position: relative;
         }
 
         .hamburger {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.2rem;
-        }
-
-        .hamburger:hover {
-            background-color: black;
+            background: var(--gradient);
             color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
         }
 
-        .dropdown-menu {
+        .mobile-dropdown {
             display: none;
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(8px);
-            border-radius: 10px;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
             padding: 1rem;
             margin-top: 0.5rem;
             min-width: 150px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .dropdown-menu.show {
+        .mobile-dropdown.show {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
 
-        .dropdown-menu button {
-            padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 100%;
+        .mobile-dropdown a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
         }
 
-        .dropdown-menu button:hover {
-            background-color: black;
-            color: white;
+        .mobile-dropdown a:hover {
+            background: var(--secondary-bg);
         }
 
         @media (max-width: 768px) {
-            .desktop-nav {
+            .nav-links {
                 display: none;
             }
             
             .mobile-nav {
                 display: block;
             }
-        }
 
-        @media (max-width: 600px) {
-            .login-container {
-                width: 95%;
+            .login-card {
+                margin: 1rem;
                 padding: 2rem;
             }
             
             .login-title {
                 font-size: 1.5rem;
             }
+
+            .navbar {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="navbar">
-        <div class="logo-container">
-            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <img src="blackcc.png" alt="College Climb Logo" class="logo-img">
+                </a>
+            </div>
             <div class="brand-text">
-                College<br>Climb
+                <h1>College</h1>
+                <h2>Climb</h2>
             </div>
         </div>
-        <div class="nav-buttons desktop-nav">
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='about.html'">About</button>
-            <button onclick="window.location.href='pricing.html'">Pricing</button>
-            <button onclick="window.location.href='signup.html'">Sign Up</button>
-            <button onclick="window.location.href='login.html'">Log In</button>
-        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li class="dropdown">
+                <a href="#">Login/Sign Up</a>
+                <div class="dropdown-content">
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
         <div class="mobile-nav">
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
+            <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+            <div class="mobile-dropdown" id="mobileDropdown">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="login.html">Log In</a>
             </div>
         </div>
-    </div>
-
-    <script>
-        function toggleMenu() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('dropdownMenu');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
-    </script>
+    </nav>
 
     <div class="login-container">
-        <img src="images/whiteclearcc.png" alt="College Climb Logo" class="login-logo">
-        <h1 class="login-title">Welcome Back</h1>
-        
-        <button class="google-btn" onclick="loginWithGoogle()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-        </button>
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="blackcc.png" alt="College Climb Logo" class="login-logo-img">
+            </div>
+            <h1 class="login-title">Welcome Back</h1>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+            
+            <button class="google-btn" id="googleBtn" onclick="loginWithGoogle()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+            </button>
 
-        <div class="divider">
-            <span>OR</span>
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit" class="login-btn" id="loginBtn">Log In</button>
+            </form>
+
+            <p>Don't have an account? <a href="signup.html" class="signup-link">Sign up here</a></p>
         </div>
-
-        <form class="login-form" id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Email Address" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" class="login-btn">Log In</button>
-        </form>
-
-        <p>Don't have an account? <a href="signup.html" class="signup-link">Sign up here</a></p>
     </div>
 
     <script type="module">
@@ -448,7 +576,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js';
 
-        // Your Firebase config
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
             authDomain: "collegeclimb-ai.firebaseapp.com",
@@ -463,32 +591,115 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const starryBg = document.getElementById('starryBg');
+
+        function updateLogos(theme) {
+            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            document.querySelectorAll('.logo-img, .login-logo-img').forEach(img => {
+                img.src = logoSrc;
+            });
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateLogos(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateLogos(newTheme);
+            
+            if (newTheme === 'dark') {
+                createStars();
+            }
+        });
+
+        function updateThemeIcon(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        function createStars() {
+            starryBg.innerHTML = '';
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        if (savedTheme === 'dark') {
+            createStars();
+        }
+
+        // Utility functions
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            successDiv.style.display = 'none';
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            errorDiv.style.display = 'none';
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
         // Google Login Function
         window.loginWithGoogle = function() {
             const provider = new GoogleAuthProvider();
-            const button = document.querySelector('.google-btn');
-            const originalText = button.textContent;
+            const button = document.getElementById('googleBtn');
+            const originalText = button.innerHTML;
             
-            button.textContent = 'Connecting to Google...';
+            button.innerHTML = 'Connecting...';
             button.disabled = true;
 
             signInWithPopup(auth, provider)
                 .then((result) => {
                     const user = result.user;
                     console.log("Google Login successful for:", user.email);
-                    alert(`Welcome back, ${user.displayName || user.email}!`);
-                    window.location.href = "dashboard.html";
+                    showSuccess(`Welcome back, ${user.displayName || user.email}!`);
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1500);
                 })
                 .catch((error) => {
                     console.error("Google Login error:", error);
                     if (error.code === 'auth/unauthorized-domain') {
-                        alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                        showError("Domain not authorized. Please contact support.");
+                    } else if (error.code === 'auth/popup-blocked') {
+                        showError("Popup blocked. Please allow popups for this site.");
                     } else {
-                        alert("Google Login failed: " + error.message);
+                        showError("Google Login failed. Please try again.");
                     }
                 })
                 .finally(() => {
-                    button.textContent = originalText;
+                    button.innerHTML = originalText;
                     button.disabled = false;
                 });
         };
@@ -501,11 +712,11 @@
             const password = document.getElementById('loginPassword').value;
             
             if (!email || !password) {
-                alert('Please fill in all fields');
+                showError('Please fill in all fields');
                 return;
             }
             
-            const button = e.target.querySelector('.login-btn');
+            const button = document.getElementById('loginBtn');
             const originalText = button.textContent;
             button.textContent = 'Logging in...';
             button.disabled = true;
@@ -514,8 +725,10 @@
                 .then((userCredential) => {
                     const user = userCredential.user;
                     console.log("Login successful for:", user.email);
-                    alert(`Welcome back, ${user.email}!`);
-                    window.location.href = "dashboard.html";
+                    showSuccess(`Welcome back, ${user.email}!`);
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1500);
                 })
                 .catch((error) => {
                     console.error("Login error:", error);
@@ -541,7 +754,7 @@
                             errorMessage = error.message || "Login failed. Please try again.";
                     }
                     
-                    alert(errorMessage);
+                    showError(errorMessage);
                 })
                 .finally(() => {
                     button.textContent = originalText;
@@ -549,7 +762,23 @@
                 });
         });
 
-        // Allow Enter key to submit
+        // Mobile menu toggle
+        window.toggleMobileMenu = function() {
+            const dropdown = document.getElementById('mobileDropdown');
+            dropdown.classList.toggle('show');
+        };
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('mobileDropdown');
+            const hamburger = document.querySelector('.hamburger');
+            
+            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Enter key submission
         document.getElementById('loginPassword').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 document.getElementById('loginForm').dispatchEvent(new Event('submit'));
