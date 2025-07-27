@@ -2,10 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta n</div>ame="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f3e6ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
+            --border-radius: 12px;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #ffffff;
+            --text-secondary: #c9d1d9;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+        }
 
         * {
             margin: 0;
@@ -14,143 +39,478 @@
         }
 
         body {
-            background-color: #121212;
-            font-family: 'Montserrat', sans-serif;
-            color: white;
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .navbar {
-            width: 100%;
-            padding: 1rem 2rem;
             position: fixed;
             top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(18, 18, 18, 0.25);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        .logo-container {
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo-section {
             display: flex;
             align-items: center;
-        }
-
-        .logo {
-            height: 60px;
-            margin-right: 10px;
-        }
-
-        .brand-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            font-style: italic;
-            line-height: 1.2;
-        }
-
-        .nav-buttons {
-            display: flex;
             gap: 1rem;
         }
 
-        .nav-buttons button {
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 3s infinite;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+        }
+
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+         .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
             padding: 0.5rem 1rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .nav-buttons button:hover {
-            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            transition: all 0.3s ease;
         }
 
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
         .dashboard-container {
-            margin-top: 120px;
+            margin-top: 100px;
             padding: 2rem;
             max-width: 1400px;
             margin-left: auto;
             margin-right: auto;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
         }
 
         .welcome-section {
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
+            background: var(--gradient);
             background-size: 200% 200%;
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-            border-radius: 25px;
-            padding: 2rem;
+            animation: gradientShift 6s ease-in-out infinite;
+            border-radius: 20px;
+            padding: 3rem 2rem;
             text-align: center;
             margin-bottom: 3rem;
-            box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
+            box-shadow: var(--shadow);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .welcome-section h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .progress-card {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .progress-card:hover::before {
+            left: 100%;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar-container {
+            background-color: rgba(160, 123, 204, 0.2);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-status {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 3rem;
         }
 
         .feature-panel {
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
+            background: var(--primary-bg);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.2);
         }
 
         .feature-panel:hover {
             transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.2);
         }
 
         .feature-panel h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            font-style: italic;
-            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .action-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .action-card:hover {
+            border-color: var(--accent-color);
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: var(--shadow);
+        }
+
+        .action-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .action-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .action-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
         .chatbot-container {
-            height: 600px;
+            height: 500px;
             display: flex;
             flex-direction: column;
         }
@@ -162,245 +522,392 @@
             margin-bottom: 1rem;
         }
 
+        .chatbot-header h3 {
+            margin: 0;
+        }
+
+        .chatbot-status {
+            font-size: 0.9rem;
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
         .chatbot-messages {
             flex: 1;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: var(--secondary-bg);
             border-radius: 15px;
             padding: 1rem;
             overflow-y: auto;
             margin-bottom: 1rem;
-            max-height: 400px;
+            max-height: 350px;
+            border: 1px solid rgba(160, 123, 204, 0.2);
         }
 
         .message {
             margin-bottom: 1rem;
-            padding: 0.8rem;
-            border-radius: 10px;
-            max-width: 80%;
+            padding: 1rem;
+            border-radius: 15px;
+            max-width: 85%;
+            animation: slideIn 0.3s ease-out;
+            position: relative;
         }
 
         .user-message {
-            background-color: rgba(255, 255, 255, 0.2);
+            background: var(--gradient);
+            color: white;
             margin-left: auto;
             text-align: right;
+            border-bottom-right-radius: 5px;
         }
 
         .ai-message {
-            background-color: rgba(127, 0, 255, 0.3);
+            background: var(--primary-bg);
+            color: var(--text-primary);
             margin-right: auto;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message strong {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
         .chatbot-input {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         .chatbot-input input {
             flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 10px;
+            padding: 1rem;
+            border: 2px solid rgba(160, 123, 204, 0.3);
+            border-radius: 15px;
             outline: none;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: black;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(160, 123, 204, 0.3);
+            transform: scale(1.02);
         }
 
         .chatbot-input button {
-            padding: 0.8rem 1.5rem;
-            border: 2px solid black;
-            background-color: white;
-            color: black;
-            font-weight: bold;
-            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            border-radius: 15px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .chatbot-input button:hover {
-            background-color: black;
-            color: white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--shadow);
         }
 
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .action-card {
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
-            border-radius: 15px;
-            padding: 1.5rem;
+        .footer {
+            background: var(--gradient);
+            padding: 2rem 0;
             text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+            margin-top: 40px;
+            border-radius: 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        .action-card:hover {
-            transform: scale(1.05);
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
         }
 
-        .action-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .setup-instructions {
-            background: linear-gradient(
-                135deg,
-                #2a357a 0%,
-                #3543a6 7%,
-                #3e4fc9 15%,
-                #4d5ae6 23%,
-                #5d4fdc 32%,
-                #6a5fdc 41%,
-                #7a6fff 50%,
-                #8e7fff 59%,
-                #a89bff 68%,
-                #c7bfff 77%,
-                #cbb6ff 86%,
-                #e0cfff 93%,
-                #f3e6ff 100%
-            );
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 3rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: waveGlow 6s linear infinite, gradientWave 12s ease-in-out infinite;
+        .footer-logo {
+            height: 54px;
+            width: 54px;
+            flex-shrink: 0;
         }
 
-        .setup-step {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
         }
 
-        .code-block {
-            background-color: #1a1a1a;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .footer-text {
+            font-size: 1rem;
+            opacity: 0.9;
+            flex: 1;
+            text-align: center;
         }
 
-        @keyframes waveGlow {
-            0% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
-            }
-            25% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            50% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, -20px 0 40px 10px rgba(127,0,255,0.4);
-            }
-            75% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black, 0 20px 40px 10px rgba(127,0,255,0.4);
-            }
-            100% {
-                box-shadow: 0 0 40px 10px rgba(64,81,181,0.5), 0 0 80px 20px rgba(127,0,255,0.25), 0 0 0 2px black;
-            }
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-shrink: 0;
         }
 
-        @keyframes gradientWave {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .footer-socials a:hover {
+            transform: translateY(-3px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
-        @media (max-width: 768px) {
+        .footer-socials a img {
+            height: 20px;
+            width: 20px;
+            filter: invert(1);
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-animation {
+            animation: successPulse 0.6s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background: var(--success-color); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 1024px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            
+        }
+
+        @media (max-width: 768px) {
             .dashboard-container {
                 padding: 1rem;
+                margin-top: 80px;
             }
             
-            .quick-actions {
+            .progress-overview {
                 grid-template-columns: 1fr;
             }
+
+            .nav-buttons {
+                gap: 0.5rem;
+            }
+
+            .nav-buttons button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .welcome-section {
+                padding: 2rem 1rem;
+            }
+
+            .chatbot-container {
+                height: 400px;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body>
-    <div class="navbar">
-        <div class="logo-container">
-            <img src="images/whiteclearcc.png" alt="Logo" class="logo">
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+     <nav class="navbar navbar-dark">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <img src="images/blackcc.png" alt="College Climb Logo" class="logo-img">
+                </a>
+            </div>
             <div class="brand-text">
-                College<br>Climb
+                <h1 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">College</h1>
+                <h2 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">Climb</h2>
             </div>
         </div>
-        <div class="nav-buttons">
-            <button onclick="window.location.href='index.html'">Home</button>
-            <button onclick="window.location.href='about.html'">About</button>
-            <button onclick="window.location.href='pricing.html'">Pricing</button>
-            <button onclick="logout()">Log Out</button>
-        </div>
-    </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li class="dropdown">
+                <a href="#">Login/Sign Up</a>
+                <div class="dropdown-content">
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
 
     <div class="dashboard-container">
-        <div class="welcome-section">
-            <h1 style="font-size: 2.5rem; font-weight: bold; font-style: italic; margin-bottom: 1rem;">Welcome to Your College Climb Dashboard</h1>
-            <p style="font-size: 1.2rem;">Your AI-powered college application assistant is ready to help you climb to success!</p>
+        <div class="welcome-section fade-in-up">
+            <h1>Welcome to Your College Climb Dashboard</h1>
+            <p>Your AI-powered college application assistant is ready to help you climb to success!</p>
         </div>
 
-        <div class="dashboard-grid">
+        <div class="progress-overview fade-in-up">
+            <div class="progress-card" onclick="openApplicationProgress()">
+                <div class="progress-header">
+                    <div class="progress-icon">📋</div>
+                    <div class="progress-title">Your Application</div>
+                </div>
+                <div class="progress-percentage" id="applicationPercent">65%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="applicationBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-status">Common App submitted, waiting on transcripts</div>
+            </div>
+
+            <div class="progress-card" onclick="openEssayProgress()">
+                <div class="progress-header">
+                    <div class="progress-icon">📝</div>
+                    <div class="progress-title">Your Essays</div>
+                </div>
+                <div class="progress-percentage" id="essayPercent">40%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="essayBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-status">2 of 5 essays completed</div>
+            </div>
+
+            <div class="progress-card" onclick="openResumeProgress()">
+                <div class="progress-header">
+                    <div class="progress-icon">📊</div>
+                    <div class="progress-title">Your Resume</div>
+                </div>
+                <div class="progress-percentage" id="resumePercent">80%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="resumeBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-status">Ready for final review</div>
+            </div>
+
+            <div class="progress-card" onclick="openScholarshipProgress()">
+                <div class="progress-header">
+                    <div class="progress-icon">💰</div>
+                    <div class="progress-title">Your Scholarships</div>
+                </div>
+                <div class="progress-percentage" id="scholarshipPercent">25%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="scholarshipBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-status">3 applications submitted, 7 pending</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid fade-in-up">
             <div class="feature-panel">
-                <h3>Quick Actions</h3>
+                <h3>🚀 Quick Actions</h3>
                 <div class="quick-actions">
                     <div class="action-card" onclick="openEssayHelper()">
                         <div class="action-icon">📝</div>
                         <h4>Essay Helper</h4>
-                        <p>Get AI feedback on your essays</p>
+                        <p>Get AI feedback</p>
                     </div>
                     <div class="action-card" onclick="openResumeBuilder()">
                         <div class="action-icon">📊</div>
                         <h4>Resume Builder</h4>
-                        <p>Create your perfect college resume</p>
+                        <p>Build your resume</p>
                     </div>
                     <div class="action-card" onclick="openCollegeSearch()">
                         <div class="action-icon">🎯</div>
                         <h4>College Search</h4>
-                        <p>Find your perfect college match</p>
+                        <p>Find your match</p>
                     </div>
                     <div class="action-card" onclick="openScholarshipFinder()">
                         <div class="action-icon">💰</div>
-                        <h4>Scholarship Finder</h4>
-                        <p>Discover funding opportunities</p>
+                        <h4>Scholarships</h4>
+                        <p>Find funding</p>
                     </div>
                     <div class="action-card" onclick="openInterviewPrep()">
                         <div class="action-icon">🎤</div>
                         <h4>Interview Prep</h4>
-                        <p>Practice with AI mock interviews</p>
+                        <p>Practice interviews</p>
                     </div>
                     <div class="action-card" onclick="openTestPrep()">
                         <div class="action-icon">📚</div>
                         <h4>Test Prep</h4>
-                        <p>SAT/ACT preparation tools</p>
+                        <p>SAT/ACT help</p>
                     </div>
                 </div>
             </div>
@@ -409,7 +916,7 @@
                 <div class="chatbot-container">
                     <div class="chatbot-header">
                         <h3>🤖 AI College Counselor</h3>
-                        <span style="font-size: 0.9rem; opacity: 0.8;">(Hypertailored To You! )</span>
+                        <span class="chatbot-status">● Online</span>
                     </div>
                     <div class="chatbot-messages" id="chatMessages">
                         <div class="message ai-message">
@@ -426,7 +933,7 @@
     </div>
 
     <footer class="footer">
-        <div class="footer-content"></div>
+        <div class="footer-content">
             <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
             <div class="footer-text">
                 &copy; 2025 College Climb. All rights reserved.
@@ -446,58 +953,6 @@
                 </a>
             </div>
         </div>
-        <style>
-            .footer {
-                background: linear-gradient(135deg, #2a357a 0%, #3543a6 7%, #3e4fc9 15%, #4d5ae6 23%, #5d4fdc 32%, #6a5fdc 41%, #7a6fff 50%, #8e7fff 59%, #a89bff 68%, #c7bfff 77%, #cbb6ff 86%, #e0cfff 93%, #f3e6ff 100%);
-                padding: 1.2rem 0;
-                text-align: center;
-                margin-top: 40px;
-                border-radius: 0;
-                box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
-                width: 100%;
-                position: relative;
-                box-sizing: border-box;
-                height: 100px;
-            }
-            .footer-content {
-                max-width: 1200px;
-                width: 100%;
-                margin: 0 auto;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                gap: 2.5rem;
-                flex-wrap: wrap;
-                height: 100%;
-                padding: 0 1rem;
-            }
-            .footer-logo {
-                height: 54px;
-                display: block;
-                flex-shrink: 0;
-            }
-            .footer-text {
-                font-family: 'Montserrat', sans-serif;
-                font-size: 1.08rem;
-                color: #fff;
-                opacity: 0.85;
-                flex: 1 1 200px;
-                text-align: center;
-            }
-            .footer-socials {
-                display: flex;
-                justify-content: center;
-                gap: 1.5rem;
-                flex-shrink: 0;
-            }
-            .footer-socials a img {
-                height: 36px;
-                width: 36px;
-                filter: invert(1);
-                display: block;
-            }
-        </style>
     </footer>
 
     <!-- Firebase Scripts -->
@@ -509,12 +964,12 @@
 
         // Your Firebase configuration
         const firebaseConfig = {
-            apiKey: "your-api-key",
-            authDomain: "your-project.firebaseapp.com",
-            projectId: "your-project-id",
-            storageBucket: "your-project.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "your-app-id"
+            apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "college-climb-demo.firebaseapp.com",
+            projectId: "college-climb-demo",
+            storageBucket: "college-climb-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456789012345"
         };
 
         // Initialize Firebase
@@ -544,6 +999,7 @@
                 console.log('User is signed in:', user.uid);
                 await loadUserData(user.uid);
                 await loadChatHistory(user.uid);
+                await loadProgressData(user.uid);
             } else {
                 console.log('User is signed out');
                 // Redirect to login page if needed
@@ -569,13 +1025,27 @@
             }
         }
 
+        // Load progress data from Firestore
+        async function loadProgressData(userId) {
+            try {
+                const progressDoc = await getDoc(doc(db, 'userProgress', userId));
+                if (progressDoc.exists()) {
+                    const progressData = progressDoc.data();
+                    updateProgressBars(progressData);
+                }
+            } catch (error) {
+                console.error('Error loading progress data:', error);
+                // Initialize progress bars with default values
+                animateProgressBars();
+            }
+        }
+
         // Load chat history
         async function loadChatHistory(userId) {
             try {
                 const chatQuery = query(
                     collection(db, 'chatHistory'),
-                    where('userId', '==', userId),
-                    orderBy('timestamp', 'desc')
+                    where('userId', '==', userId)
                 );
                 const querySnapshot = await getDocs(chatQuery);
                 
@@ -585,17 +1055,45 @@
                 chatMessages.innerHTML = '';
                 chatMessages.appendChild(welcomeMessage);
 
-                // Add recent chat messages (limit to last 10)
-                let messageCount = 0;
+                // Convert to array and sort by timestamp if available
+                const messages = [];
                 querySnapshot.forEach((doc) => {
-                    if (messageCount < 10) {
-                        const messageData = doc.data();
+                    const messageData = doc.data();
+                    messages.push(messageData);
+                });
+
+                // Sort by timestamp if available, otherwise by document order
+                messages.sort((a, b) => {
+                    if (a.timestamp && b.timestamp) {
+                        return b.timestamp.toMillis() - a.timestamp.toMillis();
+                    }
+                    return 0;
+                });
+
+                // Add recent chat messages (limit to last 10)
+                messages.slice(0, 10).forEach((messageData) => {
+                    if (messageData.message && messageData.sender) {
                         addMessage(messageData.message, messageData.sender, false, false);
-                        messageCount++;
                     }
                 });
             } catch (error) {
                 console.error('Error loading chat history:', error);
+            }
+        }
+
+        // Update progress data in Firestore
+        async function updateUserProgress(userId, progressType, percentage, status) {
+            try {
+                const progressRef = doc(db, 'userProgress', userId);
+                await setDoc(progressRef, {
+                    [progressType]: {
+                        percentage: percentage,
+                        status: status,
+                        lastUpdated: serverTimestamp()
+                    }
+                }, { merge: true });
+            } catch (error) {
+                console.error('Error updating progress:', error);
             }
         }
 
@@ -630,6 +1128,7 @@
         // Make functions available globally
         window.saveChatMessage = saveChatMessage;
         window.saveUserActivity = saveUserActivity;
+        window.updateUserProgress = updateUserProgress;
 
         // Logout function
         window.logout = async function() {
@@ -661,6 +1160,153 @@
         - Financial aid guidance
         
         Always provide helpful, encouraging, and specific advice. Keep responses concise but informative. Be supportive and motivational while being realistic about college admissions.`;
+
+        // Progress bar data
+        const progressData = {
+            application: { percentage: 65, status: "Common App submitted, waiting on transcripts" },
+            essay: { percentage: 40, status: "2 of 5 essays completed" },
+            resume: { percentage: 80, status: "Ready for final review" },
+            scholarship: { percentage: 25, status: "3 applications submitted, 7 pending" }
+        };
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const starryBg = document.getElementById('starryBg');
+
+        // Function to update logo images based on theme
+        function updateLogos(theme) {
+            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            document.querySelectorAll('.logo-img, .footer-logo img').forEach(img => {
+                img.src = logoSrc;
+            });
+        }
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateLogos(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateLogos(newTheme);
+            
+            if (newTheme === 'dark') {
+                createStars();
+            }
+        });
+
+        function updateThemeIcon(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Create twinkling stars for dark mode
+        function createStars() {
+            starryBg.innerHTML = '';
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize stars for dark mode
+        if (savedTheme === 'dark') {
+            createStars();
+        }
+
+        // Animate progress bars on page load
+        function animateProgressBars() {
+            setTimeout(() => {
+                document.getElementById('applicationBar').style.width = progressData.application.percentage + '%';
+                document.getElementById('essayBar').style.width = progressData.essay.percentage + '%';
+                document.getElementById('resumeBar').style.width = progressData.resume.percentage + '%';
+                document.getElementById('scholarshipBar').style.width = progressData.scholarship.percentage + '%';
+            }, 500);
+        }
+
+        // Update progress bars with data from Firestore
+        function updateProgressBars(data) {
+            if (data.application) {
+                document.getElementById('applicationPercent').textContent = data.application.percentage + '%';
+                document.getElementById('applicationBar').style.width = data.application.percentage + '%';
+                document.querySelector('[onclick="openApplicationProgress()"] .progress-status').textContent = data.application.status;
+            }
+            if (data.essay) {
+                document.getElementById('essayPercent').textContent = data.essay.percentage + '%';
+                document.getElementById('essayBar').style.width = data.essay.percentage + '%';
+                document.querySelector('[onclick="openEssayProgress()"] .progress-status').textContent = data.essay.status;
+            }
+            if (data.resume) {
+                document.getElementById('resumePercent').textContent = data.resume.percentage + '%';
+                document.getElementById('resumeBar').style.width = data.resume.percentage + '%';
+                document.querySelector('[onclick="openResumeProgress()"] .progress-status').textContent = data.resume.status;
+            }
+            if (data.scholarship) {
+                document.getElementById('scholarshipPercent').textContent = data.scholarship.percentage + '%';
+                document.getElementById('scholarshipBar').style.width = data.scholarship.percentage + '%';
+                document.querySelector('[onclick="openScholarshipProgress()"] .progress-status').textContent = data.scholarship.status;
+            }
+        }
+
+        // Progress card click handlers
+        async function openApplicationProgress() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "I'd like help with my college application progress and next steps.";
+            
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'application_progress', 'User viewed application progress');
+            }
+            
+            sendMessage();
+        }
+
+        async function openEssayProgress() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "Can you help me with my essay writing progress and give me feedback?";
+            
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'essay_progress', 'User viewed essay progress');
+            }
+            
+            sendMessage();
+        }
+
+        async function openResumeProgress() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "I need help reviewing and improving my college resume.";
+            
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'resume_progress', 'User viewed resume progress');
+            }
+            
+            sendMessage();
+        }
+
+        async function openScholarshipProgress() {
+            const userInput = document.getElementById('userInput');
+            userInput.value = "Can you help me track my scholarship applications and find new opportunities?";
+            
+            if (window.auth && window.auth.currentUser) {
+                await window.saveUserActivity(window.auth.currentUser.uid, 'scholarship_progress', 'User viewed scholarship progress');
+            }
+            
+            sendMessage();
+        }
 
         async function sendToOpenAI(message) {
             try {
@@ -710,14 +1356,13 @@
             }
 
             // Add typing indicator
-            addMessage('Thinking...', 'ai', true);
+            addTypingIndicator();
 
             // Get AI response
             const response = await sendToOpenAI(message);
             
             // Remove typing indicator and add real response
-            const messages = document.getElementById('chatMessages');
-            messages.removeChild(messages.lastChild);
+            removeTypingIndicator();
             addMessage(response, 'ai');
 
             // Save AI response to Firestore
@@ -735,14 +1380,35 @@
                 messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
             } else {
                 messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${text}`;
-                if (isTyping) {
-                    messageDiv.style.opacity = '0.6';
-                    messageDiv.style.fontStyle = 'italic';
-                }
             }
             
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai-message typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <strong>AI Counselor:</strong> 
+                <span class="typing-indicator">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </span>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
         }
 
         function handleKeyPress(event) {
@@ -756,7 +1422,6 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "I'd like help with essay writing and feedback.";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'essay_helper', 'User opened essay helper');
             }
@@ -768,7 +1433,6 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you help me create a college application resume?";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'resume_builder', 'User opened resume builder');
             }
@@ -780,7 +1444,6 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "I need help finding colleges that match my profile.";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'college_search', 'User opened college search');
             }
@@ -792,7 +1455,6 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you help me find scholarships and financial aid opportunities?";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'scholarship_finder', 'User opened scholarship finder');
             }
@@ -804,7 +1466,6 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "I need help preparing for college interviews.";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'interview_prep', 'User opened interview prep');
             }
@@ -816,13 +1477,46 @@
             const userInput = document.getElementById('userInput');
             userInput.value = "Can you give me advice on SAT/ACT test preparation?";
             
-            // Track user activity
             if (window.auth && window.auth.currentUser) {
                 await window.saveUserActivity(window.auth.currentUser.uid, 'test_prep', 'User opened test prep');
             }
             
             sendMessage();
         }
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in-up').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Initialize progress bars when page loads
+        window.addEventListener('load', () => {
+            animateProgressBars();
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.boxShadow = '0 2px 20px rgba(42, 53, 122, 0.3)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
     </script>
 </body>
 </html>
