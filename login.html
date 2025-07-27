@@ -12,7 +12,7 @@
             --accent-bg: #2a357a;
             --text-primary: #333333;
             --text-secondary: #666666;
-            --accent-color: #a07bcc;
+            --accent-color: #000000;
             --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
             --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
             --border-radius: 12px;
@@ -24,7 +24,7 @@
             --accent-bg: #21262d;
             --text-primary: #ffffff;
             --text-secondary: #c9d1d9;
-            --accent-color: #bb86fc;
+            --accent-color: #ffffff;
             --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
         }
@@ -111,13 +111,14 @@
             gap: 1rem;
         }
 
-        .logo {
-            width: 40px;
-            height: 40px;
+         .logo {
+            width: 60px;
+            height: 60px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: pulse 2s infinite;
             overflow: hidden;
         }
 
@@ -131,12 +132,11 @@
             font-size: 1.5rem;
             font-weight: 700;
             line-height: 1;
-            color: var(--text-primary);
         }
 
         .brand-text h2 {
-            font-size: 1rem;
-            font-weight: 400;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--accent-color);
             line-height: 1;
         }
@@ -278,11 +278,24 @@
             object-fit: contain;
         }
 
-        .login-title {
-            font-size: 2rem;
+       .login-title {
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 2rem;
-            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="dark"] .login-title {
+           font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3366ff 0%, #bb86fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text; 
         }
 
         .google-btn {
