@@ -702,7 +702,7 @@
         <div class="logo-section">
             <div class="logo">
                 <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    <img src="images/blackcc.png" alt="College Climb Logo" class="logo-img">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
                 </a>
             </div>
             <div class="brand-text">
@@ -714,19 +714,23 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown">
-                <a href="#" id="authToggle">Login/Sign Up</a>
-                <!-- Dropdown content -->
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none; width:32px; height:32px; border-radius:50%; object-fit:cover; margin-right:0;">
+                    <span id="navAccountText">Account</span>
+                </a>
                 <div class="dropdown-content" id="authDropdown">
-                    <!-- Not logged in content -->
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
                     <div id="notLoggedIn">
                         <a href="login.html">Login</a>
                         <a href="signup.html">Sign Up</a>
                     </div>
-                    <!-- Logged in content -->
                     <div id="loggedIn" style="display: none;">
                         <a href="profile.html">Profile</a>
                         <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
                         <a href="college-profile.html">College Profile</a>
                         <a href="#" id="logoutBtn">Logout</a>
                     </div>
@@ -1684,7 +1688,6 @@
         const starryBg = document.getElementById('starryBg');
 
         // Function to update logo images based on theme
-        // Function to update logo images based on theme
         function updateLogos(theme) {
             const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
             document.querySelectorAll('.logo-img, .hero-logo img, .description-logo img, .footer-logo img').forEach(img => {
@@ -1694,7 +1697,7 @@
         // Load saved theme or default to dark
         const savedTheme = localStorage.getItem('theme') || 'dark';
         body.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
         updateLogos(savedTheme);
 
         themeToggle.addEventListener('click', () => {
@@ -1703,16 +1706,65 @@
             
             body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
             updateLogos(newTheme);
-            
-            if (newTheme === 'dark') {
-                createStars();
-            }
         });
 
-        function updateThemeIcon(theme) {
-            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        // Auth UI logic
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            // You may want to fetch currentUserData from Firestore if available
+            let currentUserData = window.currentUserData || {};
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+
+                // Show avatar if available, otherwise show "Account"
+                if (currentUserData && currentUserData.profilePhotoURL) {
+                    navUserAvatar.src = currentUserData.profilePhotoURL;
+                    navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
+                }
+
+                // Show welcome message in dropdown with display name only
+                if (dropdownWelcome && dropdownDisplayName) {
+                    dropdownDisplayName.textContent =
+                        (currentUserData && currentUserData.name)
+                            ? currentUserData.name
+                            : (user.displayName || '');
+                    dropdownWelcome.style.display = 'block';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+            }
+        }
+
+        // Logout logic
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js').then(({ getAuth, signOut }) => {
+                    const auth = getAuth();
+                    signOut(auth).then(() => {
+                        window.location.href = "/login.html";
+                    });
+                });
+            });
         }
 
         // Create twinkling stars for dark mode
@@ -1870,24 +1922,32 @@ function updateAuthUI(user) {
     const authToggle = document.getElementById('authToggle');
     const notLoggedIn = document.getElementById('notLoggedIn');
     const loggedIn = document.getElementById('loggedIn');
+    const dropdownWelcome = document.getElementById('dropdownWelcome');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navAccountText = document.getElementById('navAccountText');
     
     if (user) {
         // User is logged in
         authToggle.textContent = 'Account';
         notLoggedIn.style.display = 'none';
         loggedIn.style.display = 'block';
+        dropdownWelcome.style.display = 'block';
+        navUserAvatar.style.display = 'block';
+        navAccountText.textContent = user.displayName || 'Account';
     } else {
         // User is not logged in
         authToggle.textContent = 'Login/Sign Up';
         notLoggedIn.style.display = 'block';
         loggedIn.style.display = 'none';
+        dropdownWelcome.style.display = 'none';
+        navUserAvatar.style.display = 'none';
     }
 }
 
 // Optional logout logic if you want it everywhere
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
+  const logoutBtnModule = document.getElementById("logoutBtn");
+  if (logoutBtnModule) {
+    logoutBtnModule.addEventListener("click", () => {
       signOut(auth).then(() => {
         window.location.href = "/login.html";
       });
