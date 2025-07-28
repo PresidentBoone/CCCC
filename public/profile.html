@@ -289,6 +289,7 @@
             transition: all 0.3s ease;
         }
 
+        /* Enhanced file upload styling */
         .profile-photo-upload {
             position: absolute;
             bottom: 10px;
@@ -305,12 +306,28 @@
             justify-content: center;
             font-size: 1.2rem;
             transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .profile-photo-upload:hover {
+        .profile-photo-upload:hover:not([disabled]) {
             transform: scale(1.1);
             background: rgba(255, 255, 255, 0.9);
             color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .profile-photo-upload:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .profile-name {
@@ -1415,6 +1432,9 @@
                 updateAuthUI(user);
                 await loadUserProfile(user);
                 await loadUserData(user.uid);
+                
+                // Test storage connection
+                setTimeout(testStorageConnection, 1000);
             } else {
                 // Redirect to login if not authenticated
                 window.location.href = 'login.html';
@@ -1554,84 +1574,143 @@
             }
         }
 
-        // Photo upload handler - FIXED VERSION
+        // Photo upload handler - COMPLETELY FIXED VERSION
         document.getElementById('photoUpload').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
+            console.log('📁 File selected:', file.name, file.size, file.type);
+
             // Validate file type and size
-            if (!file.type.startsWith('image/')) {
-                showMessage('Please select a valid image file.', 'error');
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('Please select a valid image file (JPEG, PNG, GIF, or WebP).', 'error');
                 return;
             }
 
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                showMessage('Image size must be less than 5MB.', 'error');
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showMessage('Image size must be less than 10MB.', 'error');
                 return;
             }
 
             try {
                 // Show loading state
                 const uploadButton = document.querySelector('.profile-photo-upload');
+                const originalContent = uploadButton.innerHTML;
                 uploadButton.innerHTML = '⏳';
-                uploadButton.disabled = true;
+                uploadButton.style.pointerEvents = 'none';
 
-                // Create a unique filename
-                const timestamp = Date.now();
-                const fileName = `${currentUser.uid}_${timestamp}.${file.name.split('.').pop()}`;
+                console.log('🔐 Current user:', currentUser?.uid);
                 
-                // Create storage reference
-                const photoRef = ref(storage, `profile-photos/${fileName}`);
-                
-                console.log('📤 Starting photo upload...');
-                
-                // Upload file
-                const snapshot = await uploadBytes(photoRef, file);
-                console.log('✅ Photo uploaded successfully');
-                
-                // Get download URL
-                const downloadURL = await getDownloadURL(snapshot.ref);
-                console.log('🔗 Download URL obtained:', downloadURL);
-
-                // Update user document with photo URL
-                await updateDoc(doc(db, 'users', currentUser.uid), {
-                    profilePhotoURL: downloadURL,
-                    profilePhotoUpdated: new Date()
-                });
-
-                // Update UI immediately
-                document.getElementById('profilePhoto').src = downloadURL;
-                const navAvatar = document.getElementById('navUserAvatar');
-                if (navAvatar) {
-                    navAvatar.src = downloadURL;
-                    navAvatar.style.display = 'block';
+                if (!currentUser) {
+                    throw new Error('No authenticated user found');
                 }
 
-                // Update current user data
-                currentUserData.profilePhotoURL = downloadURL;
+                // Create a simple filename
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                const fileName = `profile_${currentUser.uid}_${Date.now()}.${fileExtension}`;
+                
+                console.log('📤 Uploading to:', `profile-photos/${fileName}`);
+                
+                // Create storage reference with simplified path
+                const photoRef = ref(storage, `profile-photos/${fileName}`);
+                
+                // Add metadata
+                const metadata = {
+                    contentType: file.type,
+                    customMetadata: {
+                        'userId': currentUser.uid,
+                        'uploadedAt': new Date().toISOString()
+                    }
+                };
+                
+                console.log('📤 Starting upload...');
+                
+                // Upload file with metadata
+                const uploadTask = await uploadBytes(photoRef, file, metadata);
+                console.log('✅ Upload completed:', uploadTask.metadata);
+                
+                // Get download URL
+                const downloadURL = await getDownloadURL(uploadTask.ref);
+                console.log('🔗 Download URL:', downloadURL);
+
+                // Test if URL is accessible
+                const testImg = new Image();
+                testImg.onload = async () => {
+                    console.log('✅ Image URL is accessible');
+                    
+                    try {
+                        // Update Firestore
+                        await updateDoc(doc(db, 'users', currentUser.uid), {
+                            profilePhotoURL: downloadURL,
+                            profilePhotoUpdated: new Date().toISOString(),
+                            profilePhotoName: fileName
+                        });
+                        console.log('✅ Firestore updated');
+
+                        // Update UI immediately
+                        const profilePhoto = document.getElementById('profilePhoto');
+                        const navAvatar = document.getElementById('navUserAvatar');
+                        
+                        if (profilePhoto) {
+                            profilePhoto.src = downloadURL;
+                            profilePhoto.onload = () => console.log('✅ Profile photo updated in UI');
+                        }
+                        
+                        if (navAvatar) {
+                            navAvatar.src = downloadURL;
+                            navAvatar.style.display = 'block';
+                            navAvatar.onload = () => console.log('✅ Nav avatar updated in UI');
+                        }
+
+                        // Update current user data
+                        currentUserData.profilePhotoURL = downloadURL;
+                        
+                        showMessage('Profile photo updated successfully!', 'success');
+                        
+                    } catch (firestoreError) {
+                        console.error('❌ Firestore update failed:', firestoreError);
+                        showMessage('Photo uploaded but failed to save to profile. Please refresh and try again.', 'error');
+                    }
+                };
+                
+                testImg.onerror = () => {
+                    console.error('❌ Image URL not accessible');
+                    showMessage('Upload completed but image not accessible. Please try again.', 'error');
+                };
+                
+                testImg.src = downloadURL;
                 
                 // Reset button
-                uploadButton.innerHTML = '📷';
-                uploadButton.disabled = false;
-                
-                showMessage('Profile photo updated successfully!', 'success');
+                uploadButton.innerHTML = originalContent;
+                uploadButton.style.pointerEvents = 'auto';
 
             } catch (error) {
-                console.error('❌ Error uploading photo:', error);
+                console.error('❌ Upload error:', error);
                 
                 // Reset button
                 const uploadButton = document.querySelector('.profile-photo-upload');
                 uploadButton.innerHTML = '📷';
-                uploadButton.disabled = false;
+                uploadButton.style.pointerEvents = 'auto';
                 
-                // Show specific error message
+                // Show specific error messages
+                let errorMessage = 'Failed to upload photo. ';
+                
                 if (error.code === 'storage/unauthorized') {
-                    showMessage('Upload failed: Please check your permissions.', 'error');
+                    errorMessage += 'Permission denied. Please try logging out and back in.';
                 } else if (error.code === 'storage/canceled') {
-                    showMessage('Upload was canceled.', 'error');
+                    errorMessage += 'Upload was canceled.';
+                } else if (error.code === 'storage/unknown') {
+                    errorMessage += 'Unknown error occurred. Please check your internet connection.';
+                } else if (error.code === 'storage/retry-limit-exceeded') {
+                    errorMessage += 'Upload timeout. Please try again.';
+                } else if (error.message.includes('No authenticated user')) {
+                    errorMessage += 'Please log out and log back in.';
                 } else {
-                    showMessage('Failed to upload photo. Please try again.', 'error');
+                    errorMessage += 'Please try again or contact support.';
                 }
+                
+                showMessage(errorMessage, 'error');
             }
         });
 
@@ -1889,6 +1968,20 @@
         document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
         console.log('✅ Profile page initialized successfully');
+
+        // Test Firebase Storage connection
+        async function testStorageConnection() {
+            try {
+                const testRef = ref(storage, 'test-connection.txt');
+                const testBlob = new Blob(['test'], { type: 'text/plain' });
+                await uploadBytes(testRef, testBlob);
+                await deleteObject(testRef);
+                console.log('✅ Firebase Storage connection successful');
+            } catch (error) {
+                console.error('❌ Firebase Storage connection failed:', error);
+                showMessage('Storage service unavailable. Please refresh the page.', 'error');
+            }
+        }
     </script>
 </body>
 </html>
