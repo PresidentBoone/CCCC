@@ -834,12 +834,15 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown">
-                <a href="#" id="authToggle">
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
                     <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    Account
+                    <span id="navAccountText">Account</span>
                 </a>
                 <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
                     <div id="notLoggedIn">
                         <a href="login.html">Login</a>
                         <a href="signup.html">Sign Up</a>
@@ -1477,21 +1480,40 @@
 
         // Update navbar UI
         function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
             const navUserAvatar = document.getElementById('navUserAvatar');
-            
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
             if (user) {
-                if (authToggle) authToggle.textContent = 'Account';
                 if (notLoggedIn) notLoggedIn.style.display = 'none';
                 if (loggedIn) loggedIn.style.display = 'block';
-                
-                // Show avatar in navbar if available
+
+                // Show avatar if available, otherwise show "Account"
                 if (currentUserData && currentUserData.profilePhotoURL) {
                     navUserAvatar.src = currentUserData.profilePhotoURL;
                     navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
                 }
+
+                // Show welcome message in dropdown
+                if (dropdownWelcome && dropdownDisplayName) {
+                    dropdownDisplayName.textContent = currentUserData && currentUserData.name
+                        ? currentUserData.name
+                        : (user.displayName || user.email.split('@')[0]);
+                    dropdownWelcome.style.display = 'block';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
             }
         }
 
