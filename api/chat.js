@@ -17,7 +17,7 @@ function rateLimit(identifier, limit = 10, windowMs = 60000) {
 }
 
 export default async function handler(req, res) {
-  console.log('Chat API called with method:', req.method);
+  console.log('=== CHAT API CALLED ===');
   
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,19 +25,17 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
-    console.log('OPTIONS request received');
     res.status(200).end();
     return;
   }
 
   if (req.method !== 'POST') {
-    console.log('Method not allowed:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Check if OpenAI API key exists
+  // Check environment variables
   if (!process.env.OPENAI_API_KEY) {
-    console.error('OPENAI_API_KEY not found in environment variables');
+    console.error('OPENAI_API_KEY not found');
     return res.status(500).json({ 
       error: 'Server configuration error - API key missing'
     });
@@ -45,7 +43,6 @@ export default async function handler(req, res) {
 
   try {
     const { message } = req.body;
-    console.log('Received message:', message);
     
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Valid message is required' });
@@ -66,15 +63,15 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-3.5-turbo', // Changed to cheaper model
         messages: [
           {
             role: 'system',
-            content: `You are an expert college admissions counselor and AI assistant for College Climb. You specialize in helping students with college application strategies, essay writing, scholarships, resume building, interview preparation, SAT/ACT test prep, college selection, and financial aid guidance. Always provide helpful, encouraging, and specific advice. Keep responses concise but informative (under 300 words). Be supportive and motivational while being realistic about college admissions.`
+            content: `You are a college admissions counselor for College Climb. Help students with college applications, essays, scholarships, and admissions advice. Keep responses under 200 words.`
           },
           { role: 'user', content: sanitizedMessage }
         ],
-        max_tokens: 500,
+        max_tokens: 300, // Reduced tokens
         temperature: 0.7
       })
     });
@@ -85,14 +82,30 @@ export default async function handler(req, res) {
       const errorText = await openaiResponse.text();
       console.error('OpenAI API error:', openaiResponse.status, errorText);
       
-      return res.status(500).json({ 
-        error: 'Sorry, I\'m having trouble right now. Please try again in a moment.',
-        details: `OpenAI API error: ${openaiResponse.status}`
-      });
+      if (openaiResponse.status === 401) {
+        return res.status(500).json({ 
+          error: 'API authentication failed. Please check your OpenAI API key.',
+          details: 'Invalid API key'
+        });
+      } else if (openaiResponse.status === 429) {
+        return res.status(500).json({ 
+          error: 'I\'m experiencing high demand right now. Please wait a moment and try again.',
+          details: 'Rate limit exceeded - please try again in 1 minute'
+        });
+      } else if (openaiResponse.status === 403) {
+        return res.status(500).json({ 
+          error: 'API access denied. Please check your OpenAI account billing.',
+          details: 'Account may need billing setup'
+        });
+      } else {
+        return res.status(500).json({ 
+          error: 'External service temporarily unavailable.',
+          details: `OpenAI API error: ${openaiResponse.status}`
+        });
+      }
     }
 
     const data = await openaiResponse.json();
-    console.log('OpenAI response received successfully');
     
     if (!data.choices?.[0]?.message?.content) {
       console.error('Invalid OpenAI response format:', data);
@@ -106,7 +119,8 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error in chat API:', error);
     res.status(500).json({ 
-      error: 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.'
+      error: 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.',
+      details: error.message
     });
   }
 }
