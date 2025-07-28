@@ -970,682 +970,154 @@
 
     <!-- Firebase Scripts -->
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  // Import Firebase modules directly (no API route needed for Firebase config)
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+  import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-        // Your Firebase configuration (demo config - not used)
-        // Note: Using the actual config from the second Firebase script below
+  // Firebase configuration (this is safe to expose)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+    authDomain: "collegeclimb-ai.firebaseapp.com",
+    projectId: "collegeclimb-ai",
+    storageBucket: "collegeclimb-ai.firebasestorage.app",
+    messagingSenderId: "187139654658",
+    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+    measurementId: "G-E0B2RQM9XS"
+  };
 
-        // Firebase will be initialized by the second script below
-        // Access Firebase services through window object once available
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-        // Make Firebase available globally
-        window.db = db;
-        window.auth = auth;
-        window.firestoreFunctions = {
-            collection,
-            addDoc,
-            doc,
-            setDoc,
-            getDoc,
-            query,
-            where,
-            getDocs,
-            orderBy,
-            serverTimestamp
-        };
+  // Make available globally
+  window.auth = auth;
+  window.db = db;
+  window.firestoreFunctions = {
+    collection,
+    addDoc,
+    doc,
+    setDoc,
+    getDoc,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    serverTimestamp
+  };
 
-        // Check authentication state
-        onAuthStateChanged(auth, async (user) => {
-            updateAuthUI(user); // Add this line
+  // Auth state listener
+  onAuthStateChanged(auth, async (user) => {
+    updateAuthUI(user);
 
-            if (user) {
-                console.log('User is signed in:', user.uid);
-                await loadUserData(user.uid);
-                await loadChatHistory(user.uid);
-                await loadProgressData(user.uid);
-            } else {
-                console.log('User is signed out');
-                // Redirect to login page if needed
-                // window.location.href = 'login.html';
-            }
-        });
+    if (user) {
+      console.log('User is signed in:', user.uid);
+      document.body.classList.add("logged-in");
+      await loadUserData(user.uid);
+      await loadProgressData(user.uid);
+    } else {
+      console.log('User is signed out');
+      document.body.classList.remove("logged-in");
+    }
+  });
 
-        // Update the auth dropdown UI
-        function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            
-            if (user) {
-                // User is logged in
-                authToggle.textContent = 'Account';
-                notLoggedIn.style.display = 'none';
-                loggedIn.style.display = 'block';
-            } else {
-                // User is not logged in
-                authToggle.textContent = 'Login/Sign Up';
-                notLoggedIn.style.display = 'block';
-                loggedIn.style.display = 'none';
-            }
-        }
-
-        // Load user data from Firestore
-        async function loadUserData(userId) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', userId));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    console.log('User data loaded:', userData);
-                    // Update welcome message with user's name
-                    if (userData.name) {
-                        const welcomeSection = document.querySelector('.welcome-section h1');
-                        welcomeSection.textContent = `Welcome back, ${userData.name}!`;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            }
-        }
-
-        // Load progress data from Firestore
-        async function loadProgressData(userId) {
-            try {
-                const progressDoc = await getDoc(doc(db, 'userProgress', userId));
-                if (progressDoc.exists()) {
-                    const progressData = progressDoc.data();
-                    updateProgressBars(progressData);
-                }
-            } catch (error) {
-                console.error('Error loading progress data:', error);
-                // Initialize progress bars with default values
-                animateProgressBars();
-            }
-        }
-
-        // Load chat history
-        async function loadChatHistory(userId) {
-            try {
-                const chatQuery = query(
-                    collection(db, 'chatHistory'),
-                    where('userId', '==', userId)
-                );
-                const querySnapshot = await getDocs(chatQuery);
-                
-                const chatMessages = document.getElementById('chatMessages');
-                // Clear existing messages except the welcome message
-                const welcomeMessage = chatMessages.firstElementChild;
-                chatMessages.innerHTML = '';
-                chatMessages.appendChild(welcomeMessage);
-
-                // Convert to array and sort by timestamp if available
-                const messages = [];
-                querySnapshot.forEach((doc) => {
-                    const messageData = doc.data();
-                    messages.push(messageData);
-                });
-
-                // Sort by timestamp if available, otherwise by document order
-                messages.sort((a, b) => {
-                    if (a.timestamp && b.timestamp) {
-                        return b.timestamp.toMillis() - a.timestamp.toMillis();
-                    }
-                    return 0;
-                });
-
-                // Add recent chat messages (limit to last 10)
-                messages.slice(0, 10).forEach((messageData) => {
-                    if (messageData.message && messageData.sender) {
-                        addMessage(messageData.message, messageData.sender, false, false);
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-            }
-        }
-
-        // Update progress data in Firestore
-        async function updateUserProgress(userId, progressType, percentage, status) {
-            try {
-                const progressRef = doc(db, 'userProgress', userId);
-                await setDoc(progressRef, {
-                    [progressType]: {
-                        percentage: percentage,
-                        status: status,
-                        lastUpdated: serverTimestamp()
-                    }
-                }, { merge: true });
-            } catch (error) {
-                console.error('Error updating progress:', error);
-            }
-        }
-
-        // Save chat message to Firestore
-        async function saveChatMessage(userId, message, sender) {
-            try {
-                await addDoc(collection(db, 'chatHistory'), {
-                    userId: userId,
-                    message: message,
-                    sender: sender,
-                    timestamp: serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Error saving chat message:', error);
-            }
-        }
-
-        // Save user activity to Firestore
-        async function saveUserActivity(userId, activityType, details) {
-            try {
-                await addDoc(collection(db, 'userActivity'), {
-                    userId: userId,
-                    activityType: activityType,
-                    details: details,
-                    timestamp: serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Error saving user activity:', error);
-            }
-        }
-
-        // Make functions available globally
-        window.saveChatMessage = saveChatMessage;
-        window.saveUserActivity = saveUserActivity;
-        window.updateUserProgress = updateUserProgress;
-
-        // Logout function
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-                alert('Logged out successfully!');
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Error signing out:', error);
-                alert('Error logging out. Please try again.');
-            }
-        };
-    </script>
-
-    <script>
-        // College-specific system prompt
-        const SYSTEM_PROMPT = `You are an expert college admissions counselor and AI assistant for College Climb. You specialize in helping students with:
-        - College application strategies
-        - Essay writing and feedback
-        - Scholarship searches
-        - Resume building for college applications
-        - Interview preparation
-        - SAT/ACT test prep advice
-        - College selection and matching
-        - Financial aid guidance
-        
-        Always provide helpful, encouraging, and specific advice. Keep responses concise but informative. Be supportive and motivational while being realistic about college admissions.`;
-
-        // Progress bar data
-        const progressData = {
-            application: { percentage: 65, status: "Common App submitted, waiting on transcripts" },
-            essay: { percentage: 40, status: "2 of 5 essays completed" },
-            resume: { percentage: 80, status: "Ready for final review" },
-            scholarship: { percentage: 25, status: "3 applications submitted, 7 pending" }
-        };
-
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        const starryBg = document.getElementById('starryBg');
-
-        // Function to update logo images based on theme
-        function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
-            document.querySelectorAll('.logo-img, .footer-logo img').forEach(img => {
-                img.src = logoSrc;
-            });
-        }
-
-        // Load saved theme or default to dark
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        body.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-        updateLogos(savedTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-            updateLogos(newTheme);
-            
-            if (newTheme === 'dark') {
-                createStars();
-            }
-        });
-
-        function updateThemeIcon(theme) {
-            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
-        }
-
-        // Create twinkling stars for dark mode
-        function createStars() {
-            starryBg.innerHTML = '';
-            const numStars = 150;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        // Initialize stars for dark mode
-        if (savedTheme === 'dark') {
-            createStars();
-        }
-
-        // Animate progress bars on page load
-        function animateProgressBars() {
-            setTimeout(() => {
-                document.getElementById('applicationBar').style.width = progressData.application.percentage + '%';
-                document.getElementById('essayBar').style.width = progressData.essay.percentage + '%';
-                document.getElementById('resumeBar').style.width = progressData.resume.percentage + '%';
-                document.getElementById('scholarshipBar').style.width = progressData.scholarship.percentage + '%';
-            }, 500);
-        }
-
-        // Update progress bars with data from Firestore
-        function updateProgressBars(data) {
-            if (data.application) {
-                document.getElementById('applicationPercent').textContent = data.application.percentage + '%';
-                document.getElementById('applicationBar').style.width = data.application.percentage + '%';
-                document.querySelector('[onclick="openApplicationProgress()"] .progress-status').textContent = data.application.status;
-            }
-            if (data.essay) {
-                document.getElementById('essayPercent').textContent = data.essay.percentage + '%';
-                document.getElementById('essayBar').style.width = data.essay.percentage + '%';
-                document.querySelector('[onclick="openEssayProgress()"] .progress-status').textContent = data.essay.status;
-            }
-            if (data.resume) {
-                document.getElementById('resumePercent').textContent = data.resume.percentage + '%';
-                document.getElementById('resumeBar').style.width = data.resume.percentage + '%';
-                document.querySelector('[onclick="openResumeProgress()"] .progress-status').textContent = data.resume.status;
-            }
-            if (data.scholarship) {
-                document.getElementById('scholarshipPercent').textContent = data.scholarship.percentage + '%';
-                document.getElementById('scholarshipBar').style.width = data.scholarship.percentage + '%';
-                document.querySelector('[onclick="openScholarshipProgress()"] .progress-status').textContent = data.scholarship.status;
-            }
-        }
-
-        // Progress card click handlers
-        async function openApplicationProgress() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "I'd like help with my college application progress and next steps.";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'application_progress', 'User viewed application progress');
-            }
-            
-            sendMessage();
-        }
-
-        async function openEssayProgress() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "Can you help me with my essay writing progress and give me feedback?";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'essay_progress', 'User viewed essay progress');
-            }
-            
-            sendMessage();
-        }
-
-        async function openResumeProgress() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "I need help reviewing and improving my college resume.";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'resume_progress', 'User viewed resume progress');
-            }
-            
-            sendMessage();
-        }
-
-        async function openScholarshipProgress() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "Can you help me track my scholarship applications and find new opportunities?";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'scholarship_progress', 'User viewed scholarship progress');
-            }
-            
-            sendMessage();
-        }
-
-        async function sendToOpenAI(message) {
-            try {
-                console.log('Sending message to API:', message);
-                
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message
-                    })
-                });
-
-                console.log('API response status:', response.status);
-
-                if (!response.ok) {
-                    const errorData = await response.text();
-                    console.error('API error:', errorData);
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('API response data:', data);
-
-                if (!data.response) {
-                    throw new Error('No response field in API response');
-                }
-
-                return data.response;
-            } catch (error) {
-                console.error('Error calling chat API:', error);
-                return 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment. Error: ' + error.message;
-            }
-        }
-
-        async function testAPI() {
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: "Hello, this is a test message"
-                    })
-                });
-                
-                console.log('Test response status:', response.status);
-                const data = await response.json();
-                console.log('Test response data:', data);
-                
-                if (data.error) {
-                    console.error('API returned error:', data.error);
-                }
-            } catch (error) {
-                console.error('Test API error:', error);
-            }
-        }
-
-        async function sendMessage() {
-            const userInput = document.getElementById('userInput');
-            const message = userInput.value.trim();
-            
-            if (!message) return;
-
-            // Add user message to chat
-            addMessage(message, 'user');
-            userInput.value = '';
-
-            // Save user message to Firestore
-            if (window.auth && window.auth.currentUser) {
-                await window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
-            }
-
-            // Add typing indicator
-            addTypingIndicator();
-
-            // Get AI response
-            const response = await sendToOpenAI(message);
-            
-            // Remove typing indicator and add real response
-            removeTypingIndicator();
-            addMessage(response, 'ai');
-
-            // Save AI response to Firestore
-            if (window.auth && window.auth.currentUser) {
-                await window.saveChatMessage(window.auth.currentUser.uid, response, 'ai');
-            }
-        }
-
-        function addMessage(text, sender, isTyping = false, saveToDb = true) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            
-            if (sender === 'user') {
-                messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
-            } else {
-                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${text}`;
-            }
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function addTypingIndicator() {
-            const messagesContainer = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message ai-message typing-indicator';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <strong>AI Counselor:</strong> 
-                <span class="typing-indicator">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                </span>
-            `;
-            
-            messagesContainer.appendChild(typingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        // Feature panel functions with activity tracking
-        async function openEssayHelper() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "I'd like help with essay writing and feedback.";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'essay_helper', 'User opened essay helper');
-            }
-            
-            sendMessage();
-        }
-
-        async function openResumeBuilder() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "Can you help me create a college application resume?";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'resume_builder', 'User opened resume builder');
-            }
-            
-            sendMessage();
-        }
-
-        async function openCollegeSearch() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "I need help finding colleges that match my profile.";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'college_search', 'User opened college search');
-            }
-            
-            sendMessage();
-        }
-
-        async function openScholarshipFinder() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "Can you help me find scholarships and financial aid opportunities?";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'scholarship_finder', 'User opened scholarship finder');
-            }
-            
-            sendMessage();
-        }
-
-        async function openInterviewPrep() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "I need help preparing for college interviews.";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'interview_prep', 'User opened interview prep');
-            }
-            
-            sendMessage();
-        }
-
-        async function openTestPrep() {
-            const userInput = document.getElementById('userInput');
-            userInput.value = "Can you give me advice on SAT/ACT test preparation?";
-            
-            if (window.auth && window.auth.currentUser) {
-                await window.saveUserActivity(window.auth.currentUser.uid, 'test_prep', 'User opened test prep');
-            }
-            
-            sendMessage();
-        }
-
-        // Intersection Observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in-up').forEach(element => {
-            observer.observe(element);
-        });
-
-        // Initialize progress bars when page loads
-        window.addEventListener('load', () => {
-            animateProgressBars();
-        });
-
-        // Add scroll effect to navbar
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.boxShadow = '0 2px 20px rgba(42, 53, 122, 0.3)';
-            } else {
-                navbar.style.boxShadow = 'none';
-            }
-        });
-    </script>
+  // Update auth UI
+  function updateAuthUI(user) {
+    const authToggle = document.getElementById('authToggle');
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
     
-<script type="module">
-  // Fetch Firebase config from API
-  async function initializeFirebase() {
-    try {
-      const configResponse = await fetch('/api/firebase-config');
-      const firebaseConfig = await configResponse.json();
-      
-      // Import Firebase modules
-      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js");
-      const { getAnalytics } = await import("https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js");
-      const { getAuth, onAuthStateChanged, signOut } = await import("https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js");
-      const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js");
-
-      // Initialize services
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-
-      // Make available globally
-      window.auth = auth;
-      window.db = db;
-
-      // Track login state
-      onAuthStateChanged(auth, (user) => {
-        updateAuthUI(user);
-
-        if (user) {
-          sessionStorage.setItem("user", JSON.stringify(user));
-          console.log("Logged in as:", user.email);
-          document.body.classList.add("logged-in");
-        } else {
-          sessionStorage.removeItem("user");
-          document.body.classList.remove("logged-in");
-          
-          if (document.body.hasAttribute("data-auth")) {
-            window.location.href = "/login.html";
-          }
-        }
-      });
-
-      // Update the auth dropdown UI
-      function updateAuthUI(user) {
-        const authToggle = document.getElementById('authToggle');
-        const notLoggedIn = document.getElementById('notLoggedIn');
-        const loggedIn = document.getElementById('loggedIn');
-        
-        if (user) {
-            authToggle.textContent = 'Account';
-            notLoggedIn.style.display = 'none';
-            loggedIn.style.display = 'block';
-        } else {
-            authToggle.textContent = 'Login/Sign Up';
-            notLoggedIn.style.display = 'block';
-            loggedIn.style.display = 'none';
-        }
-      }
-
-      // Logout logic
-      const logoutBtn = document.getElementById("logoutBtn");
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-          signOut(auth).then(() => {
-            window.location.href = "/login.html";
-          });
-        });
-      }
-
-    } catch (error) {
-      console.error('Failed to initialize Firebase:', error);
+    if (user) {
+      authToggle.textContent = 'Account';
+      notLoggedIn.style.display = 'none';
+      loggedIn.style.display = 'block';
+    } else {
+      authToggle.textContent = 'Login/Sign Up';
+      notLoggedIn.style.display = 'block';
+      loggedIn.style.display = 'none';
     }
   }
 
-  // Initialize Firebase when page loads
-  initializeFirebase();
+  // Load user data
+  async function loadUserData(userId) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log('User data loaded:', userData);
+        if (userData.name) {
+          const welcomeSection = document.querySelector('.welcome-section h1');
+          welcomeSection.textContent = `Welcome back, ${userData.name}!`;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  }
+
+  // Load progress data
+  async function loadProgressData(userId) {
+    try {
+      const progressDoc = await getDoc(doc(db, 'userProgress', userId));
+      if (progressDoc.exists()) {
+        const progressData = progressDoc.data();
+        updateProgressBars(progressData);
+      } else {
+        animateProgressBars();
+      }
+    } catch (error) {
+      console.error('Error loading progress data:', error);
+      animateProgressBars();
+    }
+  }
+
+  // Global functions
+  window.saveChatMessage = async function(userId, message, sender) {
+    try {
+      await addDoc(collection(db, 'chatHistory'), {
+        userId: userId,
+        message: message,
+        sender: sender,
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error saving chat message:', error);
+    }
+  };
+
+  window.saveUserActivity = async function(userId, activityType, details) {
+    try {
+      await addDoc(collection(db, 'userActivity'), {
+        userId: userId,
+        activityType: activityType,
+        details: details,
+        timestamp: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error saving user activity:', error);
+    }
+  };
+
+  // Logout function
+  window.logout = async function() {
+    try {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('Error logging out. Please try again.');
+    }
+  };
+
+  // Logout button handler
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", window.logout);
+  }
 </script>
 
-<!-- Add this temporarily after the chatbot input -->
+    <!-- Add this temporarily after the chatbot input -->
 <button onclick="testAPIConnection()" style="margin: 10px; padding: 10px; background: red; color: white;">Test API</button>
 
 <script>
