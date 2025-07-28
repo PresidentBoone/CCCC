@@ -1512,37 +1512,46 @@
             }
         }
 
-        // Populate questionnaire fields
+        // Populate questionnaire fields - EXPANDED VERSION
         function populateQuestionnaire(questionnaire) {
-            // College types
-            if (questionnaire.collegeTypes) {
-                questionnaire.collegeTypes.forEach(type => {
-                    const checkbox = document.querySelector(`input[name="collegeTypes"][value="${type}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
-            }
+            // Single select fields
+            const singleFields = [
+                'currentGradeLevel', 'expectedGraduation', 'currentGPA', 'satScore', 'actScore',
+                'collegeSize', 'locationPreference', 'campusSetting', 'budgetRange'
+            ];
+            
+            singleFields.forEach(field => {
+                if (questionnaire[field]) {
+                    const element = document.getElementById(field);
+                    if (element) element.value = questionnaire[field];
+                }
+            });
 
-            // Academic interests
-            if (questionnaire.academicInterests) {
-                questionnaire.academicInterests.forEach(interest => {
-                    const checkbox = document.querySelector(`input[name="academicInterests"][value="${interest}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
-            }
+            // Checkbox groups
+            const checkboxGroups = [
+                'collegeTypes', 'academicInterests', 'careerGoals', 'extracurriculars', 
+                'financialAid', 'specialConsiderations'
+            ];
+            
+            checkboxGroups.forEach(group => {
+                if (questionnaire[group] && Array.isArray(questionnaire[group])) {
+                    questionnaire[group].forEach(value => {
+                        const checkbox = document.querySelector(`input[name="${group}"][value="${value}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            });
 
-            // Extracurriculars
-            if (questionnaire.extracurriculars) {
-                questionnaire.extracurriculars.forEach(activity => {
-                    const checkbox = document.querySelector(`input[name="extracurriculars"][value="${activity}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
+            // Textarea fields
+            if (questionnaire.collegeWorries) {
+                const element = document.getElementById('collegeWorries');
+                if (element) element.value = questionnaire.collegeWorries;
             }
-
-            // Select fields
-            if (questionnaire.collegeSize) document.getElementById('collegeSize').value = questionnaire.collegeSize;
-            if (questionnaire.locationPreference) document.getElementById('locationPreference').value = questionnaire.locationPreference;
-            if (questionnaire.budgetRange) document.getElementById('budgetRange').value = questionnaire.budgetRange;
-            if (questionnaire.specialConsiderations) document.getElementById('specialConsiderations').value = questionnaire.specialConsiderations;
+            
+            if (questionnaire.additionalInfo) {
+                const element = document.getElementById('additionalInfo');
+                if (element) element.value = questionnaire.additionalInfo;
+            }
         }
 
         // Photo upload handler - FIXED VERSION
@@ -1690,13 +1699,28 @@
             
             try {
                 const questionnaireData = {
-                    collegeTypes: Array.from(document.querySelectorAll('input[name="collegeTypes"]:checked')).map(cb => cb.value),
-                    academicInterests: Array.from(document.querySelectorAll('input[name="academicInterests"]:checked')).map(cb => cb.value),
-                    extracurriculars: Array.from(document.querySelectorAll('input[name="extracurriculars"]:checked')).map(cb => cb.value),
+                    // Single select fields
+                    currentGradeLevel: document.getElementById('currentGradeLevel').value,
+                    expectedGraduation: document.getElementById('expectedGraduation').value,
+                    currentGPA: document.getElementById('currentGPA').value,
+                    satScore: document.getElementById('satScore').value,
+                    actScore: document.getElementById('actScore').value,
                     collegeSize: document.getElementById('collegeSize').value,
                     locationPreference: document.getElementById('locationPreference').value,
+                    campusSetting: document.getElementById('campusSetting').value,
                     budgetRange: document.getElementById('budgetRange').value,
-                    specialConsiderations: document.getElementById('specialConsiderations').value
+                    
+                    // Checkbox groups
+                    collegeTypes: Array.from(document.querySelectorAll('input[name="collegeTypes"]:checked')).map(cb => cb.value),
+                    academicInterests: Array.from(document.querySelectorAll('input[name="academicInterests"]:checked')).map(cb => cb.value),
+                    careerGoals: Array.from(document.querySelectorAll('input[name="careerGoals"]:checked')).map(cb => cb.value),
+                    extracurriculars: Array.from(document.querySelectorAll('input[name="extracurriculars"]:checked')).map(cb => cb.value),
+                    financialAid: Array.from(document.querySelectorAll('input[name="financialAid"]:checked')).map(cb => cb.value),
+                    specialConsiderations: Array.from(document.querySelectorAll('input[name="specialConsiderations"]:checked')).map(cb => cb.value),
+                    
+                    // Textarea fields
+                    collegeWorries: document.getElementById('collegeWorries').value,
+                    additionalInfo: document.getElementById('additionalInfo').value
                 };
 
                 await updateDoc(doc(db, 'users', currentUser.uid), {
@@ -1855,7 +1879,7 @@
         };
 
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+                       entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
