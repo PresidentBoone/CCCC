@@ -1409,10 +1409,10 @@
 
     .why-choose-us.visible .reason-card:nth-child(1) { animation-delay: 0.1s; }
     .why-choose-us.visible .reason-card:nth-child(2) { animation-delay: 0.2s; }
-    .why-choose-us.visible .reason-card:nth-child(3) { animation-delay: 0.3s; }
-    .why-choose-us.visible .reason-card:nth-child(4) { animation-delay: 0.4s; }
-    .why-choose-us.visible .reason-card:nth-child(5) { animation-delay: 0.5s; }
-    .why-choose-us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
+    .why-choose.us.visible .reason-card:nth-child(3) { animation-delay: 0.3s; }
+    .why-choose.us.visible .reason-card:nth-child(4) { animation-delay: 0.4s; }
+    .why-choose.us.visible .reason-card:nth-child(5) { animation-delay: 0.5s; }
+    .why-choose.us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
 
     @keyframes slideInUp {
       from {
@@ -1689,7 +1689,6 @@ function updateNavbarLogo(theme) {
     logoImg.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
 }
 
-// Theme toggle
 const themeToggle = document.getElementById('themeToggle');
 const body = document.body;
 const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1706,23 +1705,13 @@ themeToggle.addEventListener('click', () => {
     updateNavbarLogo(newTheme);
 });
 
-// --- Auth UI logic ---
-// This assumes you have Firebase Auth and Firestore loaded as `auth` and `db`
 let currentUserData = null;
 
 async function loadUserData(userId) {
-    // Fetch user data from Firestore
-    const docRef = window.db && window.db.collection
-        ? window.db.collection('users').doc(userId)
-        : (window.db ? window.db.doc('users/' + userId) : null);
-    let userDoc;
-    if (docRef && docRef.get) {
-        userDoc = await docRef.get();
-        currentUserData = userDoc.exists ? userDoc.data() : {};
-    } else if (window.db && window.db.getDoc) {
-        // Modular SDK
+    // Modular SDK
+    if (window.db && window.db.getDoc && window.db.doc) {
         const { doc, getDoc } = window.db;
-        userDoc = await getDoc(doc(window.db, 'users', userId));
+        const userDoc = await getDoc(doc(window.db, 'users', userId));
         currentUserData = userDoc.exists() ? userDoc.data() : {};
     }
     updateAuthUI(window.currentUser);
@@ -1767,19 +1756,9 @@ function updateAuthUI(user) {
     }
 }
 
-// Firebase Auth state
-if (window.auth && window.db) {
-    window.currentUser = null;
-    window.auth.onAuthStateChanged(async (user) => {
-        window.currentUser = user;
-        if (user) {
-            await loadUserData(user.uid);
-        } else {
-            currentUserData = null;
-            updateAuthUI(null);
-        }
-    });
-}
+// Expose for module script
+window.updateAuthUI = updateAuthUI;
+window.loadUserData = loadUserData;
 
 // Logout logic
 const logoutBtn = document.getElementById("logoutBtn");
@@ -1820,55 +1799,23 @@ if (logoutBtn) {
 
   // Track login state
   onAuthStateChanged(auth, (user) => {
-    updateAuthUI(user); // Add this line
-    
+    window.currentUser = user;
     if (user) {
         sessionStorage.setItem("user", JSON.stringify(user));
-        console.log("Logged in as:", user.email);
         document.body.classList.add("logged-in");
+        // Load user data from Firestore and update UI
+        if (window.loadUserData) {
+            window.loadUserData(user.uid);
+        }
     } else {
         sessionStorage.removeItem("user");
         document.body.classList.remove("logged-in");
+        if (window.updateAuthUI) {
+            window.currentUserData = null;
+            window.updateAuthUI(null);
+        }
     }
-  });
-
-  // Add this function to update the auth dropdown UI
-function updateAuthUI(user) {
-    const authToggle = document.getElementById('authToggle');
-    const notLoggedIn = document.getElementById('notLoggedIn');
-    const loggedIn = document.getElementById('loggedIn');
-    const dropdownWelcome = document.getElementById('dropdownWelcome');
-    const navUserAvatar = document.getElementById('navUserAvatar');
-    const navAccountText = document.getElementById('navAccountText');
-    
-    if (user) {
-        // User is logged in
-        authToggle.textContent = 'Account';
-        notLoggedIn.style.display = 'none';
-        loggedIn.style.display = 'block';
-        dropdownWelcome.style.display = 'block';
-        navUserAvatar.style.display = 'block';
-        navAccountText.textContent = user.displayName || 'Account';
-    } else {
-        // User is not logged in
-        authToggle.textContent = 'Login/Sign Up';
-        notLoggedIn.style.display = 'block';
-        loggedIn.style.display = 'none';
-        dropdownWelcome.style.display = 'none';
-        navUserAvatar.style.display = 'none';
-    }
-}
-
-// Optional logout logic if you want it everywhere
-  const logoutBtnModule = document.getElementById("logoutBtn");
-  if (logoutBtnModule) {
-    logoutBtnModule.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "/login.html";
-      });
-    });
-  }
-
+});
     </script>
 </body>
 </html>
