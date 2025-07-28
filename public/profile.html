@@ -1501,13 +1501,12 @@
                     navAccountText.style.display = 'inline';
                 }
 
-                // Show welcome message in dropdown with display name only
+                // Always use the Firestore name for display
                 if (dropdownWelcome && dropdownDisplayName) {
-                    // Prefer Firestore name, fallback to Firebase displayName, fallback to empty string
                     dropdownDisplayName.textContent =
                         (currentUserData && currentUserData.name)
                             ? currentUserData.name
-                            : (user.displayName || '');
+                            : '';
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
@@ -1801,11 +1800,12 @@
                 });
 
                 await updateDoc(doc(db, 'users', currentUser.uid), personalData);
-                
+
                 // Update display name if changed
                 if (personalData.name && personalData.name !== currentUserData.name) {
                     document.getElementById('profileName').textContent = personalData.name;
                     currentUserData.name = personalData.name;
+                    updateAuthUI(currentUser); // <-- Add this line
                 }
 
                 showMessage('Personal information updated successfully!', 'success');
