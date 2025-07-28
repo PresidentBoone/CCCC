@@ -1681,8 +1681,6 @@
         }
     </style>
 
-<!-- Removed duplicate inline script block to prevent variable redeclaration errors. -->
-
     <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
@@ -1719,66 +1717,66 @@
   updateNavbarLogo(savedTheme);
 
   themeToggle.addEventListener('click', () => {
-      const currentTheme = body.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      body.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      updateNavbarLogo(newTheme);
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    updateNavbarLogo(newTheme);
   });
 
   // Auth UI logic
   function updateAuthUI(user) {
-      const notLoggedIn = document.getElementById('notLoggedIn');
-      const loggedIn = document.getElementById('loggedIn');
-      const navUserAvatar = document.getElementById('navUserAvatar');
-      const navAccountText = document.getElementById('navAccountText');
-      const dropdownWelcome = document.getElementById('dropdownWelcome');
-      const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navAccountText = document.getElementById('navAccountText');
+    const dropdownWelcome = document.getElementById('dropdownWelcome');
+    const dropdownDisplayName = document.getElementById('dropdownDisplayName');
 
-      if (user) {
-          if (notLoggedIn) notLoggedIn.style.display = 'none';
-          if (loggedIn) loggedIn.style.display = 'block';
+    if (user) {
+        if (notLoggedIn) notLoggedIn.style.display = 'none';
+        if (loggedIn) loggedIn.style.display = 'block';
 
-          // Show avatar if available, otherwise show "Account"
-          if (currentUserData && currentUserData.profilePhotoURL) {
-              navUserAvatar.src = currentUserData.profilePhotoURL;
-              navUserAvatar.style.display = 'block';
-              navAccountText.style.display = 'none';
-          } else {
-              navUserAvatar.style.display = 'none';
-              navAccountText.style.display = 'inline';
-          }
+        // Show avatar if available, otherwise show "Account"
+        if (currentUserData && currentUserData.profilePhotoURL) {
+            navUserAvatar.src = currentUserData.profilePhotoURL;
+            navUserAvatar.style.display = 'block';
+            navAccountText.style.display = 'none';
+        } else {
+            navUserAvatar.style.display = 'none';
+            navAccountText.style.display = 'inline';
+        }
 
-          // Show welcome message in dropdown with display name only
-          if (dropdownWelcome && dropdownDisplayName) {
-              dropdownDisplayName.textContent =
-                  (currentUserData && currentUserData.name)
-                      ? currentUserData.name
-                      : (user.displayName || '');
-              dropdownWelcome.style.display = 'block';
-          }
-      } else {
-          if (notLoggedIn) notLoggedIn.style.display = 'block';
-          if (loggedIn) loggedIn.style.display = 'none';
-          navUserAvatar.style.display = 'none';
-          navAccountText.style.display = 'inline';
-          if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-      }
-  }
+        // Show welcome message in dropdown with display name only
+        if (dropdownWelcome && dropdownDisplayName) {
+            dropdownDisplayName.textContent =
+                (currentUserData && currentUserData.name)
+                    ? currentUserData.name
+                    : (user.displayName || '');
+            dropdownWelcome.style.display = 'block';
+        }
+    } else {
+        if (notLoggedIn) notLoggedIn.style.display = 'block';
+        if (loggedIn) loggedIn.style.display = 'none';
+        navUserAvatar.style.display = 'none';
+        navAccountText.style.display = 'inline';
+        if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+    }
+}
 
-  async function loadUserData(userId) {
-      try {
-          const userDoc = await getDoc(doc(db, 'users', userId));
-          currentUserData = userDoc.exists() ? userDoc.data() : {};
-      } catch (e) {
-          currentUserData = {};
-      }
-      updateAuthUI(auth.currentUser);
-  }
+async function loadUserData(userId) {
+    try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        currentUserData = userDoc.exists() ? userDoc.data() : {};
+    } catch (e) {
+        currentUserData = {};
+    }
+    updateAuthUI(auth.currentUser);
+}
 
-  // Auth state
-  onAuthStateChanged(auth, (user) => {
+// Auth state
+onAuthStateChanged(auth, (user) => {
     window.currentUser = user;
     if (user) {
         loadUserData(user.uid);
@@ -1786,17 +1784,17 @@
         currentUserData = null;
         updateAuthUI(null);
     }
-  });
+});
 
-  // Logout logic
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-      logoutBtn.addEventListener("click", async (e) => {
-          e.preventDefault();
-          await signOut(auth);
-          window.location.href = "/login.html";
-      });
-  }
+// Logout logic
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = "/login.html";
+    });
+}
     </script>
 </body>
 </html>
