@@ -1602,6 +1602,11 @@
             try {
                 console.log('📖 Loading chat session:', chatId);
                 
+                if (!window.auth.currentUser) {
+                    alert('Please log in to access chat history.');
+                    return;
+                }
+                
                 window.currentChatId = chatId;
                 window.currentChatMessages = [];
                 
@@ -1610,12 +1615,30 @@
                     item.classList.remove('active');
                 });
                 
+                // Mark the clicked item as active immediately
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    if (item.dataset.chatId === chatId) {
+                        item.classList.add('active');
+                    }
+                });
+                
                 // Load messages from Firestore
-                const messagesQuery = query(
-                    collection(db, 'chatMessages'),
-                    where('chatId', '==', chatId),
-                    orderBy('timestamp', 'asc')
-                );
+                let messagesQuery;
+                try {
+                    messagesQuery = query(
+                        collection(db, 'chatMessages'),
+                        where('chatId', '==', chatId),
+                        where('userId', '==', window.auth.currentUser.uid),
+                        orderBy('timestamp', 'asc')
+                    );
+                } catch (queryError) {
+                    // Fallback without orderBy if index doesn't exist
+                    messagesQuery = query(
+                        collection(db, 'chatMessages'),
+                        where('chatId', '==', chatId),
+                        where('userId', '==', window.auth.currentUser.uid)
+                    );
+                }
                 
                 const querySnapshot = await getDocs(messagesQuery);
                 const chatMessages = document.getElementById('chatMessages');
@@ -1637,9 +1660,23 @@
                     return;
                 }
                 
-                // Add each message to the chat
+                // Convert to array and sort if needed
+                const messages = [];
                 querySnapshot.forEach((docSnapshot) => {
                     const messageData = docSnapshot.data();
+                    messages.push(messageData);
+                });
+                
+                // Sort by timestamp if available
+                messages.sort((a, b) => {
+                    if (a.timestamp && b.timestamp) {
+                        return a.timestamp.toMillis() - b.timestamp.toMillis();
+                    }
+                    return 0;
+                });
+                
+                // Add each message to the chat
+                messages.forEach((messageData) => {
                     const messageDiv = document.createElement('div');
                     
                     if (messageData.sender === 'user') {
@@ -1657,24 +1694,15 @@
                 // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Mark the clicked item as active AFTER loading is complete
-                // Use a data attribute to store the chatId for reliable identification
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    if (item.dataset.chatId === chatId) {
-                        item.classList.add('active');
-                    }
-                });
-                
-                console.log(`📖 Loaded ${querySnapshot.size} messages for chat ${chatId}`);
+                console.log(`📖 Loaded ${messages.length} messages for chat ${chatId}`);
                 
             } catch (error) {
                 console.error('❌ Error loading chat session:', error);
                 
-                // More specific error handling
-                if (error.code === 'failed-precondition') {
+                if (error.code === 'permission-denied') {
+                    alert('Permission denied. Please make sure you are logged in and try refreshing the page.');
+                } else if (error.code === 'failed-precondition') {
                     alert('Database index is being created. Please try again in a few minutes.');
-                } else if (error.code === 'permission-denied') {
-                    alert('Permission denied. Please make sure you are logged in.');
                 } else {
                     alert('Error loading chat. Please check your internet connection and try again.');
                 }
