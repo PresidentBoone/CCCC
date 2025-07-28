@@ -822,7 +822,7 @@
         <div class="logo-section">
             <div class="logo">
                 <a href="index.html">
-                    <img src="images/whiteclearcc.png" alt="College Climb Logo">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
                 </a>
             </div>
             <div class="brand-text">
@@ -1023,40 +1023,35 @@
                     </div>
 
                     <div class="question-group">
-                        <label class="form-label">Standardized Test Scores (if taken)</label>
-                        <div style="display: grid; gap: 0.75rem;">
-                            <div>
-                                <label class="form-label" for="satScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">SAT Score</label>
-                                <select id="satScore" class="form-input form-select">
-                                    <option value="">Not taken/Don't know</option>
-                                    <option value="1600">1600 (Perfect)</option>
-                                    <option value="1500-1590">1500-1590</option>
-                                    <option value="1400-1490">1400-1490</option>
-                                    <option value="1300-1390">1300-1390</option>
-                                    <option value="1200-1290">1200-1290</option>
-                                    <option value="1100-1190">1100-1190</option>
-                                    <option value="1000-1090">1000-1090</option>
-                                    <option value="900-990">900-990</option>
-                                    <option value="below-900">Below 900</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="form-label" for="actScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">ACT Score</label>
-                                <select id="actScore" class="form-input form-select">
-                                    <option value="">Not taken/Don't know</option>
-                                    <option value="36">36 (Perfect)</option>
-                                    <option value="34-35">34-35</option>
-                                    <option value="32-33">32-33</option>
-                                    <option value="30-31">30-31</option>
-                                    <option value="28-29">28-29</option>
-                                    <option value="26-27">26-27</option>
-                                    <option value="24-25">24-25</option>
-                                    <option value="22-23">22-23</option>
-                                    <option value="20-21">20-21</option>
-                                    <option value="below-20">Below 20</option>
-                                </select>
-                            </div>
-                        </div>
+                        <label class="form-label" for="satScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">SAT Score</label>
+                        <select id="satScore" class="form-input form-select">
+                            <option value="">Not taken/Don't know</option>
+                            <option value="1600">1600 (Perfect)</option>
+                            <option value="1500-1590">1500-1590</option>
+                            <option value="1400-1490">1400-1490</option>
+                            <option value="1300-1390">1300-1390</option>
+                            <option value="1200-1290">1200-1290</option>
+                            <option value="1100-1190">1100-1190</option>
+                            <option value="1000-1090">1000-1090</option>
+                            <option value="900-990">900-990</option>
+                            <option value="below-900">Below 900</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label class="form-label" for="actScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">ACT Score</label>
+                        <select id="actScore" class="form-input form-select">
+                            <option value="">Not taken/Don't know</option>
+                            <option value="36">36 (Perfect)</option>
+                            <option value="34-35">34-35</option>
+                            <option value="32-33">32-33</option>
+                            <option value="30-31">30-31</option>
+                            <option value="28-29">28-29</option>
+                            <option value="26-27">26-27</option>
+                            <option value="24-25">24-25</option>
+                            <option value="22-23">22-23</option>
+                            <option value="20-21">20-21</option>
+                            <option value="below-20">Below 20</option>
+                        </select>
                     </div>
 
                     <!-- College Preferences -->
@@ -1985,22 +1980,35 @@
         document.getElementById('themeToggle').addEventListener('click', () => {
             const body = document.body;
             const themeToggle = document.getElementById('themeToggle');
-            
+            let newTheme;
             if (body.getAttribute('data-theme') === 'dark') {
+                newTheme = 'light';
                 body.setAttribute('data-theme', 'light');
                 themeToggle.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
             } else {
+                newTheme = 'dark';
                 body.setAttribute('data-theme', 'dark');
                 themeToggle.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
             }
+            localStorage.setItem('theme', newTheme);
+            updateNavbarLogo(newTheme); // <-- Add this line
         });
 
-        // Initialize theme
+        function updateNavbarLogo(theme) {
+            const logoImg = document.getElementById('navbarLogo');
+            if (!logoImg) return;
+            if (theme === 'dark') {
+                logoImg.src = 'images/whiteclearcc.png';
+            } else {
+                logoImg.src = 'images/blackcc.png';
+            }
+        }
+
+        // Initialize theme and logo on page load
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
         document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        updateNavbarLogo(savedTheme); // <-- Add this line
 
         // Create starry background
         function createStars() {
