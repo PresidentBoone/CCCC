@@ -287,43 +287,50 @@
             object-fit: cover;
             border: 4px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        /* Enhanced file upload styling */
+        .profile-photo:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
         .profile-photo-upload {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 5px;
+            right: 5px;
             background: var(--accent-color);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             transition: all 0.3s ease;
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 3px solid white;
         }
 
         .profile-photo-upload:hover:not([disabled]) {
             transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             color: var(--accent-color);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
 
         .profile-photo-upload:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
         .file-upload-input {
+            display: none !important;
             position: absolute;
             left: -9999px;
             opacity: 0;
@@ -856,13 +863,19 @@
         <div class="profile-header fade-in-up">
             <div class="profile-photo-container">
                 <img id="profilePhoto" src="images/default-avatar.png" alt="Profile Photo" class="profile-photo">
-                <div class="file-upload-wrapper">
-                    <input type="file" id="photoUpload" class="file-upload-input" accept="image/*">
-                    <button class="profile-photo-upload" onclick="document.getElementById('photoUpload').click()">
-                        📷
-                    </button>
-                </div>
+                <button class="profile-photo-upload" onclick="document.getElementById('photoUpload').click()" type="button">
+                    📷
+                </button>
+                <input type="file" id="photoUpload" class="file-upload-input" accept="image/*" style="display: none;">
             </div>
+            
+            <!-- Add visible upload button as well -->
+            <div style="margin-top: 1rem; margin-bottom: 1rem;">
+                <button class="btn btn-secondary" onclick="document.getElementById('photoUpload').click()" type="button">
+                    📷 Change Profile Photo
+                </button>
+            </div>
+            
             <h1 class="profile-name" id="profileName">Loading...</h1>
             <p class="profile-email" id="profileEmail">Loading...</p>
         </div>
@@ -880,6 +893,27 @@
             <!-- Personal Information -->
             <div class="profile-section">
                 <h2 class="section-title">👤 Personal Information</h2>
+                
+                <!-- Profile Photo Upload Section -->
+                <div class="form-group">
+                    <label class="form-label">Profile Photo</label>
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        <div style="position: relative;">
+                            <img id="profilePhotoPreview" src="images/default-avatar.png" alt="Profile Preview" 
+                                 style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color);">
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('photoUpload').click()">
+                                📷 Choose Photo
+                            </button>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Supported: JPG, PNG, GIF, WebP (Max 10MB)
+                            </p>
+                        </div>
+                    </div>
+                    <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                </div>
+                
                 <form id="personalInfoForm">
                     <div class="form-group">
                         <label class="form-label" for="displayName">Display Name</label>
@@ -1511,14 +1545,22 @@
             if (userData.gpa) document.getElementById('gpa').value = userData.gpa;
             if (userData.graduationYear) document.getElementById('graduationYear').value = userData.graduationYear;
 
-            // Profile Photo
+            // Profile Photo - Update all photo elements
             if (userData.profilePhotoURL) {
-                document.getElementById('profilePhoto').src = userData.profilePhotoURL;
-                const navAvatar = document.getElementById('navUserAvatar');
-                if (navAvatar) {
-                    navAvatar.src = userData.profilePhotoURL;
-                    navAvatar.style.display = 'block';
-                }
+                const photoElements = [
+                    document.getElementById('profilePhoto'),
+                    document.getElementById('profilePhotoPreview'),
+                    document.getElementById('navUserAvatar')
+                ];
+                
+                photoElements.forEach(element => {
+                    if (element) {
+                        element.src = userData.profilePhotoURL;
+                        if (element.id === 'navUserAvatar') {
+                            element.style.display = 'block';
+                        }
+                    }
+                });
             }
 
             // Update profile name display
@@ -1648,20 +1690,22 @@
                         });
                         console.log('✅ Firestore updated');
 
-                        // Update UI immediately
-                        const profilePhoto = document.getElementById('profilePhoto');
-                        const navAvatar = document.getElementById('navUserAvatar');
-                        
-                        if (profilePhoto) {
-                            profilePhoto.src = downloadURL;
-                            profilePhoto.onload = () => console.log('✅ Profile photo updated in UI');
-                        }
-                        
-                        if (navAvatar) {
-                            navAvatar.src = downloadURL;
-                            navAvatar.style.display = 'block';
-                            navAvatar.onload = () => console.log('✅ Nav avatar updated in UI');
-                        }
+                        // Update UI immediately - UPDATE ALL PHOTO ELEMENTS
+                        const photoElements = [
+                            document.getElementById('profilePhoto'),
+                            document.getElementById('profilePhotoPreview'),
+                            document.getElementById('navUserAvatar')
+                        ];
+
+                        photoElements.forEach(element => {
+                            if (element) {
+                                element.src = downloadURL;
+                                if (element.id === 'navUserAvatar') {
+                                    element.style.display = 'block';
+                                }
+                                element.onload = () => console.log(`✅ ${element.id} updated in UI`);
+                            }
+                        });
 
                         // Update current user data
                         currentUserData.profilePhotoURL = downloadURL;
