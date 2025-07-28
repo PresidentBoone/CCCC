@@ -530,10 +530,21 @@
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
             <li class="dropdown">
-                <a href="#">Login/Sign Up</a>
-                <div class="dropdown-content">
-                    <a href="login.html">Login</a>
-                    <a href="signup.html">Sign Up</a>
+                <a href="#" id="authToggle">Login/Sign Up</a>
+                <!-- Dropdown content -->
+                <div class="dropdown-content" id="authDropdown">
+                    <!-- Not logged in content -->
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <!-- Logged in content -->
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
                 </div>
             </li>
             <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
@@ -609,27 +620,38 @@
 
   // Track login state
   onAuthStateChanged(auth, (user) => {
+    updateAuthUI(user); // Add this line
+    
     if (user) {
-      sessionStorage.setItem("user", JSON.stringify(user));
-      console.log("Logged in as:", user.email);
-      document.body.classList.add("logged-in");
-
-      const welcome = document.getElementById("welcome");
-      if (welcome) {
-        welcome.textContent = `Welcome, ${user.email}`;
-      }
+        sessionStorage.setItem("user", JSON.stringify(user));
+        console.log("Logged in as:", user.email);
+        document.body.classList.add("logged-in");
+        // Redirect to dashboard if already logged in
+        window.location.href = 'dashboard.html';
     } else {
-      sessionStorage.removeItem("user");
-      document.body.classList.remove("logged-in");
-
-      // Redirect if the page is protected
-      if (document.body.hasAttribute("data-auth")) {
-        window.location.href = "/login.html";
-      }
+        sessionStorage.removeItem("user");
+        document.body.classList.remove("logged-in");
     }
   });
 
-  // Optional logout logic if you want it everywhere
+  // Add this function to update the auth dropdown UI
+function updateAuthUI(user) {
+    const authToggle = document.getElementById('authToggle');
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
+    
+    if (user) {
+        // User is logged in - redirect to dashboard
+        window.location.href = 'dashboard.html';
+    } else {
+        // User is not logged in
+        if (authToggle) authToggle.textContent = 'Login/Sign Up';
+        if (notLoggedIn) notLoggedIn.style.display = 'block';
+        if (loggedIn) loggedIn.style.display = 'none';
+    }
+}
+
+// Optional logout logic if you want it everywhere
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {

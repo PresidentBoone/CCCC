@@ -528,7 +528,24 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li><a href="login.html">Login</a></li>
+            <li class="dropdown">
+                <a href="#" id="authToggle">Login/Sign Up</a>
+                <!-- Dropdown content -->
+                <div class="dropdown-content" id="authDropdown">
+                    <!-- Not logged in content -->
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <!-- Logged in content -->
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
             <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
         </ul>
     </nav>
@@ -862,6 +879,7 @@
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             updateAuthBanner(user);
+            updateAuthUI(user); // Add this line
             
             if (user) {
                 await loadExistingData(user.uid);
@@ -879,6 +897,25 @@
                 banner.innerHTML = `
                     <span style="color: #17a2b8;">ℹ️ Please <a href="login.html" style="color: var(--accent-color); text-decoration: underline;">log in</a> to save your responses.</span>
                 `;
+            }
+        }
+
+        // Add this function to update the auth dropdown UI
+        function updateAuthUI(user) {
+            const authToggle = document.getElementById('authToggle');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            
+            if (user) {
+                // User is logged in
+                authToggle.textContent = 'Account';
+                notLoggedIn.style.display = 'none';
+                loggedIn.style.display = 'block';
+            } else {
+                // User is not logged in
+                authToggle.textContent = 'Login/Sign Up';
+                notLoggedIn.style.display = 'block';
+                loggedIn.style.display = 'none';
             }
         }
 
@@ -1207,23 +1244,15 @@
 
   // Track login state
   onAuthStateChanged(auth, (user) => {
+    updateAuthUI(user); // Add this line
+    
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       console.log("Logged in as:", user.email);
       document.body.classList.add("logged-in");
-
-      const welcome = document.getElementById("welcome");
-      if (welcome) {
-        welcome.textContent = `Welcome, ${user.email}`;
-      }
     } else {
       sessionStorage.removeItem("user");
       document.body.classList.remove("logged-in");
-
-      // Redirect if the page is protected
-      if (document.body.hasAttribute("data-auth")) {
-        window.location.href = "/login.html";
-      }
     }
   });
 
