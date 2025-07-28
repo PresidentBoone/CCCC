@@ -787,6 +787,192 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .chatbot-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chatbot-container-with-sidebar {
+            display: flex;
+            height: 500px;
+            gap: 1rem;
+        }
+
+        .chat-sidebar {
+            width: 250px;
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            overflow-y: auto;
+        }
+
+        .chat-sidebar-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-sidebar-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .new-chat-btn, .clear-chat-btn {
+            padding: 0.5rem 0.8rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .new-chat-btn:hover, .clear-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .clear-chat-btn {
+            background: var(--danger-color);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.7rem;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chat-item {
+            padding: 0.8rem;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: var(--accent-bg);
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .chat-item.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .chat-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-item-preview {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-item-date {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-top: 0.3rem;
+        }
+
+        .chat-item-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .chat-item:hover .chat-item-delete {
+            opacity: 1;
+        }
+
+        .no-chats-message {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 2rem 1rem;
+            font-style: italic;
+        }
+
+        .chatbot-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: space-between;
+        }
+
+        /* Update existing chatbot container styles */
+        .chatbot-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 1rem;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .chatbot-container-with-sidebar {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .chat-sidebar {
+                width: 100%;
+                max-height: 200px;
+                order: 2;
+            }
+            
+            .chatbot-main {
+                order: 1;
+                height: 400px;
+            }
+        }
     </style>
 </head>
 <body data-theme="dark" data-auth>
@@ -924,24 +1110,42 @@
                 </div>
             </div>
 
-            <div class="feature-panel">
-                <div class="chatbot-container">
-                    <div class="chatbot-header">
-                        <h3>🤖 AI College Counselor</h3>
-                        <span class="chatbot-status">● Online</span>
-                        <button onclick="clearChatHistory()" style="margin-left: auto; padding: 0.5rem 1rem; background: var(--danger-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem;">Clear History</button>
-                    </div>
-                    <div class="chatbot-messages" id="chatMessages">
-                        <div class="message ai-message">
-                            <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
-                        </div>
-                    </div>
-                    <div class="chatbot-input">
-                        <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
-                        <button onclick="sendMessage()">Send</button>
-                    </div>
+            <div class="feature-panel chatbot-panel">
+    <div class="chatbot-container-with-sidebar">
+        <!-- Chat Sidebar -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <div class="chat-sidebar-header">
+                <h4>💬 Chat History</h4>
+                <button onclick="startNewChat()" class="new-chat-btn">+ New Chat</button>
+            </div>
+            <div class="chat-list" id="chatList">
+                <div class="no-chats-message">
+                    No previous chats. Start a conversation!
                 </div>
             </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="chatbot-main">
+            <div class="chatbot-container">
+                <div class="chatbot-header">
+                    <h3>🤖 AI College Counselor</h3>
+                    <span class="chatbot-status">● Online</span>
+                    <button onclick="clearCurrentChat()" class="clear-chat-btn">Clear Chat</button>
+                </div>
+                <div class="chatbot-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
+                    </div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 
@@ -1013,21 +1217,29 @@
     updateAuthUI(user);
 
     if (user) {
-      console.log('User is signed in:', user.uid);
-      document.body.classList.add("logged-in");
-      await loadUserData(user.uid);
-      await loadProgressData(user.uid);
-      await loadChatHistory(user.uid); // Add this line
+        console.log('User is signed in:', user.uid);
+        document.body.classList.add("logged-in");
+        await loadUserData(user.uid);
+        await loadProgressData(user.uid);
+        await loadChatSessions(user.uid); // Load chat sessions instead of chat history
+        startNewChat(); // Start with a new chat
     } else {
-      console.log('User is signed out');
-      document.body.classList.remove("logged-in");
-      // Clear chat history when user logs out
-      const chatMessages = document.getElementById('chatMessages');
-      chatMessages.innerHTML = `
+        console.log('User is signed out');
+        document.body.classList.remove("logged-in");
+        
+        // Clear chat sessions and start fresh
+        const chatList = document.getElementById('chatList');
+        chatList.innerHTML = '<div class="no-chats-message">Please log in to save your chats.</div>';
+        
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = `
             <div class="message ai-message">
                 <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
             </div>
         `;
+        
+        currentChatId = null;
+        currentChatMessages = [];
     }
   });
 
@@ -1292,6 +1504,11 @@ async function sendMessage() {
     
     if (!message) return;
     
+    // If no current chat, start a new one
+    if (!currentChatId) {
+        startNewChat();
+    }
+    
     lastMessageTime = now;
     const chatMessages = document.getElementById('chatMessages');
     
@@ -1362,12 +1579,30 @@ async function sendMessage() {
         // Save messages if user is logged in
         if (window.auth && window.auth.currentUser) {
             try {
-                await window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
-                await window.saveChatMessage(window.auth.currentUser.uid, aiResponseText, 'ai');
+                const userId = window.auth.currentUser.uid;
+                
+                // Save messages to the current chat session
+                await saveChatMessageToSession(userId, currentChatId, message, 'user');
+                await saveChatMessageToSession(userId, currentChatId, aiResponseText, 'ai');
+                
+                // Generate title for new chats
+                const chatTitle = currentChatMessages.length === 0 ? generateChatTitle(message) : null;
+                
+                // Save/update chat session
+                await saveChatSession(userId, currentChatId, chatTitle, aiResponseText);
+                
+                // Add to current messages array
+                currentChatMessages.push(
+                    { message, sender: 'user' },
+                    { message: aiResponseText, sender: 'ai' }
+                );
+                
+                // Reload chat sessions to update the sidebar
+                await loadChatSessions(userId);
+                
                 console.log('Chat messages saved successfully');
             } catch (error) {
                 console.error('Error saving chat messages:', error);
-                // Don't show an alert as it would be annoying, but log it
             }
         }
         
@@ -1425,6 +1660,249 @@ async function testAPIConnection() {
         console.error('Test failed:', error);
         alert('Test failed: ' + error.message);
     }
+}
+
+// Add these variables and functions to your script section:
+
+let currentChatId = null;
+let currentChatMessages = [];
+
+// Create a new chat session
+function startNewChat() {
+    currentChatId = 'chat_' + Date.now();
+    currentChatMessages = [];
+    
+    // Clear the chat display
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = `
+        <div class="message ai-message">
+            <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
+        </div>
+    `;
+    
+    // Remove active class from all chat items
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    console.log('Started new chat:', currentChatId);
+}
+
+// Load chat sessions for a user
+async function loadChatSessions(userId) {
+    try {
+        console.log('Loading chat sessions for user:', userId);
+        const { collection, query, where, orderBy, getDocs } = window.firestoreFunctions;
+        
+        const chatsQuery = query(
+            collection(window.db, 'chatSessions'),
+            where('userId', '==', userId),
+            orderBy('lastUpdated', 'desc')
+        );
+        
+        const querySnapshot = await getDocs(chatsQuery);
+        const chatList = document.getElementById('chatList');
+        
+        // Clear existing list
+        chatList.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+            chatList.innerHTML = '<div class="no-chats-message">No previous chats. Start a conversation!</div>';
+            return;
+        }
+        
+        // Add each chat session
+        querySnapshot.forEach((doc) => {
+            const chatData = doc.data();
+            const chatItem = createChatItem(doc.id, chatData);
+            chatList.appendChild(chatItem);
+        });
+        
+        console.log('Chat sessions loaded:', querySnapshot.size, 'sessions');
+        
+    } catch (error) {
+        console.error('Error loading chat sessions:', error);
+    }
+}
+
+// Create a chat item element
+function createChatItem(chatId, chatData) {
+    const chatItem = document.createElement('div');
+    chatItem.className = 'chat-item';
+    chatItem.onclick = () => loadChatSession(chatId);
+    
+    const title = chatData.title || 'Untitled Chat';
+    const preview = chatData.lastMessage || 'No messages yet';
+    const date = chatData.lastUpdated ? new Date(chatData.lastUpdated.toDate()).toLocaleDateString() : 'Unknown';
+    
+    chatItem.innerHTML = `
+        <div class="chat-item-title">${title}</div>
+        <div class="chat-item-preview">${preview}</div>
+        <div class="chat-item-date">${date}</div>
+        <button class="chat-item-delete" onclick="event.stopPropagation(); deleteChatSession('${chatId}')" title="Delete chat">×</button>
+    `;
+    
+    return chatItem;
+}
+
+// Load a specific chat session
+async function loadChatSession(chatId) {
+    try {
+        console.log('Loading chat session:', chatId);
+        const { collection, query, where, orderBy, getDocs } = window.firestoreFunctions;
+        
+        // Set current chat
+        currentChatId = chatId;
+        currentChatMessages = [];
+        
+        // Update UI to show active chat
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.target.closest('.chat-item').classList.add('active');
+        
+        // Load messages for this chat
+        const messagesQuery = query(
+            collection(window.db, 'chatMessages'),
+            where('chatId', '==', chatId),
+            orderBy('timestamp', 'asc')
+        );
+        
+        const querySnapshot = await getDocs(messagesQuery);
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Clear current messages
+        chatMessages.innerHTML = '';
+        
+        // Load chat messages
+        querySnapshot.forEach((doc) => {
+            const messageData = doc.data();
+            const messageDiv = document.createElement('div');
+            
+            if (messageData.sender === 'user') {
+                messageDiv.className = 'message user-message';
+                messageDiv.innerHTML = `<strong>You:</strong> ${messageData.message}`;
+            } else {
+                messageDiv.className = 'message ai-message';
+                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${messageData.message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            currentChatMessages.push(messageData);
+        });
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        console.log('Chat session loaded:', querySnapshot.size, 'messages');
+        
+    } catch (error) {
+        console.error('Error loading chat session:', error);
+    }
+}
+
+// Save chat session
+async function saveChatSession(userId, chatId, title, lastMessage) {
+    try {
+        const { doc, setDoc, serverTimestamp } = window.firestoreFunctions;
+        
+        await setDoc(doc(window.db, 'chatSessions', chatId), {
+            userId: userId,
+            title: title,
+            lastMessage: lastMessage,
+            lastUpdated: serverTimestamp()
+        }, { merge: true });
+        
+        console.log('Chat session saved:', chatId);
+        
+    } catch (error) {
+        console.error('Error saving chat session:', error);
+    }
+}
+
+// Save individual chat message
+async function saveChatMessageToSession(userId, chatId, message, sender) {
+    try {
+        const { collection, addDoc, serverTimestamp } = window.firestoreFunctions;
+        
+        await addDoc(collection(window.db, 'chatMessages'), {
+            userId: userId,
+            chatId: chatId,
+            message: message,
+            sender: sender,
+            timestamp: serverTimestamp()
+        });
+        
+        console.log('Chat message saved to session:', chatId);
+        
+    } catch (error) {
+        console.error('Error saving chat message to session:', error);
+    }
+}
+
+// Delete a chat session
+async function deleteChatSession(chatId) {
+    if (!confirm('Are you sure you want to delete this chat? This cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        const { collection, query, where, getDocs, deleteDoc, doc } = window.firestoreFunctions;
+        
+        // Delete the chat session
+        await deleteDoc(doc(window.db, 'chatSessions', chatId));
+        
+        // Delete all messages in this chat
+        const messagesQuery = query(
+            collection(window.db, 'chatMessages'),
+            where('chatId', '==', chatId)
+        );
+        
+        const querySnapshot = await getDocs(messagesQuery);
+        const deletePromises = [];
+        
+        querySnapshot.forEach((messageDoc) => {
+            deletePromises.push(deleteDoc(doc(window.db, 'chatMessages', messageDoc.id)));
+        });
+        
+        await Promise.all(deletePromises);
+        
+        // Reload chat sessions
+        if (window.auth.currentUser) {
+            await loadChatSessions(window.auth.currentUser.uid);
+        }
+        
+        // If this was the current chat, start a new one
+        if (currentChatId === chatId) {
+            startNewChat();
+        }
+        
+        console.log('Chat session deleted:', chatId);
+        
+    } catch (error) {
+        console.error('Error deleting chat session:', error);
+        alert('Error deleting chat. Please try again.');
+    }
+}
+
+// Clear current chat (rename from clearChatHistory)
+function clearCurrentChat() {
+    if (!currentChatId) {
+        startNewChat();
+        return;
+    }
+    
+    const confirmClear = confirm('Are you sure you want to clear this chat? This will start a new conversation.');
+    
+    if (confirmClear) {
+        startNewChat();
+    }
+}
+
+// Generate chat title from first message
+function generateChatTitle(firstMessage) {
+    const words = firstMessage.split(' ').slice(0, 5);
+    return words.join(' ') + (firstMessage.split(' ').length > 5 ? '...' : '');
 }
 </script>
 </body>
