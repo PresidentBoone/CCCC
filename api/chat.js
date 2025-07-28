@@ -31,6 +31,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Check if OpenAI API key is available
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('OPENAI_API_KEY not found in environment variables');
+    return res.status(500).json({ 
+      error: 'Server configuration error. Please contact support.',
+      details: 'API key not configured'
+    });
+  }
+
   try {
     const { message } = req.body;
     
@@ -44,7 +53,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Message cannot be empty' });
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Making request to OpenAI with message:', sanitizedMessage);
+
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -74,14 +85,35 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!response.ok) {
-      console.error('OpenAI API error:', response.status, await response.text());
-      throw new Error(`OpenAI API error: ${response.status}`);
+    console.log('OpenAI response status:', openaiResponse.status);
+
+    if (!openaiResponse.ok) {
+      const errorText = await openaiResponse.text();
+      console.error('OpenAI API error:', openaiResponse.status, errorText);
+      
+      if (openaiResponse.status === 401) {
+        return res.status(500).json({ 
+          error: 'API authentication failed. Please contact support.',
+          details: 'Invalid API key'
+        });
+      } else if (openaiResponse.status === 429) {
+        return res.status(500).json({ 
+          error: 'Service temporarily unavailable due to high demand. Please try again in a moment.',
+          details: 'Rate limit exceeded'
+        });
+      } else {
+        return res.status(500).json({ 
+          error: 'External service error. Please try again later.',
+          details: `OpenAI API error: ${openaiResponse.status}`
+        });
+      }
     }
 
-    const data = await response.json();
+    const data = await openaiResponse.json();
+    console.log('OpenAI response data received');
     
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Invalid OpenAI response format:', data);
       throw new Error('Invalid response format from OpenAI');
     }
 
@@ -92,7 +124,8 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error in chat API:', error);
     res.status(500).json({ 
-      error: 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.'
+      error: 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.',
+      details: error.message
     });
   }
 }
