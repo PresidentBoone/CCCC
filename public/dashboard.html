@@ -568,17 +568,29 @@
             margin-bottom: 0.5rem;
         }
 
+        /* Better active chat item styling */
+        .chat-item.active {
+            background: var(--accent-color) !important;
+            color: white !important;
+            border-color: var(--accent-color) !important;
+            transform: translateX(5px);
+        }
+
+        .chat-item.active .chat-item-title,
+        .chat-item.active .chat-item-preview,
+        .chat-item.active .chat-item-date {
+            color: white !important;
+        }
+
+        .chat-item {
+            cursor: pointer;
+            user-select: none;
+        }
+
         .chat-item:hover {
             background: var(--accent-color);
             color: white;
-            transform: translateX(5px);
-            box-shadow: var(--shadow);
-        }
-
-        .chat-item.active {
-            background: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
+            transform: translateX(3px);
         }
 
         .chat-item-title {
@@ -1455,14 +1467,20 @@
                 const querySnapshot = await getDocs(chatsQuery);
                 const chatList = document.getElementById('chatList');
                 
-                if (!chatList) return;
+                if (!chatList) {
+                    console.error('❌ Chat list element not found');
+                    return;
+                }
                 
                 chatList.innerHTML = '';
                 
                 if (querySnapshot.empty) {
                     chatList.innerHTML = '<div class="no-chats-message">Start your first conversation with our AI counselor!</div>';
+                    console.log('📚 No chat history found');
                     return;
                 }
+                
+                console.log(`📚 Found ${querySnapshot.size} chat sessions`);
                 
                 querySnapshot.forEach((docSnapshot) => {
                     const chatData = docSnapshot.data();
@@ -1470,17 +1488,20 @@
                     chatList.appendChild(chatItem);
                 });
                 
-                console.log(`📚 Loaded ${querySnapshot.size} chat sessions`);
+                console.log('✅ Chat history loaded successfully');
                 
             } catch (error) {
                 console.error('❌ Error loading chat history:', error);
+                const chatList = document.getElementById('chatList');
+                if (chatList) {
+                    chatList.innerHTML = '<div class="no-chats-message">Error loading chat history. Please refresh the page.</div>';
+                }
             }
         }
 
         function createChatItem(chatId, chatData) {
             const chatItem = document.createElement('div');
             chatItem.className = 'chat-item';
-            chatItem.onclick = () => loadChatSession(chatId);
             
             const title = chatData.title || 'New Chat';
             const preview = chatData.lastMessage ? 
@@ -1494,8 +1515,14 @@
                 <div class="chat-item-title">${escapeHtml(title)}</div>
                 <div class="chat-item-preview">${escapeHtml(preview)}</div>
                 <div class="chat-item-date">${date}</div>
-                <button class="chat-item-delete" onclick="event.stopPropagation(); deleteChatSession('${chatId}')" title="Delete chat">×</button>
+                <button class="chat-item-delete" onclick="event.stopPropagation(); window.deleteChatSession('${chatId}')" title="Delete chat">×</button>
             `;
+            
+            // Add click event listener properly
+            chatItem.addEventListener('click', () => {
+                console.log('🖱️ Chat item clicked:', chatId);
+                window.loadChatSession(chatId);
+            });
             
             return chatItem;
         }
@@ -1507,14 +1534,20 @@
                 window.currentChatId = chatId;
                 window.currentChatMessages = [];
                 
-                // Update UI
+                // Update UI - remove active class from all items
                 document.querySelectorAll('.chat-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 
-                event.target.closest('.chat-item')?.classList.add('active');
+                // Find and mark the clicked item as active
+                const clickedItem = Array.from(document.querySelectorAll('.chat-item')).find(item => {
+                    return item.innerHTML.includes(chatId);
+                });
+                if (clickedItem) {
+                    clickedItem.classList.add('active');
+                }
                 
-                // Load messages
+                // Load messages from Firestore
                 const messagesQuery = query(
                     collection(db, 'chatMessages'),
                     where('chatId', '==', chatId),
@@ -1524,10 +1557,24 @@
                 const querySnapshot = await getDocs(messagesQuery);
                 const chatMessages = document.getElementById('chatMessages');
                 
-                if (!chatMessages) return;
+                if (!chatMessages) {
+                    console.error('❌ Chat messages container not found');
+                    return;
+                }
                 
                 chatMessages.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    chatMessages.innerHTML = `
+                        <div class="message ai-message">
+                            <strong>AI Counselor:</strong> 
+                            This chat appears to be empty. Let's start a new conversation!
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Add each message to the chat
                 querySnapshot.forEach((docSnapshot) => {
                     const messageData = docSnapshot.data();
                     const messageDiv = document.createElement('div');
@@ -1544,12 +1591,14 @@
                     window.currentChatMessages.push(messageData);
                 });
                 
+                // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                console.log(`📖 Loaded ${querySnapshot.size} messages`);
+                console.log(`📖 Loaded ${querySnapshot.size} messages for chat ${chatId}`);
                 
             } catch (error) {
                 console.error('❌ Error loading chat session:', error);
+                alert('Error loading chat. Please try again.');
             }
         };
 
@@ -1988,4 +2037,3 @@
                             </script>
                         </body>
                         </html>
-                           
