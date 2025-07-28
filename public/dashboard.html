@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta n</div>ame="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -789,8 +789,7 @@
         }
     </style>
 </head>
-<body data-theme="dark">
-    <body data-auth>
+<body data-theme="dark" data-auth>
 
     <div class="starry-bg" id="starryBg"></div>
 
@@ -798,7 +797,7 @@
         <div class="logo-section">
             <div class="logo">
                 <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    <img src="images/blackcc.png" alt="College Climb Logo" class="logo-img">
+                    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
                 </a>
             </div>
             <div class="brand-text">
@@ -1121,7 +1120,158 @@
 <button onclick="testAPIConnection()" style="margin: 10px; padding: 10px; background: red; color: white;">Test API</button>
 
 <script>
-// Add this test function
+// Theme toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    themeToggle.addEventListener('click', function() {
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.setAttribute('data-theme', 'light');
+            themeToggle.textContent = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = '☀️';
+        }
+    });
+    
+    // Create starry background
+    createStarryBackground();
+    
+    // Animate progress bars
+    setTimeout(animateProgressBars, 1000);
+    
+    // Fade in elements
+    const fadeElements = document.querySelectorAll('.fade-in-up');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    });
+    
+    fadeElements.forEach(el => observer.observe(el));
+});
+
+// Create starry background
+function createStarryBackground() {
+    const starryBg = document.getElementById('starryBg');
+    const numStars = 100;
+    
+    for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starryBg.appendChild(star);
+    }
+}
+
+// Animate progress bars
+function animateProgressBars() {
+    const progressBars = [
+        { id: 'applicationBar', percent: 65 },
+        { id: 'essayBar', percent: 40 },
+        { id: 'resumeBar', percent: 80 },
+        { id: 'scholarshipBar', percent: 25 }
+    ];
+    
+    progressBars.forEach(bar => {
+        const element = document.getElementById(bar.id);
+        if (element) {
+            element.style.width = bar.percent + '%';
+        }
+    });
+}
+
+// Update progress bars with data
+function updateProgressBars(progressData) {
+    if (progressData.application) {
+        document.getElementById('applicationBar').style.width = progressData.application + '%';
+        document.getElementById('applicationPercent').textContent = progressData.application + '%';
+    }
+    if (progressData.essays) {
+        document.getElementById('essayBar').style.width = progressData.essays + '%';
+        document.getElementById('essayPercent').textContent = progressData.essays + '%';
+    }
+    if (progressData.resume) {
+        document.getElementById('resumeBar').style.width = progressData.resume + '%';
+        document.getElementById('resumePercent').textContent = progressData.resume + '%';
+    }
+    if (progressData.scholarships) {
+        document.getElementById('scholarshipBar').style.width = progressData.scholarships + '%';
+        document.getElementById('scholarshipPercent').textContent = progressData.scholarships + '%';
+    }
+}
+
+// Quick action functions
+function openApplicationProgress() { window.location.href = 'application-tracker.html'; }
+function openEssayProgress() { window.location.href = 'essay-helper.html'; }
+function openResumeProgress() { window.location.href = 'resume-builder.html'; }
+function openScholarshipProgress() { window.location.href = 'scholarship-finder.html'; }
+function openEssayHelper() { window.location.href = 'essay-helper.html'; }
+function openResumeBuilder() { window.location.href = 'resume-builder.html'; }
+function openCollegeSearch() { window.location.href = 'college-search.html'; }
+function openScholarshipFinder() { window.location.href = 'scholarship-finder.html'; }
+function openInterviewPrep() { window.location.href = 'interview-prep.html'; }
+function openTestPrep() { window.location.href = 'test-prep.html'; }
+
+// Chatbot functionality
+function sendMessage() {
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Add user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user-message';
+    userMessage.innerHTML = `<strong>You:</strong> ${message}`;
+    chatMessages.appendChild(userMessage);
+    
+    // Clear input
+    input.value = '';
+    
+    // Show typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'message ai-message typing-indicator';
+    typingIndicator.innerHTML = `<strong>AI Counselor:</strong> <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+    chatMessages.appendChild(typingIndicator);
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Simulate AI response
+    setTimeout(() => {
+        chatMessages.removeChild(typingIndicator);
+        
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'message ai-message';
+        aiMessage.innerHTML = `<strong>AI Counselor:</strong> I understand you're asking about "${message}". I'm here to help with your college application journey. Could you provide more specific details so I can give you the best guidance?`;
+        chatMessages.appendChild(aiMessage);
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Save message if user is logged in
+        if (window.auth && window.auth.currentUser) {
+            window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
+        }
+    }, 2000);
+}
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+// Test API function
 async function testAPIConnection() {
     try {
         console.log('Testing API connection...');
@@ -1153,6 +1303,5 @@ async function testAPIConnection() {
     }
 }
 </script>
-
 </body>
 </html>
