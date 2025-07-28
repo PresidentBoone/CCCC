@@ -1645,5 +1645,42 @@
   initializeFirebase();
 </script>
 
+<!-- Add this temporarily after the chatbot input -->
+<button onclick="testAPIConnection()" style="margin: 10px; padding: 10px; background: red; color: white;">Test API</button>
+
+<script>
+// Add this test function
+async function testAPIConnection() {
+    try {
+        console.log('Testing API connection...');
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: "Test message"
+            })
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        const text = await response.text();
+        console.log('Raw response:', text);
+        
+        if (response.ok) {
+            const data = JSON.parse(text);
+            alert('API works! Response: ' + data.response);
+        } else {
+            alert('API error: ' + text);
+        }
+    } catch (error) {
+        console.error('Test failed:', error);
+        alert('Test failed: ' + error.message);
+    }
+}
+</script>
+
 </body>
 </html>
