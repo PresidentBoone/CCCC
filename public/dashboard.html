@@ -929,6 +929,7 @@
                     <div class="chatbot-header">
                         <h3>🤖 AI College Counselor</h3>
                         <span class="chatbot-status">● Online</span>
+                        <button onclick="clearChatHistory()" style="margin-left: auto; padding: 0.5rem 1rem; background: var(--danger-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem;">Clear History</button>
                     </div>
                     <div class="chatbot-messages" id="chatMessages">
                         <div class="message ai-message">
@@ -972,7 +973,7 @@
   // Import Firebase modules directly (no API route needed for Firebase config)
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-  import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+  import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
   // Firebase configuration (this is safe to expose)
   const firebaseConfig = {
@@ -1003,7 +1004,8 @@
     where,
     getDocs,
     orderBy,
-    serverTimestamp
+    serverTimestamp,
+    deleteDoc  // Add this
   };
 
   // Auth state listener
@@ -1015,9 +1017,17 @@
       document.body.classList.add("logged-in");
       await loadUserData(user.uid);
       await loadProgressData(user.uid);
+      await loadChatHistory(user.uid); // Add this line
     } else {
       console.log('User is signed out');
       document.body.classList.remove("logged-in");
+      // Clear chat history when user logs out
+      const chatMessages = document.getElementById('chatMessages');
+      chatMessages.innerHTML = `
+            <div class="message ai-message">
+                <strong>AI Counselor:</strong> Hello! I'm your AI college counselor. I can help you with college applications, essays, scholarships, and any questions about your college journey. How can I assist you today?
+            </div>
+        `;
     }
   });
 
@@ -1068,6 +1078,52 @@
     } catch (error) {
       console.error('Error loading progress data:', error);
       animateProgressBars();
+    }
+  }
+
+  // Load chat history
+  async function loadChatHistory(userId) {
+    try {
+        console.log('Loading chat history for user:', userId);
+        const { collection, query, where, orderBy, getDocs } = window.firestoreFunctions;
+        
+        const chatQuery = query(
+            collection(window.db, 'chatHistory'),
+            where('userId', '==', userId),
+            orderBy('timestamp', 'asc')
+        );
+        
+        const querySnapshot = await getDocs(chatQuery);
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Clear existing messages except the welcome message
+        const welcomeMessage = chatMessages.querySelector('.ai-message');
+        chatMessages.innerHTML = '';
+        chatMessages.appendChild(welcomeMessage);
+        
+        // Add chat history
+        querySnapshot.forEach((doc) => {
+            const chatData = doc.data();
+            const messageDiv = document.createElement('div');
+            
+            if (chatData.sender === 'user') {
+                messageDiv.className = 'message user-message';
+                messageDiv.innerHTML = `<strong>You:</strong> ${chatData.message}`;
+            } else {
+                messageDiv.className = 'message ai-message';
+                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${chatData.message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+        });
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        console.log('Chat history loaded:', querySnapshot.size, 'messages');
+        
+    } catch (error) {
+        console.error('Error loading chat history:', error);
     }
   }
 
@@ -1308,8 +1364,14 @@ async function sendMessage() {
         
         // Save messages if user is logged in
         if (window.auth && window.auth.currentUser) {
-            await window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
-            await window.saveChatMessage(window.auth.currentUser.uid, aiResponseText, 'ai');
+            try {
+                await window.saveChatMessage(window.auth.currentUser.uid, message, 'user');
+                await window.saveChatMessage(window.auth.currentUser.uid, aiResponseText, 'ai');
+                console.log('Chat messages saved successfully');
+            } catch (error) {
+                console.error('Error saving chat messages:', error);
+                // Don't show an alert as it would be annoying, but log it
+            }
         }
         
     } catch (error) {
