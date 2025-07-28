@@ -827,6 +827,192 @@
             margin: 1rem 0;
             animation: slideIn 0.3s ease;
         }
+
+        /* Chat Interface Styles */
+        .chatbot-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--primary-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            padding: 1.5rem;
+            background: var(--secondary-bg);
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .chatbot-status {
+            font-size: 0.9rem;
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
+        .clear-chat-btn {
+            padding: 0.5rem 1rem;
+            background: var(--secondary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .clear-chat-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--primary-bg);
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            max-width: 85%;
+            word-wrap: break-word;
+            line-height: 1.5;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .user-message {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 6px;
+        }
+
+        .ai-message {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .message strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .chatbot-input {
+            padding: 1.5rem;
+            background: var(--secondary-bg);
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 12px;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .chatbot-input button {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .chatbot-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .chatbot-input button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .no-chats-message {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px dashed rgba(160, 123, 204, 0.3);
+        }
+
+        .chat-item-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-item:hover .chat-item-delete {
+            display: flex;
+        }
+
+        .chat-item-delete:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -1543,7 +1729,6 @@
             const body = document.body;
             
             if (themeToggle) {
-                // Load saved theme
                 const savedTheme = localStorage.getItem('theme') || 'dark';
                 body.setAttribute('data-theme', savedTheme);
                 themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
@@ -1599,7 +1784,7 @@
             });
         }
 
-        // Quick action functions
+        // Navigation functions
         function openApplicationProgress() { window.location.href = 'application-tracker.html'; }
         function openEssayProgress() { window.location.href = 'essay-helper.html'; }
         function openResumeProgress() { window.location.href = 'resume-builder.html'; }
@@ -1611,45 +1796,22 @@
         function openInterviewPrep() { window.location.href = 'interview-prep.html'; }
         function openTestPrep() { window.location.href = 'test-prep.html'; }
 
-        // General feature opener function
         function openFeature(feature) {
             switch(feature) {
-                case 'application':
-                    openApplicationProgress();
-                    break;
-                case 'essays':
-                    openEssayProgress();
-                    break;
-                case 'resume':
-                    openResumeProgress();
-                    break;
-                case 'scholarships':
-                    openScholarshipProgress();
-                    break;
-                case 'essay-helper':
-                    openEssayHelper();
-                    break;
-                case 'resume-builder':
-                    openResumeBuilder();
-                    break;
-                case 'college-search':
-                    openCollegeSearch();
-                    break;
-                case 'scholarship-finder':
-                    openScholarshipFinder();
-                    break;
-                case 'interview-prep':
-                    openInterviewPrep();
-                    break;
-                case 'test-prep':
-                    openTestPrep();
-                    break;
-                default:
-                    console.log('Feature not found:', feature);
+                case 'application': openApplicationProgress(); break;
+                case 'essays': openEssayProgress(); break;
+                case 'resume': openResumeProgress(); break;
+                case 'scholarships': openScholarshipProgress(); break;
+                case 'essay-helper': openEssayHelper(); break;
+                case 'resume-builder': openResumeBuilder(); break;
+                case 'college-search': openCollegeSearch(); break;
+                case 'scholarship-finder': openScholarshipFinder(); break;
+                case 'interview-prep': openInterviewPrep(); break;
+                case 'test-prep': openTestPrep(); break;
+                default: console.log('Feature not found:', feature);
             }
         }
 
-        // Initialize animations function
         function initializeAnimations() {
             const observerOptions = {
                 threshold: 0.1,
@@ -1669,91 +1831,9 @@
             });
         }
 
-        // Enhanced Chat functionality
+        // Chat functionality
         let lastMessageTime = 0;
-        const MESSAGE_COOLDOWN = 1000; // 1 second between messages
-
-        // Save current chat before starting new one
-        async function saveCurrentChatBeforeNew() {
-            if (!window.currentChatId || !window.auth?.currentUser) {
-                return;
-            }
-
-            const chatMessages = document.getElementById('chatMessages');
-            if (!chatMessages || chatMessages.children.length <= 1) {
-                return; // No messages to save
-            }
-
-            try {
-                console.log('💾 Saving current chat before starting new one...');
-                
-                // Get the first user message as title basis
-                const firstUserMessage = Array.from(chatMessages.children)
-                    .find(msg => msg.classList.contains('user-message'));
-                
-                if (firstUserMessage) {
-                    const messageText = firstUserMessage.textContent.replace('You:', '').trim();
-                    const title = window.generateChatTitle(messageText);
-                    
-                    // Save the current chat session with proper title
-                    await window.saveChatSession(
-                        window.auth.currentUser.uid, 
-                        window.currentChatId, 
-                        title, 
-                        messageText
-                    );
-                    
-                    console.log('✅ Current chat saved successfully');
-                }
-            } catch (error) {
-                console.error('❌ Error saving current chat:', error);
-            }
-        }
-
-        // Enhanced startNewChat function
-        window.startNewChat = async function() {
-            console.log('🆕 Starting new chat...');
-            
-            // Save current chat first
-            await saveCurrentChatBeforeNew();
-            
-            // Generate new chat ID
-            window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            window.currentChatMessages = [];
-            
-            // Reset chat interface
-            const chatMessages = document.getElementById('chatMessages');
-            if (chatMessages) {
-                chatMessages.innerHTML = `
-                    <div class="message ai-message">
-                        <strong>AI Counselor:</strong> 
-                        Hello! I'm your personal AI college counselor. I can help you with:
-                        <br><br>
-                        • College applications and deadlines<br>
-                        • Essay writing and feedback<br>
-                        • Scholarship opportunities<br>
-                        • Interview preparation<br>
-                        • Academic planning<br>
-                        • Career guidance<br><br>
-                        What would you like to work on today?
-                    </div>
-                `;
-            }
-            
-            // Clear active states
-            document.querySelectorAll('.chat-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Refresh chat history to show saved chat
-            if (window.auth?.currentUser) {
-                setTimeout(async () => {
-                    await window.loadChatHistory(window.auth.currentUser.uid);
-                }, 500);
-            }
-            
-            console.log('💬 New chat initialized:', window.currentChatId);
-        };
+        const MESSAGE_COOLDOWN = 1000;
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -1771,7 +1851,7 @@
             
             console.log('📤 Sending message:', message);
             
-            // Disable input during processing
+            // Disable input
             input.disabled = true;
             sendButton.disabled = true;
             sendButton.textContent = 'Sending...';
@@ -1779,12 +1859,14 @@
             try {
                 // Start new chat if none exists
                 if (!window.currentChatId) {
-                    window.startNewChat();
+                    if (window.startNewChat) {
+                        window.startNewChat();
+                    }
                 }
                 
                 const chatMessages = document.getElementById('chatMessages');
                 
-                // Add user message to UI
+                // Add user message
                 const userMessage = document.createElement('div');
                 userMessage.className = 'message user-message';
                 userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
@@ -1803,12 +1885,8 @@
                 // Get AI response
                 const response = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
                 });
                 
                 // Remove typing indicator
@@ -1817,17 +1895,15 @@
                 }
                 
                 let aiResponseText;
-                
                 if (response.ok) {
                     const data = await response.json();
                     aiResponseText = data.response || 'Sorry, I received an empty response.';
                 } else {
-                    console.error('API Error:', response.status, response.statusText);
-                    const errorData = await response.json().catch(() => ({}));
-                    aiResponseText = errorData.error || 'Sorry, I\'m having trouble connecting right now. Please try again.';
+                    console.error('API Error:', response.status);
+                    aiResponseText = 'Sorry, I\'m having trouble connecting right now.';
                 }
                 
-                // Add AI response to UI
+                // Add AI response
                 const aiMessage = document.createElement('div');
                 aiMessage.className = 'message ai-message';
                 aiMessage.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(aiResponseText)}`;
@@ -1839,22 +1915,19 @@
                 if (window.auth && window.auth.currentUser) {
                     try {
                         const userId = window.auth.currentUser.uid;
-                        console.log('💾 Saving chat for user:', userId, 'chat:', window.currentChatId);
+                        console.log('💾 Saving chat...');
                         
-                        // Save both messages
                         await Promise.all([
                             window.saveChatMessage(userId, window.currentChatId, message, 'user'),
                             window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai')
                         ]);
                         
-                        // Generate title for new chats (only for first message)
+                        // Generate title for new chats
                         let chatTitle = null;
                         if (window.currentChatMessages.length === 0) {
                             chatTitle = window.generateChatTitle(message);
-                            console.log('📝 Generated title:', chatTitle);
                         }
-                                                
-                        // Save session
+                        
                         await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
                         
                         // Update current messages
@@ -1863,56 +1936,8 @@
                             { message: aiResponseText, sender: 'ai' }
                         );
                         
-                        console.log('✅ Chat saved successfully');
-                        
-                    } catch (error) {
-                        console.error('❌ Error saving chat:', error);
-                    }
-                }
-                
-            } catch (error) {
-                console.error('❌ Error sending message:', error);
-                
-                // Remove typing indicator if it exists
-                const typingIndicator = document.querySelector('.typing');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                // Show error message
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'message ai-message';
-                errorMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble connecting right now. Please try again.`;
-                document.getElementById('chatMessages').appendChild(errorMessage);
-                
-            } finally {
-                // Re-enable input
-                input.disabled = false;
-                sendButton.disabled = false;
-                sendButton.textContent = 'Send';
-                input.focus();
-            }
-        }
-                        
-        // Handle Enter key press
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-                        
-        // Utility function for escaping HTML (if not already defined)
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-    </script>
-</body>
-</html>
+                        // Refresh chat history
+                        setTimeout(() => {
+                            if (window.loadChatHistory) {
+                                window.loadChatHistory(userId);
+                           
