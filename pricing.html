@@ -824,6 +824,11 @@ onAuthStateChanged(auth, (user) => {
 
   // Track login state
   onAuthStateChanged(auth, (user) => {
+    // Update UI using global function
+    if (window.updateAuthUI) {
+      window.updateAuthUI(user);
+    }
+    
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       console.log("Logged in as:", user.email);
