@@ -1501,11 +1501,13 @@
                     navAccountText.style.display = 'inline';
                 }
 
-                // Show welcome message in dropdown
+                // Show welcome message in dropdown with display name only
                 if (dropdownWelcome && dropdownDisplayName) {
-                    dropdownDisplayName.textContent = currentUserData && currentUserData.name
-                        ? currentUserData.name
-                        : (user.displayName || user.email.split('@')[0]);
+                    // Prefer Firestore name, fallback to Firebase displayName, fallback to empty string
+                    dropdownDisplayName.textContent =
+                        (currentUserData && currentUserData.name)
+                            ? currentUserData.name
+                            : (user.displayName || '');
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
