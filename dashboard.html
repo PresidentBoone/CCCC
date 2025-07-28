@@ -1335,21 +1335,13 @@
 
         async function sendToOpenAI(message) {
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${OPENAI_API_KEY}`,
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4o-mini',
-                        messages: [
-                            { role: 'system', content: SYSTEM_PROMPT },
-                            { role: 'user', content: message }
-                        ],
-                        max_tokens: 500,
-                        temperature: 0.7
+                        message: message
                     })
                 });
 
@@ -1358,10 +1350,10 @@
                 }
 
                 const data = await response.json();
-                return data.choices[0].message.content;
+                return data.response;
             } catch (error) {
-                console.error('Error calling OpenAI API:', error);
-                return 'I apologize, but I\'m having trouble connecting right now. This might be due to CORS restrictions. For full functionality, please visit https://cors-anywhere.herokuapp.com/corsdemo and click "Request temporary access to the demo server" first, then try again.';
+                console.error('Error calling chat API:', error);
+                return 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.';
             }
         }
 
