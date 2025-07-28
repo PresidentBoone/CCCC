@@ -698,16 +698,16 @@
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
-    <nav class="navbar navbar-dark">
+    <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
+                <a href="index.html">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
                 </a>
             </div>
             <div class="brand-text">
-                <h1 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">College</h1>
-                <h2 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">Climb</h2>
+                <h1>College</h1>
+                <h2>Climb</h2>
             </div>
         </div>
         <ul class="nav-links">
@@ -716,7 +716,7 @@
             <li><a href="pricing.html">Pricing</a></li>
             <li class="dropdown" id="profileDropdown">
                 <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none; width:32px; height:32px; border-radius:50%; object-fit:cover; margin-right:0;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
                     <span id="navAccountText">Account</span>
                 </a>
                 <div class="dropdown-content" id="authDropdown">
@@ -1775,12 +1775,10 @@ if (logoutBtn) {
     </script>
 
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+  import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-  // Your Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
     authDomain: "collegeclimb-ai.firebaseapp.com",
@@ -1791,31 +1789,105 @@ if (logoutBtn) {
     measurementId: "G-E0B2RQM9XS"
   };
 
-  // Initialize services
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Track login state
+  let currentUserData = null;
+
+  function updateNavbarLogo(theme) {
+    const logoImg = document.getElementById('navbarLogo');
+    if (!logoImg) return;
+    logoImg.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+  }
+
+  // Theme toggle logic
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  body.setAttribute('data-theme', savedTheme);
+  themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  updateNavbarLogo(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      updateNavbarLogo(newTheme);
+  });
+
+  // Auth UI logic
+  function updateAuthUI(user) {
+      const notLoggedIn = document.getElementById('notLoggedIn');
+      const loggedIn = document.getElementById('loggedIn');
+      const navUserAvatar = document.getElementById('navUserAvatar');
+      const navAccountText = document.getElementById('navAccountText');
+      const dropdownWelcome = document.getElementById('dropdownWelcome');
+      const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+      if (user) {
+          if (notLoggedIn) notLoggedIn.style.display = 'none';
+          if (loggedIn) loggedIn.style.display = 'block';
+
+          // Show avatar if available, otherwise show "Account"
+          if (currentUserData && currentUserData.profilePhotoURL) {
+              navUserAvatar.src = currentUserData.profilePhotoURL;
+              navUserAvatar.style.display = 'block';
+              navAccountText.style.display = 'none';
+          } else {
+              navUserAvatar.style.display = 'none';
+              navAccountText.style.display = 'inline';
+          }
+
+          // Show welcome message in dropdown with display name only
+          if (dropdownWelcome && dropdownDisplayName) {
+              dropdownDisplayName.textContent =
+                  (currentUserData && currentUserData.name)
+                      ? currentUserData.name
+                      : (user.displayName || '');
+              dropdownWelcome.style.display = 'block';
+          }
+      } else {
+          if (notLoggedIn) notLoggedIn.style.display = 'block';
+          if (loggedIn) loggedIn.style.display = 'none';
+          navUserAvatar.style.display = 'none';
+          navAccountText.style.display = 'inline';
+          if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+      }
+  }
+
+  async function loadUserData(userId) {
+      try {
+          const userDoc = await getDoc(doc(db, 'users', userId));
+          currentUserData = userDoc.exists() ? userDoc.data() : {};
+      } catch (e) {
+          currentUserData = {};
+      }
+      updateAuthUI(auth.currentUser);
+  }
+
+  // Auth state
   onAuthStateChanged(auth, (user) => {
     window.currentUser = user;
     if (user) {
-        sessionStorage.setItem("user", JSON.stringify(user));
-        document.body.classList.add("logged-in");
-        // Load user data from Firestore and update UI
-        if (window.loadUserData) {
-            window.loadUserData(user.uid);
-        }
+        loadUserData(user.uid);
     } else {
-        sessionStorage.removeItem("user");
-        document.body.classList.remove("logged-in");
-        if (window.updateAuthUI) {
-            window.currentUserData = null;
-            window.updateAuthUI(null);
-        }
+        currentUserData = null;
+        updateAuthUI(null);
     }
-});
+  });
+
+  // Logout logic
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+      logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          await signOut(auth);
+          window.location.href = "/login.html";
+      });
+  }
     </script>
 </body>
 </html>
