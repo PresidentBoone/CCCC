@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Starry Background */
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1, .brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            background: var(--secondary-bg);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* User Avatar in Navbar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        }
+
+        /* Main Profile Container */
+        .profile-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: var(--gradient);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-photo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            z-index: 2;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-photo-upload {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .profile-photo-upload:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-color);
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-email {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Profile Content Grid */
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .profile-section {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.15);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: 12px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+            background: var(--primary-bg);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a07bcc'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 3rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+            background: var(--primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Questionnaire Section */
+        .questionnaire-full {
+            grid-column: 1 / -1;
+        }
+
+        .questionnaire-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .question-group {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            background: var(--primary-bg);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-color);
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gradient);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-socials a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-socials a img {
+            height: 24px;
+            width: 24px;
+            filter: invert(1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .questionnaire-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .brand-text h1, .brand-text h2 {
+                font-size: 1.2rem;
+            }
+            
+            .profile-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+            
+            .profile-header {
+                padding: 2rem 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 2rem;
+            }
+            
+            .profile-email {
+                font-size: 1rem;
+            }
+            
+            .profile-section {
+                padding: 1.5rem;
+            }
+            
+            .questionnaire-grid {
+                gap: 1rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0.75rem;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .profile-container {
+                padding: 0.75rem;
+                margin-top: 70px;
+            }
+            
+            .profile-header {
+                padding: 1.5rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .profile-photo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* File Upload Styling */
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-upload-button {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-button:hover {
+            background: #8b5fbf;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/whiteclearcc.png" alt="College Climb Logo">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li class="dropdown">
+                <a href="#" id="authToggle">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    Account
+                </a>
+                <div class="dropdown-content" id="authDropdown">
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Profile Container -->
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header fade-in-up">
+            <div class="profile-photo-container">
+                <img id="profilePhoto" src="images/default-avatar.png" alt="Profile Photo" class="profile-photo">
+                <div class="file-upload-wrapper">
+                    <input type="file" id="photoUpload" class="file-upload-input" accept="image/*">
+                    <button class="profile-photo-upload" onclick="document.getElementById('photoUpload').click()">
+                        📷
+                    </button>
+                </div>
+            </div>
+            <h1 class="profile-name" id="profileName">Loading...</h1>
+            <p class="profile-email" id="profileEmail">Loading...</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div id="successMessage" class="message success">
+            ✅ Profile updated successfully!
+        </div>
+        <div id="errorMessage" class="message error">
+            ❌ Something went wrong. Please try again.
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content fade-in-up">
+            <!-- Personal Information -->
+            <div class="profile-section">
+                <h2 class="section-title">👤 Personal Information</h2>
+                <form id="personalInfoForm">
+                    <div class="form-group">
+                        <label class="form-label" for="displayName">Display Name</label>
+                        <input type="text" id="displayName" class="form-input" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="location">Location</label>
+                        <input type="text" id="location" class="form-input" placeholder="City, State">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Academic Information -->
+            <div class="profile-section">
+                <h2 class="section-title">🎓 Academic Information</h2>
+                <form id="academicInfoForm">
+                    <div class="form-group">
+                        <label class="form-label" for="currentGrade">Current Grade Level</label>
+                        <select id="currentGrade" class="form-input form-select">
+                            <option value="">Select Grade</option>
+                            <option value="9">9th Grade (Freshman)</option>
+                            <option value="10">10th Grade (Sophomore)</option>
+                            <option value="11">11th Grade (Junior)</option>
+                            <option value="12">12th Grade (Senior)</option>
+                            <option value="college">College Student</option>
+                            <option value="graduate">Graduate Student</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="currentSchool">Current School</label>
+                        <input type="text" id="currentSchool" class="form-input" placeholder="School name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="gpa">GPA</label>
+                        <input type="number" id="gpa" class="form-input" step="0.01" min="0" max="4.0" placeholder="3.50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="graduationYear">Expected Graduation Year</label>
+                        <input type="number" id="graduationYear" class="form-input" min="2024" max="2030" placeholder="2025">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Questionnaire Section -->
+        <div class="profile-section questionnaire-full fade-in-up">
+            <h2 class="section-title">📋 College Preferences Questionnaire</h2>
+            <form id="questionnaireForm">
+                <div class="questionnaire-grid">
+                    <!-- College Types -->
+                    <div class="question-group">
+                        <label class="form-label">What types of colleges interest you?</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="public" name="collegeTypes" value="public">
+                                <label for="public">Public Universities</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="private" name="collegeTypes" value="private">
+                                <label for="private">Private Universities</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="community" name="collegeTypes" value="community">
+                                <label for="community">Community Colleges</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="liberal-arts" name="collegeTypes" value="liberal-arts">
+                                <label for="liberal-arts">Liberal Arts Colleges</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferred Size -->
+                    <div class="question-group">
+                        <label class="form-label" for="collegeSize">Preferred College Size</label>
+                        <select id="collegeSize" class="form-input form-select">
+                            <option value="">Select Size</option>
+                            <option value="small">Small (Under 2,000 students)</option>
+                            <option value="medium">Medium (2,000-10,000 students)</option>
+                            <option value="large">Large (10,000+ students)</option>
+                            <option value="no-preference">No Preference</option>
+                        </select>
+                    </div>
+
+                    <!-- Location Preference -->
+                    <div class="question-group">
+                        <label class="form-label" for="locationPreference">Location Preference</label>
+                        <select id="locationPreference" class="form-input form-select">
+                            <option value="">Select Preference</option>
+                            <option value="in-state">In-State Only</option>
+                            <option value="regional">Regional (Nearby States)</option>
+                            <option value="national">National (Anywhere in US)</option>
+                            <option value="international">International</option>
+                        </select>
+                    </div>
+
+                    <!-- Academic Interests -->
+                    <div class="question-group">
+                        <label class="form-label">Academic Interests</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="stem" name="academicInterests" value="stem">
+                                <label for="stem">STEM</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="business" name="academicInterests" value="business">
+                                <label for="business">Business</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="arts" name="academicInterests" value="arts">
+                                <label for="arts">Arts & Humanities</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="social-sciences" name="academicInterests" value="social-sciences">
+                                <label for="social-sciences">Social Sciences</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="health" name="academicInterests" value="health">
+                                <label for="health">Health Sciences</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="education" name="academicInterests" value="education">
+                                <label for="education">Education</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extracurricular Activities */
+                    <div class="question-group">
+                        <label class="form-label">Extracurricular Interests</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sports" name="extracurriculars" value="sports">
+                                <label for="sports">Sports</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="music" name="extracurriculars" value="music">
+                                <label for="music">Music</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theater" name="extracurriculars" value="theater">
+                                <label for="theater">Theater</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="clubs" name="extracurriculars" value="clubs">
+                                <label for="clubs">Academic Clubs</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="volunteer" name="extracurriculars" value="volunteer">
+                                <label for="volunteer">Volunteer Work</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="research" name="extracurriculars" value="research">
+                                <label for="research">Research</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Range -->
+                    <div class="question-group">
+                        <label class="form-label" for="budgetRange">Annual Budget Range</label>
+                        <select id="budgetRange" class="form-input form-select">
+                            <option value="">Select Budget</option>
+                            <option value="under-10k">Under $10,000</option>
+                            <option value="10k-25k">$10,000 - $25,000</option>
+                            <option value="25k-50k">$25,000 - $50,000</option>
+                            <option value="50k-75k">$50,000 - $75,000</option>
+                            <option value="over-75k">Over $75,000</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Special Considerations -->
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label class="form-label" for="specialConsiderations">Special Considerations or Requirements</label>
+                    <textarea id="specialConsiderations" class="form-input form-textarea" 
+                              placeholder="Any special requirements, accessibility needs, or other considerations..."></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">💾 Update Questionnaire</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetQuestionnaire()">🔄 Reset to Defaults</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Account Management -->
+        <div class="profile-section fade-in-up" style="margin-top: 2rem;">
+            <h2 class="section-title">⚙️ Account Management</h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="changePassword()">🔐 Change Password</button>
+                <button class="btn btn-secondary" onclick="downloadData()">📥 Download My Data</button>
+                <button class="btn btn-danger" onclick="deleteAccount()">🗑️ Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved. Empowering students to reach new heights.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        console.log('🔥 Firebase initialized successfully');
+
+        // Global variables
+        let currentUser = null;
+        let currentUserData = null;
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            if (user) {
+                currentUser = user;
+                updateAuthUI(user);
+                await loadUserProfile(user);
+                await loadUserData(user.uid);
+            } else {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Update navbar UI
+        function updateAuthUI(user) {
+            const authToggle = document.getElementById('authToggle');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            
+            if (user) {
+                if (authToggle) authToggle.textContent = 'Account';
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                
+                // Show avatar in navbar if available
+                if (currentUserData && currentUserData.profilePhotoURL) {
+                    navUserAvatar.src = currentUserData.profilePhotoURL;
+                    navUserAvatar.style.display = 'block';
+                }
+            }
+        }
+
+        // Load user profile data
+        async function loadUserProfile(user) {
+            try {
+                const profileName = document.getElementById('profileName');
+                const profileEmail = document.getElementById('profileEmail');
+                
+                if (profileEmail) profileEmail.textContent = user.email;
+                if (profileName) profileName.textContent = user.displayName || user.email.split('@')[0];
+            } catch (error) {
+                console.error('❌ Error loading user profile:', error);
+            }
+        }
+
+        // Load user data from Firestore
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                
+                if (userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    populateFormFields(currentUserData);
+                } else {
+                    // Create default user document
+                    currentUserData = {
+                        email: currentUser.email,
+                        name: currentUser.displayName || '',
+                        createdAt: new Date()
+                    };
+                    await setDoc(doc(db, 'users', userId), currentUserData);
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                showMessage('Error loading profile data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Populate form fields with user data
+        function populateFormFields(userData) {
+            // Personal Information
+            if (userData.name) document.getElementById('displayName').value = userData.name;
+            if (userData.phone) document.getElementById('phoneNumber').value = userData.phone;
+            if (userData.dateOfBirth) document.getElementById('dateOfBirth').value = userData.dateOfBirth;
+            if (userData.location) document.getElementById('location').value = userData.location;
+
+            // Academic Information
+            if (userData.currentGrade) document.getElementById('currentGrade').value = userData.currentGrade;
+            if (userData.currentSchool) document.getElementById('currentSchool').value = userData.currentSchool;
+            if (userData.gpa) document.getElementById('gpa').value = userData.gpa;
+            if (userData.graduationYear) document.getElementById('graduationYear').value = userData.graduationYear;
+
+            // Profile Photo
+            if (userData.profilePhotoURL) {
+                document.getElementById('profilePhoto').src = userData.profilePhotoURL;
+                const navAvatar = document.getElementById('navUserAvatar');
+                if (navAvatar) {
+                    navAvatar.src = userData.profilePhotoURL;
+                    navAvatar.style.display = 'block';
+                }
+            }
+
+            // Update profile name display
+            if (userData.name) {
+                document.getElementById('profileName').textContent = userData.name;
+            }
+
+            // Questionnaire data
+            if (userData.questionnaire) {
+                populateQuestionnaire(userData.questionnaire);
+            }
+        }
+
+        // Populate questionnaire fields
+        function populateQuestionnaire(questionnaire) {
+            // College types
+            if (questionnaire.collegeTypes) {
+                questionnaire.collegeTypes.forEach(type => {
+                    const checkbox = document.querySelector(`input[name="collegeTypes"][value="${type}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+
+            // Academic interests
+            if (questionnaire.academicInterests) {
+                questionnaire.academicInterests.forEach(interest => {
+                    const checkbox = document.querySelector(`input[name="academicInterests"][value="${interest}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+
+            // Extracurriculars
+            if (questionnaire.extracurriculars) {
+                questionnaire.extracurriculars.forEach(activity => {
+                    const checkbox = document.querySelector(`input[name="extracurriculars"][value="${activity}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+
+            // Select fields
+            if (questionnaire.collegeSize) document.getElementById('collegeSize').value = questionnaire.collegeSize;
+            if (questionnaire.locationPreference) document.getElementById('locationPreference').value = questionnaire.locationPreference;
+            if (questionnaire.budgetRange) document.getElementById('budgetRange').value = questionnaire.budgetRange;
+            if (questionnaire.specialConsiderations) document.getElementById('specialConsiderations').value = questionnaire.specialConsiderations;
+        }
+
+        // Photo upload handler
+        document.getElementById('photoUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading';
+                loadingOverlay.style.position = 'fixed';
+                loadingOverlay.style.top = '0';
+                loadingOverlay.style.left = '0';
+                loadingOverlay.style.width = '100%';
+                loadingOverlay.style.height = '100%';
+                loadingOverlay.style.background = 'rgba(0,0,0,0.5)';
+                loadingOverlay.style.zIndex = '9999';
+                loadingOverlay.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.2rem;">Uploading photo...</div>';
+                document.body.appendChild(loadingOverlay);
+
+                // Create storage reference
+                const photoRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}-${file.name}`);
+                
+                // Upload file
+                const snapshot = await uploadBytes(photoRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+
+                // Update user document with photo URL
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    profilePhotoURL: downloadURL
+                });
+
+                // Update UI
+                document.getElementById('profilePhoto').src = downloadURL;
+                const navAvatar = document.getElementById('navUserAvatar');
+                if (navAvatar) {
+                    navAvatar.src = downloadURL;
+                    navAvatar.style.display = 'block';
+                }
+
+                currentUserData.profilePhotoURL = downloadURL;
+                
+                document.body.removeChild(loadingOverlay);
+                showMessage('Profile photo updated successfully!', 'success');
+
+            } catch (error) {
+                console.error('❌ Error uploading photo:', error);
+                showMessage('Failed to upload photo. Please try again.', 'error');
+                document.body.removeChild(document.querySelector('.loading'));
+            }
+        });
+
+        // Personal info form handler
+        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const formData = new FormData(e.target);
+                const personalData = {
+                    name: document.getElementById('displayName').value,
+                    phone: document.getElementById('phoneNumber').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    location: document.getElementById('location').value
+                };
+
+                // Remove empty fields
+                Object.keys(personalData).forEach(key => {
+                    if (!personalData[key]) delete personalData[key];
+                });
+
+                await updateDoc(doc(db, 'users', currentUser.uid), personalData);
+                
+                // Update display name if changed
+                if (personalData.name && personalData.name !== currentUserData.name) {
+                    document.getElementById('profileName').textContent = personalData.name;
+                    currentUserData.name = personalData.name;
+                }
+
+                showMessage('Personal information updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error updating personal info:', error);
+                showMessage('Failed to update personal information. Please try again.', 'error');
+            }
+        });
+
+        // Academic info form handler
+        document.getElementById('academicInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const academicData = {
+                    currentGrade: document.getElementById('currentGrade').value,
+                    currentSchool: document.getElementById('currentSchool').value,
+                    gpa: parseFloat(document.getElementById('gpa').value) || null,
+                    graduationYear: parseInt(document.getElementById('graduationYear').value) || null
+                };
+
+                // Remove empty fields
+                Object.keys(academicData).forEach(key => {
+                    if (!academicData[key] && academicData[key] !== 0) delete academicData[key];
+                });
+
+                await updateDoc(doc(db, 'users', currentUser.uid), academicData);
+                showMessage('Academic information updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error updating academic info:', error);
+                showMessage('Failed to update academic information. Please try again.', 'error');
+            }
+        });
+
+        // Questionnaire form handler
+        document.getElementById('questionnaireForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const questionnaireData = {
+                    collegeTypes: Array.from(document.querySelectorAll('input[name="collegeTypes"]:checked')).map(cb => cb.value),
+                    academicInterests: Array.from(document.querySelectorAll('input[name="academicInterests"]:checked')).map(cb => cb.value),
+                    extracurriculars: Array.from(document.querySelectorAll('input[name="extracurriculars"]:checked')).map(cb => cb.value),
+                    collegeSize: document.getElementById('collegeSize').value,
+                    locationPreference: document.getElementById('locationPreference').value,
+                    budgetRange: document.getElementById('budgetRange').value,
+                    specialConsiderations: document.getElementById('specialConsiderations').value
+                };
+
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    questionnaire: questionnaireData,
+                    questionnaireUpdated: new Date()
+                });
+
+                showMessage('Questionnaire updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error updating questionnaire:', error);
+                showMessage('Failed to update questionnaire. Please try again.', 'error');
+            }
+        });
+
+        // Utility functions
+        function showMessage(text, type) {
+            const messageEl = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
+            if (messageEl) {
+                messageEl.textContent = text;
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Global functions for account management
+        window.resetQuestionnaire = function() {
+            if (confirm('Are you sure you want to reset your questionnaire to default values?')) {
+                document.getElementById('questionnaireForm').reset();
+                showMessage('Questionnaire reset. Don\'t forget to save your changes!', 'success');
+            }
+        };
+
+        window.changePassword = async function() {
+            const currentPassword = prompt('Enter your current password:');
+            if (!currentPassword) return;
+
+            const newPassword = prompt('Enter your new password (minimum 6 characters):');
+            if (!newPassword || newPassword.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return;
+            }
+
+            try {
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+                await reauthenticateWithCredential(currentUser, credential);
+                await updatePassword(currentUser, newPassword);
+                showMessage('Password updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error changing password:', error);
+                showMessage('Failed to change password. Please check your current password.', 'error');
+            }
+        };
+
+        window.downloadData = async function() {
+            try {
+                const userData = await getDoc(doc(db, 'users', currentUser.uid));
+                const data = userData.data();
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `college-climb-data-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                showMessage('Data downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error downloading data:', error);
+                showMessage('Failed to download data. Please try again.', 'error');
+            }
+        };
+
+        window.deleteAccount = async function() {
+            const confirmation = prompt('Type "DELETE" to confirm account deletion:');
+            if (confirmation !== 'DELETE') return;
+
+            const password = prompt('Enter your password to confirm:');
+            if (!password) return;
+
+            try {
+                const credential = EmailAuthProvider.credential(currentUser.email, password);
+                await reauthenticateWithCredential(currentUser, credential);
+                
+                // Delete user data from Firestore
+                await deleteDoc(doc(db, 'users', currentUser.uid));
+                
+                // Delete user account
+                await deleteUser(currentUser);
+                
+                alert('Account deleted successfully. You will be redirected to the home page.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('❌ Error deleting account:', error);
+                showMessage('Failed to delete account. Please check your password.', 'error');
+            }
+        };
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('❌ Error signing out:', error);
+            }
+        });
+
+        // Theme toggle functionality
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        // Create starry background
+        function createStars() {
+            const starryBg = document.getElementById('starryBg');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        console.log('✅ Profile page initialized successfully');
+    </script>
+</body>
+</html>
