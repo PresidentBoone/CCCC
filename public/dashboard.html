@@ -556,6 +556,7 @@
             overflow-y: auto;
         }
 
+        /* Enhanced Chat Item Styles */
         .chat-item {
             padding: 1rem;
             background: var(--secondary-bg);
@@ -564,17 +565,20 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(160, 123, 204, 0.1);
             position: relative;
+            margin-bottom: 0.5rem;
         }
 
         .chat-item:hover {
             background: var(--accent-color);
             color: white;
             transform: translateX(5px);
+            box-shadow: var(--shadow);
         }
 
         .chat-item.active {
             background: var(--accent-color);
             color: white;
+            border-color: var(--accent-color);
         }
 
         .chat-item-title {
@@ -584,6 +588,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            line-height: 1.3;
         }
 
         .chat-item-preview {
@@ -592,218 +597,21 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            line-height: 1.2;
         }
 
         .chat-item-date {
             font-size: 0.7rem;
             opacity: 0.6;
             margin-top: 0.5rem;
-        }
-
-        .chat-item-delete {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-item:hover .chat-item-delete {
-            opacity: 1;
-        }
-
-        .no-chats-message {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            padding: 3rem 1rem;
-            font-style: italic;
-        }
-
-        .chatbot-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--primary-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .chatbot-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .chatbot-header h3 {
-            margin: 0;
-            font-size: 1.4rem;
-            color: var(--text-primary);
-        }
-
-        .chatbot-status {
-            font-size: 0.9rem;
-            color: var(--success-color);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .chatbot-status::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--success-color);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .clear-chat-btn {
-            padding: 0.5rem 1rem;
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .clear-chat-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-
-        .chatbot-messages {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .message {
-            margin-bottom: 1.5rem;
-            padding: 1.25rem;
-            border-radius: 16px;
-            max-width: 85%;
-            animation: slideIn 0.4s ease-out;
-            position: relative;
-            line-height: 1.5;
-        }
-
-        .user-message {
-            background: var(--gradient);
-            color: white;
-            margin-left: auto;
-            text-align: right;
-            border-bottom-right-radius: 6px;
-        }
-
-        .ai-message {
-            background: var(--primary-bg);
-            color: var(--text-primary);
-            margin-right: auto;
-            border: 1px solid rgba(160, 123, 204, 0.15);
-            border-bottom-left-radius: 6px;
-        }
-
-        .message strong {
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            display: block;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chatbot-input {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .chatbot-input input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: 2px solid rgba(160, 123, 204, 0.2);
-            border-radius: 16px;
-            outline: none;
-            background: var(--secondary-bg);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .chatbot-input input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 20px rgba(160, 123, 204, 0.2);
-            transform: scale(1.01);
-        }
-
-        .chatbot-input button {
-            padding: 1rem 2rem;
-            border: none;
-            background: var(--gradient);
-            color: white;
-            font-weight: 600;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-
-        .chatbot-input button:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: var(--shadow);
-        }
-
-        .chatbot-input button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            font-weight: 400;
         }
 
         .typing-indicator {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            padding: 0.5rem 0;
         }
 
         .typing-dot {
@@ -1861,43 +1669,138 @@
             });
         }
 
-        // Chatbot functionality
+        // Enhanced Chat functionality
         let lastMessageTime = 0;
-        const MESSAGE_COOLDOWN = 3000; // 3 seconds between messages
+        const MESSAGE_COOLDOWN = 1000; // 1 second between messages
+
+        // Save current chat before starting new one
+        async function saveCurrentChatBeforeNew() {
+            if (!window.currentChatId || !window.auth?.currentUser) {
+                return;
+            }
+
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages || chatMessages.children.length <= 1) {
+                return; // No messages to save
+            }
+
+            try {
+                console.log('💾 Saving current chat before starting new one...');
+                
+                // Get the first user message as title basis
+                const firstUserMessage = Array.from(chatMessages.children)
+                    .find(msg => msg.classList.contains('user-message'));
+                
+                if (firstUserMessage) {
+                    const messageText = firstUserMessage.textContent.replace('You:', '').trim();
+                    const title = window.generateChatTitle(messageText);
+                    
+                    // Save the current chat session with proper title
+                    await window.saveChatSession(
+                        window.auth.currentUser.uid, 
+                        window.currentChatId, 
+                        title, 
+                        messageText
+                    );
+                    
+                    console.log('✅ Current chat saved successfully');
+                }
+            } catch (error) {
+                console.error('❌ Error saving current chat:', error);
+            }
+        }
+
+        // Enhanced startNewChat function
+        window.startNewChat = async function() {
+            console.log('🆕 Starting new chat...');
+            
+            // Save current chat first
+            await saveCurrentChatBeforeNew();
+            
+            // Generate new chat ID
+            window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            window.currentChatMessages = [];
+            
+            // Reset chat interface
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                chatMessages.innerHTML = `
+                    <div class="message ai-message">
+                        <strong>AI Counselor:</strong> 
+                        Hello! I'm your personal AI college counselor. I can help you with:
+                        <br><br>
+                        • College applications and deadlines<br>
+                        • Essay writing and feedback<br>
+                        • Scholarship opportunities<br>
+                        • Interview preparation<br>
+                        • Academic planning<br>
+                        • Career guidance<br><br>
+                        What would you like to work on today?
+                    </div>
+                `;
+            }
+            
+            // Clear active states
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Refresh chat history to show saved chat
+            if (window.auth?.currentUser) {
+                setTimeout(async () => {
+                    await window.loadChatHistory(window.auth.currentUser.uid);
+                }, 500);
+            }
+            
+            console.log('💬 New chat initialized:', window.currentChatId);
+        };
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
             const message = input.value.trim();
             
             if (!message) return;
             
-            console.log('Sending message:', message);
-            
-            // Start new chat if none exists
-            if (!window.currentChatId) {
-                window.startNewChat();
+            const now = Date.now();
+            if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+                console.log('⏱️ Message cooldown active');
+                return;
             }
+            lastMessageTime = now;
             
-            const chatMessages = document.getElementById('chatMessages');
+            console.log('📤 Sending message:', message);
             
-            // Add user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user-message';
-            userMessage.innerHTML = `<strong>You:</strong> ${message}`;
-            chatMessages.appendChild(userMessage);
-            
-            input.value = '';
-            
-            // Add typing indicator
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'message ai-message typing-indicator';
-            typingIndicator.innerHTML = `<strong>AI Counselor:</strong> <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-            chatMessages.appendChild(typingIndicator);
-            
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Disable input during processing
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
             
             try {
-                // Make API request
+                // Start new chat if none exists
+                if (!window.currentChatId) {
+                    window.startNewChat();
+                }
+                
+                const chatMessages = document.getElementById('chatMessages');
+                
+                // Add user message to UI
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
+                chatMessages.appendChild(userMessage);
+                
+                input.value = '';
+                
+                // Add typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message ai-message typing';
+                typingIndicator.innerHTML = `<strong>AI Counselor:</strong> <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+                chatMessages.appendChild(typingIndicator);
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Get AI response
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
@@ -1919,14 +1822,15 @@
                     const data = await response.json();
                     aiResponseText = data.response || 'Sorry, I received an empty response.';
                 } else {
-                    const errorData = await response.json();
-                    aiResponseText = errorData.error || 'Sorry, I\'m having trouble right now.';
+                    console.error('API Error:', response.status, response.statusText);
+                    const errorData = await response.json().catch(() => ({}));
+                    aiResponseText = errorData.error || 'Sorry, I\'m having trouble connecting right now. Please try again.';
                 }
                 
-                // Add AI response
+                // Add AI response to UI
                 const aiMessage = document.createElement('div');
                 aiMessage.className = 'message ai-message';
-                aiMessage.innerHTML = `<strong>AI Counselor:</strong> ${aiResponseText}`;
+                aiMessage.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(aiResponseText)}`;
                 chatMessages.appendChild(aiMessage);
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1935,101 +1839,79 @@
                 if (window.auth && window.auth.currentUser) {
                     try {
                         const userId = window.auth.currentUser.uid;
-                        console.log('Saving chat for user:', userId, 'chat:', window.currentChatId);
+                        console.log('💾 Saving chat for user:', userId, 'chat:', window.currentChatId);
                         
-                        // Save messages
-                        await window.saveChatMessage(userId, window.currentChatId, message, 'user');
-                        await window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai');
+                        // Save both messages
+                        await Promise.all([
+                            window.saveChatMessage(userId, window.currentChatId, message, 'user'),
+                            window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai')
+                        ]);
                         
-                        // Generate title for new chats
+                        // Generate title for new chats (only for first message)
                         let chatTitle = null;
                         if (window.currentChatMessages.length === 0) {
                             chatTitle = window.generateChatTitle(message);
-                            console.log('Generated title:', chatTitle);
+                            console.log('📝 Generated title:', chatTitle);
                         }
-                        
+                                                
                         // Save session
                         await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
                         
                         // Update current messages
                         window.currentChatMessages.push(
-                            { message, sender: 'user' },
+                            { message: message, sender: 'user' },
                             { message: aiResponseText, sender: 'ai' }
                         );
                         
-                        // Reload chat list
-                        setTimeout(async () => {
-                            await window.loadChatHistory(userId);
-                            
-                            // Mark current chat as active
-                            const currentChatElement = document.querySelector(`[onclick*="${window.currentChatId}"]`);
-                            if (currentChatElement) {
-                                document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
-                                currentChatElement.closest('.chat-item').classList.add('active');
-                            }
-                        }, 500);
+                        console.log('✅ Chat saved successfully');
                         
-                        console.log('Chat saved successfully!');
-                        
-                    } catch (saveError) {
-                        console.error('Error saving chat:', saveError);
+                    } catch (error) {
+                        console.error('❌ Error saving chat:', error);
                     }
-                } else {
-                    console.log('User not logged in - chat not saved');
                 }
                 
             } catch (error) {
-                console.error('Error sending message:', error);
+                console.error('❌ Error sending message:', error);
                 
-                if (chatMessages.contains(typingIndicator)) {
-                    chatMessages.removeChild(typingIndicator);
+                // Remove typing indicator if it exists
+                const typingIndicator = document.querySelector('.typing');
+                if (typingIndicator) {
+                    typingIndicator.remove();
                 }
                 
+                // Show error message
                 const errorMessage = document.createElement('div');
                 errorMessage.className = 'message ai-message';
-                errorMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I encountered an error. Please try again.`;
-                chatMessages.appendChild(errorMessage);
+                errorMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble connecting right now. Please try again.`;
+                document.getElementById('chatMessages').appendChild(errorMessage);
                 
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } finally {
+                // Re-enable input
+                input.disabled = false;
+                sendButton.disabled = false;
+                sendButton.textContent = 'Send';
+                input.focus();
             }
         }
-
+                        
+        // Handle Enter key press
         function handleKeyPress(event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
                 sendMessage();
             }
         }
-
-        // Test API function
-        async function testAPIConnection() {
-            try {
-                console.log('Testing API connection...');
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: "Test message"
-                    })
-                });
-                
-                console.log('Response status:', response.status);
-                console.log('Response ok:', response.ok);
-                
-                const text = await response.text();
-                console.log('Raw response:', text);
-                
-                if (response.ok) {
-                    const data = JSON.parse(text);
-                    alert('API works! Response: ' + data.response);
-                } else {
-                    alert('API error: ' + text);
-                }
-            } catch (error) {
-                console.error('Test failed:', error);
-                alert('Test failed: ' + error.message);
-            }
+                        
+        // Utility function for escaping HTML (if not already defined)
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
     </script>
 </body>
