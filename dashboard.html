@@ -1169,10 +1169,6 @@
     </script>
 
     <script>
-        // OpenAI API Configuration
-        const OPENAI_API_KEY = 'your-api-key-here'; // Replace with your actual API key
-        const API_URL = 'https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions';
-
         // College-specific system prompt
         const SYSTEM_PROMPT = `You are an expert college admissions counselor and AI assistant for College Climb. You specialize in helping students with:
         - College application strategies
@@ -1335,6 +1331,8 @@
 
         async function sendToOpenAI(message) {
             try {
+                console.log('Sending message to API:', message);
+                
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
@@ -1345,15 +1343,25 @@
                     })
                 });
 
+                console.log('API response status:', response.status);
+
                 if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('API error:', errorData);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
+                console.log('API response data:', data);
+
+                if (!data.response) {
+                    throw new Error('No response field in API response');
+                }
+
                 return data.response;
             } catch (error) {
                 console.error('Error calling chat API:', error);
-                return 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment.';
+                return 'I apologize, but I\'m having trouble connecting right now. Please try again in a moment. Error: ' + error.message;
             }
         }
 
