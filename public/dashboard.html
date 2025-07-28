@@ -1571,6 +1571,7 @@
         function createChatItem(chatId, chatData) {
             const chatItem = document.createElement('div');
             chatItem.className = 'chat-item';
+            chatItem.dataset.chatId = chatId; // Store chatId for reliable identification
             
             const title = chatData.title || 'New Chat';
             const preview = chatData.lastMessage ? 
@@ -1587,8 +1588,9 @@
                 <button class="chat-item-delete" onclick="event.stopPropagation(); window.deleteChatSession('${chatId}')" title="Delete chat">×</button>
             `;
             
-            // Add click event listener properly
-            chatItem.addEventListener('click', () => {
+            // Add click event listener
+            chatItem.addEventListener('click', (e) => {
+                e.preventDefault();
                 console.log('🖱️ Chat item clicked:', chatId);
                 window.loadChatSession(chatId);
             });
@@ -1603,18 +1605,10 @@
                 window.currentChatId = chatId;
                 window.currentChatMessages = [];
                 
-                // Update UI - remove active class from all items
+                // Update UI - remove active class from all items first
                 document.querySelectorAll('.chat-item').forEach(item => {
                     item.classList.remove('active');
                 });
-                
-                // Find and mark the clicked item as active
-                const clickedItem = Array.from(document.querySelectorAll('.chat-item')).find(item => {
-                    return item.innerHTML.includes(chatId);
-                });
-                if (clickedItem) {
-                    clickedItem.classList.add('active');
-                }
                 
                 // Load messages from Firestore
                 const messagesQuery = query(
@@ -1663,11 +1657,27 @@
                 // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
+                // Mark the clicked item as active AFTER loading is complete
+                // Use a data attribute to store the chatId for reliable identification
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    if (item.dataset.chatId === chatId) {
+                        item.classList.add('active');
+                    }
+                });
+                
                 console.log(`📖 Loaded ${querySnapshot.size} messages for chat ${chatId}`);
                 
             } catch (error) {
                 console.error('❌ Error loading chat session:', error);
-                alert('Error loading chat. Please try again.');
+                
+                // More specific error handling
+                if (error.code === 'failed-precondition') {
+                    alert('Database index is being created. Please try again in a few minutes.');
+                } else if (error.code === 'permission-denied') {
+                    alert('Permission denied. Please make sure you are logged in.');
+                } else {
+                    alert('Error loading chat. Please check your internet connection and try again.');
+                }
             }
         };
 
