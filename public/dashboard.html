@@ -1468,21 +1468,11 @@
                 // Show loading state
                 chatList.innerHTML = '<div class="no-chats-message">Loading chat history...</div>';
                 
-                // Try with orderBy first, fall back to basic query if it fails
-                let chatsQuery;
-                try {
-                    chatsQuery = query(
-                        collection(db, 'chatSessions'),
-                        where('userId', '==', userId),
-                        orderBy('lastUpdated', 'desc')
-                    );
-                } catch (orderError) {
-                    console.warn('⚠️ OrderBy failed, using basic query:', orderError);
-                    chatsQuery = query(
-                        collection(db, 'chatSessions'),
-                        where('userId', '==', userId)
-                    );
-                }
+                // Use simple query without orderBy to avoid index issues
+                const chatsQuery = query(
+                    collection(db, 'chatSessions'),
+                    where('userId', '==', userId)
+                );
                 
                 const querySnapshot = await getDocs(chatsQuery);
                 
@@ -1496,18 +1486,19 @@
                 
                 console.log(`📚 Found ${querySnapshot.size} chat sessions`);
                 
-                // Convert to array and sort manually if needed
+                // Convert to array and sort manually
                 const chats = [];
                 querySnapshot.forEach((docSnapshot) => {
                     const chatData = docSnapshot.data();
                     chats.push({ id: docSnapshot.id, data: chatData });
                 });
                 
-                // Sort by lastUpdated if available
+                // Sort by lastUpdated manually (most recent first)
                 chats.sort((a, b) => {
                     if (a.data.lastUpdated && b.data.lastUpdated) {
                         return b.data.lastUpdated.toMillis() - a.data.lastUpdated.toMillis();
                     }
+                    // If no timestamp, put at end
                     return 0;
                 });
                 
@@ -1524,46 +1515,15 @@
                 
                 const chatList = document.getElementById('chatList');
                 if (chatList) {
-                    // Show a more helpful error message
                     chatList.innerHTML = `
                         <div class="no-chats-message">
                             <div style="margin-bottom: 1rem;">Unable to load chat history.</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Error: ${error.message}</div>
                             <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
                                 Retry
                             </button>
                         </div>
                     `;
-                }
-                
-                // If it's a permission error, try to create the index
-                if (error.code === 'failed-precondition') {
-                    console.log('🔧 Index may be missing. Chat history will work once Firestore creates the required index.');
-                    
-                    // Try loading without orderBy as fallback
-                    try {
-                        const fallbackQuery = query(
-                            collection(db, 'chatSessions'),
-                            where('userId', '==', userId)
-                        );
-                        const fallbackSnapshot = await getDocs(fallbackQuery);
-                        
-                        if (!fallbackSnapshot.empty) {
-                            const chatList = document.getElementById('chatList');
-                            if (chatList) {
-                                chatList.innerHTML = '';
-                                
-                                fallbackSnapshot.forEach((docSnapshot) => {
-                                    const chatData = docSnapshot.data();
-                                    const chatItem = createChatItem(docSnapshot.id, chatData);
-                                    chatList.appendChild(chatItem);
-                                });
-                                
-                                console.log('✅ Chat history loaded with fallback method');
-                            }
-                        }
-                    } catch (fallbackError) {
-                        console.error('❌ Fallback query also failed:', fallbackError);
-                    }
                 }
             }
         }
@@ -1622,23 +1582,12 @@
                     }
                 });
                 
-                // Load messages from Firestore
-                let messagesQuery;
-                try {
-                    messagesQuery = query(
-                        collection(db, 'chatMessages'),
-                        where('chatId', '==', chatId),
-                        where('userId', '==', window.auth.currentUser.uid),
-                        orderBy('timestamp', 'asc')
-                    );
-                } catch (queryError) {
-                    // Fallback without orderBy if index doesn't exist
-                    messagesQuery = query(
-                        collection(db, 'chatMessages'),
-                        where('chatId', '==', chatId),
-                        where('userId', '==', window.auth.currentUser.uid)
-                    );
-                }
+                // Use simple query without orderBy to avoid index issues
+                const messagesQuery = query(
+                    collection(db, 'chatMessages'),
+                    where('chatId', '==', chatId),
+                    where('userId', '==', window.auth.currentUser.uid)
+                );
                 
                 const querySnapshot = await getDocs(messagesQuery);
                 const chatMessages = document.getElementById('chatMessages');
@@ -1660,14 +1609,14 @@
                     return;
                 }
                 
-                // Convert to array and sort if needed
+                // Convert to array and sort manually by timestamp
                 const messages = [];
                 querySnapshot.forEach((docSnapshot) => {
                     const messageData = docSnapshot.data();
                     messages.push(messageData);
                 });
                 
-                // Sort by timestamp if available
+                // Sort by timestamp manually (oldest first)
                 messages.sort((a, b) => {
                     if (a.timestamp && b.timestamp) {
                         return a.timestamp.toMillis() - b.timestamp.toMillis();
@@ -1699,13 +1648,18 @@
             } catch (error) {
                 console.error('❌ Error loading chat session:', error);
                 
+                // More specific error handling
+                let errorMessage = 'Error loading chat. Please try again.';
+                
                 if (error.code === 'permission-denied') {
-                    alert('Permission denied. Please make sure you are logged in and try refreshing the page.');
+                    errorMessage = 'Permission denied. Please make sure you are logged in and try refreshing the page.';
                 } else if (error.code === 'failed-precondition') {
-                    alert('Database index is being created. Please try again in a few minutes.');
-                } else {
-                    alert('Error loading chat. Please check your internet connection and try again.');
+                    errorMessage = 'Database is still setting up. Please try again in a moment.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Database is temporarily unavailable. Please try again in a moment.';
                 }
+                
+                alert(errorMessage);
             }
         };
 
