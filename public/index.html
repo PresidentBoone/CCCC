@@ -1682,202 +1682,117 @@
     </style>
 
     <script>
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        const starryBg = document.getElementById('starryBg');
+        // Theme/logo logic
+function updateNavbarLogo(theme) {
+    const logoImg = document.getElementById('navbarLogo');
+    if (!logoImg) return;
+    logoImg.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+}
 
-        // Function to update logo images based on theme
-        function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
-            document.querySelectorAll('.logo-img, .hero-logo img, .description-logo img, .footer-logo img').forEach(img => {
-                img.src = logoSrc;
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const savedTheme = localStorage.getItem('theme') || 'dark';
+body.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+updateNavbarLogo(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    updateNavbarLogo(newTheme);
+});
+
+// --- Auth UI logic ---
+// This assumes you have Firebase Auth and Firestore loaded as `auth` and `db`
+let currentUserData = null;
+
+async function loadUserData(userId) {
+    // Fetch user data from Firestore
+    const docRef = window.db && window.db.collection
+        ? window.db.collection('users').doc(userId)
+        : (window.db ? window.db.doc('users/' + userId) : null);
+    let userDoc;
+    if (docRef && docRef.get) {
+        userDoc = await docRef.get();
+        currentUserData = userDoc.exists ? userDoc.data() : {};
+    } else if (window.db && window.db.getDoc) {
+        // Modular SDK
+        const { doc, getDoc } = window.db;
+        userDoc = await getDoc(doc(window.db, 'users', userId));
+        currentUserData = userDoc.exists() ? userDoc.data() : {};
+    }
+    updateAuthUI(window.currentUser);
+}
+
+function updateAuthUI(user) {
+    const notLoggedIn = document.getElementById('notLoggedIn');
+    const loggedIn = document.getElementById('loggedIn');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navAccountText = document.getElementById('navAccountText');
+    const dropdownWelcome = document.getElementById('dropdownWelcome');
+    const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+    if (user) {
+        if (notLoggedIn) notLoggedIn.style.display = 'none';
+        if (loggedIn) loggedIn.style.display = 'block';
+
+        // Show avatar if available, otherwise show "Account"
+        if (currentUserData && currentUserData.profilePhotoURL) {
+            navUserAvatar.src = currentUserData.profilePhotoURL;
+            navUserAvatar.style.display = 'block';
+            navAccountText.style.display = 'none';
+        } else {
+            navUserAvatar.style.display = 'none';
+            navAccountText.style.display = 'inline';
+        }
+
+        // Show welcome message in dropdown with display name only
+        if (dropdownWelcome && dropdownDisplayName) {
+            dropdownDisplayName.textContent =
+                (currentUserData && currentUserData.name)
+                    ? currentUserData.name
+                    : (user.displayName || '');
+            dropdownWelcome.style.display = 'block';
+        }
+    } else {
+        if (notLoggedIn) notLoggedIn.style.display = 'block';
+        if (loggedIn) loggedIn.style.display = 'none';
+        navUserAvatar.style.display = 'none';
+        navAccountText.style.display = 'inline';
+        if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+    }
+}
+
+// Firebase Auth state
+if (window.auth && window.db) {
+    window.currentUser = null;
+    window.auth.onAuthStateChanged(async (user) => {
+        window.currentUser = user;
+        if (user) {
+            await loadUserData(user.uid);
+        } else {
+            currentUserData = null;
+            updateAuthUI(null);
+        }
+    });
+}
+
+// Logout logic
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (window.auth && window.auth.signOut) {
+            window.auth.signOut().then(() => {
+                window.location.href = "/login.html";
             });
         }
-        // Load saved theme or default to dark
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        body.setAttribute('data-theme', savedTheme);
-        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        updateLogos(savedTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            updateLogos(newTheme);
-        });
-
-        // Auth UI logic
-        function updateAuthUI(user) {
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
-
-            // You may want to fetch currentUserData from Firestore if available
-            let currentUserData = window.currentUserData || {};
-
-            if (user) {
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
-
-                // Show avatar if available, otherwise show "Account"
-                if (currentUserData && currentUserData.profilePhotoURL) {
-                    navUserAvatar.src = currentUserData.profilePhotoURL;
-                    navUserAvatar.style.display = 'block';
-                    navAccountText.style.display = 'none';
-                } else {
-                    navUserAvatar.style.display = 'none';
-                    navAccountText.style.display = 'inline';
-                }
-
-                // Show welcome message in dropdown with display name only
-                if (dropdownWelcome && dropdownDisplayName) {
-                    dropdownDisplayName.textContent =
-                        (currentUserData && currentUserData.name)
-                            ? currentUserData.name
-                            : (user.displayName || '');
-                    dropdownWelcome.style.display = 'block';
-                }
-            } else {
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                navUserAvatar.style.display = 'none';
-                navAccountText.style.display = 'inline';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-            }
-        }
-
-        // Logout logic
-        const logoutBtn = document.getElementById("logoutBtn");
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js').then(({ getAuth, signOut }) => {
-                    const auth = getAuth();
-                    signOut(auth).then(() => {
-                        window.location.href = "/login.html";
-                    });
-                });
-            });
-        }
-
-        // Create twinkling stars for dark mode
-        function createStars() {
-            starryBg.innerHTML = '';
-            const numStars = 150;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        // Initialize stars for dark mode
-        if (savedTheme === 'dark') {
-            createStars();
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Form submission
-        document.querySelector('.signup-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = this.querySelector('input[type="text"]').value;
-            const email = this.querySelector('input[type="email"]').value;
-            
-            if (name && email) {
-                // Add success animation
-                const button = this.querySelector('button');
-                button.textContent = '✓ Success!';
-                button.style.background = '#4caf50';
-                
-                setTimeout(() => {
-                    alert('Thank you for signing up! We\'ll be in touch soon.');
-                    this.reset();
-                    button.textContent = 'Try It Free';
-                    button.style.background = '';
-                }, 1000);
-            }
-        });
-
-        // Add scroll effect to navbar
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
-                navbar.style.transform = 'translateY(0)';
-            } else {
-                navbar.style.boxShadow = 'none';
-            }
-        });
-
-        // Intersection Observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in-up').forEach(element => {
-            observer.observe(element);
-        });
-
-        // Add floating animation to CTA button
-        setInterval(() => {
-            const ctaButton = document.querySelector('.cta-button');
-            if (ctaButton && !ctaButton.matches(':hover')) {
-                ctaButton.style.animation = 'bounce 2s infinite';
-            }
-        }, 5000);
-
-        // Parallax effect for hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const hero = document.querySelector('.hero');
-            const rate = scrolled * -0.5;
-            
-            if (hero) {
-                hero.style.transform = `translateY(${rate}px)`;
-            }
-        });
-
-        // Add random delays to feature icons for staggered pulse animation
-        document.querySelectorAll('.feature-icon').forEach((icon, index) => {
-            icon.style.animationDelay = (index * 0.2) + 's';
-        });
+    });
+}
     </script>
 
     <script type="module">
