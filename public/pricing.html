@@ -94,23 +94,25 @@
             100% { background-position: 0% 50%; }
         }
 
+                 /* Navigation */
         .navbar {
             position: fixed;
             top: 0;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
             transition: all 0.3s ease;
-            animation: fadeInUp 0.6s ease-out;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
         }
 
         [data-theme="dark"] .navbar {
             background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
         }
 
         .logo-section {
@@ -120,14 +122,15 @@
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .logo img {
@@ -136,18 +139,13 @@
             object-fit: contain;
         }
 
-        .brand-text h1 {
-            font-size: 1.5rem;
+        .brand-text h1, .brand-text h2 {
+            font-size: 1.4rem;
             font-weight: 700;
+            color: var(--text-primary);
             line-height: 1;
         }
 
-        .brand-text h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            line-height: 1;
-        }
         .nav-links {
             display: flex;
             list-style: none;
@@ -161,25 +159,13 @@
             font-weight: 500;
             transition: all 0.3s ease;
             position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
         }
 
         .nav-links a:hover {
             color: var(--accent-color);
+            background: var(--secondary-bg);
             transform: translateY(-2px);
         }
 
@@ -195,11 +181,12 @@
             box-shadow: var(--shadow);
             border-radius: var(--border-radius);
             padding: 0.5rem 0;
-            min-width: 120px;
+            min-width: 160px;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.1);
         }
 
         .dropdown:hover .dropdown-content {
@@ -210,10 +197,11 @@
 
         .dropdown-content a {
             display: block;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1rem;
             color: var(--text-primary);
             text-decoration: none;
             transition: all 0.3s ease;
+            border-radius: 0;
         }
 
         .dropdown-content a:hover {
@@ -224,19 +212,47 @@
         .theme-toggle {
             background: var(--gradient);
             border: none;
-            border-radius: 20px;
-            width: 40px;
-            height: 40px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             transition: all 0.3s ease;
+            font-size: 1.2rem;
         }
 
         .theme-toggle:hover {
             transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* User Avatar in Navbar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        }
+
+        /* Main Profile Container */
+        .profile-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
         }
 
         .pricing-container {
@@ -554,35 +570,40 @@
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
+                <a href="index.html">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
                 </a>
             </div>
             <div class="brand-text">
-                <h1 style="color: var(--text-primary);">College</h1>
-                <h2 style="color: var(--text-primary);">Climb</h2>
+                <h1>College</h1>
+                <h2>Climb</h2>
             </div>
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown">
-                <a href="#" id="authToggle">Login/Sign Up</a>
-                <!-- Dropdown content -->
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
                 <div class="dropdown-content" id="authDropdown">
-                    <!-- Not logged in content -->
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
                     <div id="notLoggedIn">
                         <a href="login.html">Login</a>
                         <a href="signup.html">Sign Up</a>
                     </div>
-                    <!-- Logged in content -->
                     <div id="loggedIn" style="display: none;">
                         <a href="profile.html">Profile</a>
                         <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
                         <a href="college-profile.html">College Profile</a>
                         <a href="#" id="logoutBtn">Logout</a>
                     </div>
@@ -590,17 +611,8 @@
             </li>
             <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
         </ul>
-        <div class="mobile-nav">
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
-            </div>
-        </div>
-    </nav>
+</nav>
+
 
     <div class="pricing-container">
         <div class="pricing-header">
