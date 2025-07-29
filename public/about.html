@@ -873,6 +873,45 @@
                 navbar.style.boxShadow = 'none';
             }
         });
+         // Update navbar UI
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+
+                // Show avatar if available, otherwise show "Account"
+                if (currentUserData && currentUserData.profilePhotoURL) {
+                    navUserAvatar.src = currentUserData.profilePhotoURL;
+                    navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
+                }
+
+                // Always use the Firestore name for display
+                if (dropdownWelcome && dropdownDisplayName) {
+                    dropdownDisplayName.textContent =
+                        (currentUserData && currentUserData.name)
+                            ? currentUserData.name
+                            : '';
+                    dropdownWelcome.style.display = 'block';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+            }
+        }
 
         // Firebase and Auth Logic
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
