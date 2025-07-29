@@ -896,12 +896,12 @@
                     navAccountText.style.display = 'inline';
                 }
 
-                // Always use the Firestore name for display
+                // Show welcome message with name if available
                 if (dropdownWelcome && dropdownDisplayName) {
                     dropdownDisplayName.textContent =
                         (currentUserData && currentUserData.name)
                             ? currentUserData.name
-                            : '';
+                            : (user.displayName || user.email.split('@')[0]);
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
@@ -936,7 +936,7 @@
         let currentUser = null;
         let currentUserData = null;
 
-        // Update navbar UI just like profile.html
+        // Update navbar UI
         function updateAuthUI(user) {
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
@@ -959,12 +959,12 @@
                     navAccountText.style.display = 'inline';
                 }
 
-                // Always use the Firestore name for display
+                // Show welcome message with name if available
                 if (dropdownWelcome && dropdownDisplayName) {
                     dropdownDisplayName.textContent =
                         (currentUserData && currentUserData.name)
                             ? currentUserData.name
-                            : '';
+                            : (user.displayName || user.email.split('@')[0]);
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
@@ -977,30 +977,30 @@
         }
 
         // Load user data from Firestore
-        async function loadUserData(userId) {
+        async function loadUserData(user) {
             try {
-                const userDoc = await getDoc(doc(db, 'users', userId));
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {
                     currentUserData = userDoc.data();
                 } else {
                     currentUserData = {
-                        email: currentUser.email,
-                        name: currentUser.displayName || '',
+                        email: user.email,
+                        name: user.displayName || '',
                         createdAt: new Date()
                     };
-                    await setDoc(doc(db, 'users', userId), currentUserData);
+                    await setDoc(doc(db, 'users', user.uid), currentUserData);
                 }
-                updateAuthUI(currentUser);
             } catch (error) {
-                // Optionally handle error
+                currentUserData = null;
             }
+            updateAuthUI(user);
         }
 
         // Auth state management
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
-                await loadUserData(user.uid);
+                await loadUserData(user);
             } else {
                 currentUserData = null;
                 updateAuthUI(null);
@@ -1008,15 +1008,17 @@
         });
 
         // Logout logic
-        const logoutBtn = document.getElementById("logoutBtn");
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    window.location.href = "/login.html";
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    signOut(auth).then(() => {
+                        window.location.href = "/login.html";
+                    });
                 });
-            });
-        }
+            }
+        });
     </script>
 </body>
 </html>
