@@ -896,12 +896,12 @@
                     navAccountText.style.display = 'inline';
                 }
 
-                // Show welcome message with name if available
+                // Always use the Firestore name for display
                 if (dropdownWelcome && dropdownDisplayName) {
                     dropdownDisplayName.textContent =
                         (currentUserData && currentUserData.name)
                             ? currentUserData.name
-                            : (user.displayName || user.email.split('@')[0]);
+                            : '';
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
@@ -918,7 +918,7 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
-        // Your Firebase config
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
             authDomain: "collegeclimb-ai.firebaseapp.com",
@@ -929,12 +929,14 @@
             measurementId: "G-E0B2RQM9XS"
         };
 
-        // Initialize services
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Only one updateAuthUI function!
+        let currentUser = null;
+        let currentUserData = null;
+
+        // Update navbar UI just like profile.html
         function updateAuthUI(user) {
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
@@ -947,8 +949,9 @@
                 if (notLoggedIn) notLoggedIn.style.display = 'none';
                 if (loggedIn) loggedIn.style.display = 'block';
 
-                if (userData && userData.profilePhotoURL) {
-                    navUserAvatar.src = userData.profilePhotoURL;
+                // Show avatar if available, otherwise show "Account"
+                if (currentUserData && currentUserData.profilePhotoURL) {
+                    navUserAvatar.src = currentUserData.profilePhotoURL;
                     navUserAvatar.style.display = 'block';
                     navAccountText.style.display = 'none';
                 } else {
@@ -956,11 +959,12 @@
                     navAccountText.style.display = 'inline';
                 }
 
+                // Always use the Firestore name for display
                 if (dropdownWelcome && dropdownDisplayName) {
                     dropdownDisplayName.textContent =
-                        (userData && userData.name)
-                            ? userData.name
-                            : (user.displayName || user.email.split('@')[0]);
+                        (currentUserData && currentUserData.name)
+                            ? currentUserData.name
+                            : '';
                     dropdownWelcome.style.display = 'block';
                 }
             } else {
@@ -972,39 +976,42 @@
             }
         }
 
+        // Load user data from Firestore
         async function loadUserData(userId) {
             try {
                 const userDoc = await getDoc(doc(db, 'users', userId));
                 if (userDoc.exists()) {
                     currentUserData = userDoc.data();
-                    // ...populate form fields...
                 } else {
-                    currentUserData = { email: currentUser.email, name: currentUser.displayName || '', createdAt: new Date() };
+                    currentUserData = {
+                        email: currentUser.email,
+                        name: currentUser.displayName || '',
+                        createdAt: new Date()
+                    };
                     await setDoc(doc(db, 'users', userId), currentUserData);
                 }
-                // Always update navbar/dropdown after loading user data
                 updateAuthUI(currentUser);
             } catch (error) {
-                // ...error handling...
+                // Optionally handle error
             }
         }
 
-        // Listen for auth state and fetch user data
+        // Auth state management
         onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
             if (user) {
-                // Fetch user data from Firestore
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                const userData = userDoc.exists() ? userDoc.data() : null;
-                updateAuthUI(user, userData);
+                await loadUserData(user.uid);
             } else {
-                updateAuthUI(null, null);
+                currentUserData = null;
+                updateAuthUI(null);
             }
         });
 
         // Logout logic
         const logoutBtn = document.getElementById("logoutBtn");
         if (logoutBtn) {
-            logoutBtn.addEventListener("click", () => {
+            logoutBtn.addEventListener("click", (e) => {
+                e.preventDefault();
                 signOut(auth).then(() => {
                     window.location.href = "/login.html";
                 });
