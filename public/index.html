@@ -759,7 +759,7 @@
     <section id="home" class="hero">
       <div class="hero-content">
         <div class="hero-logo">
-          <img src="blackcc.png" alt="College Climb Logo">
+          <img src="images/whiteclearcc.png" alt="College Climb Logo" />
         </div>
         <h1 class="hero-title">College Climb</h1>
         <p class="hero-subtitle">Your AI-powered admissions co-pilot</p>
@@ -801,53 +801,6 @@
         </div>
       </div>
     </section>
-
-    <style>
-      .hero {
-        padding: 120px 1rem 1rem;
-        margin: 0 auto;
-        max-width: 1200px;
-        background: rgba(243, 230, 255, 0.3);
-        border-radius: 24px;
-        border: 2px solid rgba(160, 123, 204, 0.2);
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      [data-theme="dark"] .hero {
-        background: rgba(33, 38, 45, 0.4);
-        border: 2px solid rgba(187, 134, 252, 0.3);
-      }
-
-      .hero-form {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px);
-        border: 2px solid rgba(160, 123, 204, 0.3);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        box-shadow: var(--shadow);
-        max-width: 450px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      [data-theme="dark"] .hero-form {
-        background: rgba(33, 38, 45, 0.8);
-        border: 2px solid rgba(187, 134, 252, 0.4);
-      }
-
-      .stat-item {
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(160, 123, 204, 0.3);
-      }
-
-      [data-theme="dark"] .stat-item {
-        background: rgba(33, 38, 45, 0.7);
-        border: 1px solid rgba(187, 134, 252, 0.3);
-      }
-    </style>
-
     <style>
         .hero {
             padding-top: 100px;
@@ -855,10 +808,19 @@
         }
 
         .hero-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
-            animation: pulse 2s infinite;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 5s infinite;
+        }
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         .hero-title {
@@ -1000,19 +962,20 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
         }
-
-        .form-note {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.8rem;
-            opacity: 0.8;
-        }
-
         @media (max-width: 768px) {
             .hero {
                 padding-top: 80px;
                 padding-bottom: 1rem;
+            }
+
+            .hero-logo {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 1rem;
+            }
+            .hero-logo img {
+                width: 100%;
+                height: 100%;
             }
 
             .hero-logo {
@@ -1060,9 +1023,8 @@
     </style>
     <section class="section why-choose-us fade-in-up">
       <div class="why-choose-container">
-      <div class="section-header"></div>
-        <h2 class="section-title">Why Students Choose College Climb</h2>
-        <p class="section-subtitle">Discover what makes us the premier choice for college admissions success</p>
+      <h2 class="section-title">Why Students Choose College Climb</h2>
+      <p class="section-subtitle">Discover what makes us the premier choice for college admissions success</p>
       </div>
       
       <div class="reasons-grid">
@@ -1423,12 +1385,12 @@
       animation: slideInUp 0.6s ease-out forwards;
     }
 
-    .why-choose-us.visible .reason-card:nth-child(1) { animation-delay: 0.1s; }
-    .why-choose-us.visible .reason-card:nth-child(2) { animation-delay: 0.2s; }
-    .why-choose-us.visible .reason-card:nth-child(3) { animation-delay: 0.3s; }
-    .why-choose-us.visible .reason-card:nth-child(4) { animation-delay: 0.4s; }
-    .why-choose-us.visible .reason-card:nth-child(5) { animation-delay: 0.5s; }
-    .why-choose-us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
+    .why-choose-us.visible .reason-card:nth-of-type(1) { animation-delay: 0.1s; }
+    .why-choose-us.visible .reason-card:nth-of-type(2) { animation-delay: 0.2s; }
+    .why-choose-us.visible .reason-card:nth-of-type(3) { animation-delay: 0.3s; }
+    .why-choose-us.visible .reason-card:nth-of-type(4) { animation-delay: 0.4s; }
+    .why-choose-us.visible .reason-card:nth-of-type(5) { animation-delay: 0.5s; }
+    .why-choose-us.visible .reason-card:nth-of-type(6) { animation-delay: 0.6s; }
 
     @keyframes slideInUp {
       from {
@@ -1442,12 +1404,13 @@
     }
     </style>
     <script>
-    // Enhanced number animation
+    // Enhanced number animation with NaN check
     function animateNumbers() {
       const statNumbers = document.querySelectorAll('.stat-number');
       
       statNumbers.forEach(stat => {
         const targetNumber = parseInt(stat.getAttribute('data-number'));
+        if (isNaN(targetNumber)) return; // Skip if not a valid number
         const originalText = stat.textContent;
         let currentNumber = 0;
         const increment = targetNumber / 50;
@@ -1493,6 +1456,21 @@
       if (statsContainer) {
         statsObserver.observe(statsContainer);
       }
+
+      // Add visible class to fade-in-up sections when in viewport
+      const fadeInSections = document.querySelectorAll('.fade-in-up');
+      const fadeInObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      fadeInSections.forEach(section => {
+        fadeInObserver.observe(section);
+      });
     });
     </script>
 
