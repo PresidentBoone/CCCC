@@ -1428,7 +1428,7 @@
     .why-choose-us.visible .reason-card:nth-child(3) { animation-delay: 0.3s; }
     .why-choose-us.visible .reason-card:nth-child(4) { animation-delay: 0.4s; }
     .why-choose-us.visible .reason-card:nth-child(5) { animation-delay: 0.5s; }
-    .why-choose.us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
+    .why-choose-us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
 
     @keyframes slideInUp {
       from {
@@ -1487,9 +1487,9 @@
       });
     }, { threshold: 0.5 });
 
-    // Observe stats container
+    // Observe hero-stats for number animation
     document.addEventListener('DOMContentLoaded', () => {
-      const statsContainer = document.querySelector('.stats-container');
+      const statsContainer = document.querySelector('.hero-stats');
       if (statsContainer) {
         statsObserver.observe(statsContainer);
       }
