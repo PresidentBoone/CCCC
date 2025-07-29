@@ -796,10 +796,16 @@
         const starryBg = document.getElementById('starryBg');
 
         function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
-            document.querySelectorAll('.logo-img, .hero-logo img, .footer-logo img').forEach(img => {
-                img.src = logoSrc;
-            });
+            const logoSrc = theme === 'light' ? 'images/blackcc.png' : 'images/whiteclearcc.png';
+            // Update navbar logo
+            const navbarLogo = document.getElementById('navbarLogo');
+            if (navbarLogo) navbarLogo.src = logoSrc;
+            // Update hero logo
+            const heroLogo = document.querySelector('.hero-logo img');
+            if (heroLogo) heroLogo.src = logoSrc;
+            // Update footer logo (use black logo for light, white for dark)
+            const footerLogo = document.querySelector('.footer-logo img');
+            if (footerLogo) footerLogo.src = theme === 'light' ? 'images/blackcc.png' : 'images/whiteclearcc.png';
         }
 
         const savedTheme = localStorage.getItem('theme') || 'dark';
