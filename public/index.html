@@ -698,47 +698,48 @@
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
-    <nav class="navbar">
-        <div class="logo-section">
-            <div class="logo">
-                <a href="index.html">
-                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
-                </a>
-            </div>
-            <div class="brand-text">
-                <h1>College</h1>
-                <h2>Climb</h2>
-            </div>
+    <!-- Navigation -->
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo">
+            <a href="index.html">
+                <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </a>
         </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    <span id="navAccountText">Account</span>
-                </a>
-                <div class="dropdown-content" id="authDropdown">
-                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
-                        Welcome, <span id="dropdownDisplayName"></span>!
-                    </div>
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
-                    </div>
+        <div class="brand-text">
+            <h1>College</h1>
+            <h2>Climb</h2>
+        </div>
+    </div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li class="dropdown" id="profileDropdown">
+            <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                <span id="navAccountText">Account</span>
+            </a>
+            <div class="dropdown-content" id="authDropdown">
+                <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                    Welcome, <span id="dropdownDisplayName"></span>!
                 </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
-    </nav>
+                <div id="notLoggedIn">
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+                <div id="loggedIn" style="display: none;">
+                    <a href="profile.html">Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="college-profile.html">College Profile</a>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </li>
+        <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+    </ul>
+</nav>
 
     <section id="home" class="hero">
       <div class="hero-content">
@@ -751,7 +752,7 @@
         
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">✍️</span>
+            <span class="stat-number" data-number="95">✍️</span>
             <span class="stat-label">Perfect Your Essays</span>
           </div>
           <div class="stat-item">
@@ -1412,7 +1413,7 @@
     .why-choose-us.visible .reason-card:nth-child(3) { animation-delay: 0.3s; }
     .why-choose-us.visible .reason-card:nth-child(4) { animation-delay: 0.4s; }
     .why-choose-us.visible .reason-card:nth-child(5) { animation-delay: 0.5s; }
-    .why-choose-us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
+    .why-choose.us.visible .reason-card:nth-child(6) { animation-delay: 0.6s; }
 
     @keyframes slideInUp {
       from {
@@ -1690,7 +1691,7 @@
     apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
     authDomain: "collegeclimb-ai.firebaseapp.com",
     projectId: "collegeclimb-ai",
-    storageBucket: "collegeclimb-ai.firebasestorage.app",
+    storageBucket: "collegeclimb-ai.appspot.com",
     messagingSenderId: "187139654658",
     appId: "1:187139654658:web:4a6cf4c43095f03212931b",
     measurementId: "G-E0B2RQM9XS"
