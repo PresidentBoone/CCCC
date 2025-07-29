@@ -875,20 +875,41 @@
         });
          // Update navbar UI
         function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
-            
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
             if (user) {
-                // User is logged in
-                authToggle.textContent = 'Account';
-                notLoggedIn.style.display = 'none';
-                loggedIn.style.display = 'block';
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+
+                // Show avatar if available, otherwise show "Account"
+                if (userData && userData.profilePhotoURL) {
+                    navUserAvatar.src = userData.profilePhotoURL;
+                    navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
+                }
+
+                // Show welcome message with name if available
+                if (dropdownWelcome && dropdownDisplayName) {
+                    dropdownDisplayName.textContent =
+                        (userData && userData.name)
+                            ? userData.name
+                            : (user.displayName || user.email.split('@')[0]);
+                    dropdownWelcome.style.display = 'block';
+                }
             } else {
-                // User is not logged in
-                authToggle.textContent = 'Login/Sign Up';
-                notLoggedIn.style.display = 'block';
-                loggedIn.style.display = 'none';
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
             }
         }
 
@@ -917,20 +938,41 @@
 
         // Add this function to update the auth dropdown UI
         function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
-            
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
             if (user) {
-                // User is logged in
-                authToggle.textContent = 'Account';
-                notLoggedIn.style.display = 'none';
-                loggedIn.style.display = 'block';
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+
+                // Show avatar if available, otherwise show "Account"
+                if (userData && userData.profilePhotoURL) {
+                    navUserAvatar.src = userData.profilePhotoURL;
+                    navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
+                }
+
+                // Show welcome message with name if available
+                if (dropdownWelcome && dropdownDisplayName) {
+                    dropdownDisplayName.textContent =
+                        (userData && userData.name)
+                            ? userData.name
+                            : (user.displayName || user.email.split('@')[0]);
+                    dropdownWelcome.style.display = 'block';
+                }
             } else {
-                // User is not logged in
-                authToggle.textContent = 'Login/Sign Up';
-                notLoggedIn.style.display = 'block';
-                loggedIn.style.display = 'none';
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
             }
         }
 
