@@ -759,7 +759,28 @@
     <section id="home" class="hero">
       <div class="hero-content">
         <div class="hero-logo">
-          <img src="images/whiteclearcc.png" alt="College Climb Logo" />
+          <img id="heroLogo" src="images/whiteclearcc.png" alt="College Climb Logo" />
+          <script>
+            // Sync hero logo with theme
+            function updateHeroLogo(theme) {
+              const heroLogo = document.getElementById('heroLogo');
+              if (!heroLogo) return;
+              heroLogo.src = theme === 'dark' ? 'images/blackcc.png' : 'images/whiteclearcc.png';
+            }
+
+            // Initial set
+            const initialTheme = document.body.getAttribute('data-theme') || 'dark';
+            updateHeroLogo(initialTheme);
+
+            // Listen for theme changes
+            const themeToggleBtn = document.getElementById('themeToggle');
+            if (themeToggleBtn) {
+              themeToggleBtn.addEventListener('click', () => {
+                const newTheme = document.body.getAttribute('data-theme');
+                updateHeroLogo(newTheme);
+              });
+            }
+          </script>
         </div>
         <h1 class="hero-title">College Climb</h1>
         <p class="hero-subtitle">Your AI-powered admissions co-pilot</p>
@@ -767,7 +788,7 @@
         
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-number" data-number="95">✍️</span>
+            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">✍️</span>
             <span class="stat-label">Perfect Your Essays</span>
           </div>
           <div class="stat-item">
@@ -860,7 +881,7 @@
         .stat-item {
             text-align: center;
             padding: 0.8rem 1rem;
-            background: rgba(42, 53, 122, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             transition: all 0.3s ease;
             min-width: 100px;
