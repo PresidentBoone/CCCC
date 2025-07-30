@@ -1888,20 +1888,90 @@
             }
         });
 
+        // --- NAVBAR PROFILE PHOTO & DISPLAY NAME LOGIC ---
+        // Helper to update navbar avatar and welcome message
+        function updateNavbarProfile(user, userData) {
+            const avatarImg = document.getElementById('navUserAvatar');
+            const accountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                // Show avatar
+                if (avatarImg) {
+                    let photoURL = user.photoURL || (userData && userData.photoURL) || 'images/default-avatar.png';
+                    avatarImg.src = photoURL;
+                    avatarImg.style.display = 'inline-block';
+                }
+                // Hide 'Account' text
+                if (accountText) accountText.style.display = 'none';
+                // Show welcome message with display name
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                if (dropdownDisplayName) {
+                    let displayName = user.displayName || (userData && userData.name) || user.email.split('@')[0] || 'User';
+                    dropdownDisplayName.textContent = displayName;
+                }
+            } else {
+                // Hide avatar
+                if (avatarImg) avatarImg.style.display = 'none';
+                // Show 'Account' text
+                if (accountText) accountText.style.display = 'inline-block';
+                // Hide welcome message
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+            }
+        }
+
+        // Patch into existing onAuthStateChanged logic
+        const originalUpdateAuthUI = updateAuthUI;
+        updateAuthUI = function(user) {
+            if (typeof originalUpdateAuthUI === 'function') originalUpdateAuthUI(user);
+            updateNavbarProfile(user, window.currentUserData || null);
+        };
+
+        // Patch into loadUserData to update navbar profile after user data loads
+        const originalLoadUserProfile = loadUserProfile;
+        loadUserProfile = async function(user) {
+            if (typeof originalLoadUserProfile === 'function') await originalLoadUserProfile(user);
+            // Try to get userData from Firestore
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                window.currentUserData = userDoc.exists() ? userDoc.data() : {};
+            } catch (e) {
+                window.currentUserData = {};
+            }
+            updateNavbarProfile(user, window.currentUserData);
+        };
+
         // Helper Functions
         function updateAuthUI(user) {
             const authToggle = document.getElementById('authToggle');
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
             
             if (user) {
-                if (authToggle) authToggle.textContent = 'Account';
+                if (authToggle) authToggle.style.justifyContent = 'flex-start';
+                if (navUserAvatar) {
+                    navUserAvatar.src = user.photoURL || 'images/default-avatar.png';
+                    navUserAvatar.style.display = 'block';
+                }
+                if (navAccountText) navAccountText.style.display = 'none';
                 if (notLoggedIn) notLoggedIn.style.display = 'none';
                 if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) {
+                    dropdownWelcome.style.display = 'block';
+                    dropdownDisplayName.textContent = user.displayName.split(' ')[0];
+                }
             } else {
                 if (authToggle) authToggle.textContent = 'Login/Sign Up';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'block';
                 if (notLoggedIn) notLoggedIn.style.display = 'block';
                 if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
             }
         }
 
@@ -2305,7 +2375,7 @@
         };
 
         async function saveChatMessage(userId, chatId, message, sender) {
-            try {
+                       try {
                 await addDoc(collection(db, 'chatMessages'), {
                     userId: userId,
                     chatId: chatId,
