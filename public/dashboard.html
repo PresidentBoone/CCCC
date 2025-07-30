@@ -1386,6 +1386,10 @@
         font-size: 1rem;
     }
     
+    .chatbot-status {
+        font-size: 0.8rem;
+    }
+    
     .clear-chat-btn {
         padding: 0.3rem 0.6rem;
         font-size: 0.75rem;
@@ -1619,13 +1623,13 @@
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
-
+  
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
                 <a href="index.html">
-                    <img src="images/whiteclearcc.png" alt="College Climb Logo">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
                 </a>
             </div>
             <div class="brand-text">
@@ -1635,11 +1639,17 @@
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown">
-                <a href="#" id="authToggle">Account</a>
+            <li><a href="test-prep.html">ACT/SAT</a></li>
+            <li><a href="scholarships.html">Scholarships</a></li>
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
                 <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
                     <div id="notLoggedIn">
                         <a href="login.html">Login</a>
                         <a href="signup.html">Sign Up</a>
@@ -1647,6 +1657,7 @@
                     <div id="loggedIn" style="display: none;">
                         <a href="profile.html">Profile</a>
                         <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
                         <a href="college-profile.html">College Profile</a>
                         <a href="#" id="logoutBtn">Logout</a>
                     </div>
@@ -1804,26 +1815,24 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer (EXACTLY like index.html) -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-logo">
-                <img src="images/whiteclearcc.png" alt="College Climb Logo">
-            </div>
+            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
             <div class="footer-text">
-                &copy; 2025 College Climb. All rights reserved. Empowering students to reach new heights.
+                &copy; 2025 College Climb. All rights reserved.
             </div>
             <div class="footer-socials">
-                <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
                     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
                 </a>
-                <a href="https://x.com/" target="_blank" aria-label="X (Twitter)">
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
                     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
                 </a>
-                <a href="https://tiktok.com/" target="_blank" aria-label="TikTok">
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
                     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
                 </a>
-                <a href="https://youtube.com/" target="_blank" aria-label="YouTube">
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
                     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
                 </a>
             </div>
