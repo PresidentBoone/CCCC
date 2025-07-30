@@ -16,8 +16,8 @@
             --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
             --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
             --border-radius: 12px;
+            --logo-image: url('blackcc.png');
         }
-
         [data-theme="dark"] {
             --primary-bg: #0d1117;
             --secondary-bg: #161b22;
@@ -27,252 +27,122 @@
             --accent-color: #bb86fc;
             --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             --shadow: 0 4px 20px rgba(187, 134, 252, 0.2);
+            --logo-image: url('images/whiteclearcc.png');
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
             background: var(--primary-bg);
-            transition: all 0.3s ease;
+            transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
         }
-
         .starry-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none;
         }
-
-        [data-theme="dark"] .starry-bg {
-            opacity: 1;
-        }
-
+        [data-theme="dark"] .starry-bg { opacity: 1; }
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
             animation: twinkle 2s infinite alternate;
+            pointer-events: none;
         }
-
         @keyframes twinkle {
             0% { opacity: 0.3; transform: scale(1); }
             100% { opacity: 1; transform: scale(1.2); }
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-                 /* Navigation */
+        /* Navbar (copied from index.html) */
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
+            position: fixed; top: 0; width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            transition: all 0.3s ease;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; transition: box-shadow 0.3s, background 0.3s;
             border-bottom: 1px solid rgba(160, 123, 204, 0.1);
         }
-
         [data-theme="dark"] .navbar {
             background: rgba(13, 17, 23, 0.95);
             border-bottom-color: rgba(187, 134, 252, 0.1);
         }
-
-        .logo-section {
+        .logo-section { display: flex; align-items: center; gap: 1rem; }
+        .logo { width: 50px; height: 50px; border-radius: 12px; overflow: hidden; transition: transform 0.3s; }
+        .logo:hover { transform: scale(1.1) rotate(5deg); }
+        .logo img { width: 100%; height: 100%; object-fit: contain; }
+        .brand-text h1, .brand-text h2 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-primary); font-weight: 500;
+            transition: color 0.3s, background 0.3s, transform 0.3s;
+            position: relative; padding: 0.5rem 1rem; border-radius: 8px;
+        }
+        .nav-links a:hover { color: var(--accent-color); background: var(--secondary-bg); transform: translateY(-2px); }
+        .dropdown { position: relative; }
+        .dropdown-content {
+            position: absolute; top: 100%; right: 0; background: var(--primary-bg);
+            box-shadow: var(--shadow); border-radius: var(--border-radius); padding: 0.5rem 0;
+            min-width: 160px; opacity: 0; visibility: hidden; transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s, visibility 0.3s; border: 1px solid rgba(160, 123, 204, 0.1);
+            z-index: 1001;
+        }
+        .dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-content a {
+            display: block; padding: 0.75rem 1rem; color: var(--text-primary);
+            text-decoration: none; transition: background 0.3s, transform 0.3s; border-radius: 0;
+        }
+        .dropdown-content a:hover { background: var(--secondary-bg); transform: translateX(5px); }
+        .theme-toggle {
+            background: var(--gradient); border: none; border-radius: 50%;
+            width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: white; transition: transform 0.3s, box-shadow 0.3s, background 0.3s; font-size: 1.2rem;
+        }
+        .theme-toggle:hover { transform: scale(1.1) rotate(180deg); box-shadow: var(--shadow); }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--accent-color); margin-right: 0.5rem; transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .user-avatar:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4); }
+        /* Pricing Hero */
+        .pricing-hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--secondary-bg);
+            color: var(--accent-bg);
+            text-align: center;
+            padding: 140px 2rem 60px 2rem;
+            position: relative;
+        }
+        [data-theme="dark"] .pricing-hero {
+            background: var(--gradient);
+            color: #fff;
+        }
+        .pricing-hero .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: center;
         }
-
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .logo img {
+        .pricing-hero .hero-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-
-        .brand-text h1, .brand-text h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-            background: var(--secondary-bg);
-            transform: translateY(-2px);
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--primary-bg);
-            box-shadow: var(--shadow);
-            border-radius: var(--border-radius);
-            padding: 0.5rem 0;
-            min-width: 160px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-
-        .dropdown-content a:hover {
-            background: var(--secondary-bg);
-            transform: translateX(5px);
-        }
-
-        .theme-toggle {
-            background: var(--gradient);
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(180deg);
-            box-shadow: var(--shadow);
-        }
-
-        /* User Avatar in Navbar */
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
-        }
-
-        /* Main Profile Container */
-        .profile-container {
-            margin-top: 100px;
-            padding: 2rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            min-height: calc(100vh - 200px);
-        }
-
-        .pricing-container {
-            margin-top: 120px;
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-
-        .pricing-header {
-            margin-bottom: 50px;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .pricing-header h1 {
+        .pricing-hero h1 {
             font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
             background: linear-gradient(45deg, #2a357a, #a07bcc, #bb86fc);
             background-size: 300% 300%;
             -webkit-background-clip: text;
@@ -280,297 +150,207 @@
             background-clip: text;
             animation: gradient 3s ease infinite;
         }
-
-        .pricing-header p {
-            font-size: 1.2rem;
+        .pricing-hero .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 1.2rem;
+            opacity: 0.9;
+        }
+        [data-theme="dark"] .pricing-hero .hero-subtitle {
+            color: #fff;
+            opacity: 0.9;
+        }
+        .pricing-hero .hero-description {
+            font-size: 1.1rem;
             color: var(--text-secondary);
-            opacity: 0.8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
+        [data-theme="dark"] .pricing-hero .hero-description {
+            color: #e0d7f7;
         }
-
-        .pricing-card {
-            background: var(--primary-bg);
-            border-radius: var(--border-radius);
+        /* Pricing Cards */
+        .pricing-section {
+            max-width: 1200px;
+            margin: 3rem auto 0 auto;
             padding: 2.5rem 2rem;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            position: relative;
+            /* Remove background so stars show through */
+            background: transparent;
+            border-radius: 32px;
+            box-shadow: none;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 500px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
         }
-
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.2);
+        [data-theme="dark"] .pricing-section {
+            background: transparent;
+            box-shadow: none;
         }
-
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .pricing-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(160,123,204,0.10);
+            border: 2px solid transparent;
+            padding: 2.5rem 2rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: transform 0.22s cubic-bezier(.4,2,.3,1), box-shadow 0.22s, border 0.22s;
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
+        }
+        [data-theme="dark"] .pricing-card {
+            background: rgba(33,38,45,0.97);
+            box-shadow: 0 8px 32px rgba(187,134,252,0.10);
+        }
         .pricing-card.popular {
-            border: 2px solid var(--accent-color);
-            transform: scale(1.05);
+            border: 2.5px solid var(--accent-color);
+            box-shadow: 0 12px 48px 0 rgba(160,123,204,0.18);
+            transform: scale(1.04);
         }
-
-        .pricing-card.popular:hover {
-            transform: scale(1.05) translateY(-10px);
+        .pricing-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(160,123,204,0.18);
+            border-color: var(--accent-color);
         }
-
         .popular-badge {
             background: var(--gradient);
             color: white;
-            padding: 8px 20px;
+            padding: 8px 22px;
             border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             position: absolute;
-            top: -15px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 12px rgba(160,123,204,0.13);
         }
-
         .plan-name {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 800;
             margin-bottom: 10px;
-            color: var(--text-primary);
+            color: var(--accent-bg);
+            letter-spacing: 0.5px;
         }
-
+        [data-theme="dark"] .plan-name {
+            color: var(--accent-color);
+        }
         .plan-price {
             font-size: 3rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 5px;
             color: var(--accent-color);
         }
-
         .plan-period {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--text-secondary);
             margin-bottom: 30px;
             opacity: 0.8;
         }
-
         .plan-features {
             list-style: none;
             margin-bottom: 30px;
             flex-grow: 1;
-        }
-
-        .plan-features li {
-            padding: 10px 0;
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            border-bottom: 1px solid rgba(160, 123, 204, 0.2);
             text-align: left;
+            padding: 0 0.5rem;
         }
-
+        .plan-features li {
+            padding: 12px 0;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(160, 123, 204, 0.13);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
         .plan-features li:last-child {
             border-bottom: none;
         }
-
+        .plan-feature-icon {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
         .plan-button {
             width: 100%;
-            padding: 15px;
+            padding: 1.1rem;
             background: var(--gradient);
             color: white;
             border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.22s cubic-bezier(.4,2,.3,1);
             font-family: 'Inter', sans-serif;
+            margin-top: 1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 24px rgba(160,123,204,0.13);
         }
-
         .plan-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(42, 53, 122, 0.4);
+            background: linear-gradient(90deg, #bb86fc 0%, #2a357a 100%);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 32px rgba(160,123,204,0.18);
         }
-
+        /* Footer (copied from index.html) */
         .footer {
-            background: var(--gradient);
-            color: white;
-            text-align: center;
-            padding: 2rem;
+            background: var(--gradient); color: white; text-align: center; padding: 2rem;
             position: relative;
         }
-
         .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-            flex-wrap: wrap;
+            max-width: 1200px; margin: 0 auto; display: flex; flex-direction: row;
+            align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
         }
-
-        .footer-logo {
-            height: 50px;
-            flex-shrink: 0;
-        }
-
-        .footer-logo img {
-            height: 100%;
-            width: auto;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-text {
-            font-size: 1rem;
-            opacity: 0.9;
-            flex: 1;
-        }
-
+        .footer-logo { height: 50px; flex-shrink: 0; }
+        .footer-logo img { height: 100%; width: auto; filter: brightness(0) invert(1); }
+        .footer-text { font-size: 1rem; opacity: 0.9; flex: 1; }
         .footer-socials {
-            display: flex;
-            gap: 1rem;
-            flex-shrink: 0;
+            display: flex; gap: 1rem; flex-shrink: 0;
         }
-
         .footer-socials a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            color: white;
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%; text-decoration: none; transition: background 0.3s, transform 0.3s; color: white;
         }
-
-        .footer-socials a:hover {
-            transform: translateY(-3px) scale(1.1);
-            background: rgba(255, 255, 255, 0.3);
+        .footer-socials a:hover { transform: translateY(-3px) scale(1.1); background: rgba(255, 255, 255, 0.3); }
+        .footer-socials a img { height: 20px; width: 20px; filter: invert(1); }
+        @media (max-width: 900px) {
+            .pricing-section { padding: 2rem 1rem; }
+            .pricing-cards { gap: 1.2rem; }
+            .pricing-card { padding: 2rem 1rem 1.5rem 1rem; }
+            .footer-content { flex-direction: column; gap: 1rem; }
+            .navbar { padding: 1rem; }
+            .logo-section { gap: 0.5rem; }
+            .brand-text h1 { font-size: 1.2rem; }
+            .brand-text h2 { font-size: 0.9rem; }
         }
-
-        .footer-socials a img {
-            height: 20px;
-            width: 20px;
-            filter: invert(1);
-        }
-
-        .mobile-nav {
-            display: none;
-            position: relative;
-        }
-
-        .hamburger {
-            background: var(--gradient);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger:hover {
-            transform: scale(1.1);
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--primary-bg);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-top: 0.5rem;
-            min-width: 150px;
-            box-shadow: var(--shadow);
-        }
-
-        .dropdown-menu.show {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .dropdown-menu button {
-            padding: 0.5rem 1rem;
-            border: 2px solid var(--accent-color);
-            background: var(--primary-bg);
-            color: var(--text-primary);
-            font-weight: 500;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .dropdown-menu button:hover {
-            background: var(--gradient);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-nav {
-                display: block;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .pricing-card {
-                margin: 0 auto;
-                max-width: 400px;
-            }
-            
-            .pricing-card.popular {
-                transform: scale(1);
-            }
-
-            .pricing-card.popular:hover {
-                transform: translateY(-10px);
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-
-            .logo-section {
-                gap: 0.5rem;
-            }
-
-            .brand-text h1 {
-                font-size: 1.2rem;
-            }
-
-            .brand-text h2 {
-                font-size: 0.9rem;
-            }
+        @media (max-width: 600px) {
+            .pricing-section { padding: 1rem 0.5rem; border-radius: 12px; }
+            .pricing-card { border-radius: 12px; }
+            .pricing-hero { padding-top: 110px; }
+            .pricing-hero .hero-logo { width: 80px; height: 80px; }
+            .pricing-hero h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
-
-    <!-- Navigation -->
+    <!-- Navigation (copied from index.html) -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
@@ -612,69 +392,106 @@
             <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
         </ul>
     </nav>
-
-
-    <div class="pricing-container">
-        <div class="pricing-header">
-            <h1>Choose Your Plan</h1>
-            <p>Select the perfect plan for your college journey</p>
+    <!-- Pricing Hero -->
+    <section class="pricing-hero fade-in-up" style="position:relative; z-index:1; overflow:hidden;">
+        <div class="pricing-hero-bg"></div>
+        <div class="hero-logo" style="background: linear-gradient(135deg, #a07bcc 0%, #2a357a 100%); box-shadow: 0 8px 40px 0 rgba(160,123,204,0.18); width: 150px; height: 150px; margin-bottom: 2.2rem; border-radius: 32px; display: flex; align-items: center; justify-content: center;">
+            <img id="heroLogo" src="images/whiteclearcc.png" alt="College Climb Logo" style="width: 110px; height: 110px; object-fit: contain; background: transparent; border-radius: 24px;" loading="eager" decoding="async" />
         </div>
-        
-        <div class="pricing-grid">
+        <h1 style="font-size: clamp(2.7rem, 6vw, 4.2rem); font-weight: 900; margin-bottom: 0.5rem; background: linear-gradient(90deg, #2a357a, #a07bcc, #bb86fc 90%); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradient 3s ease infinite; letter-spacing: -1.5px;">Unlock Your Climb</h1>
+        <div class="hero-subtitle" style="font-size: 1.5rem; font-weight: 700; color: var(--accent-color); margin-bottom: 1.2rem; letter-spacing: 0.5px;">AI Admissions. Human Results. Transparent Pricing.</div>
+        <div class="hero-description" style="font-size: 1.18rem; color: var(--text-secondary); margin-bottom: 2.2rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.7;">
+            <span style="font-weight:700; color:var(--accent-color);">Start for free. Upgrade anytime. No hidden fees. Cancel anytime.</span>
+            <br>
+            <span>Choose the plan that fits your journey and unlock your full potential with College Climb.</span>
+        </div>
+        <a href="#plans" class="hero-cta-btn" style="display:inline-block; margin-top:1.2rem; background: var(--gradient); color: #fff; font-weight: 700; font-size: 1.15rem; padding: 1.1rem 2.8rem; border-radius: 20px; box-shadow: 0 8px 32px rgba(160,123,204,0.18); text-decoration: none; transition: all 0.25s cubic-bezier(.4,2,.3,1); letter-spacing: 0.5px; border: 2.5px solid var(--accent-color); animation: pulseGlow 2s infinite alternate;">See Plans ↓</a>
+        <div class="hero-visuals" style="position:absolute; left:0; right:0; bottom:0; height:80px; pointer-events:none; z-index:0;">
+            <svg width="100%" height="100%" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+                <path d="M0,40 Q360,80 720,40 T1440,40 V80 H0 Z" fill="url(#pricingHeroWave)" />
+                <defs>
+                    <linearGradient id="pricingHeroWave" x1="0" y1="0" x2="1440" y2="80" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#a07bcc" stop-opacity="0.18"/>
+                        <stop offset="1" stop-color="#2a357a" stop-opacity="0.13"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+    </section>
+    <style>
+        .pricing-hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, #a07bcc33 0%, #2a357a11 100%);
+            opacity: 0.18;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+        [data-theme="dark"] .pricing-hero-bg {
+            background: radial-gradient(ellipse at 60% 40%, #bb86fc33 0%, #1a1a2e22 100%);
+            opacity: 0.22;
+        }
+        .hero-cta-btn:hover {
+            background: linear-gradient(90deg, #bb86fc 0%, #2a357a 100%);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 12px 40px rgba(160,123,204,0.22);
+            border-color: #fff;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 24px 0 rgba(160,123,204,0.18), 0 0 0 0 var(--accent-color); }
+            100% { box-shadow: 0 0 48px 8px rgba(160,123,204,0.28), 0 0 24px 8px var(--accent-color); }
+        }
+    </style>
+    <!-- Pricing Cards Section -->
+    <section class="pricing-section fade-in-up" id="plans">
+        <div class="pricing-cards">
             <div class="pricing-card">
-                <div>
-                    <div class="plan-name">Free</div>
-                    <div class="plan-price">$0</div>
-                    <div class="plan-period">per month</div>
-                    <ul class="plan-features">
-                        <li>✓ Basic AI College Counselor</li>
-                        <li>✓ 5 Essay Reviews per month</li>
-                        <li>✓ Basic Resume Templates</li>
-                        <li>✓ Community Support</li>
-                        <li>✓ Limited College Search</li>
-                    </ul>
-                </div>
-                <button class="plan-button">Get Started</button>
+                <div class="plan-name">Free</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li><span class="plan-feature-icon">✓</span> Basic AI College Counselor</li>
+                    <li><span class="plan-feature-icon">✓</span> 5 Essay Reviews / month</li>
+                    <li><span class="plan-feature-icon">✓</span> Basic Resume Templates</li>
+                    <li><span class="plan-feature-icon">✓</span> Community Support</li>
+                    <li><span class="plan-feature-icon">✓</span> Limited College Search</li>
+                </ul>
+                <button class="plan-button">Get Started Free</button>
             </div>
-            
             <div class="pricing-card popular">
                 <div class="popular-badge">Most Popular</div>
-                <div>
-                    <div class="plan-name">Premium</div>
-                    <div class="plan-price">$10</div>
-                    <div class="plan-period">per month</div>
-                    <ul class="plan-features">
-                        <li>✓ Advanced AI College Counselor</li>
-                        <li>✓ Unlimited Essay Reviews</li>
-                        <li>✓ Premium Resume Builder</li>
-                        <li>✓ Priority Support</li>
-                        <li>✓ Full College Database Access</li>
-                        <li>✓ Interview Prep Tools</li>
-                    </ul>
-                </div>
+                <div class="plan-name">Premium</div>
+                <div class="plan-price">$10</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li><span class="plan-feature-icon">✓</span> Advanced AI College Counselor</li>
+                    <li><span class="plan-feature-icon">✓</span> Unlimited Essay Reviews</li>
+                    <li><span class="plan-feature-icon">✓</span> Premium Resume Builder</li>
+                    <li><span class="plan-feature-icon">✓</span> Priority Support</li>
+                    <li><span class="plan-feature-icon">✓</span> Full College Database Access</li>
+                    <li><span class="plan-feature-icon">✓</span> Interview Prep Tools</li>
+                </ul>
                 <button class="plan-button">Choose Premium</button>
             </div>
-            
             <div class="pricing-card">
-                <div>
-                    <div class="plan-name">Pro</div>
-                    <div class="plan-price">$25</div>
-                    <div class="plan-period">per month</div>
-                    <ul class="plan-features">
-                        <li>✓ Expert AI College Counselor</li>
-                        <li>✓ Unlimited Everything</li>
-                        <li>✓ Custom Resume Design</li>
-                        <li>✓ 24/7 Dedicated Support</li>
-                        <li>✓ Scholarship Matching</li>
-                        <li>✓ One-on-One Counseling</li>
-                        <li>✓ Application Tracking</li>
-                    </ul>
-                </div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">$25</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li><span class="plan-feature-icon">✓</span> Expert AI College Counselor</li>
+                    <li><span class="plan-feature-icon">✓</span> Unlimited Everything</li>
+                    <li><span class="plan-feature-icon">✓</span> Custom Resume Design</li>
+                    <li><span class="plan-feature-icon">✓</span> 24/7 Dedicated Support</li>
+                    <li><span class="plan-feature-icon">✓</span> Scholarship Matching</li>
+                    <li><span class="plan-feature-icon">✓</span> One-on-One Counseling</li>
+                    <li><span class="plan-feature-icon">✓</span> Application Tracking</li>
+                </ul>
                 <button class="plan-button">Choose Pro</button>
             </div>
         </div>
-    </div>
-
+    </section>
+    <!-- Footer (copied from index.html) -->
     <footer class="footer">
         <div class="footer-content">
             <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
@@ -697,180 +514,157 @@
             </div>
         </div>
     </footer>
+    <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-    <script>
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        const starryBg = document.getElementById('starryBg');
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+        authDomain: "collegeclimb-ai.firebaseapp.com",
+        projectId: "collegeclimb-ai",
+        storageBucket: "collegeclimb-ai.appspot.com",
+        messagingSenderId: "187139654658",
+        appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+        measurementId: "G-E0B2RQM9XS"
+    };
 
-        function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
-            document.querySelectorAll('.logo-img').forEach(img => {
-                img.src = logoSrc;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserData = null;
+
+    function updateNavbarLogo(theme) {
+        const logoImg = document.getElementById('navbarLogo');
+        if (logoImg) {
+            logoImg.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+        }
+        // Also update hero logo
+        const heroLogo = document.getElementById('heroLogo');
+        if (heroLogo) {
+            heroLogo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+        }
+    }
+
+    // Theme toggle logic
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    updateNavbarLogo(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        updateNavbarLogo(newTheme);
+    });
+
+    // Auth UI logic
+    function updateAuthUI(user) {
+        const notLoggedIn = document.getElementById('notLoggedIn');
+        const loggedIn = document.getElementById('loggedIn');
+        const navUserAvatar = document.getElementById('navUserAvatar');
+        const navAccountText = document.getElementById('navAccountText');
+        const dropdownWelcome = document.getElementById('dropdownWelcome');
+        const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+        if (user) {
+            if (notLoggedIn) notLoggedIn.style.display = 'none';
+            if (loggedIn) loggedIn.style.display = 'block';
+            if (currentUserData && currentUserData.profilePhotoURL) {
+                navUserAvatar.src = currentUserData.profilePhotoURL;
+                navUserAvatar.style.display = 'block';
+                navAccountText.style.display = 'none';
+            } else {
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+            }
+            if (dropdownWelcome && dropdownDisplayName) {
+                dropdownDisplayName.textContent =
+                    (currentUserData && currentUserData.name)
+                        ? currentUserData.name
+                        : (user.displayName || '');
+                dropdownWelcome.style.display = 'block';
+            }
+        } else {
+            if (notLoggedIn) notLoggedIn.style.display = 'block';
+            if (loggedIn) loggedIn.style.display = 'none';
+            navUserAvatar.style.display = 'none';
+            navAccountText.style.display = 'inline';
+            if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+        }
+    }
+
+    async function loadUserData(userId) {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            currentUserData = userDoc.exists() ? userDoc.data() : {};
+        } catch (e) {
+            currentUserData = {};
+        }
+        updateAuthUI(auth.currentUser);
+    }
+
+    // Auth state
+    onAuthStateChanged(auth, (user) => {
+        window.currentUser = user;
+        if (user) {
+            loadUserData(user.uid);
+        } else {
+            currentUserData = null;
+            updateAuthUI(null);
+        }
+    });
+
+    // Logout logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                await signOut(auth);
+                window.location.href = "/login.html";
             });
         }
-
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        body.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-        updateLogos(savedTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-            updateLogos(newTheme);
-            
-            if (newTheme === 'dark') {
-                createStars();
-            }
-        });
-
-        function updateThemeIcon(theme) {
-            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
-        }
-
-        function createStars() {
-            starryBg.innerHTML = '';
-            const numStars = 150;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        if (savedTheme === 'dark') {
-            createStars();
-        }
-
-        function toggleMenu() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('dropdownMenu');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
-
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
-            } else {
-                navbar.style.boxShadow = 'none';
-            }
-        });
-
-        // Add this function to update the auth dropdown UI
-function updateAuthUI(user) {
-    const authToggle = document.getElementById('authToggle');
-    const notLoggedIn = document.getElementById('notLoggedIn');
-    const loggedIn = document.getElementById('loggedIn');
-    
-    if (user) {
-        // User is logged in
-        authToggle.textContent = 'Account';
-        notLoggedIn.style.display = 'none';
-        loggedIn.style.display = 'block';
-    } else {
-        // User is not logged in
-        authToggle.textContent = 'Login/Sign Up';
-        notLoggedIn.style.display = 'block';
-        loggedIn.style.display = 'none';
-    }
-}
-
-// Update the existing onAuthStateChanged to include UI updates
-onAuthStateChanged(auth, (user) => {
-    updateAuthUI(user); // Add this line
-    
-    if (user) {
-        sessionStorage.setItem("user", JSON.stringify(user));
-        console.log("Logged in as:", user.email);
-        document.body.classList.add("logged-in");
-    } else {
-        sessionStorage.removeItem("user");
-        document.body.classList.remove("logged-in");
-    }
-});
-    </script>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
-
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-    authDomain: "collegeclimb-ai.firebaseapp.com",
-    projectId: "collegeclimb-ai",
-    storageBucket: "collegeclimb-ai.firebasestorage.app",
-    messagingSenderId: "187139654658",
-    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-    measurementId: "G-E0B2RQM9XS"
-  };
-
-  // Initialize services
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // Track login state
-  onAuthStateChanged(auth, (user) => {
-    // Update UI using global function
-    if (window.updateAuthUI) {
-      window.updateAuthUI(user);
-    }
-    
-    if (user) {
-      sessionStorage.setItem("user", JSON.stringify(user));
-      console.log("Logged in as:", user.email);
-      document.body.classList.add("logged-in");
-
-      const welcome = document.getElementById("welcome");
-      if (welcome) {
-        welcome.textContent = `Welcome, ${user.email}`;
-      }
-    } else {
-      sessionStorage.removeItem("user");
-      document.body.classList.remove("logged-in");
-
-      // Redirect if the page is protected
-      if (document.body.hasAttribute("data-auth")) {
-        window.location.href = "/login.html";
-      }
-    }
-  });
-
-  // Optional logout logic if you want it everywhere
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "/login.html";
-      });
     });
-  }
-</script>
 
+    // Starry background for dark mode
+    function createStars() {
+        const starryBg = document.getElementById('starryBg');
+        if (!starryBg) return;
+        starryBg.innerHTML = '';
+        const numStars = 150;
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            starryBg.appendChild(star);
+        }
+    }
+    if (savedTheme === 'dark') createStars();
+    themeToggle.addEventListener('click', () => {
+        if (body.getAttribute('data-theme') === 'dark') createStars();
+        else document.getElementById('starryBg').innerHTML = '';
+    });
+
+    // Navbar shadow on scroll
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+        if (window.scrollY > 100) {
+            navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+        } else {
+            navbar.style.boxShadow = 'none';
+        }
+    });
+    </script>
 </body>
 </html>
