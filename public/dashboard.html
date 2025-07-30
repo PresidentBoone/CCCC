@@ -1623,8 +1623,8 @@
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
-  
-    <!-- Navigation -->
+
+    <!-- Navigation (from profile.html, adapted for dashboard.html) -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
@@ -1888,8 +1888,14 @@
             }
         });
 
-        // --- NAVBAR PROFILE PHOTO & DISPLAY NAME LOGIC ---
-        // Helper to update navbar avatar and welcome message
+        // --- NAVBAR PROFILE PHOTO, DISPLAY NAME, AND LOGO THEME LOGIC (from profile.html) ---
+        function updateNavbarLogo(theme) {
+            const logoImg = document.getElementById('navbarLogo');
+            if (logoImg) {
+                logoImg.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
         function updateNavbarProfile(user, userData) {
             const avatarImg = document.getElementById('navUserAvatar');
             const accountText = document.getElementById('navAccountText');
@@ -1897,18 +1903,18 @@
             const dropdownDisplayName = document.getElementById('dropdownDisplayName');
 
             if (user) {
-                // Show avatar
+                // Show avatar (prefer Firestore photoURL, fallback to auth, then default)
+                let photoURL = (userData && userData.photoURL) || user.photoURL || 'images/default-avatar.png';
                 if (avatarImg) {
-                    let photoURL = user.photoURL || (userData && userData.photoURL) || 'images/default-avatar.png';
                     avatarImg.src = photoURL;
                     avatarImg.style.display = 'inline-block';
                 }
                 // Hide 'Account' text
                 if (accountText) accountText.style.display = 'none';
-                // Show welcome message with display name
+                // Show welcome message with display name (prefer Firestore name, fallback to auth, then email prefix)
                 if (dropdownWelcome) dropdownWelcome.style.display = 'block';
                 if (dropdownDisplayName) {
-                    let displayName = user.displayName || (userData && userData.name) || user.email.split('@')[0] || 'User';
+                    let displayName = (userData && userData.name) || user.displayName || (user.email ? user.email.split('@')[0] : 'User');
                     dropdownDisplayName.textContent = displayName;
                 }
             } else {
@@ -1921,26 +1927,41 @@
             }
         }
 
-        // Patch into existing onAuthStateChanged logic
-        const originalUpdateAuthUI = updateAuthUI;
-        updateAuthUI = function(user) {
-            if (typeof originalUpdateAuthUI === 'function') originalUpdateAuthUI(user);
-            updateNavbarProfile(user, window.currentUserData || null);
-        };
+        // Theme toggle logic (from profile.html)
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        updateNavbarLogo(savedTheme);
 
-        // Patch into loadUserData to update navbar profile after user data loads
-        const originalLoadUserProfile = loadUserProfile;
-        loadUserProfile = async function(user) {
-            if (typeof originalLoadUserProfile === 'function') await originalLoadUserProfile(user);
-            // Try to get userData from Firestore
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                window.currentUserData = userDoc.exists() ? userDoc.data() : {};
-            } catch (e) {
-                window.currentUserData = {};
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            updateNavbarLogo(newTheme);
+        });
+
+        // Auth state management (patches for navbar)
+        onAuthStateChanged(auth, async (user) => {
+            window.currentUser = user;
+            if (user) {
+                // Load userData from Firestore for avatar/name
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    window.currentUserData = userDoc.exists() ? userDoc.data() : {};
+                } catch (e) {
+                    window.currentUserData = {};
+                }
+                updateNavbarProfile(user, window.currentUserData);
+            } else {
+                window.currentUserData = null;
+                updateNavbarProfile(null, null);
             }
-            updateNavbarProfile(user, window.currentUserData);
-        };
+            // ...existing updateAuthUI logic...
+        });
 
         // Helper Functions
         function updateAuthUI(user) {
@@ -2511,7 +2532,8 @@
                 const savedTheme = localStorage.getItem('theme') || 'dark';
                 body.setAttribute('data-theme', savedTheme);
                 themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-                
+                updateNavbarLogo(savedTheme);
+
                 themeToggle.addEventListener('click', function() {
                     const currentTheme = body.getAttribute('data-theme');
                     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -2519,6 +2541,7 @@
                     body.setAttribute('data-theme', newTheme);
                     themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
                     localStorage.setItem('theme', newTheme);
+                    updateNavbarLogo(newTheme);
                 });
             }
             
