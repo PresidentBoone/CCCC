@@ -210,21 +210,6 @@
             transform: scale(1.1) rotate(180deg);
             box-shadow: var(--shadow);
         }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
-        }
 
         /* Main Dashboard */
         .dashboard-container {
@@ -1754,7 +1739,7 @@
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
-    <!-- Navigation -->
+     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
@@ -1969,7 +1954,7 @@
         </div>
     </footer>
 
-    <!-- Firebase & JavaScript -->
+       <!-- Firebase & JavaScript -->
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
@@ -1995,7 +1980,7 @@
         // Global variables
         window.auth = auth;
         window.db = db;
-        window.currentChatId = null; // Initialize currentChatId to null
+        window.currentChatId = null;
         window.currentChatMessages = [];
 
         console.log('🔥 Firebase initialized successfully');
@@ -2009,7 +1994,7 @@
             if (user) {
                 document.body.classList.add("logged-in");
                 await loadUserProfile(user);
-                await loadUserProgress(user.uid); // Load user progress
+                await loadUserProgress(user.uid);
                 await loadChatHistory(user.uid);
                 startNewChat();
             } else {
@@ -2063,7 +2048,7 @@
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 
                 if (userDoc.exists()) {
-                    const userData = userDoc.data(); // Get user data
+                    const userData = userDoc.data();
                     const displayName = userData.name || user.displayName || user.email.split('@')[0];
                     welcomeTitle.textContent = `Welcome back, ${displayName}!`;
                     
@@ -2083,409 +2068,850 @@
             }
         }
 
-        // Load user progress data
-        async function loadUserProgress(userId) {
+
+        // Patch into existing onAuthStateChanged logic
+        const originalUpdateAuthUI = updateAuthUI;
+        updateAuthUI = function(user) {
+            if (typeof originalUpdateAuthUI === 'function') originalUpdateAuthUI(user);
+            updateNavbarProfile(user, window.currentUserData || null);
+        };
+
+        // Patch into loadUserData to update navbar profile after user data loads
+        const originalLoadUserProfile = loadUserProfile;
+        loadUserProfile = async function(user) {
+            if (typeof originalLoadUserProfile === 'function') await originalLoadUserProfile(user);
+            // Try to get userData from Firestore
             try {
-                const progressDoc = await getDoc(doc(db, 'progress', userId));
-                if (progressDoc.exists()) { // Check if progress document exists
-                    const progressData = progressDoc.data();
-                    updateProgressUI(progressData);
-                } else {
-                    // Initialize progress if it doesn't exist
-                    const initialProgress = {
-                        application: 0,
-                        essays: 0,
-                        resume: 0,
-                        scholarships: 0
-                    };
-                    await setDoc(doc(db, 'progress', userId), initialProgress);
-                    updateProgressUI(initialProgress);
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                window.currentUserData = userDoc.exists() ? userDoc.data() : {};
+            } catch (e) {
+                window.currentUserData = {};
+            }
+            updateNavbarProfile(user, window.currentUserData);
+        };
+
+        // Helper Functions
+        function updateAuthUI(user) {
+            const authToggle = document.getElementById('authToggle');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+            
+            if (user) {
+                if (authToggle) authToggle.style.justifyContent = 'flex-start';
+                if (navUserAvatar) {
+                    navUserAvatar.src = user.photoURL || 'images/default-avatar.png';
+                    navUserAvatar.style.display = 'block';
                 }
-            } catch (error) {
-                console.error('❌ Error loading user progress:', error);
+                if (navAccountText) navAccountText.style.display = 'none';
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) {
+                    dropdownWelcome.style.display = 'block';
+                    dropdownDisplayName.textContent = user.displayName.split(' ')[0];
+                }
+            } else {
+                if (authToggle) authToggle.textContent = 'Login/Sign Up';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'block';
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
             }
         }
 
-        // Update progress UI elements
-        function updateProgressUI(progressData) {
-            const sections = ['application', 'essay', 'resume', 'scholarship'];
-            sections.forEach(section => {
-                const percent = progressData[section] || 0; // Get percentage or default to 0
-                const capitalizedSection = section.charAt(0).toUpperCase() + section.slice(1);
+        async function loadUserProfile(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const welcomeTitle = document.getElementById('welcomeTitle');
                 
-                document.getElementById(`${section}Percent`).textContent = `${percent}%`;
-                document.getElementById(`${section}Bar`).style.width = `${percent}%`;
-                
-                let statusText = `Get started with your ${section}`;
-                if (percent > 0 && percent < 100) {
-                    statusText = `You're making great progress!`;
-                } else if (percent === 100) {
-                    statusText = `Congratulations! Section complete.`;
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const firstName = userData.name ? userData.name.split(' ')[0] : 'Student';
+                    if (welcomeTitle) welcomeTitle.textContent = `Welcome back, ${firstName}!`;
+                } else {
+                    if (welcomeTitle) welcomeTitle.textContent = `Welcome, ${user.email.split('@')[0]}!`;
                 }
-                document.getElementById(`${section}Status`).textContent = statusText;
+            } catch (error) {
+                console.error('❌ Error loading user profile:', error);
+            }
+        }
+
+        async function loadUserProgress(userId) {
+            try {
+                const progressDoc = await getDoc(doc(db, 'userProgress', userId));
+                
+                if (progressDoc.exists()) {
+                    const progressData = progressDoc.data();
+                    updateProgressBars(progressData);
+                } else {
+                    // Set default progress values
+                    const defaultProgress = {
+                        application: 15,
+                        essays: 35,
+                        resume: 60,
+                        scholarships: 20
+                    };
+                    
+                    await setDoc(doc(db, 'userProgress', userId), defaultProgress);
+                    updateProgressBars(defaultProgress);
+                }
+                
+                // Animate progress bars
+                setTimeout(() => {
+                    if (window.animateProgressBars) {
+                        window.animateProgressBars();
+                    }
+                }, 500);
+            } catch (error) {
+                console.error('❌ Error loading progress:', error);
+                setTimeout(() => {
+                    if (window.animateProgressBars) {
+                        window.animateProgressBars();
+                    }
+                }, 500);
+            }
+        }
+
+        function updateProgressBars(progressData) {
+            const progressElements = [
+                { id: 'application', data: progressData.application || 0 },
+                { id: 'essay', data: progressData.essays || 0 },
+                { id: 'resume', data: progressData.resume || 0 },
+                { id: 'scholarship', data: progressData.scholarships || 0 }
+            ];
+
+            progressElements.forEach(({ id, data }) => {
+                const percentElement = document.getElementById(`${id}Percent`);
+                const barElement = document.getElementById(`${id}Bar`);
+                const statusElement = document.getElementById(`${id}Status`);
+                
+                if (percentElement) percentElement.textContent = `${data}%`;
+                if (barElement) barElement.style.width = `${data}%`;
+                
+                // Update status based on progress
+                if (statusElement) {
+                    statusElement.textContent = getProgressStatus(id, data);
+                }
             });
         }
 
-        // Load chat history
+        function getProgressStatus(type, progress) {
+            const statuses = {
+                application: {
+                    0: "Start your application journey",
+                    25: "Application in progress",
+                    50: "Halfway through applications",
+                    75: "Almost done with applications",
+                    100: "All applications submitted!"
+                },
+                essay: {
+                    0: "Begin crafting your essays",
+                    25: "Essays in development",
+                    50: "Making good progress on essays",
+                    75: "Essays nearly complete",
+                    100: "All essays completed!"
+                },
+                resume: {
+                    0: "Build your professional resume",
+                    25: "Resume structure created",
+                    50: "Resume content developing",
+                    75: "Resume almost polished",
+                    100: "Resume ready for submission!"
+                },
+                scholarship: {
+                    0: "Discover funding opportunities",
+                    25: "Scholarships identified",
+                    50: "Applications in progress",
+                    75: "Most applications submitted",
+                    100: "All scholarship applications done!"
+                }
+            };
+
+            const thresholds = Object.keys(statuses[type]).map(Number).sort((a, b) => b - a);
+            for (const threshold of thresholds) {
+                if (progress >= threshold) {
+                    return statuses[type][threshold];
+                }
+            }
+            return statuses[type][0];
+        }
+
+        // Chat System Functions
+        window.startNewChat = function() {
+            window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            window.currentChatMessages = [];
+            
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                chatMessages.innerHTML = `
+                    <div class="message ai-message">
+                        <strong>AI Counselor:</strong> 
+                        Hello! I'm your personal AI college counselor. I can help you with:
+                        <br><br>
+                        • College applications and deadlines<br>
+                        • Essay writing and feedback<br>
+                        • Scholarship opportunities<br>
+                        • Interview preparation<br>
+                        • Academic planning<br>
+                        • Career guidance<br><br>
+                        What would you like to work on today?
+                    </div>
+                `;
+            }
+            
+            // Clear active states
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            console.log('💬 New chat initialized:', window.currentChatId);
+        };
+
         async function loadChatHistory(userId) {
             try {
-                const chatList = document.getElementById('chatList');
-                chatList.innerHTML = ''; // Clear existing list
-                // Query chats ordered by lastUpdated
-                const q = query(collection(db, 'users', userId, 'chats'), orderBy('lastUpdated', 'desc'));
-                const querySnapshot = await getDocs(q);
+                console.log('📚 Loading chat history for user:', userId);
                 
-                if (querySnapshot.empty) {
-                    chatList.innerHTML = '<div class="no-chats-message">No chat history found. Start a new conversation!</div>';
+                const chatList = document.getElementById('chatList');
+                
+                if (!chatList) {
+                    console.error('❌ Chat list element not found');
                     return;
                 }
                 
-                querySnapshot.forEach(doc => {
-                    const chat = doc.data();
-                    const chatItem = createChatItemElement(doc.id, chat);
+                // Show loading state
+                chatList.innerHTML = '<div class="no-chats-message">Loading chat history...</div>';
+                
+                // Use simple query without orderBy to avoid index issues
+                const chatsQuery = query(
+                    collection(db, 'chatSessions'),
+                    where('userId', '==', userId)
+                );
+                
+                const querySnapshot = await getDocs(chatsQuery);
+                
+                chatList.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    chatList.innerHTML = '<div class="no-chats-message">Start your first conversation with our AI counselor!</div>';
+                    console.log('📚 No chat history found');
+                    return;
+                }
+                
+                console.log(`📚 Found ${querySnapshot.size} chat sessions`);
+                
+                // Convert to array and sort manually
+                const chats = [];
+                querySnapshot.forEach((docSnapshot) => {
+                    const chatData = docSnapshot.data();
+                    chats.push({ id: docSnapshot.id, data: chatData });
+                });
+                
+                // Sort by lastUpdated manually (most recent first)
+                chats.sort((a, b) => {
+                    if (a.data.lastUpdated && b.data.lastUpdated) {
+                        return b.data.lastUpdated.toMillis() - a.data.lastUpdated.toMillis();
+                    }
+                    // If no timestamp, put at end
+                    return 0;
+                });
+                
+                // Create chat items
+                chats.forEach(({ id, data }) => {
+                    const chatItem = createChatItem(id, data);
                     chatList.appendChild(chatItem);
                 });
+                
+                console.log('✅ Chat history loaded successfully');
+                
             } catch (error) {
                 console.error('❌ Error loading chat history:', error);
-                document.getElementById('chatList').innerHTML = '<div class="no-chats-message">Error loading chats.</div>';
+                
+                const chatList = document.getElementById('chatList');
+                if (chatList) {
+                    chatList.innerHTML = `
+                        <div class="no-chats-message">
+                            <div style="margin-bottom: 1rem;">Unable to load chat history.</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Error: ${error.message}</div>
+                            <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                Retry
+                            </button>
+                        </div>
+                    `;
+                }
             }
         }
 
-        // Create chat item element
-        function createChatItemElement(chatId, chatData) {
-            const item = document.createElement('div');
-            item.className = 'chat-item';
-            item.dataset.chatId = chatId; // Set data-chat-id attribute
-            item.onclick = () => selectChat(chatId);
+        function createChatItem(chatId, chatData) {
+            const chatItem = document.createElement('div');
+            chatItem.className = 'chat-item';
+            chatItem.dataset.chatId = chatId; // Store chatId for reliable identification
             
-            const title = document.createElement('div');
-            title.className = 'chat-item-title';
-            title.textContent = chatData.title || 'Untitled Chat'; // Display chat title
+            const title = chatData.title || 'New Chat';
+            const preview = chatData.lastMessage ? 
+                chatData.lastMessage.substring(0, 50) + (chatData.lastMessage.length > 50 ? '...' : '') : 
+                'Start a conversation';
+            const date = chatData.lastUpdated ? 
+                new Date(chatData.lastUpdated.toDate()).toLocaleDateString() : 
+                new Date().toLocaleDateString();
             
-            const preview = document.createElement('div');
-            preview.className = 'chat-item-preview';
-            preview.textContent = chatData.lastMessagePreview || 'No messages yet...'; // Display message preview
+            chatItem.innerHTML = `
+                <div class="chat-item-title">${escapeHtml(title)}</div>
+                <div class="chat-item-preview">${escapeHtml(preview)}</div>
+                <div class="chat-item-date">${date}</div>
+                <button class="chat-item-delete" onclick="event.stopPropagation(); window.deleteChatSession('${chatId}')" title="Delete chat">×</button>
+            `;
             
-            const date = document.createElement('div');
-            date.className = 'chat-item-date';
-            date.textContent = chatData.lastUpdated ? new Date(chatData.lastUpdated.seconds * 1000).toLocaleDateString() : '';
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'chat-item-delete';
-            deleteBtn.innerHTML = '&times;';
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                deleteChat(chatId);
-            };
-            
-            item.appendChild(title);
-            item.appendChild(preview);
-            item.appendChild(date);
-            item.appendChild(deleteBtn);
-            
-            return item;
-        }
-
-        // Select a chat
-        async function selectChat(chatId) {
-            if (window.currentChatId === chatId) return; // Prevent re-selecting the same chat
-            
-            window.currentChatId = chatId;
-            
-            // Update active state in sidebar
-            document.querySelectorAll('.chat-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.chatId === chatId);
+            // Add click event listener
+            chatItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('🖱️ Chat item clicked:', chatId);
+                window.loadChatSession(chatId);
             });
             
-            // Load messages for the selected chat
-            await loadChatMessages(chatId);
+            return chatItem;
         }
 
-        // Load messages for a specific chat
-        async function loadChatMessages(chatId) {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>'; // Show typing indicator while loading
-            
+        window.loadChatSession = async function(chatId) {
             try {
-                const messagesQuery = query(collection(db, 'users', auth.currentUser.uid, 'chats', chatId, 'messages'), orderBy('timestamp'));
-                const messagesSnapshot = await getDocs(messagesQuery);
+                console.log('📖 Loading chat session:', chatId);
+                
+                if (!window.auth.currentUser) {
+                    alert('Please log in to access chat history.');
+                    return;
+                }
+                
+                window.currentChatId = chatId;
+                window.currentChatMessages = [];
+                
+                // Update UI - remove active class from all items first
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Mark the clicked item as active immediately
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    if (item.dataset.chatId === chatId) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Use simple query without orderBy to avoid index issues
+                const messagesQuery = query(
+                    collection(db, 'chatMessages'),
+                    where('chatId', '==', chatId),
+                    where('userId', '==', window.auth.currentUser.uid)
+                );
+                
+                const querySnapshot = await getDocs(messagesQuery);
+                const chatMessages = document.getElementById('chatMessages');
+                
+                if (!chatMessages) {
+                    console.error('❌ Chat messages container not found');
+                    return;
+                }
                 
                 chatMessages.innerHTML = '';
-                window.currentChatMessages = [];
                 
-                messagesSnapshot.forEach(doc => { // Add messages to UI
-                    const message = doc.data();
-                    window.currentChatMessages.push(message);
-                    addMessageToUI(message.role, message.content);
-                });
-                
-                if (messagesSnapshot.empty) {
-                    addMessageToUI('ai', 'This is a new chat. Ask me anything!');
+                if (querySnapshot.empty) {
+                    chatMessages.innerHTML = `
+                        <div class="message ai-message">
+                            <strong>AI Counselor:</strong> 
+                            This chat appears to be empty. Let's start a new conversation!
+                        </div>
+                    `;
+                    return;
                 }
-            } catch (error) {
-                console.error('❌ Error loading chat messages:', error);
-                chatMessages.innerHTML = '<div class="message ai-message">Error loading messages.</div>';
-            }
-        }
-
-        // Start a new chat
-        window.startNewChat = async function() {
-            try {
-                const newChatRef = await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats'), { // Add new chat document
-                    title: 'New Chat',
-                    createdAt: serverTimestamp(),
-                    lastUpdated: serverTimestamp(),
-                    lastMessagePreview: ''
+                
+                // Convert to array and sort manually by timestamp
+                const messages = [];
+                querySnapshot.forEach((docSnapshot) => {
+                    const messageData = docSnapshot.data();
+                    messages.push(messageData);
                 });
                 
-                window.currentChatId = newChatRef.id;
-                window.currentChatMessages = [];
+                // Sort by timestamp manually (oldest first)
+                messages.sort((a, b) => {
+                    if (a.timestamp && b.timestamp) {
+                        return a.timestamp.toMillis() - b.timestamp.toMillis();
+                    }
+                    return 0;
+                });
                 
-                // Add new chat to the top of the chat list
-                const chatList = document.getElementById('chatList');
-                const newChatItem = createChatItemElement(newChatRef.id, { title: 'New Chat' });
-                chatList.insertBefore(newChatItem, chatList.firstChild);
+                // Add each message to the chat
+                messages.forEach((messageData) => {
+                    const messageDiv = document.createElement('div');
+                    
+                    if (messageData.sender === 'user') {
+                        messageDiv.className = 'message user-message';
+                        messageDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(messageData.message)}`;
+                    } else {
+                        messageDiv.className = 'message ai-message';
+                        messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(messageData.message)}`;
+                    }
+                    
+                    chatMessages.appendChild(messageDiv);
+                    window.currentChatMessages.push(messageData);
+                });
                 
-                // Remove "no chats" message if it exists
-                const noChatsMsg = chatList.querySelector('.no-chats-message');
-                if (noChatsMsg) noChatsMsg.remove();
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                selectChat(newChatRef.id);
+                console.log(`📖 Loaded ${messages.length} messages for chat ${chatId}`);
                 
             } catch (error) {
-                console.error('❌ Error starting new chat:', error);
-                alert('Could not start a new chat. Please try again.');
+                console.error('❌ Error loading chat session:', error);
+                
+                // More specific error handling
+                let errorMessage = 'Error loading chat. Please try again.';
+                
+                if (error.code === 'permission-denied') {
+                    errorMessage = 'Permission denied. Please make sure you are logged in and try refreshing the page.';
+                } else if (error.code === 'failed-precondition') {
+                    errorMessage = 'Database is still setting up. Please try again in a moment.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Database is temporarily unavailable. Please try again in a moment.';
+                }
+                
+                alert(errorMessage);
             }
-        }
+        };
 
-        // Delete a chat
-        async function deleteChat(chatId) {
+        window.deleteChatSession = async function(chatId) {
             if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
-                return; // Confirm deletion
-            }
-            
-            try {
-                await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'chats', chatId));
-                
-                // Remove from UI
-                const chatItem = document.querySelector(`.chat-item[data-chat-id="${chatId}"]`);
-                if (chatItem) chatItem.remove(); // Remove chat item from UI
-                
-                // If deleting the current chat, start a new one
-                if (window.currentChatId === chatId) {
-                    startNewChat();
-                }
-                
-                // Check if chat list is empty
-                const chatList = document.getElementById('chatList');
-                if (chatList.children.length === 0) {
-                    chatList.innerHTML = '<div class="no-chats-message">No chat history found. Start a new conversation!</div>';
-                }
-                
-            } catch (error) {
-                console.error('❌ Error deleting chat:', error);
-                alert('Could not delete chat. Please try again.');
-            }
-        }
-
-        // Send a message
-        window.sendMessage = async function() {
-            const userInput = document.getElementById('userInput');
-            const messageText = userInput.value.trim();
-            // Validate message and current chat
-            if (!messageText) return;
-            if (!window.currentChatId) {
-                alert('Please start a new chat first.');
                 return;
             }
             
-            addMessageToUI('user', messageText);
-            userInput.value = ''; // Clear input field
-            
-            // Show typing indicator
-            const chatMessages = document.getElementById('chatMessages');
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'typing-indicator';
-            typingIndicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-            chatMessages.appendChild(typingIndicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
             try {
-                // Save user message to Firestore
-                await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'), { // Add user message to Firestore
-                    role: 'user',
-                    content: messageText,
-                    timestamp: serverTimestamp()
-                });
+                console.log('🗑️ Deleting chat session:', chatId);
                 
-                // Update chat metadata
-                await setDoc(doc(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId), {
-                    lastMessagePreview: messageText.substring(0, 40) + (messageText.length > 40 ? '...' : ''), // Update last message preview
-                    lastUpdated: serverTimestamp()
-                }, { merge: true });
+                // Delete chat session
+                await deleteDoc(doc(db, 'chatSessions', chatId));
                 
-                // Prepare messages for API call
-                const messagesForApi = [
-                    { role: 'system', content: 'You are a helpful AI college counselor named Climb. You are assisting a student with their college application process. Be encouraging, informative, and concise.' },
-                    ...window.currentChatMessages.map(msg => ({ role: msg.role, content: msg.content })),
-                    { role: 'user', content: messageText }
-                ];
+                // Delete all messages in the chat
+                const messagesQuery = query(
+                    collection(db, 'chatMessages'),
+                    where('chatId', '==', chatId)
+                );
                 
-                // Call the backend API for AI response
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: messagesForApi })
-                });
+                const querySnapshot = await getDocs(messagesQuery);
+                const deletePromises = querySnapshot.docs.map(messageDoc => 
+                    deleteDoc(doc(db, 'chatMessages', messageDoc.id))
+                );
                 
-                typingIndicator.remove();
+                await Promise.all(deletePromises);
                 
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.statusText}`);
+                // Refresh chat list
+                if (auth.currentUser) {
+                    await loadChatHistory(auth.currentUser.uid);
                 }
                 
-                const data = await response.json();
-                const aiResponse = data.response;
+                // Start new chat if current chat was deleted
+                if (window.currentChatId === chatId) {
+                    window.startNewChat();
+                }
                 
-                addMessageToUI('ai', aiResponse); // Add AI response to UI
+                console.log('✅ Chat session deleted successfully');
                 
-                // Save AI response to Firestore
-                await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'), {
-                    role: 'ai',
-                    content: aiResponse,
+            } catch (error) {
+                console.error('❌ Error deleting chat session:', error);
+                alert('Error deleting chat. Please try again.');
+            }
+        };
+
+        async function saveChatMessage(userId, chatId, message, sender) {
+                       try {
+                await addDoc(collection(db, 'chatMessages'), {
+                    userId: userId,
+                    chatId: chatId,
+                    message: message,
+                    sender: sender,
                     timestamp: serverTimestamp()
                 });
                 
+                console.log('💾 Message saved successfully');
+                
             } catch (error) {
-                console.error('❌ Error sending message:', error);
-                typingIndicator.remove();
-                addMessageToUI('ai', 'Sorry, I encountered an error. Please try again.');
+                console.error('❌ Error saving message:', error);
+                throw error;
             }
         }
 
-        // Add message to UI
-        function addMessageToUI(role, content) {
+        async function saveChatSession(userId, chatId, title, lastMessage) {
+            try {
+                const chatSessionData = {
+                    userId: userId,
+                    lastMessage: lastMessage,
+                    lastUpdated: serverTimestamp()
+                };
+                
+                if (title && window.currentChatMessages.length <= 2) {
+                    chatSessionData.title = title;
+                }
+                
+                await setDoc(doc(db, 'chatSessions', chatId), chatSessionData, { merge: true });
+                
+                console.log('💾 Chat session saved successfully');
+                
+            } catch (error) {
+                console.error('❌ Error saving chat session:', error);
+                throw error;
+            }
+        }
+
+        function generateChatTitle(firstMessage) {
+            const words = firstMessage.trim().split(' ').slice(0, 5);
+            let title = words.join(' ');
+            title = title.charAt(0).toUpperCase() + title.slice(1);
+            
+            if (firstMessage.split(' ').length > 5) {
+                title += '...';
+            }
+            
+            return title || 'New Chat';
+        }
+
+        window.clearCurrentChat = function() {
+            if (confirm('Are you sure you want to start a new chat? Current conversation will be saved.')) {
+                window.startNewChat();
+            }
+        };
+
+        function resetDashboard() {
+            const chatList = document.getElementById('chatList');
             const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div'); // Create message div
-            messageDiv.className = `message ${role}-message`;
-            messageDiv.innerHTML = content.replace(/\n/g, '<br>'); // Basic markdown for newlines
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+            const welcomeTitle = document.getElementById('welcomeTitle');
             
-            // Add to local message history
-            window.currentChatMessages.push({ role, content });
-        } // End of addMessageToUI
-
-        // Handle Enter key press
-        window.handleKeyPress = function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        // Clear current chat messages
-        window.clearCurrentChat = async function() {
-            if (!window.currentChatId || !confirm('Are you sure you want to clear all messages in this chat?')) {
-                return; // Confirm clearing chat
+            if (chatList) {
+                chatList.innerHTML = '<div class="no-chats-message">Please log in to save your chat history.</div>';
             }
             
-            try {
-                const messagesQuery = query(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'));
-                const messagesSnapshot = await getDocs(messagesQuery);
-                // Delete all messages in a batch
-                const batch = writeBatch(db);
-                messagesSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                await batch.commit();
-                
-                document.getElementById('chatMessages').innerHTML = '';
-                window.currentChatMessages = []; // Clear local message history
-                addMessageToUI('ai', 'Chat cleared. How can I help you now?');
-                
-            } catch (error) {
-                console.error('❌ Error clearing chat:', error);
-                alert('Could not clear chat. Please try again.');
+            if (chatMessages) {
+                chatMessages.innerHTML = `
+                    <div class="message ai-message">
+                        <strong>AI Counselor:</strong> 
+                        Hello! I'm your personal AI college counselor. I can help you with college applications, essays, scholarships, and more. Please log in to save our conversation and access personalized features.
+                    </div>
+                `;
             }
+            
+            if (welcomeTitle) {
+                welcomeTitle.textContent = 'Welcome to Your College Climb Dashboard';
+            }
+            
+            // Reset progress bars
+            updateProgressBars({ application: 0, essays: 0, resume: 0, scholarships: 0 });
+            
+            window.currentChatId = null;
+            window.currentChatMessages = [];
         }
 
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-            e.preventDefault();
+        // Logout function
+        window.logout = async function() {
             try {
-                await signOut(auth); // Sign out user
+                console.log('👋 Logging out user');
+                await signOut(auth);
                 window.location.href = 'index.html';
             } catch (error) {
                 console.error('❌ Error signing out:', error);
+                alert('Error signing out. Please try again.');
             }
-        });
+        };
 
-        // Theme toggle functionality
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const body = document.body;
+        // Event listeners
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', window.logout);
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Make functions globally available
+        window.saveChatMessage = saveChatMessage;
+        window.saveChatSession = saveChatSession;
+        window.generateChatTitle = generateChatTitle;
+        window.loadChatHistory = loadChatHistory;
+    </script>
+
+    <script>
+        // Theme Management & General Functions
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 DOM Content Loaded');
+            
+            // Theme Toggle
             const themeToggle = document.getElementById('themeToggle');
-            let newTheme; // Determine new theme
-            if (body.getAttribute('data-theme') === 'dark') {
-                newTheme = 'light';
-                body.setAttribute('data-theme', 'light');
-                themeToggle.textContent = '🌙';
-            } else {
-                newTheme = 'dark';
-                body.setAttribute('data-theme', 'dark');
-                themeToggle.textContent = '☀️';
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    localStorage.setItem('theme', newTheme);
+                });
             }
-            localStorage.setItem('theme', newTheme); // Save theme to localStorage
-            updateNavbarLogo(newTheme);
+            
+            // Initialize components
+            createStarryBackground();
+            initializeAnimations();
         });
 
-        function updateNavbarLogo(theme) {
-            const logoImg = document.getElementById('navbarLogo');
-            if (!logoImg) return;
-            if (theme === 'dark') {
-                logoImg.src = 'images/whiteclearcc.png';
-            } else {
-                logoImg.src = 'images/blackcc.png';
+        // Create animated starry background
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starryBg.appendChild(star);
             }
         }
 
-        // Set initial theme from localStorage
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.setAttribute('data-theme', savedTheme);
-            document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-            updateNavbarLogo(savedTheme); // Update logo based on saved theme
+        // Animate progress bars
+        window.animateProgressBars = function() {
+            const progressBars = [
+                { id: 'applicationBar', percent: 15 },
+                { id: 'essayBar', percent: 35 },
+                { id: 'resumeBar', percent: 60 },
+                { id: 'scholarshipBar', percent: 25 }
+            ];
+            
+            progressBars.forEach(bar => {
+                const element = document.getElementById(bar.id);
+                if (element) {
+                    element.style.width = bar.percent + '%';
+                }
+            });
+        }
 
-            // Starry background generation
-            const starryBg = document.getElementById('starryBg');
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = `${Math.random() * 2 + 1}px`;
-                star.style.height = star.style.width;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 3}s`; // Random animation delay
-                starryBg.appendChild(star);
+        // Navigation functions
+        function openApplicationProgress() { window.location.href = 'application-tracker.html'; }
+        function openEssayProgress() { window.location.href = 'essay-helper.html'; }
+        function openResumeProgress() { window.location.href = 'resume-builder.html'; }
+        function openScholarshipProgress() { window.location.href = 'scholarship-finder.html'; }
+        function openEssayHelper() { window.location.href = 'essay-helper.html'; }
+        function openResumeBuilder() { window.location.href = 'resume-builder.html'; }
+        function openCollegeSearch() { window.location.href = 'college-search.html'; }
+        function openScholarshipFinder() { window.location.href = 'scholarship-finder.html'; }
+        function openInterviewPrep() { window.location.href = 'interview-prep.html'; }
+        function openTestPrep() { window.location.href = 'test-prep.html'; }
+
+        function openFeature(feature) {
+            switch(feature) {
+                case 'application': openApplicationProgress(); break;
+                case 'essays': openEssayProgress(); break;
+                case 'resume': openResumeProgress(); break;
+                case 'scholarships': openScholarshipProgress(); break;
+                case 'essay-helper': openEssayHelper(); break;
+                case 'resume-builder': openResumeBuilder(); break;
+                case 'college-search': openCollegeSearch(); break;
+                case 'scholarship-finder': openScholarshipFinder(); break;
+                case 'interview-prep': openInterviewPrep(); break;
+                case 'test-prep': openTestPrep(); break;
+                default: console.log('Feature not found:', feature);
             }
+        }
 
-            // Intersection Observer for animations
+        function initializeAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.1 });
+            }, observerOptions);
 
             document.querySelectorAll('.fade-in-up').forEach(el => {
                 observer.observe(el);
             });
-        });
-
-        // Placeholder for openFeature function
-        function openFeature(featureName) {
-            alert(`Navigating to ${featureName}... (Not implemented)`);
         }
-    </script>
-</body>
-</html>
+
+        // Chat functionality
+        let lastMessageTime = 0;
+        const MESSAGE_COOLDOWN = 1000;
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const now = Date.now();
+            if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+                console.log('⏱️ Message cooldown active');
+                return;
+            }
+            lastMessageTime = now;
+            
+            console.log('📤 Sending message:', message);
+            
+            // Disable input
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+            
+            try {
+                // Start new chat if none exists
+                if (!window.currentChatId) {
+                    if (window.startNewChat) {
+                        window.startNewChat();
+                    }
+                }
+                
+                const chatMessages = document.getElementById('chatMessages');
+                
+                // Add user message
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
+                chatMessages.appendChild(userMessage);
+                
+                input.value = '';
+                
+                // Add typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message ai-message typing';
+                typingIndicator.innerHTML = `<strong>AI Counselor:</strong> <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+                chatMessages.appendChild(typingIndicator);
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Get AI response
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                // Remove typing indicator
+                if (chatMessages.contains(typingIndicator)) {
+                    chatMessages.removeChild(typingIndicator);
+                }
+                
+                let aiResponseText;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponseText = data.response || 'Sorry, I received an empty response.';
+                } else {
+                    console.error('API Error:', response.status);
+                    aiResponseText = 'Sorry, I\'m having trouble connecting right now.';
+                }
+                
+                // Add AI response
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'message ai-message';
+                aiMessage.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(aiResponseText)}`;
+                chatMessages.appendChild(aiMessage);
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Save to database if user is logged in
+                if (window.auth && window.auth.currentUser) {
+                    try {
+                        const userId = window.auth.currentUser.uid;
+                        console.log('💾 Saving chat...');
+                        
+                        await Promise.all([
+                            window.saveChatMessage(userId, window.currentChatId, message, 'user'),
+                            window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai')
+                        ]);
+                        
+                        // Generate title for new chats
+                        let chatTitle = null;
+                        if (window.currentChatMessages.length === 0) {
+                            chatTitle = window.generateChatTitle(message);
+                        }
+                        
+                        await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
+                        
+                        // Update current messages
+                        window.currentChatMessages.push(
+                            { message: message, sender: 'user' },
+                            { message: aiResponseText, sender: 'ai' }
+                        );
+                        
+                                                // Refresh chat history
+                                                setTimeout(() => {
+                                                    if (window.loadChatHistory) {
+                                                        window.loadChatHistory(userId);
+                                                    }
+                                                }, 500);
+                                                
+                                                console.log('✅ Chat saved successfully');
+                                                
+                                            } catch (error) {
+                                                console.error('❌ Error saving chat:', error);
+                                            }
+                                        }
+                                        
+                                    } catch (error) {
+                                        console.error('❌ Error sending message:', error);
+                                        const aiMessage = document.createElement('div');
+                                        aiMessage.className = 'message ai-message';
+                                        aiMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble responding right now. Please try again later.`;
+                                        chatMessages.appendChild(aiMessage);
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                                    } finally {
+                                        // Re-enable input
+                                        input.disabled = false;
+                                        sendButton.disabled = false;
+                                        sendButton.textContent = 'Send';
+                                        input.focus();
+                                    }
+                                }
+                        
+                                // Handle Enter key press
+                                function handleKeyPress(event) {
+                                    if (event.key === 'Enter' && !event.shiftKey) {
+                                        event.preventDefault();
+                                        sendMessage();
+                                    }
+                                }
+                        
+                                // Utility function for escaping HTML
+                                function escapeHtml(text) {
+                                    const map = {
+                                        '&': '&amp;',
+                                        '<': '&lt;',
+                                        '>': '&gt;',
+                                        '"': '&quot;',
+                                        "'": '&#039;'
+                                    };
+                                    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+                                }
+                            </script>
+                        </body>
+                        </html>
