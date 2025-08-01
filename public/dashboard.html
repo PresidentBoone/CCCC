@@ -1995,7 +1995,7 @@
         // Global variables
         window.auth = auth;
         window.db = db;
-        window.currentChatId = null;
+        window.currentChatId = null; // Initialize currentChatId to null
         window.currentChatMessages = [];
 
         console.log('🔥 Firebase initialized successfully');
@@ -2009,7 +2009,7 @@
             if (user) {
                 document.body.classList.add("logged-in");
                 await loadUserProfile(user);
-                await loadUserProgress(user.uid);
+                await loadUserProgress(user.uid); // Load user progress
                 await loadChatHistory(user.uid);
                 startNewChat();
             } else {
@@ -2063,7 +2063,7 @@
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 
                 if (userDoc.exists()) {
-                    const userData = userDoc.data();
+                    const userData = userDoc.data(); // Get user data
                     const displayName = userData.name || user.displayName || user.email.split('@')[0];
                     welcomeTitle.textContent = `Welcome back, ${displayName}!`;
                     
@@ -2087,7 +2087,7 @@
         async function loadUserProgress(userId) {
             try {
                 const progressDoc = await getDoc(doc(db, 'progress', userId));
-                if (progressDoc.exists()) {
+                if (progressDoc.exists()) { // Check if progress document exists
                     const progressData = progressDoc.data();
                     updateProgressUI(progressData);
                 } else {
@@ -2110,7 +2110,7 @@
         function updateProgressUI(progressData) {
             const sections = ['application', 'essay', 'resume', 'scholarship'];
             sections.forEach(section => {
-                const percent = progressData[section] || 0;
+                const percent = progressData[section] || 0; // Get percentage or default to 0
                 const capitalizedSection = section.charAt(0).toUpperCase() + section.slice(1);
                 
                 document.getElementById(`${section}Percent`).textContent = `${percent}%`;
@@ -2131,7 +2131,7 @@
             try {
                 const chatList = document.getElementById('chatList');
                 chatList.innerHTML = ''; // Clear existing list
-                
+                // Query chats ordered by lastUpdated
                 const q = query(collection(db, 'users', userId, 'chats'), orderBy('lastUpdated', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
@@ -2155,16 +2155,16 @@
         function createChatItemElement(chatId, chatData) {
             const item = document.createElement('div');
             item.className = 'chat-item';
-            item.dataset.chatId = chatId;
+            item.dataset.chatId = chatId; // Set data-chat-id attribute
             item.onclick = () => selectChat(chatId);
             
             const title = document.createElement('div');
             title.className = 'chat-item-title';
-            title.textContent = chatData.title || 'Untitled Chat';
+            title.textContent = chatData.title || 'Untitled Chat'; // Display chat title
             
             const preview = document.createElement('div');
             preview.className = 'chat-item-preview';
-            preview.textContent = chatData.lastMessagePreview || 'No messages yet...';
+            preview.textContent = chatData.lastMessagePreview || 'No messages yet...'; // Display message preview
             
             const date = document.createElement('div');
             date.className = 'chat-item-date';
@@ -2188,7 +2188,7 @@
 
         // Select a chat
         async function selectChat(chatId) {
-            if (window.currentChatId === chatId) return;
+            if (window.currentChatId === chatId) return; // Prevent re-selecting the same chat
             
             window.currentChatId = chatId;
             
@@ -2204,7 +2204,7 @@
         // Load messages for a specific chat
         async function loadChatMessages(chatId) {
             const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+            chatMessages.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>'; // Show typing indicator while loading
             
             try {
                 const messagesQuery = query(collection(db, 'users', auth.currentUser.uid, 'chats', chatId, 'messages'), orderBy('timestamp'));
@@ -2213,7 +2213,7 @@
                 chatMessages.innerHTML = '';
                 window.currentChatMessages = [];
                 
-                messagesSnapshot.forEach(doc => {
+                messagesSnapshot.forEach(doc => { // Add messages to UI
                     const message = doc.data();
                     window.currentChatMessages.push(message);
                     addMessageToUI(message.role, message.content);
@@ -2231,7 +2231,7 @@
         // Start a new chat
         window.startNewChat = async function() {
             try {
-                const newChatRef = await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats'), {
+                const newChatRef = await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats'), { // Add new chat document
                     title: 'New Chat',
                     createdAt: serverTimestamp(),
                     lastUpdated: serverTimestamp(),
@@ -2241,7 +2241,7 @@
                 window.currentChatId = newChatRef.id;
                 window.currentChatMessages = [];
                 
-                // Add to top of chat list
+                // Add new chat to the top of the chat list
                 const chatList = document.getElementById('chatList');
                 const newChatItem = createChatItemElement(newChatRef.id, { title: 'New Chat' });
                 chatList.insertBefore(newChatItem, chatList.firstChild);
@@ -2261,7 +2261,7 @@
         // Delete a chat
         async function deleteChat(chatId) {
             if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
-                return;
+                return; // Confirm deletion
             }
             
             try {
@@ -2269,7 +2269,7 @@
                 
                 // Remove from UI
                 const chatItem = document.querySelector(`.chat-item[data-chat-id="${chatId}"]`);
-                if (chatItem) chatItem.remove();
+                if (chatItem) chatItem.remove(); // Remove chat item from UI
                 
                 // If deleting the current chat, start a new one
                 if (window.currentChatId === chatId) {
@@ -2292,7 +2292,7 @@
         window.sendMessage = async function() {
             const userInput = document.getElementById('userInput');
             const messageText = userInput.value.trim();
-            
+            // Validate message and current chat
             if (!messageText) return;
             if (!window.currentChatId) {
                 alert('Please start a new chat first.');
@@ -2300,7 +2300,7 @@
             }
             
             addMessageToUI('user', messageText);
-            userInput.value = '';
+            userInput.value = ''; // Clear input field
             
             // Show typing indicator
             const chatMessages = document.getElementById('chatMessages');
@@ -2312,7 +2312,7 @@
             
             try {
                 // Save user message to Firestore
-                await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'), {
+                await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'), { // Add user message to Firestore
                     role: 'user',
                     content: messageText,
                     timestamp: serverTimestamp()
@@ -2320,7 +2320,7 @@
                 
                 // Update chat metadata
                 await setDoc(doc(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId), {
-                    lastMessagePreview: messageText.substring(0, 40) + (messageText.length > 40 ? '...' : ''),
+                    lastMessagePreview: messageText.substring(0, 40) + (messageText.length > 40 ? '...' : ''), // Update last message preview
                     lastUpdated: serverTimestamp()
                 }, { merge: true });
                 
@@ -2331,7 +2331,7 @@
                     { role: 'user', content: messageText }
                 ];
                 
-                // Call the backend API
+                // Call the backend API for AI response
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2347,7 +2347,7 @@
                 const data = await response.json();
                 const aiResponse = data.response;
                 
-                addMessageToUI('ai', aiResponse);
+                addMessageToUI('ai', aiResponse); // Add AI response to UI
                 
                 // Save AI response to Firestore
                 await addDoc(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'), {
@@ -2366,15 +2366,15 @@
         // Add message to UI
         function addMessageToUI(role, content) {
             const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-messageDiv.className = `message ${role}-message`;
-messageDiv.innerHTML = content.replace(/\n/g, '<br>'); // Basic markdown for newlines
-chatMessages.appendChild(messageDiv);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-
-// Add to local message history
-window.currentChatMessages.push({ role, content });
-        }
+            const messageDiv = document.createElement('div'); // Create message div
+            messageDiv.className = `message ${role}-message`;
+            messageDiv.innerHTML = content.replace(/\n/g, '<br>'); // Basic markdown for newlines
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+            
+            // Add to local message history
+            window.currentChatMessages.push({ role, content });
+        } // End of addMessageToUI
 
         // Handle Enter key press
         window.handleKeyPress = function(event) {
@@ -2386,13 +2386,13 @@ window.currentChatMessages.push({ role, content });
         // Clear current chat messages
         window.clearCurrentChat = async function() {
             if (!window.currentChatId || !confirm('Are you sure you want to clear all messages in this chat?')) {
-                return;
+                return; // Confirm clearing chat
             }
             
             try {
                 const messagesQuery = query(collection(db, 'users', auth.currentUser.uid, 'chats', window.currentChatId, 'messages'));
                 const messagesSnapshot = await getDocs(messagesQuery);
-                
+                // Delete all messages in a batch
                 const batch = writeBatch(db);
                 messagesSnapshot.forEach(doc => {
                     batch.delete(doc.ref);
@@ -2400,7 +2400,7 @@ window.currentChatMessages.push({ role, content });
                 await batch.commit();
                 
                 document.getElementById('chatMessages').innerHTML = '';
-                window.currentChatMessages = [];
+                window.currentChatMessages = []; // Clear local message history
                 addMessageToUI('ai', 'Chat cleared. How can I help you now?');
                 
             } catch (error) {
@@ -2413,7 +2413,7 @@ window.currentChatMessages.push({ role, content });
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                await signOut(auth);
+                await signOut(auth); // Sign out user
                 window.location.href = 'index.html';
             } catch (error) {
                 console.error('❌ Error signing out:', error);
@@ -2424,7 +2424,7 @@ window.currentChatMessages.push({ role, content });
         document.getElementById('themeToggle').addEventListener('click', () => {
             const body = document.body;
             const themeToggle = document.getElementById('themeToggle');
-            let newTheme;
+            let newTheme; // Determine new theme
             if (body.getAttribute('data-theme') === 'dark') {
                 newTheme = 'light';
                 body.setAttribute('data-theme', 'light');
@@ -2434,7 +2434,7 @@ window.currentChatMessages.push({ role, content });
                 body.setAttribute('data-theme', 'dark');
                 themeToggle.textContent = '☀️';
             }
-            localStorage.setItem('theme', newTheme);
+            localStorage.setItem('theme', newTheme); // Save theme to localStorage
             updateNavbarLogo(newTheme);
         });
 
@@ -2453,7 +2453,7 @@ window.currentChatMessages.push({ role, content });
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-            updateNavbarLogo(savedTheme);
+            updateNavbarLogo(savedTheme); // Update logo based on saved theme
 
             // Starry background generation
             const starryBg = document.getElementById('starryBg');
@@ -2464,7 +2464,7 @@ window.currentChatMessages.push({ role, content });
                 star.style.height = star.style.width;
                 star.style.top = `${Math.random() * 100}%`;
                 star.style.left = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 3}s`;
+                star.style.animationDelay = `${Math.random() * 3}s`; // Random animation delay
                 starryBg.appendChild(star);
             }
 
