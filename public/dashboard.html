@@ -2041,6 +2041,44 @@
             }
         }
 
+        // Auth UI update function
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+
+                // Show avatar if available, otherwise show "Account"
+                if (user.photoURL) {
+                    navUserAvatar.src = user.photoURL;
+                    navUserAvatar.style.display = 'block';
+                    navAccountText.style.display = 'none';
+                } else {
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
+                }
+
+                // Set display name
+                if (dropdownWelcome && dropdownDisplayName) {
+                    const displayName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                    dropdownDisplayName.textContent = displayName;
+                    dropdownWelcome.style.display = 'block';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                navUserAvatar.style.display = 'none';
+                navAccountText.style.display = 'inline';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+            }
+        }
+
         // Load user profile data
         async function loadUserProfile(user) {
             try {
@@ -2050,7 +2088,8 @@
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     const displayName = userData.name || user.displayName || user.email.split('@')[0];
-                    welcomeTitle.textContent = `Welcome back, ${displayName}!`;
+                    const firstName = displayName.split(' ')[0];
+                    welcomeTitle.textContent = `Welcome back, ${firstName}!`;
                     
                     // Update navbar with Firestore data
                     if (userData.profilePhotoURL) {
@@ -2058,85 +2097,15 @@
                         document.getElementById('navUserAvatar').style.display = 'block';
                         document.getElementById('navAccountText').style.display = 'none';
                     }
-                    document.getElementById('dropdownDisplayName').textContent = displayName;
+                    document.getElementById('dropdownDisplayName').textContent = firstName;
                 } else {
-                    welcomeTitle.textContent = `Welcome, ${user.displayName || user.email.split('@')[0]}!`;
+                    const displayName = user.displayName || user.email.split('@')[0];
+                    const firstName = displayName.split(' ')[0];
+                    welcomeTitle.textContent = `Welcome, ${firstName}!`;
                 }
             } catch (error) {
                 console.error('❌ Error loading user profile:', error);
                 document.getElementById('welcomeTitle').textContent = 'Welcome to Your Dashboard';
-            }
-        }
-
-
-        // Patch into existing onAuthStateChanged logic
-        const originalUpdateAuthUI = updateAuthUI;
-        updateAuthUI = function(user) {
-            if (typeof originalUpdateAuthUI === 'function') originalUpdateAuthUI(user);
-            updateNavbarProfile(user, window.currentUserData || null);
-        };
-
-        // Patch into loadUserData to update navbar profile after user data loads
-        const originalLoadUserProfile = loadUserProfile;
-        loadUserProfile = async function(user) {
-            if (typeof originalLoadUserProfile === 'function') await originalLoadUserProfile(user);
-            // Try to get userData from Firestore
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                window.currentUserData = userDoc.exists() ? userDoc.data() : {};
-            } catch (e) {
-                window.currentUserData = {};
-            }
-            updateNavbarProfile(user, window.currentUserData);
-        };
-
-        // Helper Functions
-        function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
-            
-            if (user) {
-                if (authToggle) authToggle.style.justifyContent = 'flex-start';
-                if (navUserAvatar) {
-                    navUserAvatar.src = user.photoURL || 'images/default-avatar.png';
-                    navUserAvatar.style.display = 'block';
-                }
-                if (navAccountText) navAccountText.style.display = 'none';
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
-                if (dropdownWelcome) {
-                    dropdownWelcome.style.display = 'block';
-                    dropdownDisplayName.textContent = user.displayName.split(' ')[0];
-                }
-            } else {
-                if (authToggle) authToggle.textContent = 'Login/Sign Up';
-                if (navUserAvatar) navUserAvatar.style.display = 'none';
-                if (navAccountText) navAccountText.style.display = 'block';
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-            }
-        }
-
-        async function loadUserProfile(user) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                const welcomeTitle = document.getElementById('welcomeTitle');
-                
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    const firstName = userData.name ? userData.name.split(' ')[0] : 'Student';
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome back, ${firstName}!`;
-                } else {
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome, ${user.email.split('@')[0]}!`;
-                }
-            } catch (error) {
-                console.error('❌ Error loading user profile:', error);
             }
         }
 
@@ -2838,60 +2807,59 @@
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Save to database if user is logged in
-                if (window.auth && window.auth.currentUser) {
-                    try {
-                        const userId = window.auth.currentUser.uid;
-                        console.log('💾 Saving chat...');
-                        
-                        await Promise.all([
-                            window.saveChatMessage(userId, window.currentChatId, message, 'user'),
-                            window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai')
-                        ]);
-                        
-                        // Generate title for new chats
-                        let chatTitle = null;
-                        if (window.currentChatMessages.length === 0) {
-                            chatTitle = window.generateChatTitle(message);
+                        // Save to database if user is logged in
+                        if (window.auth && window.auth.currentUser) {
+                            try {
+                                const userId = window.auth.currentUser.uid;
+                                
+                                // Save both messages to database
+                                await window.saveChatMessage(userId, window.currentChatId, message, 'user');
+                                await window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai');
+                                
+                                // Generate title for new chats
+                                let chatTitle = null;
+                                if (window.currentChatMessages.length === 0) {
+                                    chatTitle = window.generateChatTitle(message);
+                                }
+                                
+                                // Save chat session
+                                await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
+                                
+                                // Update local messages array
+                                window.currentChatMessages.push(
+                                    { message: message, sender: 'user' },
+                                    { message: aiResponseText, sender: 'ai' }
+                                );
+                                
+                                // Refresh chat history
+                                setTimeout(() => {
+                                    if (window.loadChatHistory) {
+                                        window.loadChatHistory(userId);
+                                    }
+                                }, 500);
+                                
+                                console.log('✅ Chat saved successfully');
+                                
+                            } catch (error) {
+                                console.error('❌ Error saving chat:', error);
+                            }
                         }
                         
-                        await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
-                        
-                        // Update current messages
-                        window.currentChatMessages.push(
-                            { message: message, sender: 'user' },
-                            { message: aiResponseText, sender: 'ai' }
-                        );
-                        
-                                                // Refresh chat history
-                                                setTimeout(() => {
-                                                    if (window.loadChatHistory) {
-                                                        window.loadChatHistory(userId);
-                                                    }
-                                                }, 500);
-                                                
-                                                console.log('✅ Chat saved successfully');
-                                                
-                                            } catch (error) {
-                                                console.error('❌ Error saving chat:', error);
-                                            }
-                                        }
-                                        
-                                    } catch (error) {
-                                        console.error('❌ Error sending message:', error);
-                                        const aiMessage = document.createElement('div');
-                                        aiMessage.className = 'message ai-message';
-                                        aiMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble responding right now. Please try again later.`;
-                                        chatMessages.appendChild(aiMessage);
-                                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                                    } finally {
-                                        // Re-enable input
-                                        input.disabled = false;
-                                        sendButton.disabled = false;
-                                        sendButton.textContent = 'Send';
-                                        input.focus();
-                                    }
-                                }
+                    } catch (error) {
+                        console.error('❌ Error sending message:', error);
+                        const aiMessage = document.createElement('div');
+                        aiMessage.className = 'message ai-message';
+                        aiMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble responding right now. Please try again later.`;
+                        chatMessages.appendChild(aiMessage);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    } finally {
+                        // Re-enable input
+                        input.disabled = false;
+                        sendButton.disabled = false;
+                        sendButton.textContent = 'Send';
+                        input.focus();
+                    }
+                }
                         
                                 // Handle Enter key press
                                 function handleKeyPress(event) {
