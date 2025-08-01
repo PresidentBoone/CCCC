@@ -2024,53 +2024,62 @@
         function updateAuthUI(user) {
             const notLoggedIn = document.getElementById('notLoggedIn');
             const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
             const navUserAvatar = document.getElementById('navUserAvatar');
             const navAccountText = document.getElementById('navAccountText');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
 
             if (user) {
                 if (notLoggedIn) notLoggedIn.style.display = 'none';
                 if (loggedIn) loggedIn.style.display = 'block';
-
-                // Show avatar if available, otherwise show "Account"
-                if (user.photoURL) {
-                    navUserAvatar.src = user.photoURL;
-                    navUserAvatar.style.display = 'block';
-                    navAccountText.style.display = 'none';
-                } else {
-                    navUserAvatar.style.display = 'none';
-                    navAccountText.style.display = 'inline';
-                }
-
-                // Always use the Firestore name for display
-                if (dropdownWelcome && dropdownDisplayName) {
-                    dropdownDisplayName.textContent = user.displayName || user.email.split('@')[0];
-                    dropdownWelcome.style.display = 'block';
-                }
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
             } else {
                 if (notLoggedIn) notLoggedIn.style.display = 'block';
                 if (loggedIn) loggedIn.style.display = 'none';
-                navUserAvatar.style.display = 'none';
-                navAccountText.style.display = 'inline';
                 if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                
+                // Explicitly reset avatar on logout
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
             }
         }
 
+        // Load user profile data
         async function loadUserProfile(user) {
             try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
                 const welcomeTitle = document.getElementById('welcomeTitle');
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const navUserAvatar = document.getElementById('navUserAvatar');
+                const navAccountText = document.getElementById('navAccountText');
+                const dropdownDisplayName = document.getElementById('dropdownDisplayName');
                 
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    const firstName = userData.name ? userData.name.split(' ')[0] : 'Student';
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome back, ${firstName}!`;
+                    const displayName = userData.name || user.displayName || user.email.split('@')[0];
+                    
+                    if (welcomeTitle) welcomeTitle.textContent = `Welcome back, ${displayName}!`;
+                    if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                    
+                    // Set the avatar based on Firestore data.
+                    if (userData.profilePhotoURL) {
+                        navUserAvatar.src = userData.profilePhotoURL;
+                        navUserAvatar.style.display = 'block';
+                        navAccountText.style.display = 'none';
+                    } else {
+                        // If no photo in firestore, revert to default state
+                        navUserAvatar.style.display = 'none';
+                        navAccountText.style.display = 'inline';
+                    }
                 } else {
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome, ${user.email.split('@')[0]}!`;
+                    // User exists in Auth but not in Firestore yet
+                    const displayName = user.displayName || user.email.split('@')[0];
+                    if (welcomeTitle) welcomeTitle.textContent = `Welcome, ${displayName}!`;
+                    if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                    navUserAvatar.style.display = 'none';
+                    navAccountText.style.display = 'inline';
                 }
             } catch (error) {
                 console.error('❌ Error loading user profile:', error);
+                document.getElementById('welcomeTitle').textContent = 'Welcome to Your Dashboard';
             }
         }
 
