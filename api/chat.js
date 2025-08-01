@@ -4,7 +4,6 @@ function rateLimit(identifier, limit = 10, windowMs = 60000) {
   const now = Date.now();
   const userRequests = rateLimitMap.get(identifier) || [];
   
-  // Filter out requests outside the window
   const recentRequests = userRequests.filter(time => now - time < windowMs);
   
   if (recentRequests.length >= limit) {
@@ -19,7 +18,6 @@ function rateLimit(identifier, limit = 10, windowMs = 60000) {
 export default async function handler(req, res) {
   console.log('=== CHAT API CALLED ===');
   
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -33,7 +31,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Check environment variables
   if (!process.env.OPENAI_API_KEY) {
     console.error('OPENAI_API_KEY not found');
     return res.status(500).json({ 
@@ -42,7 +39,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message } = req.body;
+    const { message, userProfile, questionnaireData } = req.body;
     
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Valid message is required' });
@@ -54,6 +51,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Message cannot be empty' });
     }
 
+    let systemPrompt = `You are a college admissions counselor for College Climb. Help students with college applications, essays, scholarships, and admissions advice. Keep responses under 200 words.`;
+
+    if (userProfile && userProfile.name) {
+      systemPrompt += ` The student's name is ${userProfile.name}.`;
+    }
+
+    if (questionnaireData) {
+      systemPrompt += ` Here is some information about the student from their questionnaire: ${JSON.stringify(questionnaireData)}. Use this information to personalize your advice and guidance.`;
+    }
+
     console.log('Making request to OpenAI...');
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -63,15 +70,15 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Changed to cheaper model
+        model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'system',
-            content: `You are a college admissions counselor for College Climb. Help students with college applications, essays, scholarships, and admissions advice. Keep responses under 200 words.`
+            content: systemPrompt
           },
           { role: 'user', content: sanitizedMessage }
         ],
-        max_tokens: 300, // Reduced tokens
+        max_tokens: 300,
         temperature: 0.7
       })
     });
