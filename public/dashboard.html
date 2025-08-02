@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.openai.com;">
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -1943,49 +1942,51 @@
 
             <!-- AI Chat System -->
             <div class="feature-panel chatbot-panel">
-    <h3>🤖 AI College Counselor</h3>
-    <div class="chatbot-container-with-sidebar">
-        <!-- Chat Sidebar -->
-        <div class="chat-sidebar">
-            <div class="chat-sidebar-header">
-                <h4>Chat History</h4>
-                <button class="new-chat-btn" onclick="window.startNewChat()">+ New Chat</button>
-            </div>
-            <div class="chat-list" id="chatList">
-                <div class="no-chats-message">Loading chat history...</div>
-            </div>
-        </div>
-        
-        <!-- Main Chat Area -->
-        <div class="chatbot-main">
-            <div class="chatbot-header">
-                <div>
-                    <h3>AI College Counselor</h3>
-                    <div class="chatbot-status">Ready to help with your college journey!</div>
+                <h3>🤖 AI College Counselor</h3>
+                <div class="chatbot-container-with-sidebar">
+                    <!-- Chat Sidebar -->
+                    <div class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <h4>💬 Chat History</h4>
+                            <button onclick="startNewChat()" class="new-chat-btn">+ New Chat</button>
+                        </div>
+                        <div class="chat-list" id="chatList">
+                            <div class="no-chats-message">
+                                Start your first conversation with our AI counselor!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="chatbot-main">
+                        <div class="chatbot-header">
+                            <div>
+                                <h3>AI College Counselor</h3>
+                                <div class="chatbot-status">Online</div>
+                            </div>
+                            <button onclick="clearCurrentChat()" class="clear-chat-btn">Clear Chat</button>
+                        </div>
+                        <div class="chatbot-messages" id="chatMessages">
+                            <div class="message ai-message">
+                                <strong>AI Counselor:</strong> 
+                                Hello! I'm your personal AI college counselor. I can help you with:
+                                <br><br>
+                                • College applications and deadlines<br>
+                                • Essay writing and feedback<br>
+                                • Scholarship opportunities<br>
+                                • Interview preparation<br>
+                                • Academic planning<br>
+                                • Career guidance<br><br>
+                                What would you like to work on today?
+                            </div>
+                        </div>
+                        <div class="chatbot-input">
+                            <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
+                            <button onclick="sendMessage()" id="sendButton">Send</button>
+                        </div>
+                    </div>
                 </div>
-                <button class="clear-chat-btn" onclick="window.clearCurrentChat()">New Chat</button>
             </div>
-            <div class="chatbot-messages" id="chatMessages">
-                <div class="message ai-message">
-                    <strong>AI Counselor:</strong> 
-                    Hello! I'm your personal AI college counselor. I can help you with:
-                    <br><br>
-                    • College applications and deadlines<br>
-                    • Essay writing and feedback<br>
-                    • Scholarship opportunities<br>
-                    • Interview preparation<br>
-                    • Academic planning<br>
-                    • Career guidance<br><br>
-                    What would you like to work on today?
-                </div>
-            </div>
-            <div class="chatbot-input">
-                <input type="text" id="userInput" placeholder="Ask me anything about college..." onkeypress="handleKeyPress(event)">
-                <button id="sendButton" onclick="sendMessage()">Send</button>
-            </div>
-        </div>
-    </div>
-</div>
         </div>
     </div>
 
@@ -2227,33 +2228,17 @@
         }
 
         // Chat System Functions
-        window.startNewChat = async function() {
+        window.startNewChat = function() {
             window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             window.currentChatMessages = [];
-            
-            // Get user's name for personalized greeting
-            let userName = 'there';
-            if (window.auth && window.auth.currentUser) {
-                try {
-                    const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        userName = userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0];
-                    }
-                } catch (error) {
-                    console.log('Could not fetch user name for greeting');
-                }
-            }
             
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 chatMessages.innerHTML = `
                     <div class="message ai-message">
                         <strong>AI Counselor:</strong> 
-                        Hello ${userName}! I'm your personal AI college counselor. I have access to your profile and questionnaire responses to provide personalized guidance.
+                        Hello! I'm your personal AI college counselor. I can help you with:
                         <br><br>
-                        I can help you with:
-                        <br>
                         • College applications and deadlines<br>
                         • Essay writing and feedback<br>
                         • Scholarship opportunities<br>
@@ -2270,7 +2255,7 @@
                 item.classList.remove('active');
             });
             
-            console.log('💬 New personalized chat initialized:', window.currentChatId);
+            console.log('💬 New chat initialized:', window.currentChatId);
         };
 
         async function loadChatHistory(userId) {
@@ -2338,6 +2323,7 @@
                         <div class="no-chats-message">
                             <div style="margin-bottom: 1rem;">Unable to load chat history.</div>
                             <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Error: ${error.message}</div>
+                            <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
                                 Retry
                             </button>
                         </div>
@@ -2418,22 +2404,10 @@
                 chatMessages.innerHTML = '';
                 
                 if (querySnapshot.empty) {
-                    // Get user's name for empty chat message
-                    let userName = 'there';
-                    try {
-                        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
-                        if (userDoc.exists()) {
-                            const userData = userDoc.data();
-                            userName = userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0];
-                        }
-                    } catch (error) {
-                        console.log('Could not fetch user name');
-                    }
-                    
                     chatMessages.innerHTML = `
                         <div class="message ai-message">
                             <strong>AI Counselor:</strong> 
-                            Hello ${userName}! This chat appears to be empty. Let's start a new conversation! I have access to your profile and questionnaire responses to provide personalized guidance.
+                            This chat appears to be empty. Let's start a new conversation!
                         </div>
                     `;
                     return;
@@ -2657,76 +2631,6 @@
         window.saveChatSession = saveChatSession;
         window.generateChatTitle = generateChatTitle;
         window.loadChatHistory = loadChatHistory;
-
-        // Add this enhanced debug function
-
-window.debugUserData = async function() {
-    if (!window.auth.currentUser) {
-        console.log('❌ No user logged in');
-        return;
-    }
-    
-    try {
-        console.log('🔍 COMPREHENSIVE USER DATA DEBUG');
-        console.log('Current User ID:', window.auth.currentUser.uid);
-        console.log('Current User Email:', window.auth.currentUser.email);
-        
-        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
-        
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            console.log('📋 FULL USER DOCUMENT FROM FIRESTORE:');
-            console.log(JSON.stringify(userData, null, 2));
-            
-            console.log('📋 QUESTIONNAIRE SECTION DETAILED:');
-            if (userData.questionnaire) {
-                console.log('✅ Questionnaire exists with keys:', Object.keys(userData.questionnaire));
-                console.log('Full questionnaire data:');
-                console.log(JSON.stringify(userData.questionnaire, null, 2));
-                
-                // Check specific fields
-                console.log('📊 SPECIFIC FIELD CHECK:');
-                console.log('Application Timeline:', userData.questionnaire.applicationTimeline);
-                console.log('Target Schools:', userData.questionnaire.targetSchools);
-                console.log('Unweighted GPA:', userData.questionnaire.unweightedGPA);
-                console.log('Intended Major:', userData.questionnaire.intendedMajor);
-                console.log('Test Scores:', userData.questionnaire.testScores);
-            } else {
-                console.log('❌ No questionnaire data found in user document');
-                console.log('Available fields in user document:', Object.keys(userData));
-            }
-            
-            console.log('📋 PROFILE DATA:');
-            console.log('Name:', userData.name);
-            console.log('Email:', userData.email);
-            console.log('Current Grade:', userData.currentGrade);
-            console.log('GPA:', userData.gpa);
-            console.log('Questionnaire Completed:', userData.questionnaireCompleted);
-            
-        } else {
-            console.log('❌ User document does not exist in Firestore');
-            console.log('Attempting to check if document path is correct...');
-            
-            // Try to list all documents in users collection (if permissions allow)
-            console.log('Document path being checked: users/' + window.auth.currentUser.uid);
-        }
-        
-    } catch (error) {
-        console.error('❌ Error fetching user data:', error);
-        console.error('Error details:', error.message);
-        console.error('Error code:', error.code);
-    }
-};
-
-// Auto-run debug when page loads
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        if (window.auth && window.auth.currentUser) {
-            console.log('🚀 Auto-running user data debug...');
-            window.debugUserData();
-        }
-    }, 2000); // Wait 2 seconds for auth to initialize
-});
     </script>
 
     <script>
@@ -2854,9 +2758,12 @@ window.addEventListener('load', () => {
             
             const now = Date.now();
             if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+                console.log('⏱️ Message cooldown active');
                 return;
             }
             lastMessageTime = now;
+            
+            console.log('📤 Sending personalized message:', message);
             
             // Disable input
             input.disabled = true;
@@ -2866,18 +2773,19 @@ window.addEventListener('load', () => {
             try {
                 // Start new chat if none exists
                 if (!window.currentChatId) {
-                    await window.startNewChat();
+                    if (window.startNewChat) {
+                        window.startNewChat();
+                    }
                 }
+                
+                const chatMessages = document.getElementById('chatMessages');
                 
                 // Add user message
                 const userMessage = document.createElement('div');
                 userMessage.className = 'message user-message';
                 userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
-                
-                const chatMessages = document.getElementById('chatMessages');
                 chatMessages.appendChild(userMessage);
                 
-                // Clear input
                 input.value = '';
                 
                 // Add typing indicator
@@ -2888,151 +2796,48 @@ window.addEventListener('load', () => {
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Prepare comprehensive user data for personalization
+                // Prepare user profile data for personalization
                 let userProfileData = null;
                 let questionnaireData = null;
-                let chatHistory = [];
                 
                 if (window.auth && window.auth.currentUser) {
                     try {
-                        console.log('🔍 Fetching comprehensive user data for personalization...');
-                        
-                        // Get user profile and questionnaire data
+                        // Get user data from Firestore for personalization
                         const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
                         if (userDoc.exists()) {
                             const userData = userDoc.data();
-                            console.log('📊 User data found:', userData);
                             
-                            // Enhanced user profile data
                             userProfileData = {
-                                name: userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
-                                email: userData.email || window.auth.currentUser.email,
+                                name: userData.name,
+                                email: userData.email,
                                 currentGrade: userData.currentGrade,
                                 currentSchool: userData.currentSchool,
                                 gpa: userData.gpa,
-                                graduationYear: userData.graduationYear,
-                                profileCompleted: userData.profileCompleted || false,
-                                questionnaireCompleted: userData.questionnaireCompleted || false
+                                graduationYear: userData.graduationYear
                             };
                             
-                            // Get questionnaire data for full personalization
+                            // Include questionnaire data for full personalization
                             if (userData.questionnaire) {
                                 questionnaireData = userData.questionnaire;
-                                console.log('📋 Questionnaire data found with keys:', Object.keys(questionnaireData));
-                            } else {
-                                console.log('📋 No questionnaire data found - user may need to complete it');
+                                console.log('📋 Including questionnaire data for personalization');
                             }
                             
-                            console.log('👤 Enhanced user profile prepared:', userProfileData);
-                        } else {
-                            console.log('👤 No user document found in Firestore');
-                            // Create basic profile from auth data
-                            userProfileData = {
-                                name: window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
-                                email: window.auth.currentUser.email,
-                                profileCompleted: false,
-                                questionnaireCompleted: false
-                            };
-                        }
-                        
-                        // Get recent chat history for context (last 10 messages from recent chats)
-                        try {
-                            const recentChatsQuery = query(
-                                collection(window.db, 'chatSessions'),
-                                where('userId', '==', window.auth.currentUser.uid)
-                            );
-                            
-                            const recentChatsSnapshot = await getDocs(recentChatsQuery);
-                            const recentChatIds = [];
-                            
-                            // Sort chats by last updated and get the 3 most recent
-                            const chats = [];
-                            recentChatsSnapshot.forEach(doc => {
-                                const data = doc.data();
-                                chats.push({ id: doc.id, lastUpdated: data.lastUpdated });
-                            });
-                            
-                            chats.sort((a, b) => {
-                                if (a.lastUpdated && b.lastUpdated) {
-                                    return b.lastUpdated.toMillis() - a.lastUpdated.toMillis();
-                                }
-                                return 0;
-                            });
-                            
-                            // Get recent chat IDs (excluding current chat)
-                            const recentChatIdsToFetch = chats
-                                .slice(0, 3)
-                                .map(chat => chat.id)
-                                .filter(id => id !== window.currentChatId);
-                            
-                            // Fetch recent messages for context
-                            if (recentChatIdsToFetch.length > 0) {
-                                const messagesQuery = query(
-                                    collection(db, 'chatMessages'),
-                                    where('userId', '==', window.auth.currentUser.uid),
-                                    where('chatId', 'in', recentChatIdsToFetch)
-                                );
-                                
-                                const messagesSnapshot = await getDocs(messagesQuery);
-                                const messages = [];
-                                
-                                messagesSnapshot.forEach(doc => {
-                                    const data = doc.data();
-                                    messages.push({
-                                        message: data.message,
-                                        sender: data.sender,
-                                        timestamp: data.timestamp,
-                                        chatId: data.chatId
-                                    });
-                                });
-                                
-                                // Sort by timestamp and take most recent 15 messages
-                                messages.sort((a, b) => {
-                                    if (a.timestamp && b.timestamp) {
-                                        return b.timestamp.toMillis() - a.timestamp.toMillis();
-                                    }
-                                    return 0;
-                                });
-                                
-                                chatHistory = messages.slice(0, 15);
-                                console.log(`📚 Found ${chatHistory.length} recent messages for context`);
-                            }
-                        } catch (historyError) {
-                            console.log('📚 Could not fetch chat history for context:', historyError.message);
-                            // Continue without chat history
+                            console.log('👤 Including user profile data for personalization');
                         }
                     } catch (error) {
                         console.error('❌ Error fetching user data for personalization:', error);
-                        // Continue with minimal data
-                        userProfileData = {
-                            name: window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
-                            email: window.auth.currentUser.email
-                        };
+                        // Continue without personalization data
                     }
                 }
                 
-                console.log('🚀 Sending to API with comprehensive data:', {
-                    hasUserProfile: !!userProfileData,
-                    hasQuestionnaire: !!questionnaireData,
-                    hasChatHistory: chatHistory.length > 0,
-                    userName: userProfileData?.name
-                });
-                
-                // ADD THIS DETAILED LOGGING
-                console.log('📊 DETAILED DATA BEING SENT:');
-                console.log('User Profile Data:', userProfileData);
-                console.log('Questionnaire Data:', questionnaireData);
-                console.log('Chat History Length:', chatHistory.length);
-
-                // Get AI response with comprehensive personalization data
+                // Get AI response with personalization data
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         message: message,
                         userProfile: userProfileData,
-                        questionnaireData: questionnaireData,
-                        chatHistory: chatHistory
+                        questionnaireData: questionnaireData
                     })
                 });
                 
@@ -3045,11 +2850,9 @@ window.addEventListener('load', () => {
                 if (response.ok) {
                     const data = await response.json();
                     aiResponseText = data.response || 'Sorry, I received an empty response.';
-                    console.log('✅ Received personalized response from API');
                 } else {
-                    console.error('❌ API Error:', response.status);
-                    const errorData = await response.json().catch(() => ({}));
-                    aiResponseText = errorData.error || 'Sorry, I\'m having trouble connecting right now.';
+                    console.error('API Error:', response.status);
+                    aiResponseText = 'Sorry, I\'m having trouble connecting right now.';
                 }
                 
                 // Add AI response
@@ -3112,12 +2915,12 @@ window.addEventListener('load', () => {
                 chatMessages.appendChild(errorMessage);
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                
             } finally {
                 // Re-enable input
                 input.disabled = false;
                 sendButton.disabled = false;
                 sendButton.textContent = 'Send';
-                input.focus();
             }
         }
 

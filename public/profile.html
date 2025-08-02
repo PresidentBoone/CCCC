@@ -914,6 +914,7 @@
                             </p>
                         </div>
                     </div>
+                    <input type="file" id="photoUpload" accept="image/*" style="display: none;">
                 </div>
                 
                 <form id="personalInfoForm">
@@ -1795,16 +1796,6 @@
             }
         });
 
-        // In your profile form submission, add similar logging:
-        console.log('💾 About to save profile data:');
-        console.log('User ID:', auth.currentUser.uid);
-        console.log('Profile Data being saved:', profileData);
-
-        // Your existing save code
-        await setDoc(doc(db, 'users', auth.currentUser.uid), profileData, { merge: true });
-
-        console.log('✅ Profile data saved successfully');
-
         // Utility functions
         function showMessage(text, type) {
             const messageEl = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
@@ -1972,132 +1963,6 @@
         document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
         console.log('✅ Profile page initialized successfully');
-
-        // Personal Information Form Handler
-        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            try {
-                const personalData = {
-                    name: document.getElementById('displayName').value,
-                    phone: document.getElementById('phoneNumber').value,
-                    dateOfBirth: document.getElementById('dateOfBirth').value,
-                    location: document.getElementById('location').value,
-                    updatedAt: new Date()
-                };
-
-                await updateDoc(doc(db, 'users', currentUser.uid), personalData);
-                
-                // Update currentUserData for immediate use
-                Object.assign(currentUserData, personalData);
-                
-                // Update profile name display
-                if (personalData.name) {
-                    document.getElementById('profileName').textContent = personalData.name;
-                }
-                
-                // Update navbar dropdown
-                updateAuthUI(currentUser);
-                
-                showMessage('Personal information updated successfully!', 'success');
-            } catch (error) {
-                console.error('❌ Error updating personal information:', error);
-                showMessage('Failed to update personal information. Please try again.', 'error');
-            }
-        });
-
-        // Academic Information Form Handler
-        document.getElementById('academicInfoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            try {
-                const academicData = {
-                    currentGrade: document.getElementById('currentGrade').value,
-                    currentSchool: document.getElementById('currentSchool').value,
-                    gpa: document.getElementById('gpa').value,
-                    graduationYear: document.getElementById('graduationYear').value,
-                    updatedAt: new Date()
-                };
-
-                await updateDoc(doc(db, 'users', currentUser.uid), academicData);
-                
-                // Update currentUserData for immediate use
-                Object.assign(currentUserData, academicData);
-                
-                showMessage('Academic information updated successfully!', 'success');
-            } catch (error) {
-                console.error('❌ Error updating academic information:', error);
-                showMessage('Failed to update academic information. Please try again.', 'error');
-            }
-        });
-
-        // Photo Upload Handler
-        document.getElementById('photoUpload').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            // Validate file type and size
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!allowedTypes.includes(file.type)) {
-                showMessage('Please select a valid image file (JPG, PNG, GIF, WebP).', 'error');
-                return;
-            }
-
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                showMessage('File size must be less than 10MB.', 'error');
-                return;
-            }
-
-            try {
-                // Show upload progress
-                const uploadButton = document.querySelector('.profile-photo-upload');
-                uploadButton.disabled = true;
-                uploadButton.textContent = '⏳';
-
-                // Upload to Firebase Storage
-                const storageRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}-${file.name}`);
-                const snapshot = await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-
-                // Update user document with new photo URL
-                await updateDoc(doc(db, 'users', currentUser.uid), {
-                    profilePhotoURL: downloadURL,
-                    updatedAt: new Date()
-                });
-
-                // Update all photo elements immediately
-                const photoElements = [
-                    document.getElementById('profilePhoto'),
-                    document.getElementById('profilePhotoPreview'),
-                    document.getElementById('navUserAvatar')
-                ];
-                
-                photoElements.forEach(element => {
-                    if (element) {
-                        element.src = downloadURL;
-                        if (element.id === 'navUserAvatar') {
-                            element.style.display = 'block';
-                        }
-                    }
-                });
-
-                // Update currentUserData
-                currentUserData.profilePhotoURL = downloadURL;
-                
-                // Update navbar
-                updateAuthUI(currentUser);
-
-                showMessage('Profile photo updated successfully!', 'success');
-            } catch (error) {
-                console.error('❌ Error uploading photo:', error);
-                showMessage('Failed to upload photo. Please try again.', 'error');
-            } finally {
-                // Restore upload button
-                const uploadButton = document.querySelector('.profile-photo-upload');
-                uploadButton.disabled = false;
-                uploadButton.textContent = '📷';
-            }
-        });
 
         // Test Firebase Storage connection
         async function testStorageConnection() {
