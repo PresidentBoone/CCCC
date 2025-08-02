@@ -727,7 +727,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Make functions global
+    // Google Sign-Up function - FIXED to redirect to questions.html
     window.signUpWithGoogle = function() {
         const provider = new GoogleAuthProvider();
 
@@ -735,7 +735,8 @@
             .then((result) => {
                 const user = result.user;
                 console.log("Google Sign-Up successful for:", user.email);
-                window.location.href = "dashboard.html";
+                // Redirect new Google users to questions.html
+                window.location.href = "questions.html";
             })
             .catch((error) => {
                 console.error("Google Sign-Up error:", error);
@@ -752,7 +753,7 @@
         return emailRegex.test(email);
     };
 
-    // Form submission handler
+    // Email signup form handler - FIXED to redirect to questions.html
     document.getElementById('signupForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -782,62 +783,63 @@
         createUserWithEmailAndPassword(auth, contact, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                button.textContent = '✓ Success!';
+                button.textContent = '✓ Success! Redirecting...';
                 button.style.background = '#4caf50';
+                console.log("Account created successfully for:", user.email);
+                
+                // Redirect to questions.html for new users
                 setTimeout(() => {
-                    window.location.href = "questions.html"; // Changed from dashboard.html
-                }, 1000);
+                    window.location.href = "questions.html";
+                }, 1500);
             })
             .catch((error) => {
-                alert("Error: " + error.message);
-            })
-            .finally(() => {
-                if (button.textContent !== '✓ Success!') {
-                    button.textContent = 'Create Account';
-                    button.disabled = false;
-                }
+                console.error("Signup error:", error);
+                alert("Error creating account: " + error.message);
+                button.textContent = 'Create Account';
+                button.disabled = false;
             });
     });
 
-    // Add this function to update the auth dropdown UI
+    // Auth state management - NO AUTO-REDIRECT from signup page
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            sessionStorage.setItem("user", JSON.stringify(user));
+            console.log("User authenticated:", user.email);
+            document.body.classList.add("logged-in");
+            
+            // Don't auto-redirect from signup page - let the signup handlers control navigation
+            console.log("User is on signup page - not auto-redirecting");
+        } else {
+            sessionStorage.removeItem("user");
+            document.body.classList.remove("logged-in");
+        }
+        
+        updateAuthUI(user);
+    });
+
+    // Update auth UI without auto-redirecting
     function updateAuthUI(user) {
         const authToggle = document.getElementById('authToggle');
         const notLoggedIn = document.getElementById('notLoggedIn');
         const loggedIn = document.getElementById('loggedIn');
         
         if (user) {
-            // User is logged in - redirect to dashboard
-            window.location.href = 'dashboard.html';
+            if (authToggle) authToggle.textContent = user.email.split('@')[0];
+            if (notLoggedIn) notLoggedIn.style.display = 'none';
+            if (loggedIn) loggedIn.style.display = 'block';
         } else {
-            // User is not logged in
             if (authToggle) authToggle.textContent = 'Login/Sign Up';
             if (notLoggedIn) notLoggedIn.style.display = 'block';
             if (loggedIn) loggedIn.style.display = 'none';
         }
     }
 
-    // Update the existing onAuthStateChanged to include UI updates
-    onAuthStateChanged(auth, (user) => {
-        updateAuthUI(user); // Add this line
-        
-        if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
-            console.log("Logged in as:", user.email);
-            document.body.classList.add("logged-in");
-            // Redirect to dashboard if already logged in
-            window.location.href = 'dashboard.html';
-        } else {
-            sessionStorage.removeItem("user");
-            document.body.classList.remove("logged-in");
-        }
-    });
-
-    // Optional logout logic if you want it everywhere
+    // Logout functionality
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             signOut(auth).then(() => {
-                window.location.href = "/login.html";
+                window.location.href = "login.html";
             });
         });
     }
