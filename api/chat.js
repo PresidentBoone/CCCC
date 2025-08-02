@@ -25,84 +25,43 @@ function generatePersonalizedSystemPrompt(userProfile, questionnaireData) {
 
   // Add questionnaire-based personalization
   if (questionnaireData) {
-    // Academic information
-    if (questionnaireData.currentGradeLevel) {
-      systemPrompt += ` They are currently in ${questionnaireData.currentGradeLevel}.`;
-    }
+    console.log('🎯 Processing questionnaire data:', questionnaireData);
     
-    if (questionnaireData.expectedGraduation) {
-      systemPrompt += ` They plan to graduate in ${questionnaireData.expectedGraduation}.`;
+    // Application timeline
+    if (questionnaireData.applicationTimeline) {
+      systemPrompt += ` They plan to apply for ${questionnaireData.applicationTimeline}.`;
     }
 
-    if (questionnaireData.currentGPA) {
-      systemPrompt += ` Their current GPA range is ${questionnaireData.currentGPA}.`;
-    }
-
-    // Test scores
-    if (questionnaireData.satScore && questionnaireData.satScore !== '') {
-      systemPrompt += ` Their SAT score range is ${questionnaireData.satScore}.`;
-    }
-    if (questionnaireData.actScore && questionnaireData.actScore !== '') {
-      systemPrompt += ` Their ACT score range is ${questionnaireData.actScore}.`;
-    }
-
-    // Target schools from questions.html
+    // Target schools
     if (questionnaireData.targetSchools && Array.isArray(questionnaireData.targetSchools)) {
       systemPrompt += ` They are interested in these schools: ${questionnaireData.targetSchools.join(', ')}.`;
     }
 
-    // Intended major from questions.html
+    // Academic information
+    if (questionnaireData.unweightedGPA) {
+      systemPrompt += ` Their current unweighted GPA is ${questionnaireData.unweightedGPA}.`;
+    }
+    
+    if (questionnaireData.weightedGPA) {
+      systemPrompt += ` Their weighted GPA is ${questionnaireData.weightedGPA}.`;
+    }
+
+    // Graduation timeline
+    if (questionnaireData.graduationMonth && questionnaireData.graduationYear) {
+      systemPrompt += ` They will graduate in ${questionnaireData.graduationMonth} ${questionnaireData.graduationYear}.`;
+    }
+
+    // Intended major
     if (questionnaireData.intendedMajor) {
       systemPrompt += ` They want to major in ${questionnaireData.intendedMajor}.`;
     }
 
-    // Academic interests from profile
-    if (questionnaireData.academicInterests && questionnaireData.academicInterests.length > 0) {
-      systemPrompt += ` Their academic interests include: ${questionnaireData.academicInterests.join(', ')}.`;
+    // Test scores
+    if (questionnaireData.testScores) {
+      systemPrompt += ` Their test scores are: ${questionnaireData.testScores}.`;
     }
 
-    // College preferences
-    if (questionnaireData.collegeTypes && questionnaireData.collegeTypes.length > 0) {
-      systemPrompt += ` They prefer these types of colleges: ${questionnaireData.collegeTypes.join(', ')}.`;
-    }
-
-    if (questionnaireData.collegeSize) {
-      systemPrompt += ` They prefer ${questionnaireData.collegeSize} sized colleges.`;
-    }
-
-    if (questionnaireData.locationPreference) {
-      systemPrompt += ` Their location preference is: ${questionnaireData.locationPreference}.`;
-    }
-
-    if (questionnaireData.campusSetting) {
-      systemPrompt += ` They prefer a ${questionnaireData.campusSetting} campus setting.`;
-    }
-
-    // Career goals
-    if (questionnaireData.careerGoals && questionnaireData.careerGoals.length > 0) {
-      systemPrompt += ` Their career goals include: ${questionnaireData.careerGoals.join(', ')}.`;
-    }
-
-    // Extracurricular activities
-    if (questionnaireData.extracurriculars && questionnaireData.extracurriculars.length > 0) {
-      systemPrompt += ` They participate in: ${questionnaireData.extracurriculars.join(', ')}.`;
-    }
-
-    // Financial considerations
-    if (questionnaireData.budgetRange) {
-      systemPrompt += ` Their college budget range is ${questionnaireData.budgetRange}.`;
-    }
-
-    if (questionnaireData.financialAid && questionnaireData.financialAid.length > 0) {
-      systemPrompt += ` Financial aid interests: ${questionnaireData.financialAid.join(', ')}.`;
-    }
-
-    // Special considerations
-    if (questionnaireData.specialConsiderations && questionnaireData.specialConsiderations.length > 0) {
-      systemPrompt += ` Important considerations: ${questionnaireData.specialConsiderations.join(', ')}.`;
-    }
-
-    // Application status from questions.html
+    // Application status
     if (questionnaireData.applicationStarted === 'yes') {
       systemPrompt += ` They have already started their college applications.`;
     } else if (questionnaireData.applicationStarted === 'no') {
@@ -117,19 +76,17 @@ function generatePersonalizedSystemPrompt(userProfile, questionnaireData) {
       systemPrompt += ` They have started building their resume.`;
     }
 
-    // Timeline from questions.html
-    if (questionnaireData.applicationTimeline) {
-      systemPrompt += ` They plan to apply for ${questionnaireData.applicationTimeline}.`;
+    // From profile.html questionnaire data (if available)
+    if (questionnaireData.academicInterests && questionnaireData.academicInterests.length > 0) {
+      systemPrompt += ` Their academic interests include: ${questionnaireData.academicInterests.join(', ')}.`;
     }
 
-    // Concerns and worries
+    if (questionnaireData.extracurriculars && questionnaireData.extracurriculars.length > 0) {
+      systemPrompt += ` They participate in: ${questionnaireData.extracurriculars.join(', ')}.`;
+    }
+
     if (questionnaireData.collegeWorries) {
       systemPrompt += ` They have shared these concerns about the college process: "${questionnaireData.collegeWorries}"`;
-    }
-
-    // Additional information
-    if (questionnaireData.additionalInfo) {
-      systemPrompt += ` Additional context: "${questionnaireData.additionalInfo}"`;
     }
   }
 
@@ -138,6 +95,12 @@ function generatePersonalizedSystemPrompt(userProfile, questionnaireData) {
 IMPORTANT: Use this personal information to provide highly specific, relevant advice. Reference their interests, goals, and preferences in your responses. If they ask about colleges, suggest ones that match their criteria. If they need help with essays, relate to their intended major and experiences. Always be encouraging and specific to their situation.
 
 Keep responses under 250 words but make them personal and actionable.`;
+
+  console.log('📝 Generated personalized prompt with data from:', {
+    hasUserProfile: !!userProfile,
+    hasQuestionnaire: !!questionnaireData,
+    questionnaireKeys: questionnaireData ? Object.keys(questionnaireData) : []
+  });
 
   return systemPrompt;
 }

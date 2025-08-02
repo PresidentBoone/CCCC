@@ -2758,34 +2758,24 @@
             
             const now = Date.now();
             if (now - lastMessageTime < MESSAGE_COOLDOWN) {
-                console.log('⏱️ Message cooldown active');
                 return;
             }
             lastMessageTime = now;
             
-            console.log('📤 Sending personalized message:', message);
-            
             // Disable input
             input.disabled = true;
             sendButton.disabled = true;
-            sendButton.textContent = 'Sending...';
             
             try {
-                // Start new chat if none exists
-                if (!window.currentChatId) {
-                    if (window.startNewChat) {
-                        window.startNewChat();
-                    }
-                }
-                
-                const chatMessages = document.getElementById('chatMessages');
-                
                 // Add user message
                 const userMessage = document.createElement('div');
                 userMessage.className = 'message user-message';
                 userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
+                
+                const chatMessages = document.getElementById('chatMessages');
                 chatMessages.appendChild(userMessage);
                 
+                // Clear input
                 input.value = '';
                 
                 // Add typing indicator
@@ -2802,14 +2792,17 @@
                 
                 if (window.auth && window.auth.currentUser) {
                     try {
+                        console.log('🔍 Fetching user data for personalization...');
+                        
                         // Get user data from Firestore for personalization
                         const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
                         if (userDoc.exists()) {
                             const userData = userDoc.data();
+                            console.log('📊 User data found:', userData);
                             
                             userProfileData = {
-                                name: userData.name,
-                                email: userData.email,
+                                name: userData.name || userData.displayName,
+                                email: userData.email || window.auth.currentUser.email,
                                 currentGrade: userData.currentGrade,
                                 currentSchool: userData.currentSchool,
                                 gpa: userData.gpa,
@@ -2819,16 +2812,25 @@
                             // Include questionnaire data for full personalization
                             if (userData.questionnaire) {
                                 questionnaireData = userData.questionnaire;
-                                console.log('📋 Including questionnaire data for personalization');
+                                console.log('📋 Questionnaire data found:', questionnaireData);
+                            } else {
+                                console.log('📋 No questionnaire data found');
                             }
                             
-                            console.log('👤 Including user profile data for personalization');
+                            console.log('👤 User profile prepared for API:', userProfileData);
+                        } else {
+                            console.log('👤 No user document found in Firestore');
                         }
                     } catch (error) {
                         console.error('❌ Error fetching user data for personalization:', error);
                         // Continue without personalization data
                     }
                 }
+                
+                console.log('🚀 Sending to API with personalization data:', {
+                    hasUserProfile: !!userProfileData,
+                    hasQuestionnaire: !!questionnaireData
+                });
                 
                 // Get AI response with personalization data
                 const response = await fetch('/api/chat', {
@@ -2850,9 +2852,11 @@
                 if (response.ok) {
                     const data = await response.json();
                     aiResponseText = data.response || 'Sorry, I received an empty response.';
+                    console.log('✅ Received personalized response from API');
                 } else {
-                    console.error('API Error:', response.status);
-                    aiResponseText = 'Sorry, I\'m having trouble connecting right now.';
+                    console.error('❌ API Error:', response.status);
+                    const errorData = await response.json().catch(() => ({}));
+                    aiResponseText = errorData.error || 'Sorry, I\'m having trouble connecting right now.';
                 }
                 
                 // Add AI response
@@ -2915,12 +2919,11 @@
                 chatMessages.appendChild(errorMessage);
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                
             } finally {
                 // Re-enable input
                 input.disabled = false;
                 sendButton.disabled = false;
-                sendButton.textContent = 'Send';
+                input.focus();
             }
         }
 

@@ -784,11 +784,13 @@
                 const user = userCredential.user;
                 button.textContent = '✓ Success!';
                 button.style.background = '#4caf50';
+                console.log("Account created successfully for:", user.email);
                 setTimeout(() => {
-                    window.location.href = "questions.html"; // Changed from dashboard.html
+                    window.location.href = "questions.html";
                 }, 1000);
             })
             .catch((error) => {
+                console.error("Signup error:", error);
                 alert("Error: " + error.message);
             })
             .finally(() => {
