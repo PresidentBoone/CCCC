@@ -2763,7 +2763,7 @@
             }
             lastMessageTime = now;
             
-            console.log('📤 Sending message:', message);
+            console.log('📤 Sending personalized message:', message);
             
             // Disable input
             input.disabled = true;
@@ -2796,11 +2796,49 @@
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Get AI response
+                // Prepare user profile data for personalization
+                let userProfileData = null;
+                let questionnaireData = null;
+                
+                if (window.auth && window.auth.currentUser) {
+                    try {
+                        // Get user data from Firestore for personalization
+                        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            
+                            userProfileData = {
+                                name: userData.name,
+                                email: userData.email,
+                                currentGrade: userData.currentGrade,
+                                currentSchool: userData.currentSchool,
+                                gpa: userData.gpa,
+                                graduationYear: userData.graduationYear
+                            };
+                            
+                            // Include questionnaire data for full personalization
+                            if (userData.questionnaire) {
+                                questionnaireData = userData.questionnaire;
+                                console.log('📋 Including questionnaire data for personalization');
+                            }
+                            
+                            console.log('👤 Including user profile data for personalization');
+                        }
+                    } catch (error) {
+                        console.error('❌ Error fetching user data for personalization:', error);
+                        // Continue without personalization data
+                    }
+                }
+                
+                // Get AI response with personalization data
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
+                    body: JSON.stringify({ 
+                        message: message,
+                        userProfile: userProfileData,
+                        questionnaireData: questionnaireData
+                    })
                 });
                 
                 // Remove typing indicator
@@ -2829,7 +2867,7 @@
                 if (window.auth && window.auth.currentUser) {
                     try {
                         const userId = window.auth.currentUser.uid;
-                        console.log('💾 Saving chat...');
+                        console.log('💾 Saving personalized chat...');
                         
                         await Promise.all([
                             window.saveChatMessage(userId, window.currentChatId, message, 'user'),
@@ -2855,7 +2893,7 @@
                             await window.loadChatHistory(userId);
                         }
                         
-                        console.log('✅ Chat saved successfully');
+                        console.log('✅ Personalized chat saved successfully');
                         
                     } catch (saveError) {
                         console.error('❌ Error saving chat:', saveError);
@@ -2864,7 +2902,7 @@
                 }
                 
             } catch (error) {
-                console.error('❌ Error sending message:', error);
+                console.error('❌ Error sending personalized message:', error);
                 
                 // Remove typing indicator if it exists
                 const typingElements = chatMessages.querySelectorAll('.typing');

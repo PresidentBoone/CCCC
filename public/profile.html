@@ -1594,22 +1594,118 @@
             }
         }
 
-        // Populate questionnaire fields - EXPANDED VERSION
+        // Populate questionnaire fields - ENHANCED VERSION
         function populateQuestionnaire(questionnaire) {
-            // Single select fields
-            const singleFields = [
-                'currentGradeLevel', 'expectedGraduation', 'currentGPA', 'satScore', 'actScore',
-                'collegeSize', 'locationPreference', 'campusSetting', 'budgetRange'
-            ];
+            console.log('📋 Populating questionnaire with data:', questionnaire);
             
-            singleFields.forEach(field => {
-                if (questionnaire[field]) {
-                    const element = document.getElementById(field);
-                    if (element) element.value = questionnaire[field];
+            // Single select fields from questions.html
+            const questionFields = {
+                'currentGradeLevel': questionnaire.currentGradeLevel,
+                'expectedGraduation': questionnaire.expectedGraduation || questionnaire.graduationYear,
+                'currentGPA': questionnaire.currentGPA || questionnaire.unweightedGPA,
+                'satScore': questionnaire.satScore,
+                'actScore': questionnaire.actScore,
+                'collegeSize': questionnaire.collegeSize,
+                'locationPreference': questionnaire.locationPreference,
+                'campusSetting': questionnaire.campusSetting,
+                'budgetRange': questionnaire.budgetRange
+            };
+            
+            // Populate single select fields
+            Object.entries(questionFields).forEach(([fieldId, value]) => {
+                if (value) {
+                    const element = document.getElementById(fieldId);
+                    if (element) {
+                        element.value = value;
+                        console.log(`✅ Populated ${fieldId} with:`, value);
+                    }
                 }
             });
 
-            // Checkbox groups
+            // Handle questionnaire data that needs mapping to profile fields
+            if (questionnaire.applicationTimeline) {
+                const element = document.getElementById('expectedGraduation');
+                if (element && !element.value) {
+                    // Try to extract year from application timeline
+                    const yearMatch = questionnaire.applicationTimeline.match(/\d{4}/);
+                    if (yearMatch) {
+                        element.value = yearMatch[0];
+                    }
+                }
+            }
+
+            // Map intended major to academic interests
+            if (questionnaire.intendedMajor) {
+                const majorToInterestMap = {
+                    'Computer Science': 'computer-science',
+                    'Engineering': 'engineering',
+                    'Business': 'business',
+                    'Medicine/Pre-Med': 'health-sciences',
+                    'Biology': 'physical-sciences',
+                    'Psychology': 'psychology',
+                    'English': 'humanities',
+                    'Mathematics': 'mathematics',
+                    'Physics': 'physical-sciences',
+                    'Chemistry': 'physical-sciences',
+                    'Economics': 'social-sciences',
+                    'Political Science': 'social-sciences',
+                    'Art': 'arts',
+                    'Music': 'arts',
+                    'History': 'humanities'
+                };
+                
+                const mappedInterest = majorToInterestMap[questionnaire.intendedMajor];
+                if (mappedInterest) {
+                    const checkbox = document.querySelector(`input[name="academicInterests"][value="${mappedInterest}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                }
+            }
+
+            // Handle test scores from questions.html
+            if (questionnaire.testScores) {
+                // Parse test scores string like "SAT: 1450, ACT: 32"
+                const satMatch = questionnaire.testScores.match(/SAT:?\s*(\d+)/i);
+                const actMatch = questionnaire.testScores.match(/ACT:?\s*(\d+)/i);
+                
+                if (satMatch) {
+                    const satScore = parseInt(satMatch[1]);
+                    const satElement = document.getElementById('satScore');
+                    if (satElement && !satElement.value) {
+                        // Map score to range
+                        if (satScore >= 1600) satElement.value = '1600';
+                        else if (satScore >= 1500) satElement.value = '1500-1590';
+                        else if (satScore >= 1400) satElement.value = '1400-1490';
+                        else if (satScore >= 1300) satElement.value = '1300-1390';
+                        else if (satScore >= 1200) satElement.value = '1200-1290';
+                        else if (satScore >= 1100) satElement.value = '1100-1190';
+                        else if (satScore >= 1000) satElement.value = '1000-1090';
+                        else if (satScore >= 900) satElement.value = '900-990';
+                        else satElement.value = 'below-900';
+                    }
+                }
+                
+                if (actMatch) {
+                    const actScore = parseInt(actMatch[1]);
+                    const actElement = document.getElementById('actScore');
+                    if (actElement && !actElement.value) {
+                        // Map score to range
+                        if (actScore >= 36) actElement.value = '36';
+                        else if (actScore >= 34) actElement.value = '34-35';
+                        else if (actScore >= 32) actElement.value = '32-33';
+                        else if (actScore >= 30) actElement.value = '30-31';
+                        else if (actScore >= 28) actElement.value = '28-29';
+                        else if (actScore >= 26) actElement.value = '26-27';
+                        else if (actScore >= 24) actElement.value = '24-25';
+                        else if (actScore >= 22) actElement.value = '22-23';
+                        else if (actScore >= 20) actElement.value = '20-21';
+                        else actElement.value = 'below-20';
+                    }
+                }
+            }
+
+            // Checkbox groups from profile form
             const checkboxGroups = [
                 'collegeTypes', 'academicInterests', 'careerGoals', 'extracurriculars', 
                 'financialAid', 'specialConsiderations'
@@ -1619,7 +1715,10 @@
                 if (questionnaire[group] && Array.isArray(questionnaire[group])) {
                     questionnaire[group].forEach(value => {
                         const checkbox = document.querySelector(`input[name="${group}"][value="${value}"]`);
-                        if (checkbox) checkbox.checked = true;
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            console.log(`✅ Checked ${group}:`, value);
+                        }
                     });
                 }
             });
@@ -1634,210 +1733,11 @@
                 const element = document.getElementById('additionalInfo');
                 if (element) element.value = questionnaire.additionalInfo;
             }
+
+            console.log('📋 Questionnaire population completed');
         }
 
-        // Photo upload handler - COMPLETELY FIXED VERSION
-        document.getElementById('photoUpload').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            console.log('📁 File selected:', file.name, file.size, file.type);
-
-            // Validate file type and size
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                showMessage('Please select a valid image file (JPEG, PNG, GIF, or WebP).', 'error');
-                return;
-            }
-
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                showMessage('Image size must be less than 10MB.', 'error');
-                return;
-            }
-
-            try {
-                // Show loading state
-                const uploadButton = document.querySelector('.profile-photo-upload');
-                const originalContent = uploadButton.innerHTML;
-                uploadButton.innerHTML = '⏳';
-                uploadButton.style.pointerEvents = 'none';
-
-                console.log('🔐 Current user:', currentUser?.uid);
-                
-                if (!currentUser) {
-                    throw new Error('No authenticated user found');
-                }
-
-                // Create a simple filename
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-                const fileName = `profile_${currentUser.uid}_${Date.now()}.${fileExtension}`;
-                
-                console.log('📤 Uploading to:', `profile-photos/${fileName}`);
-                
-                // Create storage reference with simplified path
-                const photoRef = ref(storage, `profile-photos/${fileName}`);
-                
-                // Add metadata
-                const metadata = {
-                    contentType: file.type,
-                    customMetadata: {
-                        'userId': currentUser.uid,
-                        'uploadedAt': new Date().toISOString()
-                    }
-                };
-                
-                console.log('📤 Starting upload...');
-                
-                // Upload file with metadata
-                const uploadTask = await uploadBytes(photoRef, file, metadata);
-                console.log('✅ Upload completed:', uploadTask.metadata);
-                
-                // Get download URL
-                const downloadURL = await getDownloadURL(uploadTask.ref);
-                console.log('🔗 Download URL:', downloadURL);
-
-                // Test if URL is accessible
-                const testImg = new Image();
-                testImg.onload = async () => {
-                    console.log('✅ Image URL is accessible');
-                    
-                    try {
-                        // Update Firestore
-                        await updateDoc(doc(db, 'users', currentUser.uid), {
-                            profilePhotoURL: downloadURL,
-                            profilePhotoUpdated: new Date().toISOString(),
-                            profilePhotoName: fileName
-                        });
-                        console.log('✅ Firestore updated');
-
-                        // Update UI immediately - UPDATE ALL PHOTO ELEMENTS
-                        const photoElements = [
-                            document.getElementById('profilePhoto'),
-                            document.getElementById('profilePhotoPreview'),
-                            document.getElementById('navUserAvatar')
-                        ];
-
-                        photoElements.forEach(element => {
-                            if (element) {
-                                element.src = downloadURL;
-                                if (element.id === 'navUserAvatar') {
-                                    element.style.display = 'block';
-                                }
-                                element.onload = () => console.log(`✅ ${element.id} updated in UI`);
-                            }
-                        });
-
-                        // Update current user data
-                        currentUserData.profilePhotoURL = downloadURL;
-                        
-                        showMessage('Profile photo updated successfully!', 'success');
-                        
-                    } catch (firestoreError) {
-                        console.error('❌ Firestore update failed:', firestoreError);
-                        showMessage('Photo uploaded but failed to save to profile. Please refresh and try again.', 'error');
-                    }
-                };
-                
-                testImg.onerror = () => {
-                    console.error('❌ Image URL not accessible');
-                    showMessage('Upload completed but image not accessible. Please try again.', 'error');
-                };
-                
-                testImg.src = downloadURL;
-                
-                // Reset button
-                uploadButton.innerHTML = originalContent;
-                uploadButton.style.pointerEvents = 'auto';
-
-            } catch (error) {
-                console.error('❌ Upload error:', error);
-                
-                // Reset button
-                const uploadButton = document.querySelector('.profile-photo-upload');
-                uploadButton.innerHTML = '📷';
-                uploadButton.style.pointerEvents = 'auto';
-                
-                // Show specific error messages
-                let errorMessage = 'Failed to upload photo. ';
-                
-                if (error.code === 'storage/unauthorized') {
-                    errorMessage += 'Permission denied. Please try logging out and back in.';
-                } else if (error.code === 'storage/canceled') {
-                    errorMessage += 'Upload was canceled.';
-                } else if (error.code === 'storage/unknown') {
-                    errorMessage += 'Unknown error occurred. Please check your internet connection.';
-                } else if (error.code === 'storage/retry-limit-exceeded') {
-                    errorMessage += 'Upload timeout. Please try again.';
-                } else if (error.message.includes('No authenticated user')) {
-                    errorMessage += 'Please log out and log back in.';
-                } else {
-                    errorMessage += 'Please try again or contact support.';
-                }
-                
-                showMessage(errorMessage, 'error');
-            }
-        });
-
-        // Personal info form handler
-        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            try {
-                const formData = new FormData(e.target);
-                const personalData = {
-                    name: document.getElementById('displayName').value,
-                    phone: document.getElementById('phoneNumber').value,
-                    dateOfBirth: document.getElementById('dateOfBirth').value,
-                    location: document.getElementById('location').value
-                };
-
-                // Remove empty fields
-                Object.keys(personalData).forEach(key => {
-                    if (!personalData[key]) delete personalData[key];
-                });
-
-                await updateDoc(doc(db, 'users', currentUser.uid), personalData);
-
-                // Always update local data and UI
-                if (personalData.name) {
-                    document.getElementById('profileName').textContent = personalData.name;
-                    currentUserData.name = personalData.name;
-                }
-                updateAuthUI(currentUser);
-
-                showMessage('Personal information updated successfully!', 'success');
-            } catch (error) {
-                console.error('❌ Error updating personal info:', error);
-                showMessage('Failed to update personal information. Please try again.', 'error');
-            }
-        });
-
-        // Academic info form handler
-        document.getElementById('academicInfoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            try {
-                const academicData = {
-                    currentGrade: document.getElementById('currentGrade').value,
-                    currentSchool: document.getElementById('currentSchool').value,
-                    gpa: parseFloat(document.getElementById('gpa').value) || null,
-                    graduationYear: parseInt(document.getElementById('graduationYear').value) || null
-                };
-
-                // Remove empty fields
-                Object.keys(academicData).forEach(key => {
-                    if (!academicData[key] && academicData[key] !== 0) delete academicData[key];
-                });
-
-                await updateDoc(doc(db, 'users', currentUser.uid), academicData);
-                showMessage('Academic information updated successfully!', 'success');
-            } catch (error) {
-                console.error('❌ Error updating academic info:', error);
-                showMessage('Failed to update academic information. Please try again.', 'error');
-            }
-        });
-
-        // Questionnaire form handler
+        // Update the questionnaire form handler to merge with existing data
         document.getElementById('questionnaireForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1864,13 +1764,30 @@
                     
                     // Textarea fields
                     collegeWorries: document.getElementById('collegeWorries').value,
-                    additionalInfo: document.getElementById('additionalInfo').value
+                    additionalInfo: document.getElementById('additionalInfo').value,
+                    
+                    // Metadata
+                    updatedAt: new Date().toISOString(),
+                    updatedFrom: 'profile'
                 };
 
+                // Merge with existing questionnaire data to preserve questions.html data
+                const currentDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                const existingData = currentDoc.exists() ? currentDoc.data() : {};
+                const existingQuestionnaire = existingData.questionnaire || {};
+
+                // Merge the data, with profile updates taking precedence
+                const mergedQuestionnaire = { ...existingQuestionnaire, ...questionnaireData };
+
                 await updateDoc(doc(db, 'users', currentUser.uid), {
-                    questionnaire: questionnaireData,
-                    questionnaireUpdated: new Date()
+                    questionnaire: mergedQuestionnaire,
+                    questionnaireUpdated: new Date(),
+                    profileQuestionnaireCompleted: true
                 });
+
+                // Update currentUserData for immediate use
+                if (!currentUserData.questionnaire) currentUserData.questionnaire = {};
+                Object.assign(currentUserData.questionnaire, questionnaireData);
 
                 showMessage('Questionnaire updated successfully!', 'success');
             } catch (error) {
