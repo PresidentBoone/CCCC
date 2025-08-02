@@ -735,7 +735,7 @@
             .then((result) => {
                 const user = result.user;
                 console.log("Google Sign-Up successful for:", user.email);
-                window.location.href = "dashboard.html";
+                window.location.href = "questions.html";
             })
             .catch((error) => {
                 console.error("Google Sign-Up error:", error);
@@ -806,8 +806,8 @@
         const loggedIn = document.getElementById('loggedIn');
         
         if (user) {
-            // User is logged in - redirect to dashboard
-            window.location.href = 'dashboard.html';
+            // User is logged in - redirect to questions
+            window.location.href = 'questions.html';
         } else {
             // User is not logged in
             if (authToggle) authToggle.textContent = 'Login/Sign Up';
