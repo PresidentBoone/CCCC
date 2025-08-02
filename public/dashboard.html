@@ -2226,17 +2226,33 @@
         }
 
         // Chat System Functions
-        window.startNewChat = function() {
+        window.startNewChat = async function() {
             window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             window.currentChatMessages = [];
+            
+            // Get user's name for personalized greeting
+            let userName = 'there';
+            if (window.auth && window.auth.currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        userName = userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0];
+                    }
+                } catch (error) {
+                    console.log('Could not fetch user name for greeting');
+                }
+            }
             
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 chatMessages.innerHTML = `
                     <div class="message ai-message">
                         <strong>AI Counselor:</strong> 
-                        Hello! I'm your personal AI college counselor. I can help you with:
+                        Hello ${userName}! I'm your personal AI college counselor. I have access to your profile and questionnaire responses to provide personalized guidance.
                         <br><br>
+                        I can help you with:
+                        <br>
                         • College applications and deadlines<br>
                         • Essay writing and feedback<br>
                         • Scholarship opportunities<br>
@@ -2253,7 +2269,7 @@
                 item.classList.remove('active');
             });
             
-            console.log('💬 New chat initialized:', window.currentChatId);
+            console.log('💬 New personalized chat initialized:', window.currentChatId);
         };
 
         async function loadChatHistory(userId) {
@@ -2402,10 +2418,22 @@
                 chatMessages.innerHTML = '';
                 
                 if (querySnapshot.empty) {
+                    // Get user's name for empty chat message
+                    let userName = 'there';
+                    try {
+                        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            userName = userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0];
+                        }
+                    } catch (error) {
+                        console.log('Could not fetch user name');
+                    }
+                    
                     chatMessages.innerHTML = `
                         <div class="message ai-message">
                             <strong>AI Counselor:</strong> 
-                            This chat appears to be empty. Let's start a new conversation!
+                            Hello ${userName}! This chat appears to be empty. Let's start a new conversation! I have access to your profile and questionnaire responses to provide personalized guidance.
                         </div>
                     `;
                     return;
@@ -2763,11 +2791,12 @@
             // Disable input
             input.disabled = true;
             sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
             
             try {
                 // Start new chat if none exists
                 if (!window.currentChatId) {
-                    window.startNewChat();
+                    await window.startNewChat();
                 }
                 
                 // Add user message
@@ -2789,60 +2818,145 @@
                 
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Prepare user profile data for personalization
+                // Prepare comprehensive user data for personalization
                 let userProfileData = null;
                 let questionnaireData = null;
+                let chatHistory = [];
                 
                 if (window.auth && window.auth.currentUser) {
                     try {
-                        console.log('🔍 Fetching user data for personalization...');
+                        console.log('🔍 Fetching comprehensive user data for personalization...');
                         
-                        // Get user data from Firestore for personalization
+                        // Get user profile and questionnaire data
                         const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
                         if (userDoc.exists()) {
                             const userData = userDoc.data();
                             console.log('📊 User data found:', userData);
                             
+                            // Enhanced user profile data
                             userProfileData = {
-                                name: userData.name || userData.displayName,
+                                name: userData.name || userData.displayName || window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
                                 email: userData.email || window.auth.currentUser.email,
                                 currentGrade: userData.currentGrade,
                                 currentSchool: userData.currentSchool,
                                 gpa: userData.gpa,
-                                graduationYear: userData.graduationYear
+                                graduationYear: userData.graduationYear,
+                                profileCompleted: userData.profileCompleted || false,
+                                questionnaireCompleted: userData.questionnaireCompleted || false
                             };
                             
-                            // Include questionnaire data for full personalization
+                            // Get questionnaire data for full personalization
                             if (userData.questionnaire) {
                                 questionnaireData = userData.questionnaire;
-                                console.log('📋 Questionnaire data found:', questionnaireData);
+                                console.log('📋 Questionnaire data found with keys:', Object.keys(questionnaireData));
                             } else {
-                                console.log('📋 No questionnaire data found');
+                                console.log('📋 No questionnaire data found - user may need to complete it');
                             }
                             
-                            console.log('👤 User profile prepared for API:', userProfileData);
+                            console.log('👤 Enhanced user profile prepared:', userProfileData);
                         } else {
                             console.log('👤 No user document found in Firestore');
+                            // Create basic profile from auth data
+                            userProfileData = {
+                                name: window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
+                                email: window.auth.currentUser.email,
+                                profileCompleted: false,
+                                questionnaireCompleted: false
+                            };
+                        }
+                        
+                        // Get recent chat history for context (last 10 messages from recent chats)
+                        try {
+                            const recentChatsQuery = query(
+                                collection(window.db, 'chatSessions'),
+                                where('userId', '==', window.auth.currentUser.uid)
+                            );
+                            
+                            const recentChatsSnapshot = await getDocs(recentChatsQuery);
+                            const recentChatIds = [];
+                            
+                            // Sort chats by last updated and get the 3 most recent
+                            const chats = [];
+                            recentChatsSnapshot.forEach(doc => {
+                                const data = doc.data();
+                                chats.push({ id: doc.id, lastUpdated: data.lastUpdated });
+                            });
+                            
+                            chats.sort((a, b) => {
+                                if (a.lastUpdated && b.lastUpdated) {
+                                    return b.lastUpdated.toMillis() - a.lastUpdated.toMillis();
+                                }
+                                return 0;
+                            });
+                            
+                            // Get recent chat IDs (excluding current chat)
+                            const recentChatIdsToFetch = chats
+                                .slice(0, 3)
+                                .map(chat => chat.id)
+                                .filter(id => id !== window.currentChatId);
+                            
+                            // Fetch recent messages for context
+                            if (recentChatIdsToFetch.length > 0) {
+                                const messagesQuery = query(
+                                    collection(db, 'chatMessages'),
+                                    where('userId', '==', window.auth.currentUser.uid),
+                                    where('chatId', 'in', recentChatIdsToFetch)
+                                );
+                                
+                                const messagesSnapshot = await getDocs(messagesQuery);
+                                const messages = [];
+                                
+                                messagesSnapshot.forEach(doc => {
+                                    const data = doc.data();
+                                    messages.push({
+                                        message: data.message,
+                                        sender: data.sender,
+                                        timestamp: data.timestamp,
+                                        chatId: data.chatId
+                                    });
+                                });
+                                
+                                // Sort by timestamp and take most recent 15 messages
+                                messages.sort((a, b) => {
+                                    if (a.timestamp && b.timestamp) {
+                                        return b.timestamp.toMillis() - a.timestamp.toMillis();
+                                    }
+                                    return 0;
+                                });
+                                
+                                chatHistory = messages.slice(0, 15);
+                                console.log(`📚 Found ${chatHistory.length} recent messages for context`);
+                            }
+                        } catch (historyError) {
+                            console.log('📚 Could not fetch chat history for context:', historyError.message);
+                            // Continue without chat history
                         }
                     } catch (error) {
                         console.error('❌ Error fetching user data for personalization:', error);
-                        // Continue without personalization data
+                        // Continue with minimal data
+                        userProfileData = {
+                            name: window.auth.currentUser.displayName || window.auth.currentUser.email.split('@')[0],
+                            email: window.auth.currentUser.email
+                        };
                     }
                 }
                 
-                console.log('🚀 Sending to API with personalization data:', {
+                console.log('🚀 Sending to API with comprehensive data:', {
                     hasUserProfile: !!userProfileData,
-                    hasQuestionnaire: !!questionnaireData
+                    hasQuestionnaire: !!questionnaireData,
+                    hasChatHistory: chatHistory.length > 0,
+                    userName: userProfileData?.name
                 });
                 
-                // Get AI response with personalization data
+                // Get AI response with comprehensive personalization data
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         message: message,
                         userProfile: userProfileData,
-                        questionnaireData: questionnaireData
+                        questionnaireData: questionnaireData,
+                        chatHistory: chatHistory
                     })
                 });
                 
@@ -2926,6 +3040,7 @@
                 // Re-enable input
                 input.disabled = false;
                 sendButton.disabled = false;
+                sendButton.textContent = 'Send';
                 input.focus();
             }
         }
