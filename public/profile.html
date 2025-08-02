@@ -973,8 +973,418 @@
 
         <!-- Questionnaire Section -->
         <div class="profile-section questionnaire-full fade-in-up">
-            <h2 class="section-title">📋 Questionnaire Information</h2>
-            <div id="questionnaire-data"></div>
+            <h2 class="section-title">📋 Complete College Questionnaire</h2>
+            <form id="questionnaireForm">
+                <div class="questionnaire-grid">
+                    <!-- Basic Information -->
+                    <div class="question-group">
+                        <label class="form-label" for="currentGradeLevel">Current Grade Level</label>
+                        <select id="currentGradeLevel" class="form-input form-select">
+                            <option value="">Select your current grade</option>
+                            <option value="9th">9th Grade (Freshman)</option>
+                            <option value="10th">10th Grade (Sophomore)</option>
+                            <option value="11th">11th Grade (Junior)</option>
+                            <option value="12th">12th Grade (Senior)</option>
+                            <option value="gap-year">Gap Year</option>
+                            <option value="college">College Student</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label" for="expectedGraduation">Expected High School Graduation Year</label>
+                        <select id="expectedGraduation" class="form-input form-select">
+                            <option value="">Select year</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>
+                    </div>
+
+                    <!-- Academic Performance -->
+                    <div class="question-group">
+                        <label class="form-label" for="currentGPA">Current GPA (if known)</label>
+                        <select id="currentGPA" class="form-input form-select">
+                            <option value="">Select GPA range</option>
+                            <option value="4.0+">4.0+ (A+)</option>
+                            <option value="3.7-3.99">3.7-3.99 (A-/A)</option>
+                            <option value="3.3-3.69">3.3-3.69 (B+/A-)</option>
+                            <option value="3.0-3.29">3.0-3.29 (B)</option>
+                            <option value="2.7-2.99">2.7-2.99 (B-)</option>
+                            <option value="2.3-2.69">2.3-2.69 (C+/B-)</option>
+                            <option value="2.0-2.29">2.0-2.29 (C)</option>
+                            <option value="below-2.0">Below 2.0</option>
+                            <option value="not-sure">Not sure/Don't know</option>
+                        </select>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label" for="satScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">SAT Score</label>
+                        <select id="satScore" class="form-input form-select">
+                            <option value="">Not taken/Don't know</option>
+                            <option value="1600">1600 (Perfect)</option>
+                            <option value="1500-1590">1500-1590</option>
+                            <option value="1400-1490">1400-1490</option>
+                            <option value="1300-1390">1300-1390</option>
+                            <option value="1200-1290">1200-1290</option>
+                            <option value="1100-1190">1100-1190</option>
+                            <option value="1000-1090">1000-1090</option>
+                            <option value="900-990">900-990</option>
+                            <option value="below-900">Below 900</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label class="form-label" for="actScore" style="font-size: 0.85rem; margin-bottom: 0.25rem;">ACT Score</label>
+                        <select id="actScore" class="form-input form-select">
+                            <option value="">Not taken/Don't know</option>
+                            <option value="36">36 (Perfect)</option>
+                            <option value="34-35">34-35</option>
+                            <option value="32-33">32-33</option>
+                            <option value="30-31">30-31</option>
+                            <option value="28-29">28-29</option>
+                            <option value="26-27">26-27</option>
+                            <option value="24-25">24-25</option>
+                            <option value="22-23">22-23</option>
+                            <option value="20-21">20-21</option>
+                            <option value="below-20">Below 20</option>
+                        </select>
+                    </div>
+
+                    <!-- College Preferences -->
+                    <div class="question-group">
+                        <label class="form-label">What types of colleges interest you most?</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="public-universities" name="collegeTypes" value="public-universities">
+                                <label for="public-universities">Public Universities</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="private-universities" name="collegeTypes" value="private-universities">
+                                <label for="private-universities">Private Universities</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="liberal-arts-colleges" name="collegeTypes" value="liberal-arts-colleges">
+                                <label for="liberal-arts-colleges">Liberal Arts Colleges</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="community-colleges" name="collegeTypes" value="community-colleges">
+                                <label for="community-colleges">Community Colleges</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="historically-black" name="collegeTypes" value="historically-black">
+                                <label for="historically-black">Historically Black Colleges (HBCUs)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="women-colleges" name="collegeTypes" value="women-colleges">
+                                <label for="women-colleges">Women's Colleges</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="technical-schools" name="collegeTypes" value="technical-schools">
+                                <label for="technical-schools">Technical/Trade Schools</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label" for="collegeSize">Preferred College Size</label>
+                        <select id="collegeSize" class="form-input form-select">
+                            <option value="">No preference</option>
+                            <option value="very-small">Very Small (Under 1,000 students)</option>
+                            <option value="small">Small (1,000-5,000 students)</option>
+                            <option value="medium">Medium (5,000-15,000 students)</option>
+                            <option value="large">Large (15,000-30,000 students)</option>
+                            <option value="very-large">Very Large (30,000+ students)</option>
+                        </select>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label" for="locationPreference">Location Preference</label>
+                        <select id="locationPreference" class="form-input form-select">
+                            <option value="">No preference</option>
+                            <option value="hometown">Close to home (within 2 hours)</option>
+                            <option value="in-state">Anywhere in my state</option>
+                            <option value="regional">Regional (neighboring states)</option>
+                            <option value="national">Anywhere in the US</option>
+                            <option value="international">Open to international schools</option>
+                        </select>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label" for="campusSetting">Campus Setting Preference</label>
+                        <select id="campusSetting" class="form-input form-select">
+                            <option value="">No preference</option>
+                            <option value="urban">Urban (in a city)</option>
+                            <option value="suburban">Suburban</option>
+                            <option value="small-town">Small town</option>
+                            <option value="rural">Rural</option>
+                        </select>
+                    </div>
+
+                    <!-- Academic Interests -->
+                    <div class="question-group">
+                        <label class="form-label">Academic Areas of Interest</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="agriculture" name="academicInterests" value="agriculture">
+                                <label for="agriculture">Agriculture & Natural Resources</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="architecture" name="academicInterests" value="architecture">
+                                <label for="architecture">Architecture & Planning</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="arts" name="academicInterests" value="arts">
+                                <label for="arts">Arts & Design</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="business" name="academicInterests" value="business">
+                                <label for="business">Business & Entrepreneurship</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="communications" name="academicInterests" value="communications">
+                                <label for="communications">Communications & Media</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="computer-science" name="academicInterests" value="computer-science">
+                                <label for="computer-science">Computer Science & IT</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="education" name="academicInterests" value="education">
+                                <label for="education">Education</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="engineering" name="academicInterests" value="engineering">
+                                <label for="engineering">Engineering</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="health-sciences" name="academicInterests" value="health-sciences">
+                                <label for="health-sciences">Health Sciences & Medicine</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="humanities" name="academicInterests" value="humanities">
+                                <label for="humanities">Humanities & Literature</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="languages" name="academicInterests" value="languages">
+                                <label for="languages">Languages & Linguistics</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="law" name="academicInterests" value="law">
+                                <label for="law">Law & Legal Studies</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="mathematics" name="academicInterests" value="mathematics">
+                                <label for="mathematics">Mathematics & Statistics</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="physical-sciences" name="academicInterests" value="physical-sciences">
+                                <label for="physical-sciences">Physical Sciences</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="psychology" name="academicInterests" value="psychology">
+                                <label for="psychology">Psychology</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="social-sciences" name="academicInterests" value="social-sciences">
+                                <label for="social-sciences">Social Sciences</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theology" name="academicInterests" value="theology">
+                                <label for="theology">Theology & Religious Studies</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="undecided" name="academicInterests" value="undecided">
+                                <label for="undecided">Undecided/Exploring</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Career Goals -->
+                    <div class="question-group">
+                        <label class="form-label">Career Goals & Interests</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="entrepreneur" name="careerGoals" value="entrepreneur">
+                                <label for="entrepreneur">Start my own business</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="corporate" name="careerGoals" value="corporate">
+                                <label for="corporate">Work in corporate America</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="nonprofit" name="careerGoals" value="nonprofit">
+                                <label for="nonprofit">Work for a nonprofit</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="government" name="careerGoals" value="government">
+                                <label for="government">Government service</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="research" name="careerGoals" value="research">
+                                <label for="research">Research & Academia</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="healthcare" name="careerGoals" value="healthcare">
+                                <label for="healthcare">Healthcare professional</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="education-career" name="careerGoals" value="education-career">
+                                <label for="education-career">Teaching/Education</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="arts-career" name="careerGoals" value="arts-career">
+                                <label for="arts-career">Creative arts</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="unsure-career" name="careerGoals" value="unsure-career">
+                                <label for="unsure-career">Still exploring options</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extracurricular Activities -->
+                    <div class="question-group">
+                        <label class="form-label">Extracurricular Activities & Interests</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="varsity-sports" name="extracurriculars" value="varsity-sports">
+                                <label for="varsity-sports">Varsity Sports</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="club-sports" name="extracurriculars" value="club-sports">
+                                <label for="club-sports">Club/Intramural Sports</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="performing-arts" name="extracurriculars" value="performing-arts">
+                                <label for="performing-arts">Performing Arts (Theater, Music, Dance)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="visual-arts" name="extracurriculars" value="visual-arts">
+                                <label for="visual-arts">Visual Arts</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="student-government" name="extracurriculars" value="student-government">
+                                <label for="student-government">Student Government/Leadership</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="academic-clubs" name="extracurriculars" value="academic-clubs">
+                                <label for="academic-clubs">Academic Clubs & Competitions</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="volunteer-work" name="extracurriculars" value="volunteer-work">
+                                <label for="volunteer-work">Volunteer Work & Community Service</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="part-time-job" name="extracurriculars" value="part-time-job">
+                                <label for="part-time-job">Part-time Job/Work Experience</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="research-projects" name="extracurriculars" value="research-projects">
+                                <label for="research-projects">Research Projects</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="internships" name="extracurriculars" value="internships">
+                                <label for="internships">Internships</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Considerations -->
+                    <div class="question-group">
+                        <label class="form-label" for="budgetRange">Annual College Budget</label>
+                        <select id="budgetRange" class="form-input form-select">
+                            <option value="">Prefer not to say</option>
+                            <option value="under-10k">Under $10,000</option>
+                            <option value="10k-20k">$10,000 - $20,000</option>
+                            <option value="20k-30k">$20,000 - $30,000</option>
+                            <option value="30k-40k">$30,000 - $40,000</option>
+                            <option value="40k-50k">$40,000 - $50,000</option>
+                            <option value="50k-60k">$50,000 - $60,000</option>
+                            <option value="60k-70k">$60,000 - $70,000</option>
+                            <option value="over-70k">Over $70,000</option>
+                        </select>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="form-label">Financial Aid Considerations</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="need-aid" name="financialAid" value="need-aid">
+                                <label for="need-aid">Will need financial aid</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="merit-scholarships" name="financialAid" value="merit-scholarships">
+                                <label for="merit-scholarships">Interested in merit scholarships</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="athletic-scholarships" name="financialAid" value="athletic-scholarships">
+                                <label for="athletic-scholarships">Interested in athletic scholarships</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="work-study" name="financialAid" value="work-study">
+                                <label for="work-study">Open to work-study programs</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="student-loans" name="financialAid" value="student-loans">
+                                <label for="student-loans">Willing to take student loans</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Special Considerations -->
+                    <div class="question-group">
+                        <label class="form-label">Special Considerations</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="first-generation" name="specialConsiderations" value="first-generation">
+                                <label for="first-generation">First-generation college student</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="accessibility-needs" name="specialConsiderations" value="accessibility-needs">
+                                <label for="accessibility-needs">Accessibility accommodations needed</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="learning-differences" name="specialConsiderations" value="learning-differences">
+                                <label for="learning-differences">Learning differences support needed</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="religious-affiliation" name="specialConsiderations" value="religious-affiliation">
+                                <label for="religious-affiliation">Prefer religiously affiliated schools</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lgbtq-friendly" name="specialConsiderations" value="lgbtq-friendly">
+                                <label for="lgbtq-friendly">LGBTQ+ friendly campus important</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="diverse-campus" name="specialConsiderations" value="diverse-campus">
+                                <label for="diverse-campus">Diverse campus community important</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Questions -->
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label class="form-label" for="collegeWorries">What worries you most about the college application process?</label>
+                    <textarea id="collegeWorries" class="form-input form-textarea" 
+                              placeholder="Share any concerns or anxieties you have about applying to college..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="additionalInfo">Additional Information</label>
+                    <textarea id="additionalInfo" class="form-input form-textarea" 
+                              placeholder="Anything else you'd like us to know about your college preferences or goals?"></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">💾 Update Questionnaire</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetQuestionnaire()">🔄 Reset to Defaults</button>
+                </div>
+            </form>
         </div>
 
         <!-- Account Management -->
@@ -1594,115 +2004,62 @@
             }
         }
 
-        // Initial theme setup
+        // Initialize theme and logo on page load
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
         document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        updateNavbarLogo(savedTheme);
+        updateNavbarLogo(savedTheme); // <-- Add this line
 
-        // Starry background
+        // Create starry background
         function createStars() {
             const starryBg = document.getElementById('starryBg');
-            if (!starryBg) return;
-            starryBg.innerHTML = '';
-            const numStars = 150;
-            for (let i = 0; i < numStars; i++) {
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                const size = Math.random() * 2 + 1;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.animationDelay = `${Math.random() * 3}s`;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
                 starryBg.appendChild(star);
             }
         }
 
-        if (savedTheme === 'dark') {
-            createStars();
-        }
+        createStars();
 
-        // Fade in elements on scroll
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+                       entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.1 });
+        }, observerOptions);
 
-        document.querySelectorAll('.fade-in-up').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-        // Test storage connection
+        console.log('✅ Profile page initialized successfully');
+
+        // Test Firebase Storage connection
         async function testStorageConnection() {
             try {
-                const testRef = ref(storage, 'test-connection/test.txt');
-                await getDownloadURL(testRef).catch(err => {
-                    if (err.code === 'storage/object-not-found') return; // This is expected
-                    throw err;
-                });
-                console.log('✅ Firebase Storage connection is OK.');
+                const testRef = ref(storage, 'test-connection.txt');
+                const testBlob = new Blob(['test'], { type: 'text/plain' });
+                await uploadBytes(testRef, testBlob);
+                await deleteObject(testRef);
+                console.log('✅ Firebase Storage connection successful');
             } catch (error) {
                 console.error('❌ Firebase Storage connection failed:', error);
-                if (error.code === 'storage/unauthorized') {
-                    showMessage('Storage security rules may be misconfigured. Please check your Firebase console.', 'error');
-                }
+                showMessage('Storage service unavailable. Please refresh the page.', 'error');
             }
         }
-
-    </script>
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig, "secondary");
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    const questionnaireData = document.getElementById('questionnaire-data');
-                    let html = '';
-
-                    if (userData.questionnaire) {
-                        const q = userData.questionnaire;
-                        html += `<p><strong>Application Timeline:</strong> ${q.applicationTimeline}</p>`;
-                        html += `<p><strong>Target Schools:</strong> ${q.targetSchools.join(', ')}</p>`;
-                        html += `<p><strong>Unweighted GPA:</strong> ${q.unweightedGPA}</p>`;
-                        html += `<p><strong>Weighted GPA:</strong> ${q.weightedGPA}</p>`;
-                        html += `<p><strong>Intended Major:</strong> ${q.intendedMajor}</p>`;
-                    }
-
-                    questionnaireData.innerHTML = html;
-                } else {
-                    console.log("No such document!");
-                }
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
     </script>
 </body>
 </html>
