@@ -2657,6 +2657,50 @@
         window.saveChatSession = saveChatSession;
         window.generateChatTitle = generateChatTitle;
         window.loadChatHistory = loadChatHistory;
+
+        // Add this function to manually inspect your Firestore data
+
+window.debugUserData = async function() {
+    if (!window.auth.currentUser) {
+        console.log('❌ No user logged in');
+        return;
+    }
+    
+    try {
+        console.log('🔍 Debugging user data in Firestore...');
+        console.log('Current User ID:', window.auth.currentUser.uid);
+        
+        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
+        
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            console.log('📋 FULL USER DOCUMENT:');
+            console.log(JSON.stringify(userData, null, 2));
+            
+            console.log('📋 QUESTIONNAIRE SECTION:');
+            if (userData.questionnaire) {
+                console.log(JSON.stringify(userData.questionnaire, null, 2));
+            } else {
+                console.log('❌ No questionnaire data found');
+            }
+            
+            console.log('📋 PROFILE SECTION:');
+            console.log('Name:', userData.name);
+            console.log('Email:', userData.email);
+            console.log('Current Grade:', userData.currentGrade);
+            console.log('GPA:', userData.gpa);
+            
+        } else {
+            console.log('❌ User document does not exist in Firestore');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error fetching user data:', error);
+    }
+};
+
+// Call this function to debug
+window.debugUserData();
     </script>
 
     <script>
@@ -2948,6 +2992,12 @@
                     userName: userProfileData?.name
                 });
                 
+                // ADD THIS DETAILED LOGGING
+                console.log('📊 DETAILED DATA BEING SENT:');
+                console.log('User Profile Data:', userProfileData);
+                console.log('Questionnaire Data:', questionnaireData);
+                console.log('Chat History Length:', chatHistory.length);
+
                 // Get AI response with comprehensive personalization data
                 const response = await fetch('/api/chat', {
                     method: 'POST',

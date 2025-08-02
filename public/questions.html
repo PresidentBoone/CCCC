@@ -1098,12 +1098,17 @@
                 questionnaireData.lastUpdated = serverTimestamp();
 
                 // Save to user's document under questionnaire field
-                await setDoc(doc(db, 'users', currentUser.uid), {
-                    email: currentUser.email,
+                console.log('💾 About to save questionnaire data:');
+                console.log('User ID:', auth.currentUser.uid);
+                console.log('Form Data being saved:', formData);
+
+                await setDoc(doc(db, 'users', auth.currentUser.uid), {
                     questionnaire: questionnaireData,
                     questionnaireCompleted: true,
-                    questionnaireCompletedAt: serverTimestamp()
+                    lastUpdated: new Date()
                 }, { merge: true });
+
+                console.log('✅ Questionnaire data saved successfully');
 
                 // Show success message
                 alert('Questionnaire submitted successfully! 🎉\n\nYou will now be redirected to your dashboard.');

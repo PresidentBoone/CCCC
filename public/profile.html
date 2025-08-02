@@ -1796,6 +1796,16 @@
             }
         });
 
+        // In your profile form submission, add similar logging:
+        console.log('💾 About to save profile data:');
+        console.log('User ID:', auth.currentUser.uid);
+        console.log('Profile Data being saved:', profileData);
+
+        // Your existing save code
+        await setDoc(doc(db, 'users', auth.currentUser.uid), profileData, { merge: true });
+
+        console.log('✅ Profile data saved successfully');
+
         // Utility functions
         function showMessage(text, type) {
             const messageEl = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
