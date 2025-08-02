@@ -25,7 +25,7 @@ function generatePersonalizedSystemPrompt(userProfile, questionnaireData) {
 
   // Add questionnaire-based personalization
   if (questionnaireData) {
-    console.log('🎯 Processing questionnaire data:', questionnaireData);
+    console.log('🎯 Processing questionnaire data:', Object.keys(questionnaireData));
     
     // Application timeline
     if (questionnaireData.applicationTimeline) {
@@ -76,31 +76,39 @@ function generatePersonalizedSystemPrompt(userProfile, questionnaireData) {
       systemPrompt += ` They have started building their resume.`;
     }
 
-    // From profile.html questionnaire data (if available)
-    if (questionnaireData.academicInterests && questionnaireData.academicInterests.length > 0) {
+    // Profile questionnaire data (if available)
+    if (questionnaireData.academicInterests && Array.isArray(questionnaireData.academicInterests) && questionnaireData.academicInterests.length > 0) {
       systemPrompt += ` Their academic interests include: ${questionnaireData.academicInterests.join(', ')}.`;
     }
 
-    if (questionnaireData.extracurriculars && questionnaireData.extracurriculars.length > 0) {
+    if (questionnaireData.extracurriculars && Array.isArray(questionnaireData.extracurriculars) && questionnaireData.extracurriculars.length > 0) {
       systemPrompt += ` They participate in: ${questionnaireData.extracurriculars.join(', ')}.`;
     }
 
     if (questionnaireData.collegeWorries) {
       systemPrompt += ` They have shared these concerns about the college process: "${questionnaireData.collegeWorries}"`;
     }
+
+    if (questionnaireData.budgetRange) {
+      systemPrompt += ` Their college budget range is: ${questionnaireData.budgetRange}.`;
+    }
+
+    if (questionnaireData.locationPreference) {
+      systemPrompt += ` Their location preference is: ${questionnaireData.locationPreference}.`;
+    }
+  } else {
+    console.log('⚠️ No questionnaire data available - using generic prompts');
   }
 
   systemPrompt += ` 
 
 IMPORTANT: Use this personal information to provide highly specific, relevant advice. Reference their interests, goals, and preferences in your responses. If they ask about colleges, suggest ones that match their criteria. If they need help with essays, relate to their intended major and experiences. Always be encouraging and specific to their situation.
 
+If you don't have specific information about the student, ask relevant questions to better understand their needs and provide personalized advice.
+
 Keep responses under 250 words but make them personal and actionable.`;
 
-  console.log('📝 Generated personalized prompt with data from:', {
-    hasUserProfile: !!userProfile,
-    hasQuestionnaire: !!questionnaireData,
-    questionnaireKeys: questionnaireData ? Object.keys(questionnaireData) : []
-  });
+  console.log('📝 Generated personalized prompt');
 
   return systemPrompt;
 }

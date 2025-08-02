@@ -1942,51 +1942,49 @@
 
             <!-- AI Chat System -->
             <div class="feature-panel chatbot-panel">
-                <h3>🤖 AI College Counselor</h3>
-                <div class="chatbot-container-with-sidebar">
-                    <!-- Chat Sidebar -->
-                    <div class="chat-sidebar">
-                        <div class="chat-sidebar-header">
-                            <h4>💬 Chat History</h4>
-                            <button onclick="startNewChat()" class="new-chat-btn">+ New Chat</button>
-                        </div>
-                        <div class="chat-list" id="chatList">
-                            <div class="no-chats-message">
-                                Start your first conversation with our AI counselor!
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Main Chat Area -->
-                    <div class="chatbot-main">
-                        <div class="chatbot-header">
-                            <div>
-                                <h3>AI College Counselor</h3>
-                                <div class="chatbot-status">Online</div>
-                            </div>
-                            <button onclick="clearCurrentChat()" class="clear-chat-btn">Clear Chat</button>
-                        </div>
-                        <div class="chatbot-messages" id="chatMessages">
-                            <div class="message ai-message">
-                                <strong>AI Counselor:</strong> 
-                                Hello! I'm your personal AI college counselor. I can help you with:
-                                <br><br>
-                                • College applications and deadlines<br>
-                                • Essay writing and feedback<br>
-                                • Scholarship opportunities<br>
-                                • Interview preparation<br>
-                                • Academic planning<br>
-                                • Career guidance<br><br>
-                                What would you like to work on today?
-                            </div>
-                        </div>
-                        <div class="chatbot-input">
-                            <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
-                            <button onclick="sendMessage()" id="sendButton">Send</button>
-                        </div>
-                    </div>
+    <h3>🤖 AI College Counselor</h3>
+    <div class="chatbot-container-with-sidebar">
+        <!-- Chat Sidebar -->
+        <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h4>Chat History</h4>
+                <button class="new-chat-btn" onclick="window.startNewChat()">+ New Chat</button>
+            </div>
+            <div class="chat-list" id="chatList">
+                <div class="no-chats-message">Loading chat history...</div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="chatbot-main">
+            <div class="chatbot-header">
+                <div>
+                    <h3>AI College Counselor</h3>
+                    <div class="chatbot-status">Ready to help with your college journey!</div>
+                </div>
+                <button class="clear-chat-btn" onclick="window.clearCurrentChat()">New Chat</button>
+            </div>
+            <div class="chatbot-messages" id="chatMessages">
+                <div class="message ai-message">
+                    <strong>AI Counselor:</strong> 
+                    Hello! I'm your personal AI college counselor. I can help you with:
+                    <br><br>
+                    • College applications and deadlines<br>
+                    • Essay writing and feedback<br>
+                    • Scholarship opportunities<br>
+                    • Interview preparation<br>
+                    • Academic planning<br>
+                    • Career guidance<br><br>
+                    What would you like to work on today?
                 </div>
             </div>
+            <div class="chatbot-input">
+                <input type="text" id="userInput" placeholder="Ask me anything about college..." onkeypress="handleKeyPress(event)">
+                <button id="sendButton" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 
@@ -2767,6 +2765,11 @@
             sendButton.disabled = true;
             
             try {
+                // Start new chat if none exists
+                if (!window.currentChatId) {
+                    window.startNewChat();
+                }
+                
                 // Add user message
                 const userMessage = document.createElement('div');
                 userMessage.className = 'message user-message';

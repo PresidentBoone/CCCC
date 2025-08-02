@@ -735,12 +735,13 @@
             .then((result) => {
                 const user = result.user;
                 console.log("Google Sign-Up successful for:", user.email);
-                window.location.href = "dashboard.html";
+                // Redirect to questions instead of dashboard
+                window.location.href = "questions.html";
             })
             .catch((error) => {
                 console.error("Google Sign-Up error:", error);
                 if (error.code === 'auth/unauthorized-domain') {
-                    alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                    alert("Please configure your domain in Firebase Console");
                 } else {
                     alert("Google Sign-Up failed: " + error.message);
                 }
