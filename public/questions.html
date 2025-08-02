@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Questionnaire - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1052,8 +1053,10 @@
                 const formData = new FormData(event.target);
                 const questionnaireData = {};
 
-                // Collect form data
+                // Collect form data - Enhanced logging
+                console.log('📝 RAW FORM DATA:');
                 for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
                     if (key.includes('File')) {
                         continue; // Handle file uploads separately
                     }
@@ -1078,9 +1081,9 @@
 
                 // Handle file uploads
                 const files = {
-                    essayFile: event.target.essayFile.files[0],
-                    resumeFile: event.target.resumeFile.files[0],
-                    additionalFile: event.target.additionalFile.files[0]
+                    essayFile: event.target.essayFile?.files[0],
+                    resumeFile: event.target.resumeFile?.files[0],
+                    additionalFile: event.target.additionalFile?.files[0]
                 };
 
                 // Upload files and get URLs
@@ -1097,18 +1100,39 @@
                 questionnaireData.submittedAt = serverTimestamp();
                 questionnaireData.lastUpdated = serverTimestamp();
 
-                // Save to user's document under questionnaire field
-                console.log('💾 About to save questionnaire data:');
-                console.log('User ID:', auth.currentUser.uid);
-                console.log('Form Data being saved:', formData);
+                // Enhanced logging before save
+                console.log('💾 FINAL QUESTIONNAIRE DATA TO SAVE:');
+                console.log('User ID:', currentUser.uid);
+                console.log('Data structure:');
+                console.log(JSON.stringify(questionnaireData, null, 2));
 
-                await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                // Save to user's document under questionnaire field
+                const saveData = {
                     questionnaire: questionnaireData,
                     questionnaireCompleted: true,
-                    lastUpdated: new Date()
-                }, { merge: true });
+                    lastUpdated: serverTimestamp()
+                };
 
-                console.log('✅ Questionnaire data saved successfully');
+                console.log('💾 FULL SAVE DATA:');
+                console.log(JSON.stringify(saveData, null, 2));
+
+                await setDoc(doc(db, 'users', currentUser.uid), saveData, { merge: true });
+
+                console.log('✅ Questionnaire data saved successfully to Firestore');
+
+                // Verify the save by reading it back
+                try {
+                    const verifyDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                    if (verifyDoc.exists()) {
+                        const savedData = verifyDoc.data();
+                        console.log('✅ VERIFICATION - Data successfully saved:');
+                        console.log(JSON.stringify(savedData.questionnaire, null, 2));
+                    } else {
+                        console.error('❌ VERIFICATION FAILED - Document does not exist after save');
+                    }
+                } catch (verifyError) {
+                    console.error('❌ VERIFICATION ERROR:', verifyError);
+                }
 
                 // Show success message
                 alert('Questionnaire submitted successfully! 🎉\n\nYou will now be redirected to your dashboard.');
@@ -1125,8 +1149,8 @@
                 }, 2000);
 
             } catch (error) {
-                console.error('Error submitting questionnaire:', error);
-                alert('Error submitting questionnaire. Please try again.');
+                console.error('❌ Error submitting questionnaire:', error);
+                alert('Error submitting questionnaire: ' + error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = '🚀 Submit Questionnaire';

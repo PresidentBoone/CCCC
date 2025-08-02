@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.openai.com;">
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -2337,7 +2338,6 @@
                         <div class="no-chats-message">
                             <div style="margin-bottom: 1rem;">Unable to load chat history.</div>
                             <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Error: ${error.message}</div>
-                            <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
                                 Retry
                             </button>
                         </div>
@@ -2658,7 +2658,7 @@
         window.generateChatTitle = generateChatTitle;
         window.loadChatHistory = loadChatHistory;
 
-        // Add this function to manually inspect your Firestore data
+        // Add this enhanced debug function
 
 window.debugUserData = async function() {
     if (!window.auth.currentUser) {
@@ -2667,40 +2667,66 @@ window.debugUserData = async function() {
     }
     
     try {
-        console.log('🔍 Debugging user data in Firestore...');
+        console.log('🔍 COMPREHENSIVE USER DATA DEBUG');
         console.log('Current User ID:', window.auth.currentUser.uid);
+        console.log('Current User Email:', window.auth.currentUser.email);
         
         const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
         
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log('📋 FULL USER DOCUMENT:');
+            console.log('📋 FULL USER DOCUMENT FROM FIRESTORE:');
             console.log(JSON.stringify(userData, null, 2));
             
-            console.log('📋 QUESTIONNAIRE SECTION:');
+            console.log('📋 QUESTIONNAIRE SECTION DETAILED:');
             if (userData.questionnaire) {
+                console.log('✅ Questionnaire exists with keys:', Object.keys(userData.questionnaire));
+                console.log('Full questionnaire data:');
                 console.log(JSON.stringify(userData.questionnaire, null, 2));
+                
+                // Check specific fields
+                console.log('📊 SPECIFIC FIELD CHECK:');
+                console.log('Application Timeline:', userData.questionnaire.applicationTimeline);
+                console.log('Target Schools:', userData.questionnaire.targetSchools);
+                console.log('Unweighted GPA:', userData.questionnaire.unweightedGPA);
+                console.log('Intended Major:', userData.questionnaire.intendedMajor);
+                console.log('Test Scores:', userData.questionnaire.testScores);
             } else {
-                console.log('❌ No questionnaire data found');
+                console.log('❌ No questionnaire data found in user document');
+                console.log('Available fields in user document:', Object.keys(userData));
             }
             
-            console.log('📋 PROFILE SECTION:');
+            console.log('📋 PROFILE DATA:');
             console.log('Name:', userData.name);
             console.log('Email:', userData.email);
             console.log('Current Grade:', userData.currentGrade);
             console.log('GPA:', userData.gpa);
+            console.log('Questionnaire Completed:', userData.questionnaireCompleted);
             
         } else {
             console.log('❌ User document does not exist in Firestore');
+            console.log('Attempting to check if document path is correct...');
+            
+            // Try to list all documents in users collection (if permissions allow)
+            console.log('Document path being checked: users/' + window.auth.currentUser.uid);
         }
         
     } catch (error) {
         console.error('❌ Error fetching user data:', error);
+        console.error('Error details:', error.message);
+        console.error('Error code:', error.code);
     }
 };
 
-// Call this function to debug
-window.debugUserData();
+// Auto-run debug when page loads
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if (window.auth && window.auth.currentUser) {
+            console.log('🚀 Auto-running user data debug...');
+            window.debugUserData();
+        }
+    }, 2000); // Wait 2 seconds for auth to initialize
+});
     </script>
 
     <script>
