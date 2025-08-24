@@ -47,3 +47,21 @@ export default function handler(req, res) {
     measurementId: process.env.FIREBASE_MEASUREMENT_ID || firebaseConfig.measurementId
   });
 }
+
+// Firestore security rules
+const firestoreRules = {
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "status": {
+      "$uid": {
+        ".read": true,
+        ".write": "$uid === auth.uid"
+      }
+    }
+  }
+};

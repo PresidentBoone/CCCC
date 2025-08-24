@@ -708,7 +708,8 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
     import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js';
     import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+    import { getFirestore, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+    import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js';
 
     // Your Firebase config
     const firebaseConfig = {
@@ -726,22 +727,56 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const realtimeDb = getDatabase(app);
+
+    // Enhanced saveUserData function that saves to both Firestore and Realtime Database
+    async function saveUserData(user) {
+        try {
+            // Save to Firestore (your existing method)
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                name: user.displayName || '',
+                createdAt: new Date(),
+                lastLogin: new Date(),
+                accountType: 'student',
+                profileComplete: false
+            });
+
+            // Also save to Realtime Database for real-time features
+            await set(ref(realtimeDb, "users/" + user.uid), {
+                email: user.email,
+                displayName: user.displayName || '',
+                createdAt: Date.now(),
+                lastLogin: Date.now(),
+                online: true
+            });
+
+            console.log("✅ User data saved to both databases");
+        } catch (error) {
+            console.error("❌ Error saving user data:", error);
+            throw error;
+        }
+    }
 
     // Google Sign-Up function - FIXED to redirect to questions.html
     window.signUpWithGoogle = function() {
         const provider = new GoogleAuthProvider();
 
         signInWithPopup(auth, provider)
-            .then((result) => {
+            .then(async (result) => {
                 const user = result.user;
                 console.log("Google Sign-Up successful for:", user.email);
-                // Redirect new Google users to questions.html
+                
+                // Save user data to both databases
+                await saveUserData(user);
+                
+                // Redirect to questions page
                 window.location.href = "questions.html";
             })
             .catch((error) => {
                 console.error("Google Sign-Up error:", error);
                 if (error.code === 'auth/unauthorized-domain') {
-                    alert("Please configure your domain in Firebase Console:\n1. Go to Firebase Console\n2. Select Authentication > Settings\n3. Add your domain to Authorized domains\n4. Current domain: " + window.location.origin);
+                    alert("Please configure your domain in Firebase Console");
                 } else {
                     alert("Google Sign-Up failed: " + error.message);
                 }
@@ -781,13 +816,16 @@
         button.disabled = true;
 
         createUserWithEmailAndPassword(auth, contact, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 const user = userCredential.user;
+                
+                // Save user data to both databases
+                await saveUserData(user);
+                
                 button.textContent = '✓ Success! Redirecting...';
                 button.style.background = '#4caf50';
                 console.log("Account created successfully for:", user.email);
                 
-                // Redirect to questions.html for new users
                 setTimeout(() => {
                     window.location.href = "questions.html";
                 }, 1500);
@@ -846,4 +884,4 @@
 </script>
 
 </body>
-</html></svg></button></div>
+</html>

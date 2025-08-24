@@ -1279,3 +1279,60 @@
 
 </body>
 </html>
+                showMessage('Failed to change password. Please check your current password.', 'error');            }        };        window.downloadData = async function() {            try {                const userData = await getDoc(doc(db, 'users', currentUser.uid));                const data = userData.data();                                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });                const url = URL.createObjectURL(blob);                const a = document.createElement('a');                a.href = url;                a.download = `college-climb-data-${new Date().toISOString().split('T')[0]}.json`;                a.click();                URL.revokeObjectURL(url);                                showMessage('Data downloaded successfully!', 'success');            } catch (error) {                console.error('❌ Error downloading data:', error);                showMessage('Failed to download data. Please try again.', 'error');            }        };        window.deleteAccount = async function() {            const confirmation = prompt('Type "DELETE" to confirm account deletion:');            if (confirmation !== 'DELETE') return;            const password = prompt('Enter your password to confirm:');            if (!password) return;            try {                const credential = EmailAuthProvider.credential(currentUser.email, password);                await reauthenticateWithCredential(currentUser, credential);                                // Delete user data from Firestore                await deleteDoc(doc(db, 'users', currentUser.uid));                                // Delete user account                await deleteUser(currentUser);                                alert('Account deleted successfully. You will be redirected to the home page.');                window.location.href = 'index.html';            } catch (error) {                console.error('❌ Error deleting account:', error);                showMessage('Failed to delete account. Please check your password.', 'error');            }        };        // Logout functionality        document.getElementById('logoutBtn').addEventListener('click', async (e) => {            e.preventDefault();            try {                await signOut(auth);                window.location.href = 'index.html';            } catch (error) {                console.error('❌ Error signing out:', error);            }        });        // Theme toggle functionality        document.getElementById('themeToggle').addEventListener('click', () => {            const body = document.body;            const themeToggle = document.getElementById('themeToggle');            let newTheme;            if (body.getAttribute('data-theme') === 'dark') {                newTheme = 'light';                body.setAttribute('data-theme', 'light');                themeToggle.textContent = '🌙';            } else {                newTheme = 'dark';                body.setAttribute('data-theme', 'dark');                themeToggle.textContent = '☀️';            }            localStorage.setItem('theme', newTheme);            updateNavbarLogo(newTheme); // <-- Add this line        });        function updateNavbarLogo(theme) {            const logoImg = document.getElementById('navbarLogo');            if (!logoImg) return;            if (theme === 'dark') {                logoImg.src = 'images/whiteclearcc.png';            } else {                logoImg.src = 'images/blackcc.png';            }        }        // Initialize theme and logo on page load        const savedTheme = localStorage.getItem('theme') || 'dark';        document.body.setAttribute('data-theme', savedTheme);        document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';        updateNavbarLogo(savedTheme); // <-- Add this line        // Create starry background        function createStars() {            const starryBg = document.getElementById('starryBg');            const numberOfStars = 100;            for (let i = 0; i < numberOfStars; i++) {                const star = document.createElement('div');                star.className = 'star';                star.style.left = Math.random() * 100 + '%';                star.style.top = Math.random() * 100 + '%';                star.style.width = Math.random() * 3 + 1 + 'px';                star.style.height = star.style.width;                star.style.animationDelay = Math.random() * 3 + 's';                starryBg.appendChild(star);            }        }        createStars();        // Scroll animations        const observerOptions = {            threshold: 0.1,            rootMargin: '0px 0px -50px 0px'        };        const observer = new IntersectionObserver((entries) => {                       entries.forEach(entry => {                if (entry.isIntersecting) {                    entry.target.classList.add('visible');                }            });        }, observerOptions);        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));        console.log('✅ Profile page initialized successfully');        // Test Firebase Storage connection        async function testStorageConnection() {            try {                const testRef = ref(storage, 'test-connection.txt');                const testBlob = new Blob(['test'], { type: 'text/plain' });                await uploadBytes(testRef, testBlob);                await deleteObject(testRef);                console.log('✅ Firebase Storage connection successful');            } catch (error) {                console.error('❌ Firebase Storage connection failed:', error);                showMessage('Storage service unavailable. Please refresh the page.', 'error');            }        }
+        // Enhanced saveUserData function
+        async function saveUserData(user) {
+            try {
+                // Update Realtime Database with profile activity
+                await set(dbRef(realtimeDb, "users/" + user.uid), {
+                    email: user.email,
+                    displayName: user.displayName || '',
+                    lastLogin: Date.now(),
+                    online: true,
+                    currentPage: 'profile',
+                    profileLastUpdated: Date.now()
+                });
+            } catch (error) {
+                console.error("❌ Error saving user data:", error);
+            }
+        }
+
+        // Update the personal info form handler
+        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) return;
+            
+            try {
+                const formData = {
+                    name: document.getElementById('displayName').value,
+                    phone: document.getElementById('phoneNumber').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    location: document.getElementById('location').value,
+                    updatedAt: new Date()
+                };
+
+                // Update Firestore
+                await updateDoc(doc(db, 'users', currentUser.uid), formData);
+                
+                // Update Realtime Database
+                await update(dbRef(realtimeDb, "users/" + currentUser.uid), {
+                    displayName: formData.name,
+                    lastUpdated: Date.now(),
+                    profileComplete: true
+                });
+
+                showMessage('Personal information updated successfully!', 'success');
+                
+                // Update currentUserData for immediate use
+                Object.assign(currentUserData, formData);
+                updateAuthUI(currentUser);
+                
+            } catch (error) {
+                console.error('❌ Error updating personal info:', error);
+                showMessage('Failed to update personal information. Please try again.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
