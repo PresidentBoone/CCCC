@@ -1,10 +1,1375 @@
-<!DOCTYPE html>
+<li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
+                <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 id="welcomeTitle">Welcome to Your Success Hub</h1>
+            <p id="welcomeMessage">Your personalized college application command center powered by AI</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card" onclick="showApplicationTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12%</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="applicationsCount">8</div>
+                <div class="stat-label">Applications in Progress</div>
+            </div>
+
+            <div class="stat-card" onclick="showEssayTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-edit"></i></div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+25%</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="essaysCount">5</div>
+                <div class="stat-label">Essays Completed</div>
+            </div>
+
+            <div class="stat-card" onclick="showScholarshipTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+$5K</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="scholarshipAmount">$15K</div>
+                <div class="stat-label">Scholarships Applied</div>
+            </div>
+
+            <div class="stat-card" onclick="showProgressAnalytics()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+18%</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="overallProgress">73%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Application Tracker -->
+            <div class="tracker-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fas fa-tasks"></i>
+                        Application Timeline
+                    </h2>
+                </div>
+
+                <div class="application-list" id="applicationList">
+                    <div class="application-item">
+                        <div class="application-info">
+                            <h4>Harvard University</h4>
+                            <div class="application-deadline">Due: January 1, 2025</div>
+                        </div>
+                        <div class="status-badge status-in-progress">In Progress</div>
+                    </div>
+
+                    <div class="application-item">
+                        <div class="application-info">
+                            <h4>Stanford University</h4>
+                            <div class="application-deadline">Due: January 1, 2025</div>
+                        </div>
+                        <div class="status-badge status-not-started">Not Started</div>
+                    </div>
+
+                    <div class="application-item">
+                        <div class="application-info">
+                            <h4>MIT</h4>
+                            <div class="application-deadline">Due: January 1, 2025</div>
+                        </div>
+                        <div class="status-badge status-in-progress">In Progress</div>
+                    </div>
+
+                    <div class="application-item">
+                        <div class="application-info">
+                            <h4>UC Berkeley</h4>
+                            <div class="application-deadline">Due: November 30, 2024</div>
+                        </div>
+                        <div class="status-badge status-submitted">Submitted</div>
+                    </div>
+                </div>
+
+                <!-- Progress Circle -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <div class="progress-circle">
+                        <svg>
+                            <circle class="progress-circle-bg" cx="60" cy="60" r="52"></circle>
+                            <circle class="progress-circle-fill" cx="60" cy="60" r="52" 
+                                    stroke-dasharray="327" stroke-dashoffset="81.75" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text" id="progressText">75%</div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Applications Progress</p>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-bolt"></i>
+                            Quick Actions
+                        </h3>
+                    </div>
+
+                    <div class="action-grid">
+                        <div class="action-button" onclick="startApplicationAudit()">
+                            <div class="action-icon"><i class="fas fa-search"></i></div>
+                            <div class="action-content">
+                                <h4>Application Audit</h4>
+                                <p>AI analysis of your profile</p>
+                            </div>
+                        </div>
+
+                        <div class="action-button" onclick="startEssayCoach()">
+                            <div class="action-icon"><i class="fas fa-pen-fancy"></i></div>
+                            <div class="action-content">
+                                <h4>Essay Coach</h4>
+                                <p>Get AI feedback on essays</p>
+                            </div>
+                        </div>
+
+                        <div class="action-button" onclick="findScholarships()">
+                            <div class="action-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="action-content">
+                                <h4>Find Scholarships</h4>
+                                <p>Personalized opportunities</p>
+                            </div>
+                        </div>
+
+                        <div class="action-button" onclick="scheduleInterview()">
+                            <div class="action-icon"><i class="fas fa-video"></i></div>
+                            <div class="action-content">
+                                <h4>Interview Prep</h4>
+                                <p>Practice with AI</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Widget -->
+                <div class="calendar-widget">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h4 id="currentMonth">November 2024</h4>
+                        <button class="calendar-nav" id="nextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar days will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                AI Counselor
+                <div class="online-indicator"></div>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <strong>AI Counselor:</strong> Hello! I'm your personal AI college counselor. I have access to your profile and can provide personalized advice about your college journey. How can I help you today?
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" 
+                   placeholder="Ask about applications, essays, scholarships..." 
+                   onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Notification Template -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-text">
+                <h4 id="notificationTitle">Notification</h4>
+                <p id="notificationMessage">This is a notification message</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & JavaScript Integration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.currentChatId = null;
+
+        console.log('🔥 Firebase initialized successfully');
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            updateAuthUI(user);
+            
+            if (user) {
+                document.body.classList.add("logged-in");
+                await loadUserProfile(user);
+                await loadDashboardData(user.uid);
+                initializeRealTimeUpdates(user.uid);
+            } else {
+                document.body.classList.remove("logged-in");
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Update navbar UI
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                
+                const displayName = user.displayName || user.email.split('@')[0];
+                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                
+                if (user.photoURL) {
+                    if (navUserAvatar) {
+                        navUserAvatar.src = user.photoURL;
+                        navUserAvatar.style.display = 'block';
+                    }
+                    if (navAccountText) navAccountText.style.display = 'none';
+                } else {
+                    if (navUserAvatar) navUserAvatar.style.display = 'none';
+                    if (navAccountText) navAccountText.style.display = 'inline';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
+            }
+        }
+
+        // Load user profile and personalize dashboard
+        async function loadUserProfile(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    window.currentUser = {
+                        ...user,
+                        profile: userData,
+                        questionnaire: userData.questionnaire || null
+                    };
+                    
+                    updateWelcomeMessage(userData);
+                } else {
+                    // Initialize user document
+                    await setDoc(doc(db, 'users', user.uid), {
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0],
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp()
+                    });
+                    
+                    window.currentUser = {
+                        ...user,
+                        profile: { name: user.displayName || user.email.split('@')[0] },
+                        questionnaire: null
+                    };
+                }
+            } catch (error) {
+                console.error('❌ Error loading user profile:', error);
+            }
+        }
+
+        function updateWelcomeMessage(userData) {
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            
+            if (userData.name) {
+                welcomeTitle.textContent = `Welcome back, ${userData.name}!`;
+                
+                // Personalized message based on user data
+                if (userData.questionnaire) {
+                    const major = userData.questionnaire.intendedMajor;
+                    const schools = userData.questionnaire.targetSchools;
+                    
+                    if (major && schools && schools.length > 0) {
+                        welcomeMessage.textContent = `Ready to work on your ${major} applications for ${schools[0]} and other top schools?`;
+                    } else if (major) {
+                        welcomeMessage.textContent = `Let's advance your ${major} journey with personalized guidance`;
+                    } else {
+                        welcomeMessage.textContent = 'Your AI-powered college application assistant is ready to help';
+                    }
+                } else {
+                    welcomeMessage.textContent = 'Complete your profile to get personalized recommendations';
+                }
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData(userId) {
+            try {
+                // Load applications
+                await loadApplications(userId);
+                
+                // Load statistics
+                await loadUserStats(userId);
+                
+                // Generate calendar
+                generateCalendar();
+                
+                console.log('✅ Dashboard data loaded successfully');
+                
+            } catch (error) {
+                console.error('❌ Error loading dashboard data:', error);
+            }
+        }
+
+        async function loadApplications(userId) {
+            try {
+                const appsQuery = query(
+                    collection(db, 'applications'),
+                    where('userId', '==', userId)
+                );
+                
+                const querySnapshot = await getDocs(appsQuery);
+                
+                if (querySnapshot.empty) {
+                    // Create default applications based on user profile
+                    await createDefaultApplications(userId);
+                } else {
+                    updateApplicationList(querySnapshot);
+                }
+            } catch (error) {
+                console.error('❌ Error loading applications:', error);
+                // Show default applications
+                showDefaultApplications();
+            }
+        }
+
+        async function createDefaultApplications(userId) {
+            const defaultSchools = [
+                { name: 'Harvard University', deadline: '2025-01-01', status: 'in-progress' },
+                { name: 'Stanford University', deadline: '2025-01-01', status: 'not-started' },
+                { name: 'MIT', deadline: '2025-01-01', status: 'in-progress' },
+                { name: 'UC Berkeley', deadline: '2024-11-30', status: 'submitted' },
+                { name: 'Yale University', deadline: '2025-01-01', status: 'not-started' },
+                { name: 'Princeton University', deadline: '2025-01-01', status: 'not-started' }
+            ];
+
+            // If user has questionnaire data, use their target schools
+            if (window.currentUser?.questionnaire?.targetSchools) {
+                const userSchools = window.currentUser.questionnaire.targetSchools;
+                userSchools.forEach((school, index) => {
+                    if (index < defaultSchools.length) {
+                        defaultSchools[index].name = school;
+                    }
+                });
+            }
+
+            for (const school of defaultSchools) {
+                await addDoc(collection(db, 'applications'), {
+                    userId: userId,
+                    schoolName: school.name,
+                    deadline: school.deadline,
+                    status: school.status,
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            // Reload applications
+            await loadApplications(userId);
+        }
+
+        function updateApplicationList(querySnapshot) {
+            const applicationList = document.getElementById('applicationList');
+            applicationList.innerHTML = '';
+
+            querySnapshot.forEach((doc) => {
+                const app = doc.data();
+                const appElement = createApplicationElement(app);
+                applicationList.appendChild(appElement);
+            });
+
+            updateProgressCircle(querySnapshot);
+        }
+
+        function createApplicationElement(app) {
+            const div = document.createElement('div');
+            div.className = 'application-item';
+            
+            const statusClass = `status-${app.status}`;
+            const statusText = app.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            const deadline = new Date(app.deadline).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            div.innerHTML = `
+                <div class="application-info">
+                    <h4>${app.schoolName}</h4>
+                    <div class="application-deadline">Due: ${deadline}</div>
+                </div>
+                <div class="status-badge ${statusClass}">${statusText}</div>
+            `;
+
+            div.addEventListener('click', () => openApplicationDetails(app));
+            
+            return div;
+        }
+
+        function updateProgressCircle(querySnapshot) {
+            let submitted = 0;
+            let total = querySnapshot.size;
+
+            querySnapshot.forEach((doc) => {
+                const app = doc.data();
+                if (app.status === 'submitted') submitted++;
+            });
+
+            const percentage = total > 0 ? Math.round((submitted / total) * 100) : 0;
+            const circumference = 2 * Math.PI * 52;
+            const offset = circumference - (percentage / 100) * circumference;
+
+            document.getElementById('progressText').textContent = `${percentage}%`;
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+        }
+
+        async function loadUserStats(userId) {
+            try {
+                // Load real statistics from user data
+                const stats = await calculateUserStats(userId);
+                
+                document.getElementById('applicationsCount').textContent = stats.applications;
+                document.getElementById('essaysCount').textContent = stats.essays;
+                document.getElementById('scholarshipAmount').textContent = `${stats.scholarships}K`;
+                document.getElementById('overallProgress').textContent = `${stats.progress}%`;
+                
+            } catch (error) {
+                console.error('❌ Error loading user stats:', error);
+            }
+        }
+
+        async function calculateUserStats(userId) {
+            // Calculate real statistics from user's data
+            const applications = await getDocs(query(collection(db, 'applications'), where('userId', '==', userId)));
+            const essays = await getDocs(query(collection(db, 'essays'), where('userId', '==', userId)));
+            const scholarships = await getDocs(query(collection(db, 'scholarships'), where('userId', '==', userId)));
+
+            let scholarshipTotal = 0;
+            scholarships.forEach(doc => {
+                scholarshipTotal += doc.data().amount || 0;
+            });
+
+            const submittedApps = applications.docs.filter(doc => doc.data().status === 'submitted').length;
+            const progress = applications.size > 0 ? Math.round((submittedApps / applications.size) * 100) : 0;
+
+            return {
+                applications: applications.size,
+                essays: essays.size,
+                scholarships: Math.round(scholarshipTotal / 1000),
+                progress: progress
+            };
+        }
+
+        // Initialize real-time updates
+        function initializeRealTimeUpdates(userId) {
+            // Listen for application updates
+            const applicationsQuery = query(
+                collection(db, 'applications'),
+                where('userId', '==', userId)
+            );
+
+            onSnapshot(applicationsQuery, (snapshot) => {
+                updateApplicationList(snapshot);
+                showNotification('Applications Updated', 'Your application status has been updated');
+            });
+
+            // Listen for new messages or notifications
+            const notificationsQuery = query(
+                collection(db, 'notifications'),
+                where('userId', '==', userId),
+                where('read', '==', false)
+            );
+
+            onSnapshot(notificationsQuery, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const notification = change.doc.data();
+                        showNotification(notification.title, notification.message);
+                    }
+                });
+            });
+        }
+
+        // Chat functionality with personalized responses
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const sendButton = document.getElementById('chatSend');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Rate limiting check
+            const now = Date.now();
+            const lastMessageTime = localStorage.getItem('lastChatTime');
+            if (lastMessageTime && (now - parseInt(lastMessageTime)) < 2000) {
+                showNotification('Rate Limit', 'Please wait a moment before sending another message.', 'warning');
+                return;
+            }
+            localStorage.setItem('lastChatTime', now.toString());
+
+            // Disable input
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                // Add user message to chat
+                addChatMessage(message, 'user');
+                input.value = '';
+
+                // Add typing indicator
+                addTypingIndicator();
+
+                // Prepare comprehensive user data for personalization
+                const userData = {
+                    userProfile: {
+                        name: window.currentUser?.profile?.name || window.currentUser?.displayName,
+                        email: window.currentUser?.email,
+                        currentGrade: window.currentUser?.profile?.currentGrade,
+                        currentSchool: window.currentUser?.profile?.currentSchool,
+                        gpa: window.currentUser?.profile?.gpa,
+                        graduationYear: window.currentUser?.profile?.graduationYear
+                    },
+                    questionnaireData: window.currentUser?.questionnaire
+                };
+
+                // Get personalized AI response using your existing API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        ...userData
+                    })
+                });
+
+                removeTypingIndicator();
+
+                let aiResponse;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponse = data.response || 'I apologize, but I received an empty response. Please try asking your question again.';
+                    
+                    // Log successful personalized response
+                    console.log('✅ Personalized AI response received');
+                    
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Chat API Error:', response.status, errorData);
+                    aiResponse = getErrorMessage(response.status, errorData);
+                }
+
+                addChatMessage(aiResponse, 'ai');
+
+                // Save chat message to Firebase with enhanced data
+                if (window.auth.currentUser) {
+                    await saveChatToFirebase(message, aiResponse, userData);
+                }
+
+                // Update chat statistics
+                updateChatStats();
+
+            } catch (error) {
+                console.error('❌ Error in chat:', error);
+                removeTypingIndicator();
+                
+                let errorMessage = 'I\'m having trouble connecting right now. ';
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage += 'Please check your internet connection and try again.';
+                } else if (error.message.includes('timeout')) {
+                    errorMessage += 'The request timed out. Please try again.';
+                } else {
+                    errorMessage += 'Please try again in a moment.';
+                }
+                
+                addChatMessage(errorMessage, 'ai');
+                showNotification('Connection Error', 'Unable to send message. Please try again.', 'error');
+                
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        };
+
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
+            } else {
+                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(message)}`;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message ai typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <strong>AI Counselor:</strong> 
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function saveChatToFirebase(userMessage, aiResponse, userData) {
+            try {
+                const userId = window.auth.currentUser.uid;
+                const chatData = {
+                    userId: userId,
+                    userMessage: userMessage,
+                    aiResponse: aiResponse,
+                    timestamp: serverTimestamp(),
+                    userProfile: userData.userProfile || null,
+                    hasQuestionnaireData: !!userData.questionnaireData,
+                    sessionId: getOrCreateSessionId()
+                };
+
+                await addDoc(collection(db, 'chatHistory'), chatData);
+                console.log('💾 Enhanced chat data saved to Firebase');
+                
+                // Update user's last activity
+                await updateDoc(doc(db, 'users', userId), {
+                    lastActivity: serverTimestamp(),
+                    totalChatMessages: increment(1)
+                });
+                
+            } catch (error) {
+                console.error('❌ Error saving enhanced chat data:', error);
+                // Don't block user experience for save errors
+            }
+        }
+
+        function getOrCreateSessionId() {
+            let sessionId = sessionStorage.getItem('chatSessionId');
+            if (!sessionId) {
+                sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                sessionStorage.setItem('chatSessionId', sessionId);
+            }
+            return sessionId;
+        }
+
+        function updateChatStats() {
+            const chatCount = parseInt(localStorage.getItem('totalChatMessages') || '0') + 1;
+            localStorage.setItem('totalChatMessages', chatCount.toString());
+            
+            // Update UI stats if needed
+            if (chatCount % 10 === 0) {
+                showNotification('Milestone!', `You've sent ${chatCount} messages to your AI counselor!`, 'success');
+            }
+        }
+
+        function getErrorMessage(statusCode, errorData = {}) {
+            const userFriendlyMessages = {
+                400: 'I had trouble understanding your message. Could you please rephrase it?',
+                401: 'There seems to be an authentication issue. Please try refreshing the page.',
+                403: 'I don\'t have permission to process that request right now.',
+                429: 'I\'m experiencing high demand. Please wait a moment before trying again.',
+                500: 'I\'m temporarily having technical difficulties. Please try again in a few minutes.',
+                502: 'There\'s a temporary server issue. Please try again shortly.',
+                503: 'The service is temporarily unavailable. Please try again later.'
+            };
+
+            // Use specific error message if available
+            if (errorData.error && typeof errorData.error === 'string') {
+                return errorData.error;
+            }
+
+            return userFriendlyMessages[statusCode] || 'I\'m having trouble connecting right now. Please try again.';
+        }
+
+        window.handleChatKeyPress = function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        };
+
+        // Chat toggle functionality
+        window.toggleChat = function() {
+            const chatWidget = document.getElementById('chatWidget');
+            const chatToggle = document.getElementById('chatToggle');
+
+            if (chatWidget.classList.contains('open')) {
+                chatWidget.classList.remove('open');
+                chatToggle.classList.remove('hidden');
+            } else {
+                chatWidget.classList.add('open');
+                chatToggle.classList.add('hidden');
+                document.getElementById('chatInput').focus();
+            }
+        };
+
+        // Notification system
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Calendar functionality
+        function generateCalendar() {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            updateCalendarHeader(currentMonth, currentYear);
+            generateCalendarDays(currentMonth, currentYear);
+        }
+
+        function updateCalendarHeader(month, year) {
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        function generateCalendarDays(month, year) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.textContent = day;
+                dayHeader.style.fontWeight = '600';
+                dayHeader.style.color = 'var(--text-secondary)';
+                dayHeader.style.fontSize = '0.8rem';
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Generate days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // Highlight today
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Add deadline indicators (mock data for demo)
+                if ([1, 15, 30].includes(day)) {
+                    dayElement.classList.add('has-deadline');
+                    dayElement.title = 'Application deadline';
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Navigation functions for quick actions
+        window.startApplicationAudit = function() {
+            showNotification('Application Audit', 'Starting comprehensive analysis of your profile...');
+            // Navigate to audit page or show audit modal
+            setTimeout(() => {
+                window.location.href = 'application-audit.html';
+            }, 1000);
+        };
+
+        window.startEssayCoach = function() {
+            showNotification('Essay Coach', 'Loading AI writing assistant...');
+            setTimeout(() => {
+                window.location.href = 'essay-coach.html';
+            }, 1000);
+        };
+
+        window.findScholarships = function() {
+            showNotification('Scholarship Search', 'Finding personalized scholarship opportunities...');
+            setTimeout(() => {
+                window.location.href = 'scholarship-finder.html';
+            }, 1000);
+        };
+
+        window.scheduleInterview = function() {
+            showNotification('Interview Prep', 'Setting up AI interview practice...');
+            setTimeout(() => {
+                window.location.href = 'interview-prep.html';
+            }, 1000);
+        };
+
+        // Statistics navigation
+        window.showApplicationTracker = function() {
+            document.querySelector('.tracker-panel').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.showEssayTracker = function() {
+            showNotification('Essay Tracker', 'Loading your essay portfolio...');
+        };
+
+        window.showScholarshipTracker = function() {
+            showNotification('Scholarship Tracker', 'Viewing scholarship applications...');
+        };
+
+        window.showProgressAnalytics = function() {
+            showNotification('Progress Analytics', 'Loading detailed analytics...');
+        };
+
+        function openApplicationDetails(app) {
+            showNotification('Application Details', `Opening ${app.schoolName} application...`);
+            // Here you would open a detailed view or navigate to application page
+        }
+
+        // Logout function
+        window.logout = async function() {
+            try {
+                console.log('👋 Logging out user');
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('❌ Error signing out:', error);
+                showNotification('Error', 'Error signing out. Please try again.', 'error');
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', window.logout);
+            }
+        });
+
+        // Utility functions
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function showDefaultApplications() {
+            // Show default applications if Firebase data isn't available
+            const defaultApps = [
+                { schoolName: 'Harvard University', deadline: '2025-01-01', status: 'in-progress' },
+                { schoolName: 'Stanford University', deadline: '2025-01-01', status: 'not-started' },
+                { schoolName: 'MIT', deadline: '2025-01-01', status: 'in-progress' },
+                { schoolName: 'UC Berkeley', deadline: '2024-11-30', status: 'submitted' }
+            ];
+
+            const applicationList = document.getElementById('applicationList');
+            applicationList.innerHTML = '';
+
+            defaultApps.forEach(app => {
+                const appElement = createApplicationElement(app);
+                applicationList.appendChild(appElement);
+            });
+        }
+    </script>
+
+    <script>
+        // Theme Management & UI Enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Advanced Dashboard Loaded');
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+            
+            // Initialize components
+            createStarryBackground();
+            initializeAnimations();
+            setupKeyboardShortcuts();
+        });
+
+        // Create animated starry background
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize animations and observers
+        function initializeAnimations() {
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.stat-card, .tracker-panel, .quick-actions').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Animate progress circle
+            setTimeout(() => {
+                const progressCircle = document.getElementById('progressCircle');
+                if (progressCircle) {
+                    progressCircle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                }
+            }, 1000);
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Alt + C to open chat
+                if (e.altKey && e.key === 'c') {
+                    e.preventDefault();
+                    toggleChat();
+                }
+                
+                // Alt + A for application audit
+                if (e.altKey && e.key === 'a') {
+                    e.preventDefault();
+                    startApplicationAudit();
+                }
+                
+                // Alt + E for essay coach
+                if (e.altKey && e.key === 'e') {
+                    e.preventDefault();
+                    startEssayCoach();
+                }
+                
+                // Escape to close chat
+                if (e.key === 'Escape') {
+                    const chatWidget = document.getElementById('chatWidget');
+                    if (chatWidget.classList.contains('open')) {
+                        toggleChat();
+                    }
+                }
+            });
+        }
+
+        // Enhanced user experience features
+        function initializeEnhancements() {
+            // Auto-save drafts
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', debounce(function() {
+                    localStorage.setItem(`draft_${input.id}`, input.value);
+                }, 500));
+                
+                // Restore drafts
+                const savedValue = localStorage.getItem(`draft_${input.id}`);
+                if (savedValue) {
+                    input.value = savedValue;
+                }
+            });
+
+            // Smooth scrolling for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Loading states for buttons
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.disabled) {
+                        this.style.opacity = '0.7';
+                        setTimeout(() => {
+                            this.style.opacity = '1';
+                        }, 200);
+                    }
+                });
+            });
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Performance monitoring
+        function measurePerformance(operation, fn) {
+            const start = performance.now();
+            const result = fn();
+            const end = performance.now();
+            console.log(`${operation} took ${end - start} milliseconds`);
+            return result;
+        }
+
+        // Error handling and logging
+        window.addEventListener('error', function(e) {
+            console.error('Dashboard Error:', e.error);
+            
+            // Log to analytics service if available
+            if (window.gtag) {
+                window.gtag('event', 'exception', {
+                    description: e.error.message,
+                    fatal: false
+                });
+            }
+        });
+
+        // Service Worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+        }
+
+        // Initialize enhancements after DOM load
+        document.addEventListener('DOMContentLoaded', initializeEnhancements);
+
+        // Accessibility enhancements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
+            announcement.textContent = message;
+            
+            document.body.appendChild(announcement);
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Real-time status updates
+        function updateOnlineStatus() {
+            const onlineIndicator = document.querySelector('.online-indicator');
+            if (navigator.onLine) {
+                onlineIndicator.style.background = 'var(--success-color)';
+                announceToScreenReader('You are online');
+            } else {
+                onlineIndicator.style.background = 'var(--danger-color)';
+                announceToScreenReader('You are offline');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Production-ready error handling and fallbacks
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showNotification('Connection Error', 'A connection issue occurred. Please refresh if problems persist.', 'error');
+        });
+
+        // Network status monitoring
+        function updateConnectionStatus() {
+            if (!navigator.onLine) {
+                showNotification('Offline', 'You appear to be offline. Some features may not work.', 'warning');
+                document.querySelectorAll('button, input').forEach(el => {
+                    if (!el.classList.contains('offline-safe')) {
+                        el.disabled = true;
+                    }
+                });
+            } else {
+                document.querySelectorAll('button, input').forEach(el => {
+                    el.disabled = false;
+                });
+            }
+        }
+
+        window.addEventListener('online', () => {
+            showNotification('Online', 'Connection restored!', 'success');
+            updateConnectionStatus();
+        });
+
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Initialize connection monitoring
+        document.addEventListener('DOMContentLoaded', updateConnectionStatus);
+
+        // Pre-flight check for required services
+        async function performStartupChecks() {
+            const checks = {
+                firebase: false,
+                api: false,
+                auth: false
+            };
+
+            try {
+                // Check Firebase connection
+                if (window.db) {
+                    checks.firebase = true;
+                    console.log('✅ Firebase connected');
+                }
+
+                // Check API endpoint
+                try {
+                    const testResponse = await fetch('/api/chat', {
+                        method: 'OPTIONS'
+                    });
+                    if (testResponse.status === 200 || testResponse.status === 405) {
+                        checks.api = true;
+                        console.log('✅ Chat API endpoint accessible');
+                    }
+                } catch (apiError) {
+                    console.warn('⚠️ Chat API endpoint not accessible:', apiError.message);
+                }
+
+                // Check auth state
+                if (window.auth) {
+                    checks.auth = true;
+                    console.log('✅ Firebase Auth initialized');
+                }
+
+                // Report overall status
+                const allChecksPass = Object.values(checks).every(check => check);
+                if (allChecksPass) {
+                    console.log('🎉 All systems operational - Dashboard ready for users');
+                } else {
+                    console.warn('⚠️ Some services may not be fully operational:', checks);
+                }
+
+                return checks;
+
+            } catch (error) {
+                console.error('❌ Startup check failed:', error);
+                return checks;
+            }
+        }
+
+        // Initialize startup checks
+        document.addEventListener('DOMContentLoaded', async () => {
+            await performStartupChecks();
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -211,7 +1576,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* User Avatar in Navbar */
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -227,11 +1591,11 @@
             box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
         }
 
-        /* Main Dashboard */
+        /* Dashboard Layout */
         .dashboard-container {
             margin-top: 100px;
             padding: 2rem;
-            max-width: 1400px;
+            max-width: 1600px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -240,13 +1604,13 @@
         .welcome-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a07bcc 100%);
             border-radius: 32px;
-            padding: 5rem 3rem;
+            padding: 4rem 3rem;
             text-align: center;
             margin-bottom: 3rem;
             box-shadow: 
-            0 25px 50px rgba(42, 53, 122, 0.15),
-            0 8px 25px rgba(160, 123, 204, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 25px 50px rgba(42, 53, 122, 0.15),
+                0 8px 25px rgba(160, 123, 204, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
             color: white;
             position: relative;
             overflow: hidden;
@@ -261,28 +1625,16 @@
             right: 0;
             bottom: 0;
             background: 
-            radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(160, 123, 204, 0.3) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(160, 123, 204, 0.3) 0%, transparent 50%);
             pointer-events: none;
         }
 
-        .welcome-section::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), transparent, rgba(255, 255, 255, 0.05));
-            border-radius: 34px;
-            z-index: -1;
-        }
-
         .welcome-section h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 800;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             position: relative;
             z-index: 2;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -291,60 +1643,29 @@
         }
 
         .welcome-section p {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             opacity: 0.95;
             position: relative;
             z-index: 2;
-            max-width: 700px;
-            margin: 0 auto;
+            max-width: 600px;
+            margin: 0 auto 2rem;
             font-weight: 400;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             line-height: 1.6;
         }
 
-        .welcome-section:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-            0 35px 70px rgba(42, 53, 122, 0.2),
-            0 15px 35px rgba(160, 123, 204, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] .welcome-section {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 70%, #2a357a 100%);
-            box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.4),
-            0 8px 25px rgba(42, 53, 122, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        [data-theme="dark"] .welcome-section::before {
-            background: 
-            radial-gradient(circle at 20% 80%, rgba(187, 134, 252, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(42, 53, 122, 0.4) 0%, transparent 50%);
-        }
-
-        [data-theme="dark"] .welcome-section:hover {
-            box-shadow: 
-            0 35px 70px rgba(0, 0, 0, 0.5),
-            0 15px 35px rgba(42, 53, 122, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-
-        /* Progress Overview */
-        .progress-overview {
+        /* Dashboard Stats */
+        .stats-overview {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
 
-        .progress-card {
+        .stat-card {
             background: var(--primary-bg);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2rem;
             box-shadow: var(--shadow);
             transition: all 0.4s ease;
             cursor: pointer;
@@ -353,452 +1674,320 @@
             overflow: hidden;
         }
 
-        .progress-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .progress-card:hover::before {
-            left: 100%;
-        }
-
-        .progress-card:hover {
-            transform: translateY(-8px) scale(1.02);
+        .stat-card:hover {
+            transform: translateY(-8px);
             box-shadow: 0 20px 50px rgba(42, 53, 122, 0.15);
-            border-color: var(--accent-color);
         }
 
-        .progress-header {
+        .stat-header {
             display: flex;
             align-items: center;
-            margin-bottom: 2rem;
+            justify-content: space-between;
+            margin-bottom: 1rem;
         }
 
-        .progress-icon {
-            font-size: 3rem;
-            margin-right: 1.5rem;
-            padding: 1rem;
-            background: var(--secondary-bg);
-            border-radius: 16px;
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
-            height: 80px;
-        }
-
-        .progress-title {
+            color: white;
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
         }
 
-        .progress-percentage {
+        .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
         }
 
-        .progress-bar-container {
-            background-color: rgba(160, 123, 204, 0.15);
-            border-radius: 12px;
-            height: 12px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 12px;
-            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .progress-status {
-            font-size: 1rem;
+        .stat-label {
             color: var(--text-secondary);
+            font-size: 0.9rem;
             font-weight: 500;
         }
 
-        /* Dashboard Grid */
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .trend-up { color: var(--success-color); }
+        .trend-down { color: var(--danger-color); }
+
+        /* Main Dashboard Grid */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 2fr 1fr;
             gap: 2rem;
             margin-bottom: 3rem;
         }
 
-        .feature-panel {
+        /* Application Tracker */
+        .tracker-panel {
             background: var(--primary-bg);
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 2rem;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
             border: 1px solid rgba(160, 123, 204, 0.1);
         }
 
-        .feature-panel:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(42, 53, 122, 0.15);
+        .panel-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
 
-        .feature-panel h3 {
-            font-size: 1.8rem;
+        .panel-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 2rem;
             color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
+        .application-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .action-card {
-            background: var(--secondary-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-        }
-
-        .action-card:hover::before {
-            opacity: 0.1;
-        }
-
-        .action-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: var(--shadow);
-        }
-
-        .action-card > * {
-            position: relative;
-            z-index: 2;
-        }
-
-        .action-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
-            padding: 1rem;
-            background: var(--primary-bg);
-            border-radius: 12px;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
+        .application-item {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
         }
 
-        .action-card h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+        .application-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .application-info h4 {
             font-weight: 600;
             color: var(--text-primary);
+            margin-bottom: 0.25rem;
         }
 
-        .action-card p {
+        .application-deadline {
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
 
-        /* To-Do List */
-        .todo-list-panel {
-            grid-column: 1 / -1;
-        }
-
-        .todo-list-container {
-            background: var(--secondary-bg);
+        .status-badge {
+            padding: 0.5rem 1rem;
             border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid rgba(160, 123, 204, 0.1);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .todo-list-header {
+        .status-not-started {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .status-in-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-submitted {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        /* AI Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            background: var(--primary-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            z-index: 1000;
+            transform: translateY(100vh);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .chat-widget.open {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
         }
 
-        .todo-list-header h3 {
-            margin: 0;
-            font-size: 1.5rem;
+        .chat-title {
             font-weight: 600;
-            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .todo-input-group {
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-message.user {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.ai {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
             display: flex;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            align-items: center;
         }
 
-        .todo-input {
+        .chat-input {
             flex: 1;
             padding: 0.75rem 1rem;
             border: 1px solid rgba(160, 123, 204, 0.2);
-            border-radius: 12px;
-            background: var(--primary-bg);
+            border-radius: 20px;
+            background: var(--secondary-bg);
             color: var(--text-primary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
             transition: all 0.3s ease;
         }
 
-        .todo-input:focus {
+        .chat-input:focus {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
         }
 
-        .add-todo-btn {
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .add-todo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .todo-items {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .todo-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: var(--primary-bg);
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            justify-content: center;
             transition: all 0.3s ease;
         }
 
-        .todo-item.completed {
+        .chat-send:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-send:disabled {
             opacity: 0.6;
-            text-decoration: line-through;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .todo-item-text {
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .todo-item-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .todo-item-actions button {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .todo-item-actions .edit-btn:hover {
-            color: var(--info-color);
-        }
-
-        .todo-item-actions .delete-btn:hover {
-            color: var(--danger-color);
-        }
-
-        /* AI Chat System */
-        .chatbot-panel {
-            grid-column: 1 / -1;
-        }
-
-        .chatbot-container-with-sidebar {
-            display: flex;
-            height: 600px;
-            gap: 1.5rem;
-            background: var(--secondary-bg);
-            border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .chat-sidebar {
-            width: 280px;
-            background: var(--primary-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            overflow-y: auto;
-        }
-
-        .chat-sidebar-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .chat-sidebar-header h4 {
-            margin: 0 0 1rem 0;
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .new-chat-btn {
-            width: 100%;
-            padding: 0.75rem;
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             background: var(--gradient);
             color: white;
             border: none;
-            border-radius: 12px;
+            font-size: 1.5rem;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .new-chat-btn:hover {
-            transform: translateY(-2px);
             box-shadow: var(--shadow);
-        }
-
-        .chat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        /* Enhanced Chat Item Styles */
-        .chat-item {
-            padding: 1rem;
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            cursor: pointer;
+            z-index: 999;
             transition: all 0.3s ease;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            position: relative;
-            margin-bottom: 0.5rem;
         }
 
-        /* Better active chat item styling */
-        .chat-item.active {
-            background: var(--accent-color) !important;
-            color: white !important;
-            border-color: var(--accent-color) !important;
-            transform: translateX(5px);
+        .chat-toggle:hover {
+            transform: scale(1.1);
         }
 
-        .chat-item.active .chat-item-title,
-        .chat-item.active .chat-item-preview,
-        .chat-item.active .chat-item-date {
-            color: white !important;
+        .chat-toggle.hidden {
+            transform: scale(0);
         }
 
-        .chat-item {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .chat-item:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateX(3px);
-        }
-
-        .chat-item-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            line-height: 1.3;
-        }
-
-        .chat-item-preview {
-            font-size: 0.8rem;
-            opacity: 0.8;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            line-height: 1.2;
-        }
-
-        .chat-item-date {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-top: 0.5rem;
-            font-weight: 400;
-        }
-
+        /* Typing Indicator */
         .typing-indicator {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 0.5rem 0;
+            gap: 0.25rem;
+            padding: 1rem;
         }
 
         .typing-dot {
@@ -818,166 +2007,219 @@
             40% { transform: scale(1.2); opacity: 1; }
         }
 
-        /* Missing chatbot styles */
-        .chatbot-main {
-            flex: 1;
+        /* Quick Actions */
+        .quick-actions {
             background: var(--primary-bg);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
             border: 1px solid rgba(160, 123, 204, 0.1);
-            overflow: hidden;
         }
 
-        .chatbot-header {
-            background: var(--secondary-bg);
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             padding: 1.5rem;
+            background: var(--secondary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .action-content h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-content p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Progress Circle */
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: 0 auto 1rem;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(160, 123, 204, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            max-width: 400px;
+            padding: 1rem 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-color);
+            z-index: 1001;
+            transform: translateX(120%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification-text h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-text p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 1.5rem;
         }
 
-        .chatbot-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .chatbot-status {
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            margin-top: 0.25rem;
-        }
-
-        .clear-chat-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .clear-chat-btn:hover {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .chatbot-messages {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: var(--primary-bg);
-        }
-
-        .message {
-            padding: 1rem 1.5rem;
-            border-radius: 16px;
-            max-width: 85%;
-            line-height: 1.5;
-            font-size: 0.95rem;
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            background: var(--accent-color);
-            color: white;
-            align-self: flex-end;
-            margin-left: auto;
-        }
-
-        .ai-message {
-            background: var(--secondary-bg);
-            color: var(--text-primary);
-            align-self: flex-start;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .chatbot-input {
-            background: var(--secondary-bg);
-            padding: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            border-top: 1px solid rgba(160, 123, 204, 0.1);
-            align-items: center;
-        }
-
-        .chatbot-input input {
-            flex: 1;
-            padding: 0.75rem 1rem;
+        .calendar-nav {
+            background: none;
             border: 1px solid rgba(160, 123, 204, 0.2);
-            border-radius: 12px;
-            background: var(--primary-bg);
             color: var(--text-primary);
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .chatbot-input input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
-        }
-
-        .chatbot-input button {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            min-width: 80px;
-        }
-
-        .chatbot-input button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .chatbot-input button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .chat-item-delete {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        .chat-item:hover .chat-item-delete {
-            opacity: 1;
+        .calendar-nav:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
         }
 
-        .no-chats-message {
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
             text-align: center;
-            color: var(--text-secondary);
-            font-style: italic;
-            padding: 2rem 1rem;
-            line-height: 1.5;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .calendar-day.today {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .calendar-day.has-deadline {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .calendar-day:hover {
+            background: var(--secondary-bg);
         }
 
         /* Footer */
@@ -989,17 +2231,6 @@
             color: white;
             position: relative;
             overflow: hidden;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 30s linear infinite;
         }
 
         .footer-content {
@@ -1057,7 +2288,6 @@
         .footer-socials a:hover {
             transform: translateY(-5px) scale(1.1);
             background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
         }
 
         .footer-socials a img {
@@ -1066,734 +2296,50 @@
             filter: invert(1);
         }
 
-        /* Animations */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-widget {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 40px);
+                bottom: 20px;
+                right: 20px;
+            }
         }
 
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .welcome-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .chat-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
         }
-
-        /* Enhanced Responsive Design */
-        @media (max-width: 1200px) {
-    .dashboard-container {
-        max-width: 1000px;
-        padding: 1.5rem;
-    }
-    
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-    
-    .progress-overview {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1rem;
-    }
-}
-
-/* Tablet Styles */
-@media (max-width: 1024px) {
-    .navbar {
-        padding: 1rem 1.5rem;
-    }
-    
-    .nav-links {
-        gap: 1.5rem;
-    }
-    
-    .dashboard-container {
-        margin-top: 90px;
-        padding: 1.5rem;
-    }
-    
-    .welcome-section {
-        padding: 3rem 2rem;
-        margin-bottom: 2rem;
-    }
-    
-    .welcome-section h1 {
-        font-size: clamp(2rem, 4vw, 3rem);
-    }
-    
-    .welcome-section p {
-        font-size: 1.1rem;
-    }
-    
-    .progress-overview {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    
-    .progress-card {
-        padding: 2rem;
-    }
-    
-    .feature-panel {
-        padding: 2rem;
-    }
-    
-    .chatbot-container-with-sidebar {
-        height: 550px;
-        gap: 1rem;
-        padding: 1rem;
-    }
-    
-    .chat-sidebar {
-        width: 250px;
-        padding: 1rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-    }
-    
-    .action-card {
-        padding: 1.5rem;
-    }
-    
-    .action-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 2rem;
-    }
-}
-
-/* Mobile Large (iPhone Pro Max, etc.) */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 1rem;
-        flex-wrap: wrap;
-    }
-    
-    .nav-links {
-        gap: 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .logo {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .brand-text h1, .brand-text h2 {
-        font-size: 1.2rem;
-    }
-    
-    .dashboard-container {
-        padding: 1rem;
-        margin-top: 80px;
-    }
-    
-    .welcome-section {
-        padding: 2.5rem 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .welcome-section h1 {
-        font-size: clamp(1.8rem, 6vw, 2.5rem);
-        margin-bottom: 0.75rem;
-    }
-    
-    .welcome-section p {
-        font-size: 1rem;
-    }
-    
-    .progress-overview {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .progress-card {
-        padding: 1.5rem;
-    }
-    
-    .progress-header {
-        margin-bottom: 1.5rem;
-    }
-    
-    .progress-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 2.5rem;
-        margin-right: 1rem;
-    }
-    
-    .progress-title {
-        font-size: 1.2rem;
-    }
-    
-    .progress-percentage {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    
-    .feature-panel {
-        padding: 1.5rem;
-    }
-    
-    .feature-panel h3 {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-    
-    .action-card {
-        padding: 1.25rem;
-    }
-    
-    .action-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.8rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .action-card h4 {
-        font-size: 1rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    .action-card p {
-        font-size: 0.8rem;
-    }
-    
-    /* Chat Interface Mobile */
-    .chatbot-container-with-sidebar {
-        flex-direction: column;
-        height: auto;
-        min-height: 500px;
-        gap: 1rem;
-        padding: 1rem;
-    }
-    
-    .chat-sidebar {
-        width: 100%;
-        max-height: 200px;
-        order: 2;
-        padding: 1rem;
-    }
-    
-    .chat-sidebar-header h4 {
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .new-chat-btn {
-        padding: 0.6rem;
-        font-size: 0.85rem;
-    }
-    
-    .chat-list {
-        max-height: 120px;
-        gap: 0.5rem;
-    }
-    
-    .chat-item {
-        padding: 0.75rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    .chat-item-title {
-        font-size: 0.85rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    .chat-item-preview {
-        font-size: 0.75rem;
-    }
-    
-    .chat-item-date {
-        font-size: 0.65rem;
-        margin-top: 0.25rem;
-    }
-    
-    .chatbot-main {
-        order: 1;
-        height: 400px;
-        min-height: 400px;
-    }
-    
-    .chatbot-header {
-        padding: 1rem;
-    }
-    
-    .chatbot-header h3 {
-        font-size: 1.1rem;
-    }
-    
-    .chatbot-status {
-        font-size: 0.8rem;
-    }
-    
-    .clear-chat-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-    
-    .chatbot-messages {
-        padding: 1rem;
-        gap: 0.75rem;
-    }
-    
-    .message {
-        padding: 0.75rem 1rem;
-        max-width: 90%;
-        font-size: 0.9rem;
-    }
-    
-    .chatbot-input {
-        padding: 1rem;
-        gap: 0.75rem;
-    }
-    
-    .chatbot-input input {
-        padding: 0.6rem 0.75rem;
-        font-size: 0.9rem;
-    }
-    
-    .chatbot-input button {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-        min-width: 70px;
-    }
-    
-    /* Footer Mobile */
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 1.5rem;
-    }
-    
-    .footer-text {
-        font-size: 1rem;
-    }
-    
-    .footer-logo {
-        height: 50px;
-        width: 50px;
-    }
-    
-    .footer-socials a {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .footer-socials a img {
-        height: 20px;
-        width: 20px;
-    }
-}
-
-/* Mobile Small (iPhone SE, etc.) */
-@media (max-width: 480px) {
-    .navbar {
-        padding: 0.75rem;
-    }
-    
-    .nav-links {
-        gap: 0.5rem;
-        font-size: 0.8rem;
-    }
-    
-    .dropdown-content {
-        min-width: 140px;
-        right: -20px;
-    }
-    
-    .dashboard-container {
-        padding: 0.75rem;
-        margin-top: 70px;
-    }
-    
-    .welcome-section {
-        padding: 2rem 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .welcome-section h1 {
-        font-size: clamp(1.5rem, 8vw, 2rem);
-        margin-bottom: 0.5rem;
-    }
-    
-    .welcome-section p {
-        font-size: 0.9rem;
-    }
-    
-    .progress-overview {
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-    }
-    
-    .progress-card {
-        padding: 1.25rem;
-    }
-    
-    .progress-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 2rem;
-        margin-right: 0.75rem;
-    }
-    
-    .progress-title {
-        font-size: 1.1rem;
-    }
-    
-    .progress-percentage {
-        font-size: 1.8rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .feature-panel {
-        padding: 1.25rem;
-    }
-    
-    .feature-panel h3 {
-        font-size: 1.3rem;
-        margin-bottom: 1.25rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-    
-    .action-card {
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        text-align: left;
-        gap: 1rem;
-    }
-    
-    .action-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5rem;
-        margin: 0;
-        flex-shrink: 0;
-    }
-    
-    .action-card h4 {
-        font-size: 0.95rem;
-        margin-bottom: 0.1rem;
-    }
-    
-    .action-card p {
-        font-size: 0.75rem;
-        margin: 0;
-    }
-    
-    /* Chat Interface Small Mobile */
-    .chatbot-container-with-sidebar {
-        min-height: 450px;
-        padding: 0.75rem;
-    }
-    
-    .chat-sidebar {
-        max-height: 150px;
-        padding: 0.75rem;
-    }
-    
-    .chat-sidebar-header h4 {
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .new-chat-btn {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-    }
-    
-    .chat-list {
-        max-height: 100px;
-    }
-    
-    .chat-item {
-        padding: 0.5rem;
-    }
-    
-    .chat-item-title {
-        font-size: 0.8rem;
-    }
-    
-    .chat-item-preview {
-        font-size: 0.7rem;
-    }
-    
-    .chat-item-date {
-        font-size: 0.6rem;
-    }
-    
-    .chatbot-main {
-        height: 350px;
-        min-height: 350px;
-    }
-    
-    .chatbot-header {
-        padding: 0.75rem;
-    }
-    
-    .chatbot-header h3 {
-        font-size: 1rem;
-    }
-    
-    .chatbot-status {
-        font-size: 0.8rem;
-    }
-    
-    .clear-chat-btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
-    }
-    
-    .chatbot-messages {
-        padding: 0.75rem;
-        gap: 0.5rem;
-    }
-    
-    .message {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
-        max-width: 95%;
-    }
-    
-    .chatbot-input {
-        padding: 0.75rem;
-        gap: 0.5rem;
-    }
-    
-    .chatbot-input input {
-        padding: 0.5rem 0.6rem;
-        font-size: 0.85rem;
-    }
-    
-    .chatbot-input button {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.85rem;
-        min-width: 60px;
-    }
-    
-    /* Footer Small Mobile */
-    .footer {
-        padding: 2rem 0;
-    }
-    
-    .footer-content {
-        padding: 0 1rem;
-        gap: 1rem;
-    }
-    
-    .footer-text {
-        font-size: 0.9rem;
-    }
-    
-    .footer-logo {
-        height: 40px;
-        width: 40px;
-    }
-    
-    .footer-socials {
-        gap: 0.75rem;
-    }
-    
-    .footer-socials a {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .footer-socials a img {
-        height: 18px;
-        width: 18px;
-    }
-}
-
-/* Large Desktop */
-@media (min-width: 1400px) {
-    .dashboard-container {
-        max-width: 1600px;
-        padding: 3rem;
-    }
-    
-    .welcome-section {
-        padding: 5rem 3rem;
-    }
-    
-    .progress-overview {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2.5rem;
-    }
-    
-    .dashboard-grid {
-        gap: 2.5rem;
-    }
-    
-    .feature-panel {
-        padding: 3rem;
-    }
-    
-    .chatbot-container-with-sidebar {
-        height: 700px;
-        gap: 2rem;
-        padding: 2rem;
-    }
-    
-    .chat-sidebar {
-        width: 320px;
-        padding: 2rem;
-    }
-    
-    .quick-actions {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-    }
-}
-
-/* Ultra-wide screens */
-@media (min-width: 1920px) {
-    .dashboard-container {
-        max-width: 1800px;
-    }
-    
-    .progress-overview {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 3rem;
-    }
-    
-    .chatbot-container-with-sidebar {
-        height: 800px;
-    }
-}
-
-/* Landscape orientation for tablets */
-@media (max-width: 1024px) and (orientation: landscape) {
-    .navbar {
-        padding: 0.75rem 1.5rem;
-    }
-    
-    .dashboard-container {
-        margin-top: 70px;
-        padding: 1rem;
-    }
-    
-    .welcome-section {
-        padding: 2rem;
-    }
-    
-    .progress-overview {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
-    
-    .chatbot-container-with-sidebar {
-        height: 400px;
-    }
-    
-    .chat-sidebar {
-        width: 200px;
-        max-height: none;
-    }
-    
-    .chatbot-main {
-        height: auto;
-    }
-}
-
-/* Portrait orientation for mobile devices */
-@media (max-width: 768px) and (orientation: portrait) {
-    .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .chatbot-container-with-sidebar {
-        min-height: 500px;
-    }
-    
-    .chat-sidebar {
-        max-height: 180px;
-    }
-    
-    .chatbot-main {
-        height: 380px;
-    }
-}
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .starry-bg {
-        display: none;
-    }
-}
-
-/* High contrast mode */
-@media (prefers-contrast: high) {
-    :root {
-        --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-    
-    .progress-card,
-    .feature-panel,
-    .action-card,
-    .chat-item {
-        border: 2px solid var(--accent-color);
-    }
-}
-
-/* Print styles */
-@media print {
-    .navbar,
-    .footer,
-    .theme-toggle,
-    .chatbot-panel {
-        display: none;
-    }
-    
-    .dashboard-container {
-        margin-top: 0;
-        padding: 1rem;
-    }
-    
-    .welcome-section {
-        background: none !important;
-        color: black !important;
-        border: 2px solid black;
-    }
-    
-    .progress-card,
-    .feature-panel {
-        break-inside: avoid;
-        border: 1px solid black;
-    }
-}
     </style>
 </head>
 <body data-theme="dark">
@@ -1816,1132 +2362,4 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    <span id="navAccountText">Account</span>
-                </a>
-                <div class="dropdown-content" id="authDropdown">
-                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
-                        Welcome, <span id="dropdownDisplayName"></span>!
-                    </div>
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
-                    </div>
-                </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
-    </nav>
-
-    <!-- Main Dashboard -->
-    <div class="dashboard-container">
-        <!-- Welcome Section -->
-        <div class="welcome-section fade-in-up">
-            <h1 id="welcomeTitle">Welcome to Your College Climb Dashboard</h1>
-            <p>Your AI-powered college application assistant is ready to help you climb to success!</p>
-        </div>
-
-        <!-- Progress Overview -->
-        <div class="progress-overview fade-in-up">
-            <div class="progress-card" onclick="openFeature('application')">
-                <div class="progress-header">
-                    <div class="progress-icon">📋</div>
-                    <div class="progress-title">Application Progress</div>
-                </div>
-                <div class="progress-percentage" id="applicationPercent">0%</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="applicationBar" style="width: 0%"></div>
-                </div>
-                <div class="progress-status" id="applicationStatus">Start your application journey</div>
-            </div>
-
-            <div class="progress-card" onclick="openFeature('essays')">
-                <div class="progress-header">
-                    <div class="progress-icon">📝</div>
-                    <div class="progress-title">Essay Portfolio</div>
-                </div>
-                <div class="progress-percentage" id="essayPercent">0%</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="essayBar" style="width: 0%"></div>
-                </div>
-                <div class="progress-status" id="essayStatus">Begin crafting your essays</div>
-            </div>
-
-            <div class="progress-card" onclick="openFeature('resume')">
-                <div class="progress-header">
-                    <div class="progress-icon">📊</div>
-                    <div class="progress-title">Resume Builder</div>
-                </div>
-                <div class="progress-percentage" id="resumePercent">0%</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="resumeBar" style="width: 0%"></div>
-                </div>
-                <div class="progress-status" id="resumeStatus">Build your professional resume</div>
-            </div>
-
-            <div class="progress-card" onclick="openFeature('scholarships')">
-                <div class="progress-header">
-                    <div class="progress-icon">💰</div>
-                    <div class="progress-title">Scholarship Hunt</div>
-                </div>
-                <div class="progress-percentage" id="scholarshipPercent">0%</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="scholarshipBar" style="width: 0%"></div>
-                </div>
-                <div class="progress-status" id="scholarshipStatus">Discover funding opportunities</div>
-            </div>
-        </div>
-
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid fade-in-up">
-            <!-- Quick Actions Panel -->
-            <div class="feature-panel">
-                <h3>🚀 Quick Actions</h3>
-                <div class="quick-actions">
-                    <div class="action-card" onclick="openFeature('essay-helper')">
-                        <div class="action-icon">📝</div>
-                        <h4>Essay Helper</h4>
-                        <p>AI-powered essay feedback and improvement</p>
-                    </div>
-                    <div class="action-card" onclick="openFeature('resume-builder')">
-                        <div class="action-icon">📊</div>
-                        <h4>Resume Builder</h4>
-                        <p>Professional resume templates</p>
-                    </div>
-                    <div class="action-card" onclick="openFeature('college-search')">
-                        <div class="action-icon">🎯</div>
-                        <h4>College Finder</h4>
-                        <p>Find your perfect college match</p>
-                    </div>
-                    <div class="action-card" onclick="openFeature('scholarship-finder')">
-                        <div class="action-icon">💰</div>
-                        <h4>Scholarships</h4>
-                        <p>Discover funding opportunities</p>
-                    </div>
-                    <div class="action-card" onclick="openFeature('interview-prep')">
-                        <div class="action-icon">🎤</div>
-                        <h4>Interview Prep</h4>
-                        <p>Practice with AI interviewer</p>
-                    </div>
-                    <div class="action-card" onclick="openFeature('test-prep')">
-                        <div class="action-icon">📚</div>
-                        <h4>Test Prep</h4>
-                        <p>SAT/ACT preparation tools</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Chat System -->
-            <div class="feature-panel chatbot-panel">
-                <h3>🤖 AI College Counselor</h3>
-                <div class="chatbot-container-with-sidebar">
-                    <!-- Chat Sidebar -->
-                    <div class="chat-sidebar">
-                        <div class="chat-sidebar-header">
-                            <h4>💬 Chat History</h4>
-                            <button onclick="startNewChat()" class="new-chat-btn">+ New Chat</button>
-                        </div>
-                        <div class="chat-list" id="chatList">
-                            <div class="no-chats-message">
-                                Start your first conversation with our AI counselor!
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Main Chat Area -->
-                    <div class="chatbot-main">
-                        <div class="chatbot-header">
-                            <div>
-                                <h3>AI College Counselor</h3>
-                                <div class="chatbot-status">Online</div>
-                            </div>
-                            <button onclick="clearCurrentChat()" class="clear-chat-btn">Clear Chat</button>
-                        </div>
-                        <div class="chatbot-messages" id="chatMessages">
-                            <div class="message ai-message">
-                                <strong>AI Counselor:</strong> 
-                                Hello! I'm your personal AI college counselor. I can help you with:
-                                <br><br>
-                                • College applications and deadlines<br>
-                                • Essay writing and feedback<br>
-                                • Scholarship opportunities<br>
-                                • Interview preparation<br>
-                                • Academic planning<br>
-                                • Career guidance<br><br>
-                                What would you like to work on today?
-                            </div>
-                        </div>
-                        <div class="chatbot-input">
-                            <input type="text" id="userInput" placeholder="Ask me anything about college applications..." onkeypress="handleKeyPress(event)">
-                            <button onclick="sendMessage()" id="sendButton">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer (EXACTLY like index.html) -->
-    <footer class="footer">
-        <div class="footer-content">
-            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
-            <div class="footer-text">
-                &copy; 2025 College Climb. All rights reserved.
-            </div>
-            <div class="footer-socials">
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-                </a>
-                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
-                </a>
-                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
-                </a>
-                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Firebase & JavaScript -->
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Global variables
-        window.auth = auth;
-        window.db = db;
-        window.currentChatId = null;
-        window.currentChatMessages = [];
-
-        console.log('🔥 Firebase initialized successfully');
-
-        // Auth state management
-        onAuthStateChanged(auth, async (user) => {
-            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
-            
-            updateAuthUI(user);
-            
-            if (user) {
-                document.body.classList.add("logged-in");
-                await loadUserProfile(user);
-                await loadUserProgress(user.uid);
-                await loadChatHistory(user.uid);
-                startNewChat();
-            } else {
-                document.body.classList.remove("logged-in");
-                // Redirect to login if not authenticated
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Update navbar UI
-        function updateAuthUI(user) {
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-
-            if (user) {
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
-            } else {
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-                
-                // Explicitly reset avatar on logout
-                if (navUserAvatar) navUserAvatar.style.display = 'none';
-                if (navAccountText) navAccountText.style.display = 'inline';
-            }
-        }
-
-        // Load user profile data
-        async function loadUserProfile(user) {
-            try {
-                const welcomeTitle = document.getElementById('welcomeTitle');
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                const navUserAvatar = document.getElementById('navUserAvatar');
-                const navAccountText = document.getElementById('navAccountText');
-                const dropdownDisplayName = document.getElementById('dropdownDisplayName');
-                
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    const displayName = userData.name || user.displayName || user.email.split('@')[0];
-                    
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome back, ${displayName}!`;
-                    if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
-                    
-                    // Set the avatar based on Firestore data.
-                    if (userData.profilePhotoURL) {
-                        navUserAvatar.src = userData.profilePhotoURL;
-                        navUserAvatar.style.display = 'block';
-                        navAccountText.style.display = 'none';
-                    } else {
-                        // If no photo in firestore, revert to default state
-                        navUserAvatar.style.display = 'none';
-                        navAccountText.style.display = 'inline';
-                    }
-                } else {
-                    // User exists in Auth but not in Firestore yet
-                    const displayName = user.displayName || user.email.split('@')[0];
-                    if (welcomeTitle) welcomeTitle.textContent = `Welcome, ${displayName}!`;
-                    if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
-                    navUserAvatar.style.display = 'none';
-                    navAccountText.style.display = 'inline';
-                }
-            } catch (error) {
-                console.error('❌ Error loading user profile:', error);
-                document.getElementById('welcomeTitle').textContent = 'Welcome to Your Dashboard';
-            }
-        }
-
-        async function loadUserProgress(userId) {
-            try {
-                const progressDoc = await getDoc(doc(db, 'userProgress', userId));
-                
-                if (progressDoc.exists()) {
-                    const progressData = progressDoc.data();
-                    updateProgressBars(progressData);
-                } else {
-                    // Set default progress values
-                    const defaultProgress = {
-                        application: 15,
-                        essays: 35,
-                        resume: 60,
-                        scholarships: 20
-                    };
-                    
-                    await setDoc(doc(db, 'userProgress', userId), defaultProgress);
-                    updateProgressBars(defaultProgress);
-                }
-                
-                // Animate progress bars
-                setTimeout(() => {
-                    if (window.animateProgressBars) {
-                        window.animateProgressBars();
-                    }
-                }, 500);
-            } catch (error) {
-                console.error('❌ Error loading progress:', error);
-                setTimeout(() => {
-                    if (window.animateProgressBars) {
-                        window.animateProgressBars();
-                    }
-                }, 500);
-            }
-        }
-
-        function updateProgressBars(progressData) {
-            const progressElements = [
-                { id: 'application', data: progressData.application || 0 },
-                { id: 'essay', data: progressData.essays || 0 },
-                { id: 'resume', data: progressData.resume || 0 },
-                { id: 'scholarship', data: progressData.scholarships || 0 }
-            ];
-
-            progressElements.forEach(({ id, data }) => {
-                const percentElement = document.getElementById(`${id}Percent`);
-                const barElement = document.getElementById(`${id}Bar`);
-                const statusElement = document.getElementById(`${id}Status`);
-                
-                if (percentElement) percentElement.textContent = `${data}%`;
-                if (barElement) barElement.style.width = `${data}%`;
-                
-                // Update status based on progress
-                if (statusElement) {
-                    statusElement.textContent = getProgressStatus(id, data);
-                }
-            });
-        }
-
-        function getProgressStatus(type, progress) {
-            const statuses = {
-                application: {
-                    0: "Start your application journey",
-                    25: "Application in progress",
-                    50: "Halfway through applications",
-                    75: "Almost done with applications",
-                    100: "All applications submitted!"
-                },
-                essay: {
-                    0: "Begin crafting your essays",
-                    25: "Essays in development",
-                    50: "Making good progress on essays",
-                    75: "Essays nearly complete",
-                    100: "All essays completed!"
-                },
-                resume: {
-                    0: "Build your professional resume",
-                    25: "Resume structure created",
-                    50: "Resume content developing",
-                    75: "Resume almost polished",
-                    100: "Resume ready for submission!"
-                },
-                scholarship: {
-                    0: "Discover funding opportunities",
-                    25: "Scholarships identified",
-                    50: "Applications in progress",
-                    75: "Most applications submitted",
-                    100: "All scholarship applications done!"
-                }
-            };
-
-            const thresholds = Object.keys(statuses[type]).map(Number).sort((a, b) => b - a);
-            for (const threshold of thresholds) {
-                if (progress >= threshold) {
-                    return statuses[type][threshold];
-                }
-            }
-            return statuses[type][0];
-        }
-
-        // Chat System Functions
-        window.startNewChat = function() {
-            window.currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            window.currentChatMessages = [];
-            
-            const chatMessages = document.getElementById('chatMessages');
-            if (chatMessages) {
-                chatMessages.innerHTML = `
-                    <div class="message ai-message">
-                        <strong>AI Counselor:</strong> 
-                        Hello! I'm your personal AI college counselor. I can help you with:
-                        <br><br>
-                        • College applications and deadlines<br>
-                        • Essay writing and feedback<br>
-                        • Scholarship opportunities<br>
-                        • Interview preparation<br>
-                        • Academic planning<br>
-                        • Career guidance<br><br>
-                        What would you like to work on today?
-                    </div>
-                `;
-            }
-            
-            // Clear active states
-            document.querySelectorAll('.chat-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            console.log('💬 New chat initialized:', window.currentChatId);
-        };
-
-        async function loadChatHistory(userId) {
-            try {
-                console.log('📚 Loading chat history for user:', userId);
-                
-                const chatList = document.getElementById('chatList');
-                
-                if (!chatList) {
-                    console.error('❌ Chat list element not found');
-                    return;
-                }
-                
-                // Show loading state
-                chatList.innerHTML = '<div class="no-chats-message">Loading chat history...</div>';
-                
-                // Use simple query without orderBy to avoid index issues
-                const chatsQuery = query(
-                    collection(db, 'chatSessions'),
-                    where('userId', '==', userId)
-                );
-                
-                const querySnapshot = await getDocs(chatsQuery);
-                
-                chatList.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    chatList.innerHTML = '<div class="no-chats-message">Start your first conversation with our AI counselor!</div>';
-                    console.log('📚 No chat history found');
-                    return;
-                }
-                
-                console.log(`📚 Found ${querySnapshot.size} chat sessions`);
-                
-                // Convert to array and sort manually
-                const chats = [];
-                querySnapshot.forEach((docSnapshot) => {
-                    const chatData = docSnapshot.data();
-                    chats.push({ id: docSnapshot.id, data: chatData });
-                });
-                
-                // Sort by lastUpdated manually (most recent first)
-                chats.sort((a, b) => {
-                    if (a.data.lastUpdated && b.data.lastUpdated) {
-                        return b.data.lastUpdated.toMillis() - a.data.lastUpdated.toMillis();
-                    }
-                    // If no timestamp, put at end
-                    return 0;
-                });
-                
-                // Create chat items
-                chats.forEach(({ id, data }) => {
-                    const chatItem = createChatItem(id, data);
-                    chatList.appendChild(chatItem);
-                });
-                
-                console.log('✅ Chat history loaded successfully');
-                
-            } catch (error) {
-                console.error('❌ Error loading chat history:', error);
-                
-                const chatList = document.getElementById('chatList');
-                if (chatList) {
-                    chatList.innerHTML = `
-                        <div class="no-chats-message">
-                            <div style="margin-bottom: 1rem;">Unable to load chat history.</div>
-                            <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Error: ${error.message}</div>
-                            <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
-                                Retry
-                            </button>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        function createChatItem(chatId, chatData) {
-            const chatItem = document.createElement('div');
-            chatItem.className = 'chat-item';
-            chatItem.dataset.chatId = chatId; // Store chatId for reliable identification
-            
-            const title = chatData.title || 'New Chat';
-            const preview = chatData.lastMessage ? 
-                chatData.lastMessage.substring(0, 50) + (chatData.lastMessage.length > 50 ? '...' : '') : 
-                'Start a conversation';
-            const date = chatData.lastUpdated ? 
-                new Date(chatData.lastUpdated.toDate()).toLocaleDateString() : 
-                new Date().toLocaleDateString();
-            
-            chatItem.innerHTML = `
-                <div class="chat-item-title">${escapeHtml(title)}</div>
-                <div class="chat-item-preview">${escapeHtml(preview)}</div>
-                <div class="chat-item-date">${date}</div>
-                <button class="chat-item-delete" onclick="event.stopPropagation(); window.deleteChatSession('${chatId}')" title="Delete chat">×</button>
-            `;
-            
-            // Add click event listener
-            chatItem.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('🖱️ Chat item clicked:', chatId);
-                window.loadChatSession(chatId);
-            });
-            
-            return chatItem;
-        }
-
-        window.loadChatSession = async function(chatId) {
-            try {
-                console.log('📖 Loading chat session:', chatId);
-                
-                if (!window.auth.currentUser) {
-                    alert('Please log in to access chat history.');
-                    return;
-                }
-                
-                window.currentChatId = chatId;
-                window.currentChatMessages = [];
-                
-                // Update UI - remove active class from all items first
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Mark the clicked item as active immediately
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    if (item.dataset.chatId === chatId) {
-                        item.classList.add('active');
-                    }
-                });
-                
-                // Use simple query without orderBy to avoid index issues
-                const messagesQuery = query(
-                    collection(db, 'chatMessages'),
-                    where('chatId', '==', chatId),
-                    where('userId', '==', window.auth.currentUser.uid)
-                );
-                
-                const querySnapshot = await getDocs(messagesQuery);
-                const chatMessages = document.getElementById('chatMessages');
-                
-                if (!chatMessages) {
-                    console.error('❌ Chat messages container not found');
-                    return;
-                }
-                
-                chatMessages.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    chatMessages.innerHTML = `
-                        <div class="message ai-message">
-                            <strong>AI Counselor:</strong> 
-                            This chat appears to be empty. Let's start a new conversation!
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Convert to array and sort manually by timestamp
-                const messages = [];
-                querySnapshot.forEach((docSnapshot) => {
-                    const messageData = docSnapshot.data();
-                    messages.push(messageData);
-                });
-                
-                // Sort by timestamp manually (oldest first)
-                messages.sort((a, b) => {
-                    if (a.timestamp && b.timestamp) {
-                        return a.timestamp.toMillis() - b.timestamp.toMillis();
-                    }
-                    return 0;
-                });
-                
-                // Add each message to the chat
-                messages.forEach((messageData) => {
-                    const messageDiv = document.createElement('div');
-                    
-                    if (messageData.sender === 'user') {
-                        messageDiv.className = 'message user-message';
-                        messageDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(messageData.message)}`;
-                    } else {
-                        messageDiv.className = 'message ai-message';
-                        messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(messageData.message)}`;
-                    }
-                    
-                    chatMessages.appendChild(messageDiv);
-                    window.currentChatMessages.push(messageData);
-                });
-                
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                console.log(`📖 Loaded ${messages.length} messages for chat ${chatId}`);
-                
-            } catch (error) {
-                console.error('❌ Error loading chat session:', error);
-                
-                // More specific error handling
-                let errorMessage = 'Error loading chat. Please try again.';
-                
-                if (error.code === 'permission-denied') {
-                    errorMessage = 'Permission denied. Please make sure you are logged in and try refreshing the page.';
-                } else if (error.code === 'failed-precondition') {
-                    errorMessage = 'Database is still setting up. Please try again in a moment.';
-                } else if (error.code === 'unavailable') {
-                    errorMessage = 'Database is temporarily unavailable. Please try again in a moment.';
-                }
-                
-                alert(errorMessage);
-            }
-        };
-
-        window.deleteChatSession = async function(chatId) {
-            if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                console.log('🗑️ Deleting chat session:', chatId);
-                
-                // Delete chat session
-                await deleteDoc(doc(db, 'chatSessions', chatId));
-                
-                // Delete all messages in the chat
-                const messagesQuery = query(
-                    collection(db, 'chatMessages'),
-                    where('chatId', '==', chatId)
-                );
-                
-                const querySnapshot = await getDocs(messagesQuery);
-                const deletePromises = querySnapshot.docs.map(messageDoc => 
-                    deleteDoc(doc(db, 'chatMessages', messageDoc.id))
-                );
-                
-                await Promise.all(deletePromises);
-                
-                // Refresh chat list
-                if (auth.currentUser) {
-                    await loadChatHistory(auth.currentUser.uid);
-                }
-                
-                // Start new chat if current chat was deleted
-                if (window.currentChatId === chatId) {
-                    window.startNewChat();
-                }
-                
-                console.log('✅ Chat session deleted successfully');
-                
-            } catch (error) {
-                console.error('❌ Error deleting chat session:', error);
-                alert('Error deleting chat. Please try again.');
-            }
-        };
-
-        async function saveChatMessage(userId, chatId, message, sender) {
-                       try {
-                await addDoc(collection(db, 'chatMessages'), {
-                    userId: userId,
-                    chatId: chatId,
-                    message: message,
-                    sender: sender,
-                    timestamp: serverTimestamp()
-                });
-                
-                console.log('💾 Message saved successfully');
-                
-            } catch (error) {
-                console.error('❌ Error saving message:', error);
-                throw error;
-            }
-        }
-
-        async function saveChatSession(userId, chatId, title, lastMessage) {
-            try {
-                const chatSessionData = {
-                    userId: userId,
-                    lastMessage: lastMessage,
-                    lastUpdated: serverTimestamp()
-                };
-                
-                if (title && window.currentChatMessages.length <= 2) {
-                    chatSessionData.title = title;
-                }
-                
-                await setDoc(doc(db, 'chatSessions', chatId), chatSessionData, { merge: true });
-                
-                console.log('💾 Chat session saved successfully');
-                
-            } catch (error) {
-                console.error('❌ Error saving chat session:', error);
-                throw error;
-            }
-        }
-
-        function generateChatTitle(firstMessage) {
-            const words = firstMessage.trim().split(' ').slice(0, 5);
-            let title = words.join(' ');
-            title = title.charAt(0).toUpperCase() + title.slice(1);
-            
-            if (firstMessage.split(' ').length > 5) {
-                title += '...';
-            }
-            
-            return title || 'New Chat';
-        }
-
-        window.clearCurrentChat = function() {
-            if (confirm('Are you sure you want to start a new chat? Current conversation will be saved.')) {
-                window.startNewChat();
-            }
-        };
-
-        function resetDashboard() {
-            const chatList = document.getElementById('chatList');
-            const chatMessages = document.getElementById('chatMessages');
-            const welcomeTitle = document.getElementById('welcomeTitle');
-            
-            if (chatList) {
-                chatList.innerHTML = '<div class="no-chats-message">Please log in to save your chat history.</div>';
-            }
-            
-            if (chatMessages) {
-                chatMessages.innerHTML = `
-                    <div class="message ai-message">
-                        <strong>AI Counselor:</strong> 
-                        Hello! I'm your personal AI college counselor. I can help you with college applications, essays, scholarships, and more. Please log in to save our conversation and access personalized features.
-                    </div>
-                `;
-            }
-            
-            if (welcomeTitle) {
-                welcomeTitle.textContent = 'Welcome to Your College Climb Dashboard';
-            }
-            
-            // Reset progress bars
-            updateProgressBars({ application: 0, essays: 0, resume: 0, scholarships: 0 });
-            
-            window.currentChatId = null;
-            window.currentChatMessages = [];
-        }
-
-        // Logout function
-        window.logout = async function() {
-            try {
-                console.log('👋 Logging out user');
-                await signOut(auth);
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('❌ Error signing out:', error);
-                alert('Error signing out. Please try again.');
-            }
-        };
-
-        // Event listeners
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', window.logout);
-        }
-
-        // Utility functions
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-
-        // Make functions globally available
-        window.saveChatMessage = saveChatMessage;
-        window.saveChatSession = saveChatSession;
-        window.generateChatTitle = generateChatTitle;
-        window.loadChatHistory = loadChatHistory;
-    </script>
-
-    <script>
-        // Theme Management & General Functions
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 DOM Content Loaded');
-            
-            // Theme Toggle
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
-            
-            if (themeToggle) {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                body.setAttribute('data-theme', savedTheme);
-                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-                
-                themeToggle.addEventListener('click', function() {
-                    const currentTheme = body.getAttribute('data-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    
-                    body.setAttribute('data-theme', newTheme);
-                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-                    localStorage.setItem('theme', newTheme);
-                });
-            }
-            
-            // Initialize components
-            createStarryBackground();
-            initializeAnimations();
-        });
-
-        // Create animated starry background
-        function createStarryBackground() {
-            const starryBg = document.getElementById('starryBg');
-            if (!starryBg) return;
-            
-            const numStars = 150;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        // Animate progress bars
-        window.animateProgressBars = function() {
-            const progressBars = [
-                { id: 'applicationBar', percent: 15 },
-                { id: 'essayBar', percent: 35 },
-                { id: 'resumeBar', percent: 60 },
-                { id: 'scholarshipBar', percent: 25 }
-            ];
-            
-            progressBars.forEach(bar => {
-                const element = document.getElementById(bar.id);
-                if (element) {
-                    element.style.width = bar.percent + '%';
-                }
-            });
-        }
-
-        // Navigation functions
-        function openApplicationProgress() { window.location.href = 'application-tracker.html'; }
-        function openEssayProgress() { window.location.href = 'essay-helper.html'; }
-        function openResumeProgress() { window.location.href = 'resume-builder.html'; }
-        function openScholarshipProgress() { window.location.href = 'scholarship-finder.html'; }
-        function openEssayHelper() { window.location.href = 'essay-helper.html'; }
-        function openResumeBuilder() { window.location.href = 'resume-builder.html'; }
-        function openCollegeSearch() { window.location.href = 'college-search.html'; }
-        function openScholarshipFinder() { window.location.href = 'scholarship-finder.html'; }
-        function openInterviewPrep() { window.location.href = 'interview-prep.html'; }
-        function openTestPrep() { window.location.href = 'test-prep.html'; }
-
-        function openFeature(feature) {
-            switch(feature) {
-                case 'application': openApplicationProgress(); break;
-                case 'essays': openEssayProgress(); break;
-                case 'resume': openResumeProgress(); break;
-                case 'scholarships': openScholarshipProgress(); break;
-                case 'essay-helper': openEssayHelper(); break;
-                case 'resume-builder': openResumeBuilder(); break;
-                case 'college-search': openCollegeSearch(); break;
-                case 'scholarship-finder': openScholarshipFinder(); break;
-                case 'interview-prep': openInterviewPrep(); break;
-                case 'test-prep': openTestPrep(); break;
-                default: console.log('Feature not found:', feature);
-            }
-        }
-
-        function initializeAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.fade-in-up').forEach(el => {
-                observer.observe(el);
-            });
-        }
-
-        // Chat functionality
-        let lastMessageTime = 0;
-        const MESSAGE_COOLDOWN = 1000;
-
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const sendButton = document.getElementById('sendButton');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const now = Date.now();
-            if (now - lastMessageTime < MESSAGE_COOLDOWN) {
-                console.log('⏱️ Message cooldown active');
-                return;
-            }
-            lastMessageTime = now;
-            
-            console.log('📤 Sending personalized message:', message);
-            
-            // Disable input
-            input.disabled = true;
-            sendButton.disabled = true;
-            sendButton.textContent = 'Sending...';
-            
-            try {
-                // Start new chat if none exists
-                if (!window.currentChatId) {
-                    if (window.startNewChat) {
-                        window.startNewChat();
-                    }
-                }
-                
-                const chatMessages = document.getElementById('chatMessages');
-                
-                // Add user message
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user-message';
-                userMessage.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
-                chatMessages.appendChild(userMessage);
-                
-                input.value = '';
-                
-                // Add typing indicator
-                const typingIndicator = document.createElement('div');
-                typingIndicator.className = 'message ai-message typing';
-                typingIndicator.innerHTML = `<strong>AI Counselor:</strong> <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-                chatMessages.appendChild(typingIndicator);
-                
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                // Prepare user profile data for personalization
-                let userProfileData = null;
-                let questionnaireData = null;
-                
-                if (window.auth && window.auth.currentUser) {
-                    try {
-                        // Get user data from Firestore for personalization
-                        const userDoc = await getDoc(doc(window.db, 'users', window.auth.currentUser.uid));
-                        if (userDoc.exists()) {
-                            const userData = userDoc.data();
-                            
-                            userProfileData = {
-                                name: userData.name,
-                                email: userData.email,
-                                currentGrade: userData.currentGrade,
-                                currentSchool: userData.currentSchool,
-                                gpa: userData.gpa,
-                                graduationYear: userData.graduationYear
-                            };
-                            
-                            // Include questionnaire data for full personalization
-                            if (userData.questionnaire) {
-                                questionnaireData = userData.questionnaire;
-                                console.log('📋 Including questionnaire data for personalization');
-                            }
-                            
-                            console.log('👤 Including user profile data for personalization');
-                        }
-                    } catch (error) {
-                        console.error('❌ Error fetching user data for personalization:', error);
-                        // Continue without personalization data
-                    }
-                }
-                
-                // Get AI response with personalization data
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message: message,
-                        userProfile: userProfileData,
-                        questionnaireData: questionnaireData
-                    })
-                });
-                
-                // Remove typing indicator
-                if (chatMessages.contains(typingIndicator)) {
-                    chatMessages.removeChild(typingIndicator);
-                }
-                
-                let aiResponseText;
-                if (response.ok) {
-                    const data = await response.json();
-                    aiResponseText = data.response || 'Sorry, I received an empty response.';
-                } else {
-                    console.error('API Error:', response.status);
-                    aiResponseText = 'Sorry, I\'m having trouble connecting right now.';
-                }
-                
-                // Add AI response
-                const aiMessage = document.createElement('div');
-                aiMessage.className = 'message ai-message';
-                aiMessage.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(aiResponseText)}`;
-                chatMessages.appendChild(aiMessage);
-                
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                // Save to database if user is logged in
-                if (window.auth && window.auth.currentUser) {
-                    try {
-                        const userId = window.auth.currentUser.uid;
-                        console.log('💾 Saving personalized chat...');
-                        
-                        await Promise.all([
-                            window.saveChatMessage(userId, window.currentChatId, message, 'user'),
-                            window.saveChatMessage(userId, window.currentChatId, aiResponseText, 'ai')
-                        ]);
-                        
-                        // Generate title for new chats
-                        let chatTitle = null;
-                        if (window.currentChatMessages.length === 0) {
-                            chatTitle = window.generateChatTitle(message);
-                        }
-                        
-                        await window.saveChatSession(userId, window.currentChatId, chatTitle, message);
-                        
-                        // Update current messages
-                        window.currentChatMessages.push(
-                            { message: message, sender: 'user' },
-                            { message: aiResponseText, sender: 'ai' }
-                        );
-                        
-                        // Refresh chat list if needed
-                        if (window.currentChatMessages.length <= 2) {
-                            await window.loadChatHistory(userId);
-                        }
-                        
-                        console.log('✅ Personalized chat saved successfully');
-                        
-                    } catch (saveError) {
-                        console.error('❌ Error saving chat:', saveError);
-                        // Continue anyway - don't block the UI
-                    }
-                }
-                
-            } catch (error) {
-                console.error('❌ Error sending personalized message:', error);
-                
-                // Remove typing indicator if it exists
-                const typingElements = chatMessages.querySelectorAll('.typing');
-                typingElements.forEach(el => el.remove());
-                
-                // Show error message
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'message ai-message';
-                errorMessage.innerHTML = `<strong>AI Counselor:</strong> Sorry, I'm having trouble connecting right now. Please try again in a moment.`;
-                chatMessages.appendChild(errorMessage);
-                
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-            } finally {
-                // Re-enable input
-                input.disabled = false;
-                sendButton.disabled = false;
-                sendButton.textContent = 'Send';
-            }
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-    </script>
-
-</body>
-</html>
+            <li class="
