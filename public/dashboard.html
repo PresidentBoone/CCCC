@@ -1,1374 +1,10 @@
-<li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    <span id="navAccountText">Account</span>
-                </a>
-                <div class="dropdown-content" id="authDropdown">
-                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
-                        Welcome, <span id="dropdownDisplayName"></span>!
-                    </div>
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
-                    </div>
-                </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
-    </nav>
-
-    <!-- Main Dashboard -->
-    <div class="dashboard-container">
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <h1 id="welcomeTitle">Welcome to Your Success Hub</h1>
-            <p id="welcomeMessage">Your personalized college application command center powered by AI</p>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="stats-overview">
-            <div class="stat-card" onclick="showApplicationTracker()">
-                <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <div class="stat-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+12%</span>
-                    </div>
-                </div>
-                <div class="stat-value" id="applicationsCount">8</div>
-                <div class="stat-label">Applications in Progress</div>
-            </div>
-
-            <div class="stat-card" onclick="showEssayTracker()">
-                <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-edit"></i></div>
-                    <div class="stat-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+25%</span>
-                    </div>
-                </div>
-                <div class="stat-value" id="essaysCount">5</div>
-                <div class="stat-label">Essays Completed</div>
-            </div>
-
-            <div class="stat-card" onclick="showScholarshipTracker()">
-                <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                    <div class="stat-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+$5K</span>
-                    </div>
-                </div>
-                <div class="stat-value" id="scholarshipAmount">$15K</div>
-                <div class="stat-label">Scholarships Applied</div>
-            </div>
-
-            <div class="stat-card" onclick="showProgressAnalytics()">
-                <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="stat-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+18%</span>
-                    </div>
-                </div>
-                <div class="stat-value" id="overallProgress">73%</div>
-                <div class="stat-label">Overall Progress</div>
-            </div>
-        </div>
-
-        <!-- Main Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Application Tracker -->
-            <div class="tracker-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">
-                        <i class="fas fa-tasks"></i>
-                        Application Timeline
-                    </h2>
-                </div>
-
-                <div class="application-list" id="applicationList">
-                    <div class="application-item">
-                        <div class="application-info">
-                            <h4>Harvard University</h4>
-                            <div class="application-deadline">Due: January 1, 2025</div>
-                        </div>
-                        <div class="status-badge status-in-progress">In Progress</div>
-                    </div>
-
-                    <div class="application-item">
-                        <div class="application-info">
-                            <h4>Stanford University</h4>
-                            <div class="application-deadline">Due: January 1, 2025</div>
-                        </div>
-                        <div class="status-badge status-not-started">Not Started</div>
-                    </div>
-
-                    <div class="application-item">
-                        <div class="application-info">
-                            <h4>MIT</h4>
-                            <div class="application-deadline">Due: January 1, 2025</div>
-                        </div>
-                        <div class="status-badge status-in-progress">In Progress</div>
-                    </div>
-
-                    <div class="application-item">
-                        <div class="application-info">
-                            <h4>UC Berkeley</h4>
-                            <div class="application-deadline">Due: November 30, 2024</div>
-                        </div>
-                        <div class="status-badge status-submitted">Submitted</div>
-                    </div>
-                </div>
-
-                <!-- Progress Circle -->
-                <div style="text-align: center; margin-top: 2rem;">
-                    <div class="progress-circle">
-                        <svg>
-                            <circle class="progress-circle-bg" cx="60" cy="60" r="52"></circle>
-                            <circle class="progress-circle-fill" cx="60" cy="60" r="52" 
-                                    stroke-dasharray="327" stroke-dashoffset="81.75" id="progressCircle"></circle>
-                        </svg>
-                        <div class="progress-text" id="progressText">75%</div>
-                    </div>
-                    <p style="color: var(--text-secondary); margin-top: 1rem;">Applications Progress</p>
-                </div>
-            </div>
-
-            <!-- Right Sidebar -->
-            <div class="sidebar">
-                <!-- Quick Actions -->
-                <div class="quick-actions">
-                    <div class="panel-header">
-                        <h3 class="panel-title">
-                            <i class="fas fa-bolt"></i>
-                            Quick Actions
-                        </h3>
-                    </div>
-
-                    <div class="action-grid">
-                        <div class="action-button" onclick="startApplicationAudit()">
-                            <div class="action-icon"><i class="fas fa-search"></i></div>
-                            <div class="action-content">
-                                <h4>Application Audit</h4>
-                                <p>AI analysis of your profile</p>
-                            </div>
-                        </div>
-
-                        <div class="action-button" onclick="startEssayCoach()">
-                            <div class="action-icon"><i class="fas fa-pen-fancy"></i></div>
-                            <div class="action-content">
-                                <h4>Essay Coach</h4>
-                                <p>Get AI feedback on essays</p>
-                            </div>
-                        </div>
-
-                        <div class="action-button" onclick="findScholarships()">
-                            <div class="action-icon"><i class="fas fa-trophy"></i></div>
-                            <div class="action-content">
-                                <h4>Find Scholarships</h4>
-                                <p>Personalized opportunities</p>
-                            </div>
-                        </div>
-
-                        <div class="action-button" onclick="scheduleInterview()">
-                            <div class="action-icon"><i class="fas fa-video"></i></div>
-                            <div class="action-content">
-                                <h4>Interview Prep</h4>
-                                <p>Practice with AI</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Calendar Widget -->
-                <div class="calendar-widget">
-                    <div class="calendar-header">
-                        <button class="calendar-nav" id="prevMonth">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <h4 id="currentMonth">November 2024</h4>
-                        <button class="calendar-nav" id="nextMonth">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-
-                    <div class="calendar-grid" id="calendarGrid">
-                        <!-- Calendar days will be generated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- AI Chat Widget -->
-    <div class="chat-widget" id="chatWidget">
-        <div class="chat-header">
-            <div class="chat-title">
-                <i class="fas fa-robot"></i>
-                AI Counselor
-                <div class="online-indicator"></div>
-            </div>
-            <button class="chat-close" onclick="toggleChat()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="chat-message ai">
-                <strong>AI Counselor:</strong> Hello! I'm your personal AI college counselor. I have access to your profile and can provide personalized advice about your college journey. How can I help you today?
-            </div>
-        </div>
-
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput" 
-                   placeholder="Ask about applications, essays, scholarships..." 
-                   onkeypress="handleChatKeyPress(event)">
-            <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Chat Toggle Button -->
-    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
-        <i class="fas fa-comments"></i>
-    </button>
-
-    <!-- Notification Template -->
-    <div class="notification" id="notification">
-        <div class="notification-content">
-            <div class="notification-icon">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="notification-text">
-                <h4 id="notificationTitle">Notification</h4>
-                <p id="notificationMessage">This is a notification message</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <img src="images/whiteclearcc.png" alt="College Climb Logo" class="footer-logo">
-            <div class="footer-text">
-                &copy; 2025 College Climb. All rights reserved.
-            </div>
-            <div class="footer-socials">
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-                </a>
-                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
-                </a>
-                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
-                </a>
-                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Firebase & JavaScript Integration -->
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Global variables
-        window.auth = auth;
-        window.db = db;
-        window.currentUser = null;
-        window.currentChatId = null;
-
-        console.log('🔥 Firebase initialized successfully');
-
-        // Auth state management
-        onAuthStateChanged(auth, async (user) => {
-            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
-            
-            updateAuthUI(user);
-            
-            if (user) {
-                document.body.classList.add("logged-in");
-                await loadUserProfile(user);
-                await loadDashboardData(user.uid);
-                initializeRealTimeUpdates(user.uid);
-            } else {
-                document.body.classList.remove("logged-in");
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Update navbar UI
-        function updateAuthUI(user) {
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
-
-            if (user) {
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
-                
-                const displayName = user.displayName || user.email.split('@')[0];
-                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
-                
-                if (user.photoURL) {
-                    if (navUserAvatar) {
-                        navUserAvatar.src = user.photoURL;
-                        navUserAvatar.style.display = 'block';
-                    }
-                    if (navAccountText) navAccountText.style.display = 'none';
-                } else {
-                    if (navUserAvatar) navUserAvatar.style.display = 'none';
-                    if (navAccountText) navAccountText.style.display = 'inline';
-                }
-            } else {
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-                if (navUserAvatar) navUserAvatar.style.display = 'none';
-                if (navAccountText) navAccountText.style.display = 'inline';
-            }
-        }
-
-        // Load user profile and personalize dashboard
-        async function loadUserProfile(user) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    window.currentUser = {
-                        ...user,
-                        profile: userData,
-                        questionnaire: userData.questionnaire || null
-                    };
-                    
-                    updateWelcomeMessage(userData);
-                } else {
-                    // Initialize user document
-                    await setDoc(doc(db, 'users', user.uid), {
-                        email: user.email,
-                        name: user.displayName || user.email.split('@')[0],
-                        createdAt: serverTimestamp(),
-                        lastLogin: serverTimestamp()
-                    });
-                    
-                    window.currentUser = {
-                        ...user,
-                        profile: { name: user.displayName || user.email.split('@')[0] },
-                        questionnaire: null
-                    };
-                }
-            } catch (error) {
-                console.error('❌ Error loading user profile:', error);
-            }
-        }
-
-        function updateWelcomeMessage(userData) {
-            const welcomeTitle = document.getElementById('welcomeTitle');
-            const welcomeMessage = document.getElementById('welcomeMessage');
-            
-            if (userData.name) {
-                welcomeTitle.textContent = `Welcome back, ${userData.name}!`;
-                
-                // Personalized message based on user data
-                if (userData.questionnaire) {
-                    const major = userData.questionnaire.intendedMajor;
-                    const schools = userData.questionnaire.targetSchools;
-                    
-                    if (major && schools && schools.length > 0) {
-                        welcomeMessage.textContent = `Ready to work on your ${major} applications for ${schools[0]} and other top schools?`;
-                    } else if (major) {
-                        welcomeMessage.textContent = `Let's advance your ${major} journey with personalized guidance`;
-                    } else {
-                        welcomeMessage.textContent = 'Your AI-powered college application assistant is ready to help';
-                    }
-                } else {
-                    welcomeMessage.textContent = 'Complete your profile to get personalized recommendations';
-                }
-            }
-        }
-
-        // Load dashboard data
-        async function loadDashboardData(userId) {
-            try {
-                // Load applications
-                await loadApplications(userId);
-                
-                // Load statistics
-                await loadUserStats(userId);
-                
-                // Generate calendar
-                generateCalendar();
-                
-                console.log('✅ Dashboard data loaded successfully');
-                
-            } catch (error) {
-                console.error('❌ Error loading dashboard data:', error);
-            }
-        }
-
-        async function loadApplications(userId) {
-            try {
-                const appsQuery = query(
-                    collection(db, 'applications'),
-                    where('userId', '==', userId)
-                );
-                
-                const querySnapshot = await getDocs(appsQuery);
-                
-                if (querySnapshot.empty) {
-                    // Create default applications based on user profile
-                    await createDefaultApplications(userId);
-                } else {
-                    updateApplicationList(querySnapshot);
-                }
-            } catch (error) {
-                console.error('❌ Error loading applications:', error);
-                // Show default applications
-                showDefaultApplications();
-            }
-        }
-
-        async function createDefaultApplications(userId) {
-            const defaultSchools = [
-                { name: 'Harvard University', deadline: '2025-01-01', status: 'in-progress' },
-                { name: 'Stanford University', deadline: '2025-01-01', status: 'not-started' },
-                { name: 'MIT', deadline: '2025-01-01', status: 'in-progress' },
-                { name: 'UC Berkeley', deadline: '2024-11-30', status: 'submitted' },
-                { name: 'Yale University', deadline: '2025-01-01', status: 'not-started' },
-                { name: 'Princeton University', deadline: '2025-01-01', status: 'not-started' }
-            ];
-
-            // If user has questionnaire data, use their target schools
-            if (window.currentUser?.questionnaire?.targetSchools) {
-                const userSchools = window.currentUser.questionnaire.targetSchools;
-                userSchools.forEach((school, index) => {
-                    if (index < defaultSchools.length) {
-                        defaultSchools[index].name = school;
-                    }
-                });
-            }
-
-            for (const school of defaultSchools) {
-                await addDoc(collection(db, 'applications'), {
-                    userId: userId,
-                    schoolName: school.name,
-                    deadline: school.deadline,
-                    status: school.status,
-                    createdAt: serverTimestamp()
-                });
-            }
-
-            // Reload applications
-            await loadApplications(userId);
-        }
-
-        function updateApplicationList(querySnapshot) {
-            const applicationList = document.getElementById('applicationList');
-            applicationList.innerHTML = '';
-
-            querySnapshot.forEach((doc) => {
-                const app = doc.data();
-                const appElement = createApplicationElement(app);
-                applicationList.appendChild(appElement);
-            });
-
-            updateProgressCircle(querySnapshot);
-        }
-
-        function createApplicationElement(app) {
-            const div = document.createElement('div');
-            div.className = 'application-item';
-            
-            const statusClass = `status-${app.status}`;
-            const statusText = app.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-            
-            const deadline = new Date(app.deadline).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            div.innerHTML = `
-                <div class="application-info">
-                    <h4>${app.schoolName}</h4>
-                    <div class="application-deadline">Due: ${deadline}</div>
-                </div>
-                <div class="status-badge ${statusClass}">${statusText}</div>
-            `;
-
-            div.addEventListener('click', () => openApplicationDetails(app));
-            
-            return div;
-        }
-
-        function updateProgressCircle(querySnapshot) {
-            let submitted = 0;
-            let total = querySnapshot.size;
-
-            querySnapshot.forEach((doc) => {
-                const app = doc.data();
-                if (app.status === 'submitted') submitted++;
-            });
-
-            const percentage = total > 0 ? Math.round((submitted / total) * 100) : 0;
-            const circumference = 2 * Math.PI * 52;
-            const offset = circumference - (percentage / 100) * circumference;
-
-            document.getElementById('progressText').textContent = `${percentage}%`;
-            document.getElementById('progressCircle').style.strokeDashoffset = offset;
-        }
-
-        async function loadUserStats(userId) {
-            try {
-                // Load real statistics from user data
-                const stats = await calculateUserStats(userId);
-                
-                document.getElementById('applicationsCount').textContent = stats.applications;
-                document.getElementById('essaysCount').textContent = stats.essays;
-                document.getElementById('scholarshipAmount').textContent = `${stats.scholarships}K`;
-                document.getElementById('overallProgress').textContent = `${stats.progress}%`;
-                
-            } catch (error) {
-                console.error('❌ Error loading user stats:', error);
-            }
-        }
-
-        async function calculateUserStats(userId) {
-            // Calculate real statistics from user's data
-            const applications = await getDocs(query(collection(db, 'applications'), where('userId', '==', userId)));
-            const essays = await getDocs(query(collection(db, 'essays'), where('userId', '==', userId)));
-            const scholarships = await getDocs(query(collection(db, 'scholarships'), where('userId', '==', userId)));
-
-            let scholarshipTotal = 0;
-            scholarships.forEach(doc => {
-                scholarshipTotal += doc.data().amount || 0;
-            });
-
-            const submittedApps = applications.docs.filter(doc => doc.data().status === 'submitted').length;
-            const progress = applications.size > 0 ? Math.round((submittedApps / applications.size) * 100) : 0;
-
-            return {
-                applications: applications.size,
-                essays: essays.size,
-                scholarships: Math.round(scholarshipTotal / 1000),
-                progress: progress
-            };
-        }
-
-        // Initialize real-time updates
-        function initializeRealTimeUpdates(userId) {
-            // Listen for application updates
-            const applicationsQuery = query(
-                collection(db, 'applications'),
-                where('userId', '==', userId)
-            );
-
-            onSnapshot(applicationsQuery, (snapshot) => {
-                updateApplicationList(snapshot);
-                showNotification('Applications Updated', 'Your application status has been updated');
-            });
-
-            // Listen for new messages or notifications
-            const notificationsQuery = query(
-                collection(db, 'notifications'),
-                where('userId', '==', userId),
-                where('read', '==', false)
-            );
-
-            onSnapshot(notificationsQuery, (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                        const notification = change.doc.data();
-                        showNotification(notification.title, notification.message);
-                    }
-                });
-            });
-        }
-
-        // Chat functionality with personalized responses
-        window.sendChatMessage = async function() {
-            const input = document.getElementById('chatInput');
-            const sendButton = document.getElementById('chatSend');
-            const message = input.value.trim();
-
-            if (!message) return;
-
-            // Rate limiting check
-            const now = Date.now();
-            const lastMessageTime = localStorage.getItem('lastChatTime');
-            if (lastMessageTime && (now - parseInt(lastMessageTime)) < 2000) {
-                showNotification('Rate Limit', 'Please wait a moment before sending another message.', 'warning');
-                return;
-            }
-            localStorage.setItem('lastChatTime', now.toString());
-
-            // Disable input
-            input.disabled = true;
-            sendButton.disabled = true;
-            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-            try {
-                // Add user message to chat
-                addChatMessage(message, 'user');
-                input.value = '';
-
-                // Add typing indicator
-                addTypingIndicator();
-
-                // Prepare comprehensive user data for personalization
-                const userData = {
-                    userProfile: {
-                        name: window.currentUser?.profile?.name || window.currentUser?.displayName,
-                        email: window.currentUser?.email,
-                        currentGrade: window.currentUser?.profile?.currentGrade,
-                        currentSchool: window.currentUser?.profile?.currentSchool,
-                        gpa: window.currentUser?.profile?.gpa,
-                        graduationYear: window.currentUser?.profile?.graduationYear
-                    },
-                    questionnaireData: window.currentUser?.questionnaire
-                };
-
-                // Get personalized AI response using your existing API
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        ...userData
-                    })
-                });
-
-                removeTypingIndicator();
-
-                let aiResponse;
-                if (response.ok) {
-                    const data = await response.json();
-                    aiResponse = data.response || 'I apologize, but I received an empty response. Please try asking your question again.';
-                    
-                    // Log successful personalized response
-                    console.log('✅ Personalized AI response received');
-                    
-                } else {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error('Chat API Error:', response.status, errorData);
-                    aiResponse = getErrorMessage(response.status, errorData);
-                }
-
-                addChatMessage(aiResponse, 'ai');
-
-                // Save chat message to Firebase with enhanced data
-                if (window.auth.currentUser) {
-                    await saveChatToFirebase(message, aiResponse, userData);
-                }
-
-                // Update chat statistics
-                updateChatStats();
-
-            } catch (error) {
-                console.error('❌ Error in chat:', error);
-                removeTypingIndicator();
-                
-                let errorMessage = 'I\'m having trouble connecting right now. ';
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    errorMessage += 'Please check your internet connection and try again.';
-                } else if (error.message.includes('timeout')) {
-                    errorMessage += 'The request timed out. Please try again.';
-                } else {
-                    errorMessage += 'Please try again in a moment.';
-                }
-                
-                addChatMessage(errorMessage, 'ai');
-                showNotification('Connection Error', 'Unable to send message. Please try again.', 'error');
-                
-            } finally {
-                input.disabled = false;
-                sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
-            }
-        };
-
-        function addChatMessage(message, sender) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${sender}`;
-            
-            if (sender === 'user') {
-                messageDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(message)}`;
-            } else {
-                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${escapeHtml(message)}`;
-            }
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function addTypingIndicator() {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'chat-message ai typing-indicator';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <strong>AI Counselor:</strong> 
-                <div class="typing-indicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        async function saveChatToFirebase(userMessage, aiResponse, userData) {
-            try {
-                const userId = window.auth.currentUser.uid;
-                const chatData = {
-                    userId: userId,
-                    userMessage: userMessage,
-                    aiResponse: aiResponse,
-                    timestamp: serverTimestamp(),
-                    userProfile: userData.userProfile || null,
-                    hasQuestionnaireData: !!userData.questionnaireData,
-                    sessionId: getOrCreateSessionId()
-                };
-
-                await addDoc(collection(db, 'chatHistory'), chatData);
-                console.log('💾 Enhanced chat data saved to Firebase');
-                
-                // Update user's last activity
-                await updateDoc(doc(db, 'users', userId), {
-                    lastActivity: serverTimestamp(),
-                    totalChatMessages: increment(1)
-                });
-                
-            } catch (error) {
-                console.error('❌ Error saving enhanced chat data:', error);
-                // Don't block user experience for save errors
-            }
-        }
-
-        function getOrCreateSessionId() {
-            let sessionId = sessionStorage.getItem('chatSessionId');
-            if (!sessionId) {
-                sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                sessionStorage.setItem('chatSessionId', sessionId);
-            }
-            return sessionId;
-        }
-
-        function updateChatStats() {
-            const chatCount = parseInt(localStorage.getItem('totalChatMessages') || '0') + 1;
-            localStorage.setItem('totalChatMessages', chatCount.toString());
-            
-            // Update UI stats if needed
-            if (chatCount % 10 === 0) {
-                showNotification('Milestone!', `You've sent ${chatCount} messages to your AI counselor!`, 'success');
-            }
-        }
-
-        function getErrorMessage(statusCode, errorData = {}) {
-            const userFriendlyMessages = {
-                400: 'I had trouble understanding your message. Could you please rephrase it?',
-                401: 'There seems to be an authentication issue. Please try refreshing the page.',
-                403: 'I don\'t have permission to process that request right now.',
-                429: 'I\'m experiencing high demand. Please wait a moment before trying again.',
-                500: 'I\'m temporarily having technical difficulties. Please try again in a few minutes.',
-                502: 'There\'s a temporary server issue. Please try again shortly.',
-                503: 'The service is temporarily unavailable. Please try again later.'
-            };
-
-            // Use specific error message if available
-            if (errorData.error && typeof errorData.error === 'string') {
-                return errorData.error;
-            }
-
-            return userFriendlyMessages[statusCode] || 'I\'m having trouble connecting right now. Please try again.';
-        }
-
-        window.handleChatKeyPress = function(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendChatMessage();
-            }
-        };
-
-        // Chat toggle functionality
-        window.toggleChat = function() {
-            const chatWidget = document.getElementById('chatWidget');
-            const chatToggle = document.getElementById('chatToggle');
-
-            if (chatWidget.classList.contains('open')) {
-                chatWidget.classList.remove('open');
-                chatToggle.classList.remove('hidden');
-            } else {
-                chatWidget.classList.add('open');
-                chatToggle.classList.add('hidden');
-                document.getElementById('chatInput').focus();
-            }
-        };
-
-        // Notification system
-        function showNotification(title, message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const titleEl = document.getElementById('notificationTitle');
-            const messageEl = document.getElementById('notificationMessage');
-            
-            titleEl.textContent = title;
-            messageEl.textContent = message;
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-
-        // Calendar functionality
-        function generateCalendar() {
-            const currentDate = new Date();
-            const currentMonth = currentDate.getMonth();
-            const currentYear = currentDate.getFullYear();
-            
-            updateCalendarHeader(currentMonth, currentYear);
-            generateCalendarDays(currentMonth, currentYear);
-        }
-
-        function updateCalendarHeader(month, year) {
-            const monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            
-            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
-        }
-
-        function generateCalendarDays(month, year) {
-            const calendarGrid = document.getElementById('calendarGrid');
-            calendarGrid.innerHTML = '';
-            
-            // Day headers
-            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            dayHeaders.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.textContent = day;
-                dayHeader.style.fontWeight = '600';
-                dayHeader.style.color = 'var(--text-secondary)';
-                dayHeader.style.fontSize = '0.8rem';
-                calendarGrid.appendChild(dayHeader);
-            });
-            
-            // Generate days
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-            
-            // Empty cells for days before month starts
-            for (let i = 0; i < firstDay; i++) {
-                const emptyDay = document.createElement('div');
-                calendarGrid.appendChild(emptyDay);
-            }
-            
-            // Days of the month
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                dayElement.textContent = day;
-                
-                // Highlight today
-                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
-                    dayElement.classList.add('today');
-                }
-                
-                // Add deadline indicators (mock data for demo)
-                if ([1, 15, 30].includes(day)) {
-                    dayElement.classList.add('has-deadline');
-                    dayElement.title = 'Application deadline';
-                }
-                
-                calendarGrid.appendChild(dayElement);
-            }
-        }
-
-        // Navigation functions for quick actions
-        window.startApplicationAudit = function() {
-            showNotification('Application Audit', 'Starting comprehensive analysis of your profile...');
-            // Navigate to audit page or show audit modal
-            setTimeout(() => {
-                window.location.href = 'application-audit.html';
-            }, 1000);
-        };
-
-        window.startEssayCoach = function() {
-            showNotification('Essay Coach', 'Loading AI writing assistant...');
-            setTimeout(() => {
-                window.location.href = 'essay-coach.html';
-            }, 1000);
-        };
-
-        window.findScholarships = function() {
-            showNotification('Scholarship Search', 'Finding personalized scholarship opportunities...');
-            setTimeout(() => {
-                window.location.href = 'scholarship-finder.html';
-            }, 1000);
-        };
-
-        window.scheduleInterview = function() {
-            showNotification('Interview Prep', 'Setting up AI interview practice...');
-            setTimeout(() => {
-                window.location.href = 'interview-prep.html';
-            }, 1000);
-        };
-
-        // Statistics navigation
-        window.showApplicationTracker = function() {
-            document.querySelector('.tracker-panel').scrollIntoView({ behavior: 'smooth' });
-        };
-
-        window.showEssayTracker = function() {
-            showNotification('Essay Tracker', 'Loading your essay portfolio...');
-        };
-
-        window.showScholarshipTracker = function() {
-            showNotification('Scholarship Tracker', 'Viewing scholarship applications...');
-        };
-
-        window.showProgressAnalytics = function() {
-            showNotification('Progress Analytics', 'Loading detailed analytics...');
-        };
-
-        function openApplicationDetails(app) {
-            showNotification('Application Details', `Opening ${app.schoolName} application...`);
-            // Here you would open a detailed view or navigate to application page
-        }
-
-        // Logout function
-        window.logout = async function() {
-            try {
-                console.log('👋 Logging out user');
-                await signOut(auth);
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('❌ Error signing out:', error);
-                showNotification('Error', 'Error signing out. Please try again.', 'error');
-            }
-        };
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', window.logout);
-            }
-        });
-
-        // Utility functions
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-
-        function showDefaultApplications() {
-            // Show default applications if Firebase data isn't available
-            const defaultApps = [
-                { schoolName: 'Harvard University', deadline: '2025-01-01', status: 'in-progress' },
-                { schoolName: 'Stanford University', deadline: '2025-01-01', status: 'not-started' },
-                { schoolName: 'MIT', deadline: '2025-01-01', status: 'in-progress' },
-                { schoolName: 'UC Berkeley', deadline: '2024-11-30', status: 'submitted' }
-            ];
-
-            const applicationList = document.getElementById('applicationList');
-            applicationList.innerHTML = '';
-
-            defaultApps.forEach(app => {
-                const appElement = createApplicationElement(app);
-                applicationList.appendChild(appElement);
-            });
-        }
-    </script>
-
-    <script>
-        // Theme Management & UI Enhancements
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 Advanced Dashboard Loaded');
-            
-            // Theme Toggle
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
-            
-            if (themeToggle) {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                body.setAttribute('data-theme', savedTheme);
-                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-                
-                themeToggle.addEventListener('click', function() {
-                    const currentTheme = body.getAttribute('data-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    
-                    body.setAttribute('data-theme', newTheme);
-                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-                    localStorage.setItem('theme', newTheme);
-                });
-            }
-            
-            // Initialize components
-            createStarryBackground();
-            initializeAnimations();
-            setupKeyboardShortcuts();
-        });
-
-        // Create animated starry background
-        function createStarryBackground() {
-            const starryBg = document.getElementById('starryBg');
-            if (!starryBg) return;
-            
-            const numStars = 200;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 3 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        // Initialize animations and observers
-        function initializeAnimations() {
-            // Intersection Observer for animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe elements for animation
-            document.querySelectorAll('.stat-card, .tracker-panel, .quick-actions').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-
-            // Animate progress circle
-            setTimeout(() => {
-                const progressCircle = document.getElementById('progressCircle');
-                if (progressCircle) {
-                    progressCircle.style.transition = 'stroke-dashoffset 2s ease-in-out';
-                }
-            }, 1000);
-        }
-
-        // Keyboard shortcuts
-        function setupKeyboardShortcuts() {
-            document.addEventListener('keydown', function(e) {
-                // Alt + C to open chat
-                if (e.altKey && e.key === 'c') {
-                    e.preventDefault();
-                    toggleChat();
-                }
-                
-                // Alt + A for application audit
-                if (e.altKey && e.key === 'a') {
-                    e.preventDefault();
-                    startApplicationAudit();
-                }
-                
-                // Alt + E for essay coach
-                if (e.altKey && e.key === 'e') {
-                    e.preventDefault();
-                    startEssayCoach();
-                }
-                
-                // Escape to close chat
-                if (e.key === 'Escape') {
-                    const chatWidget = document.getElementById('chatWidget');
-                    if (chatWidget.classList.contains('open')) {
-                        toggleChat();
-                    }
-                }
-            });
-        }
-
-        // Enhanced user experience features
-        function initializeEnhancements() {
-            // Auto-save drafts
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', debounce(function() {
-                    localStorage.setItem(`draft_${input.id}`, input.value);
-                }, 500));
-                
-                // Restore drafts
-                const savedValue = localStorage.getItem(`draft_${input.id}`);
-                if (savedValue) {
-                    input.value = savedValue;
-                }
-            });
-
-            // Smooth scrolling for internal links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ 
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-
-            // Loading states for buttons
-            document.querySelectorAll('button').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (!this.disabled) {
-                        this.style.opacity = '0.7';
-                        setTimeout(() => {
-                            this.style.opacity = '1';
-                        }, 200);
-                    }
-                });
-            });
-        }
-
-        // Utility functions
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Performance monitoring
-        function measurePerformance(operation, fn) {
-            const start = performance.now();
-            const result = fn();
-            const end = performance.now();
-            console.log(`${operation} took ${end - start} milliseconds`);
-            return result;
-        }
-
-        // Error handling and logging
-        window.addEventListener('error', function(e) {
-            console.error('Dashboard Error:', e.error);
-            
-            // Log to analytics service if available
-            if (window.gtag) {
-                window.gtag('event', 'exception', {
-                    description: e.error.message,
-                    fatal: false
-                });
-            }
-        });
-
-        // Service Worker for offline functionality
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(registration => {
-                    console.log('SW registered: ', registration);
-                })
-                .catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
-                });
-        }
-
-        // Initialize enhancements after DOM load
-        document.addEventListener('DOMContentLoaded', initializeEnhancements);
-
-        // Accessibility enhancements
-        function announceToScreenReader(message) {
-            const announcement = document.createElement('div');
-            announcement.setAttribute('aria-live', 'polite');
-            announcement.setAttribute('aria-atomic', 'true');
-            announcement.className = 'sr-only';
-            announcement.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;';
-            announcement.textContent = message;
-            
-            document.body.appendChild(announcement);
-            setTimeout(() => {
-                document.body.removeChild(announcement);
-            }, 1000);
-        }
-
-        // Real-time status updates
-        function updateOnlineStatus() {
-            const onlineIndicator = document.querySelector('.online-indicator');
-            if (navigator.onLine) {
-                onlineIndicator.style.background = 'var(--success-color)';
-                announceToScreenReader('You are online');
-            } else {
-                onlineIndicator.style.background = 'var(--danger-color)';
-                announceToScreenReader('You are offline');
-            }
-        }
-
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-
-        // Production-ready error handling and fallbacks
-        window.addEventListener('unhandledrejection', function(event) {
-            console.error('Unhandled promise rejection:', event.reason);
-            showNotification('Connection Error', 'A connection issue occurred. Please refresh if problems persist.', 'error');
-        });
-
-        // Network status monitoring
-        function updateConnectionStatus() {
-            if (!navigator.onLine) {
-                showNotification('Offline', 'You appear to be offline. Some features may not work.', 'warning');
-                document.querySelectorAll('button, input').forEach(el => {
-                    if (!el.classList.contains('offline-safe')) {
-                        el.disabled = true;
-                    }
-                });
-            } else {
-                document.querySelectorAll('button, input').forEach(el => {
-                    el.disabled = false;
-                });
-            }
-        }
-
-        window.addEventListener('online', () => {
-            showNotification('Online', 'Connection restored!', 'success');
-            updateConnectionStatus();
-        });
-
-        window.addEventListener('offline', updateConnectionStatus);
-
-        // Initialize connection monitoring
-        document.addEventListener('DOMContentLoaded', updateConnectionStatus);
-
-        // Pre-flight check for required services
-        async function performStartupChecks() {
-            const checks = {
-                firebase: false,
-                api: false,
-                auth: false
-            };
-
-            try {
-                // Check Firebase connection
-                if (window.db) {
-                    checks.firebase = true;
-                    console.log('✅ Firebase connected');
-                }
-
-                // Check API endpoint
-                try {
-                    const testResponse = await fetch('/api/chat', {
-                        method: 'OPTIONS'
-                    });
-                    if (testResponse.status === 200 || testResponse.status === 405) {
-                        checks.api = true;
-                        console.log('✅ Chat API endpoint accessible');
-                    }
-                } catch (apiError) {
-                    console.warn('⚠️ Chat API endpoint not accessible:', apiError.message);
-                }
-
-                // Check auth state
-                if (window.auth) {
-                    checks.auth = true;
-                    console.log('✅ Firebase Auth initialized');
-                }
-
-                // Report overall status
-                const allChecksPass = Object.values(checks).every(check => check);
-                if (allChecksPass) {
-                    console.log('🎉 All systems operational - Dashboard ready for users');
-                } else {
-                    console.warn('⚠️ Some services may not be fully operational:', checks);
-                }
-
-                return checks;
-
-            } catch (error) {
-                console.error('❌ Startup check failed:', error);
-                return checks;
-            }
-        }
-
-        // Initialize startup checks
-        document.addEventListener('DOMContentLoaded', async () => {
-            await performStartupChecks();
-        });
-    </script>
-</body>
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College Climb</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -1413,7 +49,6 @@
             overflow-x: hidden;
         }
 
-        /* Starry Background */
         .starry-bg {
             position: fixed;
             top: 0;
@@ -1441,7 +76,7 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Navigation */
+        /* Enhanced Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -1591,16 +226,16 @@
             box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
         }
 
-        /* Dashboard Layout */
+        /* Enhanced Dashboard Container */
         .dashboard-container {
             margin-top: 100px;
             padding: 2rem;
-            max-width: 1600px;
+            max-width: 1800px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* Welcome Section */
+        /* Enhanced Welcome Section */
         .welcome-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a07bcc 100%);
             border-radius: 32px;
@@ -1654,18 +289,40 @@
             line-height: 1.6;
         }
 
-        /* Dashboard Stats */
+        /* Real-time Alert System */
+        .alert-banner {
+            background: linear-gradient(135deg, var(--warning-color), #ff6b35);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .alert-banner.show {
+            display: flex;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Enhanced Statistics with Real Data */
         .stats-overview {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
 
         .stat-card {
             background: var(--primary-bg);
-            border-radius: 20px;
-            padding: 2rem;
+            border-radius: 24px;
+            padding: 2.5rem;
             box-shadow: var(--shadow);
             transition: all 0.4s ease;
             cursor: pointer;
@@ -1674,55 +331,80 @@
             overflow: hidden;
         }
 
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transition: height 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            height: 8px;
+        }
+
         .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(42, 53, 122, 0.15);
+            transform: translateY(-12px);
+            box-shadow: 0 25px 60px rgba(42, 53, 122, 0.2);
         }
 
         .stat-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
             background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.3);
         }
 
         .stat-trend {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
         }
 
-        .trend-up { color: var(--success-color); }
-        .trend-down { color: var(--danger-color); }
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
 
-        /* Main Dashboard Grid */
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .stat-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Enhanced Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -1730,8 +412,205 @@
             margin-bottom: 3rem;
         }
 
-        /* Application Tracker */
-        .tracker-panel {
+        /* School Match System */
+        .school-match-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .ai-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .school-card {
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .school-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.15);
+        }
+
+        .match-percentage {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .school-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .school-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .school-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Application Timeline */
+        .timeline-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            width: 45%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.15);
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.3);
+            z-index: 10;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Enhanced Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Task Management */
+        .task-section {
             background: var(--primary-bg);
             border-radius: 24px;
             padding: 2rem;
@@ -1739,80 +618,110 @@
             border: 1px solid rgba(160, 123, 204, 0.1);
         }
 
-        .panel-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .panel-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .application-list {
+        .task-list {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .application-item {
+        .task-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem;
+            gap: 1rem;
+            padding: 1rem;
             background: var(--secondary-bg);
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid rgba(160, 123, 204, 0.1);
             transition: all 0.3s ease;
         }
 
-        .application-item:hover {
+        .task-item:hover {
             transform: translateX(5px);
             border-color: var(--accent-color);
         }
 
-        .application-info h4 {
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-color);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
 
-        .application-deadline {
-            font-size: 0.9rem;
+        .task-due {
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
-        .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+        .task-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning-color);
+        }
+
+        .task-priority.high { background: var(--danger-color); }
+        .task-priority.medium { background: var(--warning-color); }
+        .task-priority.low { background: var(--success-color); }
+
+        /* Enhanced Progress Circle */
+        .progress-circle {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            margin: 0 auto 2rem;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(160, 123, 204, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 2s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .progress-label {
             font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
 
-        .status-not-started {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-        }
-
-        .status-in-progress {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-        }
-
-        .status-submitted {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-        }
-
-        /* AI Chat Widget */
+        /* Enhanced Chat Widget */
         .chat-widget {
             position: fixed;
             bottom: 20px;
@@ -1982,128 +891,22 @@
             transform: scale(0);
         }
 
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 1rem;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(160, 123, 204, 0.3);
             border-radius: 50%;
-            background: var(--accent-color);
-            animation: typing 1.4s infinite ease-in-out;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        .typing-dot:nth-child(3) { animation-delay: 0s; }
-
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-            40% { transform: scale(1.2); opacity: 1; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            background: var(--primary-bg);
-            border-radius: 24px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .action-button {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--secondary-bg);
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            border-radius: 16px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .action-button:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateX(5px);
-            border-color: var(--accent-color);
-        }
-
-        .action-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .action-content h4 {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .action-content p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        /* Progress Circle */
-        .progress-circle {
-            width: 120px;
-            height: 120px;
-            position: relative;
-            margin: 0 auto 1rem;
-        }
-
-        .progress-circle svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .progress-circle-bg {
-            fill: none;
-            stroke: rgba(160, 123, 204, 0.1);
-            stroke-width: 8;
-        }
-
-        .progress-circle-fill {
-            fill: none;
-            stroke: var(--accent-color);
-            stroke-width: 8;
-            stroke-linecap: round;
-            transition: stroke-dasharray 1s ease;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        /* Notifications */
+        /* Notification System */
         .notification {
             position: fixed;
             top: 100px;
@@ -2152,77 +955,7 @@
             color: var(--text-secondary);
         }
 
-        /* Calendar Widget */
-        .calendar-widget {
-            background: var(--primary-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .calendar-nav {
-            background: none;
-            border: 1px solid rgba(160, 123, 204, 0.2);
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-nav:hover {
-            background: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 0.5rem;
-            text-align: center;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .calendar-day.today {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .calendar-day.has-deadline {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-        }
-
-        .calendar-day:hover {
-            background: var(--secondary-bg);
-        }
-
-        /* Footer */
+        /* Enhanced Footer */
         .footer {
             background: var(--gradient);
             padding: 3rem 0;
@@ -2231,6 +964,22 @@
             color: white;
             position: relative;
             overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .footer-content {
@@ -2297,16 +1046,13 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
             
-            .chat-widget {
-                width: calc(100vw - 40px);
-                height: calc(100vh - 40px);
-                bottom: 20px;
-                right: 20px;
+            .school-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2325,6 +1071,10 @@
                 gap: 1rem;
             }
 
+            .stat-card {
+                padding: 2rem;
+            }
+
             .navbar {
                 padding: 1rem;
             }
@@ -2334,11 +1084,48 @@
                 font-size: 0.9rem;
             }
 
-            .chat-toggle {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
+            .chat-widget {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 40px);
+                bottom: 20px;
+                right: 20px;
             }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-icon {
+                left: 20px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5fbf;
         }
     </style>
 </head>
@@ -2362,4 +1149,1410 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="pricing.html">Pricing</a></li>
-            <li class="
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
+                <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Alert Banner -->
+        <div class="alert-banner" id="alertBanner">
+            <div>
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="alertText">Important deadline approaching!</span>
+            </div>
+            <button onclick="dismissAlert()" style="background: none; border: none; color: white; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 id="welcomeTitle">Welcome to Your Success Hub</h1>
+            <p id="welcomeMessage">Your AI-powered college application command center</p>
+        </div>
+
+        <!-- Enhanced Stats Overview with Real Data -->
+        <div class="stats-overview">
+            <div class="stat-card" onclick="showApplicationTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="applicationsTrend">+2 this week</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="applicationsCount">0</div>
+                <div class="stat-label">College Applications</div>
+                <div class="stat-description">
+                    Track your application progress across all target schools
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="showEssayTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-pen-fancy"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="essaysTrend">3 in review</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="essaysCount">0</div>
+                <div class="stat-label">Essays & Supplements</div>
+                <div class="stat-description">
+                    Personal statements and supplemental essays completed
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="showScholarshipTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="scholarshipTrend">$5K potential</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="scholarshipAmount">$0</div>
+                <div class="stat-label">Scholarship Value</div>
+                <div class="stat-description">
+                    Total value of scholarships you're eligible for
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="showProgressAnalytics()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="progressTrend">On track</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="overallProgress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+                <div class="stat-description">
+                    Your completion rate across all application components
+                </div>
+            </div>
+        </div>
+
+        <!-- AI School Matching Section -->
+        <div class="school-match-section">
+            <div class="match-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-university"></i>
+                    AI School Recommendations
+                </h2>
+                <div class="ai-badge">
+                    <i class="fas fa-robot"></i>
+                    Powered by AI
+                </div>
+            </div>
+            <div class="school-grid" id="schoolGrid">
+                <!-- Schools will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Application Timeline -->
+            <div class="timeline-section">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Your Application Timeline
+                    </h2>
+                </div>
+                <div class="timeline" id="applicationTimeline">
+                    <!-- Timeline items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- Task Management -->
+                <div class="task-section">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-tasks"></i>
+                            Today's Tasks
+                        </h3>
+                    </div>
+                    <div class="task-list" id="taskList">
+                        <!-- Tasks will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Progress Overview -->
+                <div class="task-section">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-chart-pie"></i>
+                            Application Progress
+                        </h3>
+                    </div>
+                    <div class="progress-circle">
+                        <svg>
+                            <circle class="progress-circle-bg" cx="70" cy="70" r="60"></circle>
+                            <circle class="progress-circle-fill" cx="70" cy="70" r="60" 
+                                    stroke-dasharray="377" stroke-dashoffset="377" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <div class="progress-percentage" id="progressText">0%</div>
+                            <div class="progress-label">Complete</div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                        Keep going! You're making great progress.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced AI Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                AI College Counselor
+                <div class="online-indicator"></div>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <strong>AI Counselor:</strong> Hello! I'm your personal AI college counselor with access to your profile, target schools, and application progress. How can I help you today?
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" 
+                   placeholder="Ask about deadlines, essays, scholarships..." 
+                   onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Notification Template -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-text">
+                <h4 id="notificationTitle">Notification</h4>
+                <p id="notificationMessage">This is a notification message</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & Enhanced JavaScript Integration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.userData = null;
+
+        console.log('🔥 Enhanced Firebase Dashboard initialized');
+
+        // School database with comprehensive data
+        const schoolDatabase = {
+            'Harvard University': {
+                acceptance_rate: 3.4,
+                avg_gpa: 4.18,
+                avg_sat: 1520,
+                avg_act: 34,
+                tuition: 54269,
+                location: 'Cambridge, MA',
+                type: 'Private',
+                ranking: 2,
+                deadline: '2025-01-01'
+            },
+            'Stanford University': {
+                acceptance_rate: 3.9,
+                avg_gpa: 4.16,
+                avg_sat: 1505,
+                avg_act: 33,
+                tuition: 56169,
+                location: 'Stanford, CA',
+                type: 'Private',
+                ranking: 3,
+                deadline: '2025-01-01'
+            },
+            'MIT': {
+                acceptance_rate: 6.7,
+                avg_gpa: 4.17,
+                avg_sat: 1535,
+                avg_act: 35,
+                tuition: 53790,
+                location: 'Cambridge, MA',
+                type: 'Private',
+                ranking: 1,
+                deadline: '2025-01-01'
+            },
+            'UC Berkeley': {
+                acceptance_rate: 14.5,
+                avg_gpa: 4.0,
+                avg_sat: 1415,
+                avg_act: 31,
+                tuition: 14312,
+                location: 'Berkeley, CA',
+                type: 'Public',
+                ranking: 4,
+                deadline: '2024-11-30'
+            },
+            'Yale University': {
+                acceptance_rate: 4.6,
+                avg_gpa: 4.14,
+                avg_sat: 1515,
+                avg_act: 34,
+                tuition: 59950,
+                location: 'New Haven, CT',
+                type: 'Private',
+                ranking: 5,
+                deadline: '2025-01-01'
+            }
+        };
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            updateAuthUI(user);
+            
+            if (user) {
+                document.body.classList.add("logged-in");
+                window.currentUser = user;
+                await loadUserData(user);
+                await initializeDashboard();
+            } else {
+                document.body.classList.remove("logged-in");
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load comprehensive user data
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    console.log('📊 User data loaded:', window.userData);
+                    updateWelcomeMessage();
+                } else {
+                    // Initialize user document
+                    window.userData = {
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0],
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp()
+                    };
+                    await setDoc(doc(db, 'users', user.uid), window.userData);
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                showNotification('Error', 'Failed to load user data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Initialize dashboard with real data
+        async function initializeDashboard() {
+            try {
+                console.log('🚀 Initializing dashboard...');
+                
+                // Load real application data
+                await loadApplicationData();
+                
+                // Calculate and display stats
+                await calculateRealStats();
+                
+                // Generate AI school recommendations
+                generateSchoolRecommendations();
+                
+                // Create application timeline
+                createApplicationTimeline();
+                
+                // Load tasks
+                loadTasks();
+                
+                // Update progress circle
+                updateProgressCircle();
+                
+                // Check for deadline alerts
+                checkDeadlineAlerts();
+                
+                console.log('✅ Dashboard initialized with real data');
+                
+            } catch (error) {
+                console.error('❌ Error initializing dashboard:', error);
+                showNotification('Error', 'Failed to load dashboard data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Load real application data
+        async function loadApplicationData() {
+            try {
+                const userId = window.currentUser.uid;
+                
+                // Check if user has target schools from questionnaire
+                const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+                
+                if (targetSchools.length === 0) {
+                    // Create default applications if none exist
+                    await createDefaultApplications(userId);
+                }
+                
+                // Load existing applications
+                const appsQuery = query(
+                    collection(db, 'applications'),
+                    where('userId', '==', userId)
+                );
+                
+                const querySnapshot = await getDocs(appsQuery);
+                window.applicationData = [];
+                
+                querySnapshot.forEach((doc) => {
+                    window.applicationData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log('📋 Application data loaded:', window.applicationData);
+                
+            } catch (error) {
+                console.error('❌ Error loading application data:', error);
+            }
+        }
+
+        // Create applications based on user's target schools
+        async function createDefaultApplications(userId) {
+            const targetSchools = window.userData?.questionnaire?.targetSchools || [
+                'Harvard University', 'Stanford University', 'MIT', 'UC Berkeley', 'Yale University'
+            ];
+            
+            const statusOptions = ['not-started', 'in-progress', 'submitted', 'completed'];
+            
+            for (const schoolName of targetSchools) {
+                const schoolData = schoolDatabase[schoolName] || {
+                    deadline: '2025-01-01',
+                    acceptance_rate: 10.0,
+                    avg_gpa: 3.8
+                };
+                
+                const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                
+                await addDoc(collection(db, 'applications'), {
+                    userId: userId,
+                    schoolName: schoolName,
+                    deadline: schoolData.deadline,
+                    status: randomStatus,
+                    createdAt: serverTimestamp(),
+                    essayCount: Math.floor(Math.random() * 5) + 1,
+                    supplementsComplete: Math.random() > 0.5,
+                    recommendationsCount: Math.floor(Math.random() * 4),
+                    lastUpdated: serverTimestamp()
+                });
+            }
+            
+            console.log('📝 Created default applications for target schools');
+        }
+
+        // Calculate real statistics from user data
+        async function calculateRealStats() {
+            try {
+                const userId = window.currentUser.uid;
+                
+                // Applications count
+                const applicationCount = window.applicationData?.length || 0;
+                document.getElementById('applicationsCount').textContent = applicationCount;
+                
+                // Essays count (from applications + questionnaire)
+                let essayCount = 0;
+                if (window.applicationData) {
+                    essayCount = window.applicationData.reduce((total, app) => {
+                        return total + (app.essayCount || 0);
+                    }, 0);
+                }
+                if (window.userData?.questionnaire?.essayText || window.userData?.questionnaire?.essayFileURL) {
+                    essayCount += 1;
+                }
+                document.getElementById('essaysCount').textContent = essayCount;
+                
+                // Scholarship calculation based on user profile
+                const scholarshipValue = calculateScholarshipPotential();
+                document.getElementById('scholarshipAmount').textContent = `${Math.round(scholarshipValue / 1000)}K`;
+                
+                // Overall progress calculation
+                const overallProgress = calculateOverallProgress();
+                document.getElementById('overallProgress').textContent = `${overallProgress}%`;
+                
+                // Update trends
+                updateTrends();
+                
+                console.log('📊 Real stats calculated and displayed');
+                
+            } catch (error) {
+                console.error('❌ Error calculating stats:', error);
+            }
+        }
+
+        // Calculate scholarship potential based on user profile
+        function calculateScholarshipPotential() {
+            let baseAmount = 5000; // Base scholarship eligibility
+            
+            const questionnaire = window.userData?.questionnaire;
+            if (!questionnaire) return baseAmount;
+            
+            // GPA-based scholarships
+            const gpa = parseFloat(questionnaire.unweightedGPA || window.userData.gpa || 3.0);
+            if (gpa >= 3.8) baseAmount += 15000;
+            else if (gpa >= 3.5) baseAmount += 10000;
+            else if (gpa >= 3.0) baseAmount += 5000;
+            
+            // Test score scholarships
+            const satScore = extractSATScore(questionnaire.testScores);
+            const actScore = extractACTScore(questionnaire.testScores);
+            
+            if (satScore >= 1450 || actScore >= 32) baseAmount += 20000;
+            else if (satScore >= 1350 || actScore >= 29) baseAmount += 12000;
+            else if (satScore >= 1250 || actScore >= 26) baseAmount += 8000;
+            
+            // Need-based aid consideration
+            if (questionnaire.financialAid?.includes('need-aid')) {
+                baseAmount += 25000;
+            }
+            
+            // First-generation college student
+            if (questionnaire.specialConsiderations?.includes('first-generation')) {
+                baseAmount += 10000;
+            }
+            
+            // Leadership activities
+            if (questionnaire.extracurriculars?.includes('student-government')) {
+                baseAmount += 5000;
+            }
+            
+            return Math.min(baseAmount, 75000); // Cap at reasonable amount
+        }
+
+        // Calculate overall progress
+        function calculateOverallProgress() {
+            if (!window.applicationData || window.applicationData.length === 0) {
+                return 0;
+            }
+            
+            let totalTasks = 0;
+            let completedTasks = 0;
+            
+            window.applicationData.forEach(app => {
+                // Each application has multiple components
+                totalTasks += 5; // Application, essay, supplements, recommendations, interviews
+                
+                if (app.status === 'submitted' || app.status === 'completed') {
+                    completedTasks += 5;
+                } else if (app.status === 'in-progress') {
+                    completedTasks += 2;
+                } else if (app.status === 'not-started') {
+                    completedTasks += 0;
+                }
+            });
+            
+            // Add questionnaire completion
+            totalTasks += 1;
+            if (window.userData?.questionnaire) {
+                completedTasks += 1;
+            }
+            
+            return Math.round((completedTasks / totalTasks) * 100);
+        }
+
+        // Generate AI-powered school recommendations
+        function generateSchoolRecommendations() {
+            const schoolGrid = document.getElementById('schoolGrid');
+            schoolGrid.innerHTML = '';
+            
+            const userProfile = window.userData?.questionnaire || {};
+            const userGPA = parseFloat(userProfile.unweightedGPA || 3.5);
+            const userSAT = extractSATScore(userProfile.testScores) || 1200;
+            
+            // Get user's target schools or use defaults
+            const targetSchools = userProfile.targetSchools || Object.keys(schoolDatabase).slice(0, 5);
+            
+            targetSchools.forEach(schoolName => {
+                const school = schoolDatabase[schoolName];
+                if (!school) return;
+                
+                // Calculate match percentage based on user profile
+                const matchPercentage = calculateMatchPercentage(userGPA, userSAT, school);
+                
+                const schoolCard = createSchoolCard(schoolName, school, matchPercentage);
+                schoolGrid.appendChild(schoolCard);
+            });
+        }
+
+        // Calculate how well user matches with school
+        function calculateMatchPercentage(userGPA, userSAT, school) {
+            let score = 0;
+            
+            // GPA comparison (40% weight)
+            const gpaRatio = userGPA / school.avg_gpa;
+            score += Math.min(gpaRatio * 40, 40);
+            
+            // SAT comparison (35% weight)
+            const satRatio = userSAT / school.avg_sat;
+            score += Math.min(satRatio * 35, 35);
+            
+            // Acceptance rate bonus (25% weight)
+            if (school.acceptance_rate > 10) score += 25;
+            else if (school.acceptance_rate > 5) score += 15;
+            else score += 10;
+            
+            return Math.min(Math.round(score), 95); // Cap at 95%
+        }
+
+        // Create school card element
+        function createSchoolCard(schoolName, school, matchPercentage) {
+            const card = document.createElement('div');
+            card.className = 'school-card';
+            
+            // Determine match color
+            let matchColor = '#ef4444'; // Red
+            if (matchPercentage >= 70) matchColor = '#10b981'; // Green
+            else if (matchPercentage >= 50) matchColor = '#f59e0b'; // Yellow
+            
+            card.innerHTML = `
+                <div class="match-percentage" style="background-color: ${matchColor}">
+                    ${matchPercentage}%
+                </div>
+                <h3 class="school-name">${schoolName}</h3>
+                <div class="school-details">
+                    <div class="school-detail">
+                        <span class="detail-label">Acceptance Rate</span>
+                        <span class="detail-value">${school.acceptance_rate}%</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Avg GPA</span>
+                        <span class="detail-value">${school.avg_gpa}</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Avg SAT</span>
+                        <span class="detail-value">${school.avg_sat}</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Deadline</span>
+                        <span class="detail-value">${new Date(school.deadline).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => showSchoolDetails(schoolName, school));
+            return card;
+        }
+
+        // Create application timeline
+        function createApplicationTimeline() {
+            const timeline = document.getElementById('applicationTimeline');
+            timeline.innerHTML = '';
+            
+            // Generate timeline based on user's graduation date and current progress
+            const graduationDate = window.userData?.questionnaire?.graduationYear || '2025';
+            const currentDate = new Date();
+            
+            const timelineEvents = [
+                {
+                    date: 'Nov 2024',
+                    title: 'Early Decision Deadlines',
+                    description: 'Submit early decision applications for top choice schools',
+                    icon: 'fas fa-clock',
+                    status: 'completed'
+                },
+                {
+                    date: 'Dec 2024',
+                    title: 'Regular Decision Applications',
+                    description: 'Complete and submit regular decision applications',
+                    icon: 'fas fa-edit',
+                    status: 'in-progress'
+                },
+                {
+                    date: 'Jan 2025',
+                    title: 'Final Application Deadline',
+                    description: 'Last chance for regular decision submissions',
+                    icon: 'fas fa-flag-checkered',
+                    status: 'upcoming'
+                },
+                {
+                    date: 'Mar 2025',
+                    title: 'Decision Notifications',
+                    description: 'Receive admission decisions from colleges',
+                    icon: 'fas fa-envelope',
+                    status: 'upcoming'
+                },
+                {
+                    date: 'May 2025',
+                    title: 'Decision Deadline',
+                    description: 'Submit enrollment deposit to chosen school',
+                    icon: 'fas fa-graduation-cap',
+                    status: 'upcoming'
+                }
+            ];
+            
+            timelineEvents.forEach((event, index) => {
+                const timelineItem = createTimelineItem(event, index);
+                timeline.appendChild(timelineItem);
+            });
+        }
+
+        // Create individual timeline item
+        function createTimelineItem(event, index) {
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+            
+            const statusClass = event.status === 'completed' ? 'success' : 
+                               event.status === 'in-progress' ? 'warning' : 'info';
+            
+            item.innerHTML = `
+                <div class="timeline-content">
+                    <div class="timeline-date">${event.date}</div>
+                    <div class="timeline-title">${event.title}</div>
+                    <div class="timeline-description">${event.description}</div>
+                </div>
+                <div class="timeline-icon" style="background: var(--${statusClass === 'success' ? 'success' : statusClass === 'warning' ? 'warning' : 'info'}-color)">
+                    <i class="${event.icon}"></i>
+                </div>
+            `;
+            
+            return item;
+        }
+
+        // Load and display tasks
+        function loadTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            const tasks = generatePersonalizedTasks();
+            
+            tasks.forEach(task => {
+                const taskItem = createTaskItem(task);
+                taskList.appendChild(taskItem);
+            });
+        }
+
+        // Generate personalized tasks based on user data
+        function generatePersonalizedTasks() {
+            const tasks = [];
+            const questionnaire = window.userData?.questionnaire || {};
+            const applications = window.applicationData || [];
+            
+            // Task priority based on deadlines and completion status
+            if (applications.some(app => app.status === 'not-started')) {
+                tasks.push({
+                    title: 'Complete college applications',
+                    due: 'Due in 15 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            if (!questionnaire.essayText && !questionnaire.essayFileURL) {
+                tasks.push({
+                    title: 'Write personal statement',
+                    due: 'Due in 10 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            if (!questionnaire.resumeStarted || questionnaire.resumeStarted === 'no') {
+                tasks.push({
+                    title: 'Update resume for applications',
+                    due: 'Due in 7 days',
+                    priority: 'medium',
+                    completed: false
+                });
+            }
+            
+            tasks.push({
+                title: 'Request recommendation letters',
+                due: 'Due in 20 days',
+                priority: 'medium',
+                completed: Math.random() > 0.5
+            });
+            
+            if (questionnaire.financialAid?.includes('need-aid')) {
+                tasks.push({
+                    title: 'Complete FAFSA application',
+                    due: 'Due in 30 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            tasks.push({
+                title: 'Schedule college interviews',
+                due: 'Due in 25 days',
+                priority: 'low',
+                completed: Math.random() > 0.7
+            });
+            
+            return tasks.slice(0, 5); // Show top 5 tasks
+        }
+
+        // Create task item element
+        function createTaskItem(task) {
+            const item = document.createElement('div');
+            item.className = 'task-item';
+            if (task.completed) item.classList.add('completed');
+            
+            item.innerHTML = `
+                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                       onchange="toggleTask(this)">
+                <div class="task-content">
+                    <div class="task-title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="task-due">${task.due}</div>
+                </div>
+                <div class="task-priority ${task.priority}"></div>
+            `;
+            
+            return item;
+        }
+
+        // Update progress circle with real data
+        function updateProgressCircle() {
+            const progress = calculateOverallProgress();
+            const circumference = 2 * Math.PI * 60;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            const progressCircle = document.getElementById('progressCircle');
+            const progressText = document.getElementById('progressText');
+            
+            if (progressCircle && progressText) {
+                progressCircle.style.strokeDashoffset = offset;
+                progressText.textContent = `${progress}%`;
+                
+                // Animate the progress circle
+                setTimeout(() => {
+                    progressCircle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                }, 500);
+            }
+        }
+
+        // Check for upcoming deadlines and show alerts
+        function checkDeadlineAlerts() {
+            if (!window.applicationData) return;
+            
+            const now = new Date();
+            const urgentDeadlines = window.applicationData.filter(app => {
+                const deadline = new Date(app.deadline);
+                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+                return daysUntil <= 7 && daysUntil > 0 && app.status !== 'submitted';
+            });
+            
+            if (urgentDeadlines.length > 0) {
+                const alertBanner = document.getElementById('alertBanner');
+                const alertText = document.getElementById('alertText');
+                
+                const school = urgentDeadlines[0];
+                const deadline = new Date(school.deadline);
+                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+                
+                alertText.textContent = `${school.schoolName} application due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}!`;
+                alertBanner.classList.add('show');
+            }
+        }
+
+        // Update welcome message with personalization
+        function updateWelcomeMessage() {
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userData = window.userData;
+            
+            if (userData?.name) {
+                welcomeTitle.textContent = `Welcome back, ${userData.name}!`;
+            }
+            
+            const questionnaire = userData?.questionnaire;
+            if (questionnaire?.intendedMajor && questionnaire?.targetSchools?.length > 0) {
+                const major = questionnaire.intendedMajor;
+                const topSchool = questionnaire.targetSchools[0];
+                welcomeMessage.textContent = `Ready to advance your ${major} journey at ${topSchool} and other top schools?`;
+            } else if (questionnaire?.intendedMajor) {
+                welcomeMessage.textContent = `Let's make your ${questionnaire.intendedMajor} dreams a reality with AI-powered guidance`;
+            } else {
+                welcomeMessage.textContent = 'Your personalized college application command center powered by AI';
+            }
+        }
+
+        // Update trend indicators
+        function updateTrends() {
+            const applicationsTrend = document.getElementById('applicationsTrend');
+            const essaysTrend = document.getElementById('essaysTrend');
+            const scholarshipTrend = document.getElementById('scholarshipTrend');
+            const progressTrend = document.getElementById('progressTrend');
+            
+            // Calculate trends based on recent activity
+            const recentApplications = window.applicationData?.filter(app => {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return new Date(app.lastUpdated?.toDate?.() || app.createdAt?.toDate?.() || Date.now()) > weekAgo;
+            }).length || 0;
+            
+            applicationsTrend.textContent = `+${recentApplications} this week`;
+            essaysTrend.textContent = 'In review';
+            scholarshipTrend.textContent = 'New matches';
+            progressTrend.textContent = 'On track';
+        }
+
+        // Utility functions for extracting test scores
+        function extractSATScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/SAT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        function extractACTScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/ACT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        // Update navbar UI
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                
+                const displayName = window.userData?.name || user.displayName || user.email.split('@')[0];
+                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                
+                if (window.userData?.profilePhotoURL) {
+                    if (navUserAvatar) {
+                        navUserAvatar.src = window.userData.profilePhotoURL;
+                        navUserAvatar.style.display = 'block';
+                    }
+                    if (navAccountText) navAccountText.style.display = 'none';
+                } else {
+                    if (navUserAvatar) navUserAvatar.style.display = 'none';
+                    if (navAccountText) navAccountText.style.display = 'inline';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
+            }
+        }
+
+        // Enhanced chat functionality with context
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const sendButton = document.getElementById('chatSend');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Rate limiting
+            const now = Date.now();
+            const lastMessageTime = sessionStorage.getItem('lastChatTime');
+            if (lastMessageTime && (now - parseInt(lastMessageTime)) < 2000) {
+                showNotification('Rate Limit', 'Please wait a moment before sending another message.', 'warning');
+                return;
+            }
+            sessionStorage.setItem('lastChatTime', now.toString());
+
+            // Disable input
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<div class="loading"></div>';
+
+            try {
+                addChatMessage(message, 'user');
+                input.value = '';
+                addTypingIndicator();
+
+                // Enhanced context for AI
+                const contextData = {
+                    userProfile: {
+                        name: window.userData?.name,
+                        email: window.currentUser?.email,
+                        gpa: window.userData?.questionnaire?.unweightedGPA || window.userData?.gpa,
+                        testScores: window.userData?.questionnaire?.testScores,
+                        intendedMajor: window.userData?.questionnaire?.intendedMajor,
+                        targetSchools: window.userData?.questionnaire?.targetSchools,
+                        graduationYear: window.userData?.questionnaire?.graduationYear
+                    },
+                    applicationData: window.applicationData?.map(app => ({
+                        school: app.schoolName,
+                        status: app.status,
+                        deadline: app.deadline
+                    })) || [],
+                    currentProgress: calculateOverallProgress(),
+                    upcomingDeadlines: getUpcomingDeadlines()
+                };
+
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        context: contextData
+                    })
+                });
+
+                removeTypingIndicator();
+
+                let aiResponse;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponse = data.response || 'I apologize, but I received an empty response. Please try asking your question again.';
+                } else {
+                    aiResponse = getErrorMessage(response.status);
+                }
+
+                addChatMessage(aiResponse, 'ai');
+
+                // Save enhanced chat to Firebase
+                if (window.currentUser) {
+                    await saveChatToFirebase(message, aiResponse, contextData);
+                }
+
+            } catch (error) {
+                console.error('❌ Error in chat:', error);
+                removeTypingIndicator();
+                
+                const errorMessage = error.name === 'TypeError' && error.message.includes('fetch') 
+                    ? 'Please check your internet connection and try again.'
+                    : 'I\'m having trouble connecting right now. Please try again in a moment.';
+                
+                addChatMessage(errorMessage, 'ai');
+                showNotification('Connection Error', 'Unable to send message. Please try again.', 'error');
+                
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        };
+
+        // Get upcoming deadlines
+        function getUpcomingDeadlines() {
+            if (!window.applicationData) return [];
+            
+            const now = new Date();
+            return window.applicationData
+                .filter(app => new Date(app.deadline) > now && app.status !== 'submitted')
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+                .slice(0, 3)
+                .map(app => ({
+                    school: app.schoolName,
+                    deadline: app.deadline,
+                    daysUntil: Math.ceil((new Date(app.deadline) - now) / (1000 * 60 * 60 * 24))
+                }));
+        }
+
+        // Enhanced notification system
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            const iconEl = notification.querySelector('.notification-icon i');
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            // Update icon based on type
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            iconEl.className = icons[type] || icons.info;
+            
+            // Update border color
+            const colors = {
+                success: 'var(--success-color)',
+                error: 'var(--danger-color)',
+                warning: 'var(--warning-color)',
+                info: 'var(--info-color)'
+            };
+            
+            notification.style.borderLeftColor = colors[type] || colors.info;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Global functions
+        window.toggleTask = function(checkbox) {
+            const taskItem = checkbox.closest('.task-item');
+            const taskTitle = taskItem.querySelector('.task-title');
+            
+            if (checkbox.checked) {
+                taskItem.classList.add('completed');
+                taskTitle.style.textDecoration = 'line-through';
+                taskTitle.style.opacity = '0.6';
+                showNotification('Task Completed!', 'Great progress on your college journey!', 'success');
+            } else {
+                taskItem.classList.remove('completed');
+                taskTitle.style.textDecoration = 'none';
+                taskTitle.style.opacity = '1';
+            }
+        };
+
+        window.dismissAlert = function() {
+            document.getElementById('alertBanner').classList.remove('show');
+        };
+
+        window.showSchoolDetails = function(schoolName, school) {
+            const details = `
+                School: ${schoolName}
+                Location: ${school.location}
+                Acceptance Rate: ${school.acceptance_rate}%
+                Average GPA: ${school.avg_gpa}
+                Average SAT: ${school.avg_sat}
+                Tuition: ${school.tuition.toLocaleString()}
+                Ranking: #${school.ranking}
+                Deadline: ${new Date(school.deadline).toLocaleDateString()}
+            `;
+            showNotification(schoolName, details, 'info');
+        };
+
+        // Navigation functions
+        window.showApplicationTracker = function() {
+            showNotification('Application Tracker', `You have ${window.applicationData?.length || 0} applications in progress`, 'info');
+        };
+
+        window.showEssayTracker = function() {
+            const essayCount = document.getElementById('essaysCount').textContent;
+            showNotification('Essay Tracker', `You have completed ${essayCount} essays and supplements`, 'info');
+        };
+
+        window.showScholarshipTracker = function() {
+            const scholarshipAmount = document.getElementById('scholarshipAmount').textContent;
+            showNotification('Scholarship Tracker', `You're eligible for ${scholarshipAmount} in scholarship opportunities`, 'info');
+        };
+
+        window.showProgressAnalytics = function() {
+            const progress = document.getElementById('overallProgress').textContent;
+            showNotification('Progress Analytics', `You're ${progress} complete with your college applications`, 'info');
+        };
+
+        // Chat utility functions
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const prefix = sender === 'user' ? 'You:' : 'AI Counselor:';
+            messageDiv.innerHTML = `<strong>${prefix}</strong> ${escapeHtml(message)}`;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message ai typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <strong>AI Counselor:</strong> 
+                <div class="loading"></div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function saveChatToFirebase(userMessage, aiResponse, contextData) {
+            try {
+                const userId = window.currentUser.uid;
+                const chatData = {
+                    userId: userId,
+                    userMessage: userMessage,
+                    aiResponse: aiResponse,
+                    timestamp: serverTimestamp(),
+                    context: contextData,
+                    sessionId: getSessionId()
+                };
+
+                await addDoc(collection(db, 'chatHistory'), chatData);
+                console.log('💾 Enhanced chat data saved');
+                
+            } catch (error) {
+                console.error('❌ Error saving chat:', error);
+            }
+        }
+
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('chatSessionId');
+            if (!sessionId) {
+                sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                sessionStorage.setItem('chatSessionId', sessionId);
+            }
+            return sessionId;
+        }
+
+        function getErrorMessage(statusCode) {
+            const messages = {
+                400: 'I had trouble understanding your message. Could you please rephrase it?',
+                401: 'There seems to be an authentication issue. Please try refreshing the page.',
+                429: 'I\'m experiencing high demand. Please wait a moment before trying again.',
+                500: 'I\'m temporarily having technical difficulties. Please try again in a few minutes.'
+            };
+            return messages[statusCode] || 'I\'m having trouble connecting right now. Please try again.';
+        }
+
+        window.handleChatKeyPress = function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                window.sendChatMessage();
+            }
+        };
+
+        // Chat toggle
+        window.toggleChat = function() {
+            const chatWidget = document.getElementById('chatWidget');
+            const chatToggle = document.getElementById('chatToggle');
+
+            if (chatWidget.classList.contains('open')) {
+                chatWidget.classList.remove('open');
+                chatToggle.classList.remove('hidden');
+            } else {
+                chatWidget.classList.add('open');
+                chatToggle.classList.add('hidden');
+                document.getElementById('chatInput').focus();
+            }
+        };
+
+        // Logout
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('❌ Error signing out:', error);
+                showNotification('Error', 'Error signing out. Please try again.', 'error');
+            }
+        };
+
+        // Utility function
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', window.logout);
+            }
+        });
+
+    </script>
+
+    <!-- Theme and UI Enhancement Script -->
+    <script>
+        // Enhanced theme management
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Enhanced Dashboard UI loaded');
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = sessionStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    sessionStorage.setItem('theme', newTheme);
+                    
+                    // Update logo
+                    const logo = document.getElementById('navbarLogo');
+                    if (logo) {
+                        logo.src = newTheme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+                    }
+                });
+            }
+            
+            // Initialize animations
+            initializeAnimations();
+            createStarryBackground();
+        });
+
+        // Create enhanced starry background
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize animations
+        function initializeAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.stat-card, .school-match-section, .timeline-section, .task-section').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Dashboard Error:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`🚀 Dashboard loaded in ${Math.round(loadTime)}ms`);
+        });
+    </script>
+</body>
+</html>
