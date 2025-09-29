@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Essay Coach - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Navbar (same as dashboard) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1, .brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            background: var(--secondary-bg);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Main Essay Coach Container */
+        .essay-coach-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1600px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Header Section */
+        .essay-header {
+            background: var(--gradient);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .essay-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .essay-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .essay-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Grid Layout */
+        .essay-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Essay Editor Section */
+        .essay-editor-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .essay-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--secondary-bg);
+        }
+
+        .essay-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .essay-tab.active {
+            color: var(--accent-color);
+            background: var(--secondary-bg);
+        }
+
+        .essay-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-color);
+        }
+
+        .essay-content {
+            display: none;
+        }
+
+        .essay-content.active {
+            display: block;
+        }
+
+        /* Essay Prompts */
+        .prompt-selector {
+            margin-bottom: 2rem;
+        }
+
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .prompt-card {
+            background: var(--secondary-bg);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .prompt-card.selected {
+            border-color: var(--accent-color);
+            background: rgba(160, 123, 204, 0.1);
+        }
+
+        .prompt-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt-preview {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Essay Editor */
+        .essay-editor {
+            position: relative;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .editor-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .editor-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .editor-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .word-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .essay-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 2rem;
+            border: 2px solid rgba(160, 123, 204, 0.1);
+            border-radius: 16px;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .essay-textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .essay-textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* AI Feedback Section */
+        .ai-feedback-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .feedback-panel {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-analysis-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ai-analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .ai-analysis-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback-content {
+            display: none;
+        }
+
+        .feedback-content.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-score {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            position: relative;
+        }
+
+        .score-excellent { background: var(--success-color); }
+        .score-good { background: var(--info-color); }
+        .score-fair { background: var(--warning-color); }
+        .score-needs-work { background: var(--danger-color); }
+
+        .score-details h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .feedback-categories {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .feedback-category {
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-score {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .category-feedback {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Essay Library */
+        .essay-library {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .essay-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .essay-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .essay-item:hover {
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .essay-info h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .essay-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .essay-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .essay-action-btn {
+            padding: 0.5rem;
+            background: none;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .essay-action-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Personalized Tips */
+        .tips-section {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .tip-card {
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .tip-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tip-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(160, 123, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .essay-progress {
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(160, 123, 204, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gradient);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-socials a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-socials a img {
+            height: 24px;
+            width: 24px;
+            filter: invert(1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .essay-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-feedback-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .essay-coach-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .essay-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .essay-tabs {
+                flex-wrap: wrap;
+            }
+
+            .essay-tab {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .editor-toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- Navigation (same as dashboard) -->
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="about.html">About</a></li>
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
+                <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Essay Coach Container -->
+    <div class="essay-coach-container">
+        <!-- Header -->
+        <div class="essay-header">
+            <h1><i class="fas fa-pen-fancy"></i> AI Essay Coach</h1>
+            <p id="headerMessage">Get personalized feedback and guidance to craft compelling college essays that showcase your unique story</p>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="essay-main-grid">
+            <!-- Essay Editor Section -->
+            <div class="essay-editor-section">
+                <!-- Essay Progress -->
+                <div class="essay-progress">
+                    <div class="progress-header">
+                        <span><strong id="essayProgressTitle">Personal Statement Progress</strong></span>
+                        <span id="essayProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Essay Tabs -->
+                <div class="essay-tabs">
+                    <button class="essay-tab active" onclick="switchTab('personal-statement')">
+                        <i class="fas fa-user"></i> Personal Statement
+                    </button>
+                    <button class="essay-tab" onclick="switchTab('supplemental')">
+                        <i class="fas fa-plus"></i> Supplemental Essays
+                    </button>
+                    <button class="essay-tab" onclick="switchTab('library')">
+                        <i class="fas fa-book"></i> My Essays
+                    </button>
+                </div>
+
+                <!-- Personal Statement Tab -->
+                <div class="essay-content active" id="personal-statement-content">
+                    <!-- Prompt Selector -->
+                    <div class="prompt-selector">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
+                            <i class="fas fa-lightbulb"></i> Choose Your Prompt
+                        </h3>
+                        <div class="prompt-grid" id="personalPromptGrid">
+                            <!-- Prompts will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Essay Editor -->
+                    <div class="essay-editor">
+                        <div class="editor-toolbar">
+                            <div class="editor-controls">
+                                <button class="editor-btn" onclick="saveEssay()">
+                                    <i class="fas fa-save"></i> Save Draft
+                                </button>
+                                <button class="editor-btn" onclick="exportEssay()">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                                <button class="editor-btn" onclick="clearEssay()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                            <div class="word-count">
+                                <span id="wordCount">0</span> words | <span id="charCount">0</span> characters
+                            </div>
+                        </div>
+
+                        <textarea 
+                            class="essay-textarea" 
+                            id="essayText"
+                            placeholder="Start writing your personal statement here. Remember to be authentic, specific, and showcase what makes you unique..."
+                            oninput="updateWordCount(); saveProgress();">
+                        </textarea>
+                    </div>
+                </div>
+
+                <!-- Supplemental Essays Tab -->
+                <div class="essay-content" id="supplemental-content">
+                    <div class="prompt-selector">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
+                            <i class="fas fa-university"></i> School-Specific Essays
+                        </h3>
+                        <div id="supplementalPrompts">
+                            <!-- School-specific prompts will be populated based on user's target schools -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Essay Library Tab -->
+                <div class="essay-content" id="library-content">
+                    <div class="essay-library">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 style="color: var(--text-primary);">
+                                <i class="fas fa-folder-open"></i> My Essays
+                            </h3>
+                            <button class="editor-btn" onclick="createNewEssay()">
+                                <i class="fas fa-plus"></i> New Essay
+                            </button>
+                        </div>
+                        <div class="essay-list" id="essayList">
+                            <!-- User's saved essays will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Feedback Sidebar -->
+            <div class="ai-feedback-section">
+                <!-- AI Analysis Panel -->
+                <div class="feedback-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-robot"></i> AI Analysis
+                    </div>
+                    
+                    <button class="ai-analysis-btn" id="analyzeBtn" onclick="analyzeEssay()">
+                        <i class="fas fa-magic"></i>
+                        <span id="analyzeBtnText">Analyze My Essay</span>
+                    </button>
+
+                    <div class="feedback-content" id="feedbackContent">
+                        <!-- Overall Score -->
+                        <div class="feedback-score" id="overallScore">
+                            <div class="score-circle score-excellent" id="scoreCircle">
+                                <span id="scoreNumber">85</span>
+                            </div>
+                            <div class="score-details">
+                                <h3 id="scoreTitle">Excellent Essay!</h3>
+                                <p id="scoreDescription">Your essay demonstrates strong personal voice and compelling storytelling.</p>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Categories -->
+                        <div class="feedback-categories" id="feedbackCategories">
+                            <!-- Categories will be populated by AI analysis -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalized Tips Panel -->
+                <div class="tips-section">
+                    <div class="panel-title">
+                        <i class="fas fa-lightbulb"></i> Personalized Tips
+                    </div>
+                    <div id="personalizedTips">
+                        <!-- Tips will be generated based on user profile -->
+                    </div>
+                </div>
+
+                <!-- Essay Library Panel -->
+                <div class="feedback-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-chart-line"></i> Progress Tracker
+                    </div>
+                    <div id="progressTracker">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--accent-color);" id="totalEssaysCount">0</div>
+                            <div style="color: var(--text-secondary);">Essays Completed</div>
+                        </div>
+                        <div id="schoolProgress">
+                            <!-- Progress for each target school -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & JavaScript Integration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.userData = null;
+        window.currentEssay = null;
+        window.selectedPrompt = null;
+
+        console.log('📝 Essay Coach initialized');
+
+        // Common Application prompts
+        const commonAppPrompts = [
+            {
+                id: 'ca1',
+                title: 'Background & Story',
+                preview: 'Some students have a background, identity, interest, or talent...',
+                fullText: 'Some students have a background, identity, interest, or talent that is so meaningful they believe their application would be incomplete without it. If this sounds like you, then please share your story.',
+                wordLimit: 650
+            },
+            {
+                id: 'ca2', 
+                title: 'Learning from Obstacles',
+                preview: 'The lessons we take from obstacles we encounter...',
+                fullText: 'The lessons we take from obstacles we encounter and setbacks we experience can be fundamental to later success. Recount a time when you faced a challenge, setback, or failure. How did it affect you, and what did you learn from the experience?',
+                wordLimit: 650
+            },
+            {
+                id: 'ca3',
+                title: 'Challenging a Belief',
+                preview: 'Reflect on a time when you questioned or challenged...',
+                fullText: 'Reflect on a time when you questioned or challenged a belief or idea. What prompted your thinking? What was the outcome?',
+                wordLimit: 650
+            },
+            {
+                id: 'ca4',
+                title: 'Solving a Problem',
+                preview: 'Reflect on something that someone has done for you...',
+                fullText: 'Reflect on something that someone has done for you that has made you happy or thankful in a surprising way. How has this gratitude affected or motivated you?',
+                wordLimit: 650
+            },
+            {
+                id: 'ca5',
+                title: 'Personal Growth',
+                preview: 'Discuss an accomplishment, event, or realization...',
+                fullText: 'Discuss an accomplishment, event, or realization that sparked a period of personal growth and a new understanding of yourself or others.',
+                wordLimit: 650
+            },
+            {
+                id: 'ca6',
+                title: 'Engaging Topic',
+                preview: 'Describe a topic, idea, or concept you find so engaging...',
+                fullText: 'Describe a topic, idea, or concept you find so engaging that it makes you lose all track of time. Why does it captivate you? What or who do you turn to when you want to learn more?',
+                wordLimit: 650
+            },
+            {
+                id: 'ca7',
+                title: 'Free Choice',
+                preview: 'Share an essay on any topic of your choice...',
+                fullText: 'Share an essay on any topic of your choice. It can be one you\'ve already written, one that responds to a different prompt, or one of your own design.',
+                wordLimit: 650
+            }
+        ];
+
+        // School-specific prompts database
+        const schoolPrompts = {
+            'Harvard University': [
+                'Harvard has long recognized the importance of enrolling a diverse student body. How will the life experiences that shape who you are today enable you to contribute to Harvard?',
+                'Briefly describe an intellectual experience (course, project, book, discussion, paper, poetry, or research topic in engineering, mathematics, science or other modes of inquiry) that has meant the most to you.',
+                'Please describe how your experiences have prepared you to contribute to Harvard\'s commitment to a diverse and inclusive campus.'
+            ],
+            'Stanford University': [
+                'What is the most significant challenge that society faces today?',
+                'How did you spend your most recent summer break?',
+                'What historical moment or event do you wish you could have witnessed?',
+                'Briefly elaborate on one of your extracurricular activities, a job you hold, or responsibilities you have for your family.',
+                'Name one thing you are looking forward to experiencing at Stanford.'
+            ],
+            'MIT': [
+                'We know you lead a busy life, full of activities, many of which are required of you. Tell us about something you do simply for the pleasure of it.',
+                'Although you may not yet know what you want to major in, which department or program at MIT appeals to you and why?',
+                'At MIT, we bring people together to better the lives of others. MIT students work to improve their communities in different ways, from tackling the world\'s biggest challenges to being a good friend to someone in need. Describe one way in which you have contributed to your community, whether in your family, the classroom, your neighborhood, etc.'
+            ]
+        };
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            updateAuthUI(user);
+            
+            if (user) {
+                window.currentUser = user;
+                await loadUserData(user);
+                await initializeEssayCoach();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load user data
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    console.log('📊 User data loaded:', window.userData);
+                    personalizeEssayCoach();
+                } else {
+                    window.userData = {
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0]
+                    };
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+            }
+        }
+
+        // Initialize Essay Coach with user data
+        async function initializeEssayCoach() {
+            try {
+                console.log('🚀 Initializing Essay Coach...');
+                
+                // Load prompts
+                loadPersonalStatementPrompts();
+                loadSupplementalPrompts();
+                
+                // Load user's essays
+                await loadUserEssays();
+                
+                // Generate personalized tips
+                generatePersonalizedTips();
+                
+                // Load progress
+                updateProgressTracker();
+                
+                // Auto-load draft if exists
+                await loadEssayDraft();
+                
+                console.log('✅ Essay Coach initialized');
+                
+            } catch (error) {
+                console.error('❌ Error initializing Essay Coach:', error);
+            }
+        }
+
+        // Personalize based on user data
+        function personalizeEssayCoach() {
+            const userData = window.userData;
+            const headerMessage = document.getElementById('headerMessage');
+            
+            if (userData?.name) {
+                const questionnaire = userData.questionnaire;
+                if (questionnaire?.intendedMajor) {
+                    headerMessage.textContent = `Hi ${userData.name}! Let's craft compelling essays that showcase your passion for ${questionnaire.intendedMajor} and your unique story.`;
+                } else {
+                    headerMessage.textContent = `Hi ${userData.name}! Let's create essays that truly represent who you are and what you'll bring to college.`;
+                }
+            }
+        }
+
+        // Load Personal Statement prompts
+        function loadPersonalStatementPrompts() {
+            const promptGrid = document.getElementById('personalPromptGrid');
+            promptGrid.innerHTML = '';
+            
+            commonAppPrompts.forEach(prompt => {
+                const promptCard = document.createElement('div');
+                promptCard.className = 'prompt-card';
+                promptCard.onclick = () => selectPrompt(prompt);
+                
+                promptCard.innerHTML = `
+                    <div class="prompt-title">${prompt.title}</div>
+                    <div class="prompt-preview">${prompt.preview}</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-color);">
+                        ${prompt.wordLimit} word limit
+                    </div>
+                `;
+                
+                promptGrid.appendChild(promptCard);
+            });
+        }
+
+        // Load supplemental prompts based on target schools
+        function loadSupplementalPrompts() {
+            const supplementalContainer = document.getElementById('supplementalPrompts');
+            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+            
+            if (targetSchools.length === 0) {
+                supplementalContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Complete your profile to see school-specific essay prompts for your target colleges.</p>
+                        <a href="profile.html" style="color: var(--accent-color); text-decoration: none;">
+                            Update Profile →
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            supplementalContainer.innerHTML = '';
+            targetSchools.forEach(schoolName => {
+                if (schoolPrompts[schoolName]) {
+                    const schoolSection = document.createElement('div');
+                    schoolSection.style.marginBottom = '2rem';
+                    
+                    schoolSection.innerHTML = `
+                        <h4 style="color: var(--accent-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-university"></i> ${schoolName}
+                        </h4>
+                        <div class="prompt-grid">
+                            ${schoolPrompts[schoolName].map((prompt, index) => `
+                                <div class="prompt-card" onclick="selectSupplementalPrompt('${schoolName}', ${index})">
+                                    <div class="prompt-title">Essay ${index + 1}</div>
+                                    <div class="prompt-preview">${prompt.substring(0, 100)}...</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    supplementalContainer.appendChild(schoolSection);
+                }
+            });
+        }
+
+        // Select prompt
+        function selectPrompt(prompt) {
+            // Remove previous selections
+            document.querySelectorAll('.prompt-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select current prompt
+            event.target.closest('.prompt-card').classList.add('selected');
+            window.selectedPrompt = prompt;
+            
+            // Update essay area with prompt info
+            const textarea = document.getElementById('essayText');
+            const progressTitle = document.getElementById('essayProgressTitle');
+            
+            progressTitle.textContent = `${prompt.title} (${prompt.wordLimit} words)`;
+            
+            if (!textarea.value.trim()) {
+                textarea.placeholder = `Prompt: ${prompt.fullText}\n\nStart writing your response here...`;
+            }
+            
+            updateWordCount();
+        }
+
+        // Update word count and progress
+        function updateWordCount() {
+            const textarea = document.getElementById('essayText');
+            const text = textarea.value.trim();
+            const words = text ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
+            const characters = text.length;
+            
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('charCount').textContent = characters;
+            
+            // Update progress based on word count
+            if (window.selectedPrompt) {
+                const progress = Math.min((words / window.selectedPrompt.wordLimit) * 100, 100);
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('essayProgressPercent').textContent = Math.round(progress) + '%';
+            }
+        }
+
+        // Save progress automatically
+        async function saveProgress() {
+            if (!window.currentUser || !window.selectedPrompt) return;
+            
+            try {
+                const essayData = {
+                    userId: window.currentUser.uid,
+                    type: 'personal-statement',
+                    promptId: window.selectedPrompt.id,
+                    promptTitle: window.selectedPrompt.title,
+                    content: document.getElementById('essayText').value,
+                    wordCount: document.getElementById('wordCount').textContent,
+                    lastUpdated: serverTimestamp(),
+                    isDraft: true
+                };
+                
+                await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}`), essayData);
+                console.log('📝 Essay progress saved');
+                
+            } catch (error) {
+                console.error('❌ Error saving progress:', error);
+            }
+        }
+
+        // Load essay draft
+        async function loadEssayDraft() {
+            if (!window.currentUser) return;
+            
+            try {
+                const essaysQuery = query(
+                    collection(db, 'essays'),
+                    where('userId', '==', window.currentUser.uid),
+                    where('type', '==', 'personal-statement'),
+                    where('isDraft', '==', true)
+                );
+                
+                const querySnapshot = await getDocs(essaysQuery);
+                
+                if (!querySnapshot.empty) {
+                    const essayDoc = querySnapshot.docs[0];
+                    const essayData = essayDoc.data();
+                    
+                    // Load the essay content
+                    document.getElementById('essayText').value = essayData.content || '';
+                    
+                    // Select the corresponding prompt
+                    const prompt = commonAppPrompts.find(p => p.id === essayData.promptId);
+                    if (prompt) {
+                        window.selectedPrompt = prompt;
+                        document.getElementById('essayProgressTitle').textContent = `${prompt.title} (${prompt.wordLimit} words)`;
+                        
+                        // Highlight the selected prompt
+                        setTimeout(() => {
+                            const promptCards = document.querySelectorAll('.prompt-card');
+                            promptCards.forEach((card, index) => {
+                                if (commonAppPrompts[index].id === prompt.id) {
+                                    card.classList.add('selected');
+                                }
+                            });
+                        }, 500);
+                    }
+                    
+                    updateWordCount();
+                    console.log('📄 Loaded essay draft');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading essay draft:', error);
+            }
+        }
+
+        // Analyze essay with AI
+        async function analyzeEssay() {
+            const textarea = document.getElementById('essayText');
+            const essayText = textarea.value.trim();
+            
+            if (!essayText) {
+                alert('Please write some content before requesting analysis.');
+                return;
+            }
+            
+            if (essayText.split(/\s+/).length < 50) {
+                alert('Please write at least 50 words for a meaningful analysis.');
+                return;
+            }
+            
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const btnText = document.getElementById('analyzeBtnText');
+            const feedbackContent = document.getElementById('feedbackContent');
+            
+            // Show loading state
+            analyzeBtn.disabled = true;
+            btnText.innerHTML = '<div class="loading"></div> Analyzing...';
+            
+            try {
+                // Prepare context for analysis
+                const analysisContext = {
+                    userProfile: {
+                        name: window.userData?.name,
+                        intendedMajor: window.userData?.questionnaire?.intendedMajor,
+                        targetSchools: window.userData?.questionnaire?.targetSchools,
+                        academicInterests: window.userData?.questionnaire?.academicInterests,
+                        extracurriculars: window.userData?.questionnaire?.extracurriculars,
+                        careerGoals: window.userData?.questionnaire?.careerGoals
+                    },
+                    essayData: {
+                        prompt: window.selectedPrompt?.fullText,
+                        promptTitle: window.selectedPrompt?.title,
+                        wordLimit: window.selectedPrompt?.wordLimit,
+                        currentWordCount: parseInt(document.getElementById('wordCount').textContent)
+                    },
+                    analysisRequest: 'comprehensive-essay-analysis'
+                };
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Please provide a comprehensive analysis of this college essay: "${essayText}"`,
+                        userProfile: analysisContext.userProfile,
+                        questionnaireData: window.userData?.questionnaire,
+                        essayContext: analysisContext.essayData
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Analysis request failed');
+                }
+                
+                const data = await response.json();
+                displayEssayAnalysis(data.response);
+                feedbackContent.classList.add('show');
+                
+            } catch (error) {
+                console.error('❌ Error analyzing essay:', error);
+                alert('Sorry, I had trouble analyzing your essay. Please try again.');
+            } finally {
+                analyzeBtn.disabled = false;
+                btnText.innerHTML = '<i class="fas fa-magic"></i> Analyze My Essay';
+            }
+        }
+
+        // Display AI analysis results
+        function displayEssayAnalysis(analysisText) {
+            // Parse the analysis (this would be more sophisticated in production)
+            const score = Math.floor(Math.random() * 30) + 70; // 70-100 range
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreTitle = document.getElementById('scoreTitle');
+            const scoreDescription = document.getElementById('scoreDescription');
+            const feedbackCategories = document.getElementById('feedbackCategories');
+            
+            // Update overall score
+            scoreNumber.textContent = score;
+            
+            if (score >= 90) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreTitle.textContent = 'Excellent Essay!';
+                scoreDescription.textContent = 'Your essay demonstrates exceptional personal voice and compelling storytelling.';
+            } else if (score >= 80) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreTitle.textContent = 'Strong Essay';
+                scoreDescription.textContent = 'Your essay shows good personal insight with room for enhancement.';
+            } else if (score >= 70) {
+                scoreCircle.className = 'score-circle score-fair';
+                scoreTitle.textContent = 'Good Foundation';
+                scoreDescription.textContent = 'Your essay has potential but could benefit from more development.';
+            } else {
+                scoreCircle.className = 'score-circle score-needs-work';
+                scoreTitle.textContent = 'Needs Development';
+                scoreDescription.textContent = 'Your essay would benefit from significant revision and development.';
+            }
+            
+            // Create detailed feedback categories
+            const categories = [
+                {
+                    title: 'Content & Theme',
+                    score: Math.floor(Math.random() * 20) + 80,
+                    icon: 'fas fa-lightbulb',
+                    feedback: 'Your essay effectively addresses the prompt with clear themes and personal insights.'
+                },
+                {
+                    title: 'Personal Voice',
+                    score: Math.floor(Math.random() * 20) + 75,
+                    icon: 'fas fa-user',
+                    feedback: 'Strong authentic voice comes through. Consider adding more specific personal details.'
+                },
+                {
+                    title: 'Structure & Flow',
+                    score: Math.floor(Math.random() * 20) + 85,
+                    icon: 'fas fa-list',
+                    feedback: 'Well-organized with good transitions. Opening could be more engaging.'
+                },
+                {
+                    title: 'Writing Quality',
+                    score: Math.floor(Math.random() * 20) + 80,
+                    icon: 'fas fa-pen',
+                    feedback: 'Clear writing with good vocabulary. Watch for repetitive sentence structures.'
+                }
+            ];
+            
+            feedbackCategories.innerHTML = '';
+            categories.forEach(category => {
+                const categoryEl = document.createElement('div');
+                categoryEl.className = 'feedback-category';
+                
+                const scoreClass = category.score >= 85 ? 'score-excellent' : 
+                                  category.score >= 75 ? 'score-good' : 'score-fair';
+                
+                categoryEl.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-title">
+                            <i class="${category.icon}"></i> ${category.title}
+                        </div>
+                        <div class="category-score ${scoreClass}">${category.score}</div>
+                    </div>
+                    <div class="category-feedback">${category.feedback}</div>
+                `;
+                
+                feedbackCategories.appendChild(categoryEl);
+            });
+            
+            // Add the full AI analysis at the end
+            const aiAnalysisEl = document.createElement('div');
+            aiAnalysisEl.className = 'feedback-category';
+            aiAnalysisEl.innerHTML = `
+                <div class="category-header">
+                    <div class="category-title">
+                        <i class="fas fa-robot"></i> AI Detailed Analysis
+                    </div>
+                </div>
+                <div class="category-feedback">${analysisText}</div>
+            `;
+            feedbackCategories.appendChild(aiAnalysisEl);
+        }
+
+        // Generate personalized tips
+        function generatePersonalizedTips() {
+            const tipsContainer = document.getElementById('personalizedTips');
+            const questionnaire = window.userData?.questionnaire;
+            const tips = [];
+            
+            if (questionnaire?.intendedMajor) {
+                tips.push({
+                    icon: 'fas fa-graduation-cap',
+                    title: `${questionnaire.intendedMajor} Focus`,
+                    content: `Since you're interested in ${questionnaire.intendedMajor}, consider including specific examples of how you've explored this field through coursework, projects, or experiences.`
+                });
+            }
+            
+            if (questionnaire?.extracurriculars?.length > 0) {
+                const activities = questionnaire.extracurriculars.slice(0, 2).join(' and ');
+                tips.push({
+                    icon: 'fas fa-star',
+                    title: 'Leverage Your Activities',
+                    content: `Your involvement in ${activities} could provide excellent material for demonstrating leadership, passion, or personal growth in your essays.`
+                });
+            }
+            
+            if (questionnaire?.targetSchools?.length > 0) {
+                tips.push({
+                    icon: 'fas fa-university',
+                    title: 'School-Specific Connection',
+                    content: `Research specific programs, professors, or opportunities at ${questionnaire.targetSchools[0]} to make your "Why this school?" essays more compelling.`
+                });
+            }
+            
+            if (questionnaire?.specialConsiderations?.includes('first-generation')) {
+                tips.push({
+                    icon: 'fas fa-heart',
+                    title: 'First-Generation Perspective',
+                    content: 'Your first-generation college student perspective is valuable. Consider sharing how this background has shaped your goals and determination.'
+                });
+            }
+            
+            // Add general tips
+            tips.push({
+                icon: 'fas fa-edit',
+                title: 'Show, Don\'t Tell',
+                content: 'Use specific examples and anecdotes rather than general statements. Let your experiences demonstrate your qualities.'
+            });
+            
+            tips.push({
+                icon: 'fas fa-clock',
+                title: 'Start Strong',
+                content: 'Your opening paragraph should grab attention. Consider starting with a scene, dialogue, or thought-provoking question.'
+            });
+            
+            tipsContainer.innerHTML = '';
+            tips.forEach(tip => {
+                const tipCard = document.createElement('div');
+                tipCard.className = 'tip-card';
+                tipCard.innerHTML = `
+                    <div class="tip-title">
+                        <i class="${tip.icon}"></i> ${tip.title}
+                    </div>
+                    <div class="tip-content">${tip.content}</div>
+                `;
+                tipsContainer.appendChild(tipCard);
+            });
+        }
+
+        // Load user's essays
+        async function loadUserEssays() {
+            if (!window.currentUser) return;
+            
+            try {
+                const essaysQuery = query(
+                    collection(db, 'essays'),
+                    where('userId', '==', window.currentUser.uid),
+                    orderBy('lastUpdated', 'desc')
+                );
+                
+                const querySnapshot = await getDocs(essaysQuery);
+                const essayList = document.getElementById('essayList');
+                
+                if (querySnapshot.empty) {
+                    essayList.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>No essays yet. Start writing your first essay!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                essayList.innerHTML = '';
+                let completedEssays = 0;
+                
+                querySnapshot.forEach((doc) => {
+                    const essay = doc.data();
+                    if (!essay.isDraft) completedEssays++;
+                    
+                    const essayItem = document.createElement('div');
+                    essayItem.className = 'essay-item';
+                    essayItem.onclick = () => loadEssay(doc.id);
+                    
+                    const wordCount = essay.wordCount || '0';
+                    const lastUpdated = essay.lastUpdated ? 
+                        new Date(essay.lastUpdated.toDate()).toLocaleDateString() : 'Unknown';
+                    
+                    essayItem.innerHTML = `
+                        <div class="essay-info">
+                            <h4>${essay.promptTitle || 'Untitled Essay'}</h4>
+                            <div class="essay-meta">
+                                ${wordCount} words • Last updated: ${lastUpdated}
+                                ${essay.isDraft ? ' • Draft' : ' • Complete'}
+                            </div>
+                        </div>
+                        <div class="essay-actions">
+                            <button class="essay-action-btn" onclick="event.stopPropagation(); editEssay('${doc.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="essay-action-btn" onclick="event.stopPropagation(); deleteEssay('${doc.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    essayList.appendChild(essayItem);
+                });
+                
+                // Update essay count
+                document.getElementById('totalEssaysCount').textContent = completedEssays;
+                
+            } catch (error) {
+                console.error('❌ Error loading user essays:', error);
+            }
+        }
+
+        // Update progress tracker
+        function updateProgressTracker() {
+            const schoolProgress = document.getElementById('schoolProgress');
+            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+            
+            if (targetSchools.length === 0) {
+                schoolProgress.innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                        Add target schools to track essay progress
+                    </div>
+                `;
+                return;
+            }
+            
+            schoolProgress.innerHTML = '';
+            targetSchools.forEach(school => {
+                const schoolItem = document.createElement('div');
+                schoolItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--secondary-bg);';
+                
+                // Mock progress calculation (would be real in production)
+                const progress = Math.floor(Math.random() * 100);
+                const progressColor = progress >= 75 ? 'var(--success-color)' : 
+                                    progress >= 50 ? 'var(--warning-color)' : 'var(--danger-color)';
+                
+                schoolItem.innerHTML = `
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${school}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${progress}% complete</div>
+                    </div>
+                    <div style="width: 40px; height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden;">
+                        <div style="width: ${progress}%; height: 100%; background: ${progressColor};"></div>
+                    </div>
+                `;
+                
+                schoolProgress.appendChild(schoolItem);
+            });
+        }
+
+        // Tab switching
+        window.switchTab = function(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.essay-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.essay-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId + '-content').classList.add('active');
+        };
+
+        // Save essay
+        window.saveEssay = async function() {
+            if (!window.currentUser || !window.selectedPrompt) {
+                alert('Please select a prompt first.');
+                return;
+            }
+            
+            const essayText = document.getElementById('essayText').value.trim();
+            if (!essayText) {
+                alert('Please write some content before saving.');
+                return;
+            }
+            
+            try {
+                const essayData = {
+                    userId: window.currentUser.uid,
+                    type: 'personal-statement',
+                    promptId: window.selectedPrompt.id,
+                    promptTitle: window.selectedPrompt.title,
+                    content: essayText,
+                    wordCount: parseInt(document.getElementById('wordCount').textContent),
+                    lastUpdated: serverTimestamp(),
+                    isDraft: false
+                };
+                
+                await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}_${Date.now()}`), essayData);
+                
+                alert('Essay saved successfully!');
+                await loadUserEssays();
+                
+            } catch (error) {
+                console.error('❌ Error saving essay:', error);
+                alert('Failed to save essay. Please try again.');
+            }
+        };
+
+        // Export essay
+        window.exportEssay = function() {
+            const essayText = document.getElementById('essayText').value.trim();
+            if (!essayText) {
+                alert('No content to export.');
+                return;
+            }
+            
+            const promptTitle = window.selectedPrompt ? window.selectedPrompt.title : 'Essay';
+            const blob = new Blob([essayText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${promptTitle.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        // Clear essay
+        window.clearEssay = function() {
+            if (confirm('Are you sure you want to clear this essay? This action cannot be undone.')) {
+                document.getElementById('essayText').value = '';
+                updateWordCount();
+            }
+        };
+
+        // Select supplemental prompt
+        window.selectSupplementalPrompt = function(schoolName, promptIndex) {
+            const prompt = schoolPrompts[schoolName][promptIndex];
+            // Similar logic to selectPrompt but for supplemental essays
+            alert(`Selected: ${schoolName} - Essay ${promptIndex + 1}\n\n${prompt}`);
+        };
+
+        // Create new essay
+        window.createNewEssay = function() {
+            document.getElementById('essayText').value = '';
+            window.selectedPrompt = null;
+            document.getElementById('essayProgressTitle').textContent = 'New Essay';
+            updateWordCount();
+            
+            // Switch to personal statement tab
+            document.querySelector('.essay-tab').click();
+        };
+
+        // Load specific essay
+        window.loadEssay = async function(essayId) {
+            try {
+                const essayDoc = await getDoc(doc(db, 'essays', essayId));
+                if (essayDoc.exists()) {
+                    const essay = essayDoc.data();
+                    document.getElementById('essayText').value = essay.content || '';
+                    
+                    // Find and select the corresponding prompt
+                    const prompt = commonAppPrompts.find(p => p.id === essay.promptId);
+                    if (prompt) {
+                        window.selectedPrompt = prompt;
+                        document.getElementById('essayProgressTitle').textContent = `${prompt.title} (${prompt.wordLimit} words)`;
+                    }
+                    
+                    updateWordCount();
+                    // Switch to personal statement tab
+                    document.querySelector('.essay-tab').click();
+                }
+            } catch (error) {
+                console.error('❌ Error loading essay:', error);
+                alert('Failed to load essay.');
+            }
+        };
+
+        // Edit essay
+        window.editEssay = function(essayId) {
+            window.loadEssay(essayId);
+        };
+
+        // Delete essay
+        window.deleteEssay = async function(essayId) {
+            if (!confirm('Are you sure you want to delete this essay? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await deleteDoc(doc(db, 'essays', essayId));
+                alert('Essay deleted successfully.');
+                await loadUserEssays();
+            } catch (error) {
+                console.error('❌ Error deleting essay:', error);
+                alert('Failed to delete essay.');
+            }
+        };
+
+        // Auth UI update
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                
+                const displayName = window.userData?.name || user.displayName || user.email.split('@')[0];
+                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                
+                if (window.userData?.profilePhotoURL) {
+                    if (navUserAvatar) {
+                        navUserAvatar.src = window.userData.profilePhotoURL;
+                        navUserAvatar.style.display = 'block';
+                    }
+                    if (navAccountText) navAccountText.style.display = 'none';
+                } else {
+                    if (navUserAvatar) navUserAvatar.style.display = 'none';
+                    if (navAccountText) navAccountText.style.display = 'inline';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
+            }
+        }
+
+        // Logout function
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('❌ Error signing out:', error);
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', window.logout);
+            }
+        });
+
+    </script>
+
+    <!-- Theme and UI Enhancement Script -->
+    <script>
+        // Theme management
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Essay Coach UI loaded');
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = sessionStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    sessionStorage.setItem('theme', newTheme);
+                    
+                    // Update logo
+                    const logo = document.getElementById('navbarLogo');
+                    if (logo) {
+                        logo.src = newTheme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+                    }
+                });
+            }
+            
+            // Create starry background
+            createStarryBackground();
+            
+            // Auto-save functionality
+            const essayTextarea = document.getElementById('essayText');
+            if (essayTextarea) {
+                let saveTimeout;
+                essayTextarea.addEventListener('input', function() {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(() => {
+                        if (window.currentUser && window.selectedPrompt) {
+                            saveProgress();
+                        }
+                    }, 2000); // Auto-save after 2 seconds of no typing
+                });
+            }
+        });
+
+        // Create starry background
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (typeof window.saveEssay === 'function') {
+                    window.saveEssay();
+                }
+            }
+            
+            // Ctrl+Shift+A to analyze
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                if (typeof window.analyzeEssay === 'function') {
+                    window.analyzeEssay();
+                }
+            }
+        });
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Essay Coach Error:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`📝 Essay Coach loaded in ${Math.round(loadTime)}ms`);
+        });
+    </script>
+</body>
+</html>
