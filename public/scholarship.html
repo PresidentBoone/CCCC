@@ -76,7 +76,7 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Navbar (same as dashboard) */
+        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -332,139 +332,7 @@
             margin-bottom: 3rem;
         }
 
-        /* Filter Section */
-        .filter-section {
-            background: var(--primary-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            height: fit-content;
-            position: sticky;
-            top: 120px;
-        }
-
-        .filter-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .filter-group {
-            margin-bottom: 2rem;
-        }
-
-        .filter-label {
-            display: block;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .filter-input, .filter-select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid rgba(160, 123, 204, 0.2);
-            border-radius: 8px;
-            background: var(--secondary-bg);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .filter-input:focus, .filter-select:focus {
-            border-color: var(--accent-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(160, 123, 204, 0.1);
-        }
-
-        .filter-range {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .range-input {
-            width: 100%;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--secondary-bg);
-            outline: none;
-        }
-
-        .range-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .checkbox-item:hover {
-            background: var(--secondary-bg);
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            accent-color: var(--accent-color);
-        }
-
-        .ai-match-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .ai-match-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .ai-match-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Scholarship Results */
+        /* Results Section */
         .scholarship-results {
             background: var(--primary-bg);
             border-radius: 20px;
@@ -478,6 +346,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .results-title {
@@ -501,6 +371,7 @@
             background: var(--secondary-bg);
             color: var(--text-primary);
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .scholarship-grid {
@@ -540,6 +411,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
+            gap: 1rem;
         }
 
         .scholarship-title {
@@ -620,6 +492,7 @@
             display: flex;
             gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -669,6 +542,153 @@
         .match-medium { background: var(--warning-color); }
         .match-low { background: var(--danger-color); }
 
+        /* Filter Section */
+        .filter-section {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .filter-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-input, .filter-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(160, 123, 204, 0.1);
+        }
+
+        .filter-range {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .range-input {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--secondary-bg);
+            outline: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .range-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        #amountDisplay {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            background: var(--secondary-bg);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            accent-color: var(--accent-color);
+        }
+
+        .ai-match-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .ai-match-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .ai-match-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Loading States */
         .loading {
             display: inline-block;
@@ -702,7 +722,7 @@
             opacity: 0.5;
         }
 
-        /* Footer (same as dashboard) */
+        /* Footer */
         .footer {
             background: var(--gradient);
             padding: 3rem 0;
@@ -813,6 +833,10 @@
                 padding: 2rem 1.5rem;
             }
 
+            .scholarship-header h1 {
+                font-size: 2rem;
+            }
+
             .scholarship-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -835,12 +859,30 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5fbf;
+        }
     </style>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
-    <!-- Navigation (same as dashboard) -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="logo-section">
             <div class="logo">
@@ -937,7 +979,6 @@
                 </div>
 
                 <div class="scholarship-grid" id="scholarshipGrid">
-                    <!-- Loading state -->
                     <div class="loading-state" id="loadingState">
                         <div class="loading"></div>
                         <p>Finding personalized scholarships based on your profile...</p>
@@ -951,4 +992,1011 @@
                     <i class="fas fa-filter"></i> Smart Filters
                 </div>
 
-                <div class="filter-group
+                <div class="filter-group">
+                    <label class="filter-label">Award Amount</label>
+                    <div class="filter-range">
+                        <input type="range" class="range-input" id="minAmountRange" min="500" max="50000" value="500" step="500" oninput="updateAmountFilter()">
+                        <span id="amountDisplay">$500 - $50,000+</span>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Application Difficulty</label>
+                    <select class="filter-select" id="difficultyFilter" onchange="applyFilters()">
+                        <option value="">All Difficulty Levels</option>
+                        <option value="easy">Easy (No Essay)</option>
+                        <option value="medium">Medium (Short Essay)</option>
+                        <option value="hard">Hard (Multiple Requirements)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Deadline</label>
+                    <select class="filter-select" id="deadlineFilter" onchange="applyFilters()">
+                        <option value="">All Deadlines</option>
+                        <option value="week">Due This Week</option>
+                        <option value="month">Due This Month</option>
+                        <option value="quarter">Due This Quarter</option>
+                        <option value="year">Due This Year</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Scholarship Type</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="merit" name="scholarshipType" value="merit" onchange="applyFilters()">
+                            <label for="merit">Merit-Based</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="need" name="scholarshipType" value="need" onchange="applyFilters()">
+                            <label for="need">Need-Based</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="athletic" name="scholarshipType" value="athletic" onchange="applyFilters()">
+                            <label for="athletic">Athletic</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="artistic" name="scholarshipType" value="artistic" onchange="applyFilters()">
+                            <label for="artistic">Creative/Artistic</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="stem" name="scholarshipType" value="stem" onchange="applyFilters()">
+                            <label for="stem">STEM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="minority" name="scholarshipType" value="minority" onchange="applyFilters()">
+                            <label for="minority">Minority/Diversity</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="community" name="scholarshipType" value="community" onchange="applyFilters()">
+                            <label for="community">Community Service</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ai-match-btn" id="aiMatchBtn" onclick="findAIMatches()">
+                    <i class="fas fa-robot"></i>
+                    <span id="aiMatchText">Find AI Matches</span>
+                </button>
+
+                <div class="filter-group" style="margin-top: 1rem;">
+                    <button class="btn-secondary" style="width: 100%;" onclick="clearFilters()">
+                        <i class="fas fa-refresh"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & JavaScript Integration -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.userData = null;
+        window.allScholarships = [];
+        window.filteredScholarships = [];
+
+        console.log('🏆 Scholarship Finder initialized');
+
+        // Comprehensive scholarship database
+        const scholarshipDatabase = [
+            {
+                id: 'gates-millennium',
+                title: 'Gates Millennium Scholars Program',
+                organization: 'Bill & Melinda Gates Foundation',
+                amount: 200000,
+                deadline: '2025-01-15',
+                difficulty: 'hard',
+                type: ['merit', 'minority', 'need'],
+                description: 'Full scholarship for outstanding minority students to pursue undergraduate and graduate studies.',
+                requirements: ['3.3 GPA minimum', 'Pell Grant eligible', 'Minority status', 'Leadership experience'],
+                tags: ['Full Ride', 'Graduate School', 'Leadership', 'Minority'],
+                url: 'https://www.gmsp.org/',
+                matchCriteria: {
+                    gpa_min: 3.3,
+                    need_based: true,
+                    minority: true,
+                    leadership: true
+                }
+            },
+            {
+                id: 'coca-cola',
+                title: 'Coca-Cola Scholars Foundation',
+                organization: 'The Coca-Cola Company',
+                amount: 20000,
+                deadline: '2024-10-31',
+                difficulty: 'hard',
+                type: ['merit', 'community'],
+                description: 'Recognition program for high-achieving high school seniors committed to leadership and service.',
+                requirements: ['3.0 GPA minimum', 'Leadership roles', '100+ service hours', 'U.S. citizen'],
+                tags: ['Leadership', 'Community Service', 'Merit'],
+                url: 'https://www.coca-colascholarsfoundation.org/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    community_service: true,
+                    leadership: true
+                }
+            },
+            {
+                id: 'nshss-stem',
+                title: 'NSHSS STEM Scholarship',
+                organization: 'National Society of High School Scholars',
+                amount: 1000,
+                deadline: '2025-03-15',
+                difficulty: 'medium',
+                type: ['merit', 'stem'],
+                description: 'Supporting students pursuing STEM fields with academic excellence.',
+                requirements: ['3.0 GPA minimum', 'STEM major intent', 'Essay required'],
+                tags: ['STEM', 'Technology', 'Science'],
+                url: 'https://www.nshss.org/scholarships/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    stem_interest: true
+                }
+            },
+            {
+                id: 'hispanic-heritage',
+                title: 'Hispanic Heritage Foundation Scholarship',
+                organization: 'Hispanic Heritage Foundation',
+                amount: 5000,
+                deadline: '2024-12-01',
+                difficulty: 'medium',
+                type: ['merit', 'minority'],
+                description: 'Supporting Hispanic students in their pursuit of higher education.',
+                requirements: ['Hispanic heritage', '3.0 GPA minimum', 'Financial need'],
+                tags: ['Hispanic', 'Heritage', 'Diversity'],
+                url: 'https://hispanicheritage.org/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    hispanic: true,
+                    need_based: true
+                }
+            },
+            {
+                id: 'jack-kent-cooke',
+                title: 'Jack Kent Cooke Foundation Scholarship',
+                organization: 'Jack Kent Cooke Foundation',
+                amount: 40000,
+                deadline: '2024-11-28',
+                difficulty: 'hard',
+                type: ['merit', 'need'],
+                description: 'Supporting high-achieving students with financial need to attend top universities.',
+                requirements: ['Top 5% of class', 'SAT 1200+/ACT 26+', 'Financial need', 'Leadership'],
+                tags: ['High Achiever', 'Financial Need', 'Top Universities'],
+                url: 'https://www.jkcf.org/',
+                matchCriteria: {
+                    gpa_min: 3.8,
+                    sat_min: 1200,
+                    act_min: 26,
+                    need_based: true
+                }
+            },
+            {
+                id: 'axa-achievement',
+                title: 'AXA Achievement Scholarship',
+                organization: 'AXA Foundation',
+                amount: 25000,
+                deadline: '2024-12-15',
+                difficulty: 'medium',
+                type: ['merit'],
+                description: 'Recognizing students who have shown determination to set and reach their goals.',
+                requirements: ['Demonstrated ambition', 'Academic achievement', 'Community involvement'],
+                tags: ['Achievement', 'Ambition', 'Goals'],
+                url: 'https://www.axa.com/en/aboutaxa/axa-achievement-scholarship',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    extracurriculars: true
+                }
+            },
+            {
+                id: 'horatio-alger',
+                title: 'Horatio Alger Association Scholarship',
+                organization: 'Horatio Alger Association',
+                amount: 25000,
+                deadline: '2024-10-25',
+                difficulty: 'medium',
+                type: ['need', 'merit'],
+                description: 'Supporting students who have overcome adversity and demonstrate financial need.',
+                requirements: ['Financial need', 'Overcome challenges', '2.0 GPA minimum', 'Community service'],
+                tags: ['Adversity', 'Financial Need', 'Resilience'],
+                url: 'https://horatioalger.org/scholarships/',
+                matchCriteria: {
+                    gpa_min: 2.0,
+                    need_based: true,
+                    overcame_adversity: true
+                }
+            },
+            {
+                id: 'dell-scholars',
+                title: 'Dell Scholars Program',
+                organization: 'Michael & Susan Dell Foundation',
+                amount: 20000,
+                deadline: '2024-12-01',
+                difficulty: 'medium',
+                type: ['need', 'first-generation'],
+                description: 'Supporting low-income, highly motivated students who demonstrate the drive to succeed.',
+                requirements: ['Pell Grant eligible', 'First-generation college', '2.4 GPA minimum'],
+                tags: ['First Generation', 'Low Income', 'Motivation'],
+                url: 'https://www.dellscholars.org/',
+                matchCriteria: {
+                    gpa_min: 2.4,
+                    need_based: true,
+                    first_generation: true
+                }
+            },
+            {
+                id: 'burger-king',
+                title: 'Burger King Scholars Program',
+                organization: 'Burger King Foundation',
+                amount: 50000,
+                deadline: '2024-12-15',
+                difficulty: 'easy',
+                type: ['need', 'merit'],
+                description: 'Helping students overcome obstacles and achieve their educational dreams.',
+                requirements: ['2.5 GPA minimum', 'Work experience', 'Community involvement'],
+                tags: ['Work Experience', 'Community', 'Dreams'],
+                url: 'https://www.bkmclamorefoundation.org/',
+                matchCriteria: {
+                    gpa_min: 2.5,
+                    work_experience: true
+                }
+            },
+            {
+                id: 'ron-brown',
+                title: 'Ron Brown Scholar Program',
+                organization: 'CAP Charitable Foundation',
+                amount: 40000,
+                deadline: '2025-01-09',
+                difficulty: 'hard',
+                type: ['merit', 'minority'],
+                description: 'Supporting African American students who demonstrate academic excellence, leadership, and community service.',
+                requirements: ['African American', '3.0 GPA minimum', 'Leadership roles', 'Community service'],
+                tags: ['African American', 'Leadership', 'Excellence'],
+                url: 'https://www.ronbrown.org/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    african_american: true,
+                    leadership: true,
+                    community_service: true
+                }
+            },
+            {
+                id: 'elks-mvs',
+                title: 'Elks National Foundation Most Valuable Student',
+                organization: 'Elks National Foundation',
+                amount: 12500,
+                deadline: '2024-11-05',
+                difficulty: 'hard',
+                type: ['merit', 'community'],
+                description: 'Rewarding students for scholarship, leadership, and financial need.',
+                requirements: ['U.S. citizen', 'Academic achievement', 'Leadership', 'Financial need'],
+                tags: ['Leadership', 'Citizenship', 'Achievement'],
+                url: 'https://www.elks.org/scholars/',
+                matchCriteria: {
+                    gpa_min: 3.5,
+                    leadership: true,
+                    financial_need: true
+                }
+            },
+            {
+                id: 'society-women-engineers',
+                title: 'Society of Women Engineers Scholarship',
+                organization: 'Society of Women Engineers',
+                amount: 15000,
+                deadline: '2025-02-15',
+                difficulty: 'medium',
+                type: ['merit', 'stem'],
+                description: 'Supporting women pursuing engineering and technology degrees.',
+                requirements: ['Female', 'Engineering major', '3.0 GPA minimum'],
+                tags: ['Women in STEM', 'Engineering', 'Technology'],
+                url: 'https://swe.org/scholarships/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    female: true,
+                    engineering: true
+                }
+            },
+            {
+                id: 'foot-locker',
+                title: 'Foot Locker Scholar Athletes Program',
+                organization: 'Foot Locker Foundation',
+                amount: 20000,
+                deadline: '2025-01-31',
+                difficulty: 'medium',
+                type: ['athletic', 'merit'],
+                description: 'Recognizing student-athletes who excel in athletics, academics, and community leadership.',
+                requirements: ['Varsity athlete', '3.0 GPA minimum', 'Community service', 'Leadership'],
+                tags: ['Student Athlete', 'Sports', 'Leadership'],
+                url: 'https://www.footlockerscholarathletes.com/',
+                matchCriteria: {
+                    gpa_min: 3.0,
+                    athlete: true,
+                    leadership: true
+                }
+            },
+            {
+                id: 'ncwit-aspirations',
+                title: 'NCWIT Aspirations in Computing',
+                organization: 'National Center for Women & Information Technology',
+                amount: 500,
+                deadline: '2024-11-15',
+                difficulty: 'easy',
+                type: ['merit', 'stem'],
+                description: 'Recognizing high school women for their computing-related achievements and interests.',
+                requirements: ['Female', 'Computing interest', 'Academic achievement'],
+                tags: ['Women in Tech', 'Computing', 'Technology'],
+                url: 'https://www.aspirations.org/',
+                matchCriteria: {
+                    female: true,
+                    computer_science: true
+                }
+            },
+            {
+                id: 'uncf-general',
+                title: 'UNCF General Scholarship',
+                organization: 'United Negro College Fund',
+                amount: 8000,
+                deadline: '2024-10-31',
+                difficulty: 'medium',
+                type: ['merit', 'minority', 'need'],
+                description: 'Supporting African American students in their pursuit of higher education.',
+                requirements: ['African American', '2.5 GPA minimum', 'Financial need', 'UNCF member institution'],
+                tags: ['African American', 'HBCU', 'Education'],
+                url: 'https://www.uncf.org/scholarships',
+                matchCriteria: {
+                    gpa_min: 2.5,
+                    african_american: true,
+                    need_based: true
+                }
+            }
+        ];
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            updateAuthUI(user);
+            
+            if (user) {
+                window.currentUser = user;
+                await loadUserData(user);
+                await initializeScholarshipFinder();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load user data
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    console.log('📊 User data loaded:', window.userData);
+                    personalizeScholarshipFinder();
+                } else {
+                    window.userData = {
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0]
+                    };
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+            }
+        }
+
+        // Initialize Scholarship Finder
+        async function initializeScholarshipFinder() {
+            try {
+                console.log('🚀 Initializing Scholarship Finder...');
+                
+                window.allScholarships = [...scholarshipDatabase];
+                await personalizeScholarships();
+                await loadSavedApplications();
+                updateStatistics();
+                displayScholarships(window.filteredScholarships);
+                
+                console.log('✅ Scholarship Finder initialized');
+                
+            } catch (error) {
+                console.error('❌ Error initializing Scholarship Finder:', error);
+            }
+        }
+
+        // Personalize based on user data
+        function personalizeScholarshipFinder() {
+            const userData = window.userData;
+            const headerMessage = document.getElementById('headerMessage');
+            
+            if (userData?.name) {
+                const questionnaire = userData.questionnaire;
+                if (questionnaire?.intendedMajor) {
+                    headerMessage.textContent = `Hi ${userData.name}! Discover ${questionnaire.intendedMajor}-related scholarships and opportunities tailored to your profile.`;
+                } else {
+                    headerMessage.textContent = `Hi ${userData.name}! Find scholarships that match your background, interests, and academic achievements.`;
+                }
+            }
+        }
+
+        // Personalize scholarships with AI matching
+        async function personalizeScholarships() {
+            const questionnaire = window.userData?.questionnaire || {};
+            const scholarships = [...window.allScholarships];
+            
+            scholarships.forEach(scholarship => {
+                scholarship.matchScore = calculateMatchScore(scholarship, questionnaire);
+                scholarship.matchReason = generateMatchReason(scholarship, questionnaire);
+            });
+            
+            scholarships.sort((a, b) => b.matchScore - a.matchScore);
+            window.filteredScholarships = scholarships.filter(s => s.matchScore >= 30);
+            
+            console.log('🎯 Personalized scholarships calculated');
+        }
+
+        // Calculate match score
+        function calculateMatchScore(scholarship, questionnaire) {
+            let score = 0;
+            const criteria = scholarship.matchCriteria || {};
+            
+            const userGPA = parseFloat(questionnaire.unweightedGPA || questionnaire.currentGPA || 3.0);
+            if (criteria.gpa_min && userGPA >= criteria.gpa_min) {
+                score += 25;
+            }
+            
+            const satScore = extractSATScore(questionnaire.testScores);
+            const actScore = extractACTScore(questionnaire.testScores);
+            if (criteria.sat_min && satScore >= criteria.sat_min) score += 15;
+            if (criteria.act_min && actScore >= criteria.act_min) score += 15;
+            
+            const major = questionnaire.intendedMajor;
+            if (major) {
+                if (criteria.stem_interest && ['Computer Science', 'Engineering', 'Mathematics', 'Biology', 'Physics', 'Chemistry'].includes(major)) {
+                    score += 20;
+                }
+                if (criteria.engineering && major === 'Engineering') score += 25;
+                if (criteria.computer_science && major === 'Computer Science') score += 25;
+            }
+            
+            if (criteria.first_generation && questionnaire.specialConsiderations?.includes('first-generation')) {
+                score += 20;
+            }
+            
+            if (criteria.need_based && questionnaire.financialAid?.includes('need-aid')) {
+                score += 15;
+            }
+            
+            const extracurriculars = questionnaire.extracurriculars || [];
+            if (criteria.leadership && extracurriculars.includes('student-government')) score += 15;
+            if (criteria.community_service && extracurriculars.includes('volunteer-work')) score += 15;
+            if (criteria.athlete && extracurriculars.includes('varsity-sports')) score += 15;
+            
+            score += 20;
+            
+            return Math.min(score, 100);
+        }
+
+        // Generate match reason
+        function generateMatchReason(scholarship, questionnaire) {
+            const reasons = [];
+            const criteria = scholarship.matchCriteria || {};
+            
+            const userGPA = parseFloat(questionnaire.unweightedGPA || 3.0);
+            if (criteria.gpa_min && userGPA >= criteria.gpa_min) {
+                reasons.push(`GPA meets requirement (${userGPA})`);
+            }
+            
+            if (questionnaire.intendedMajor && criteria.stem_interest) {
+                reasons.push(`${questionnaire.intendedMajor} major alignment`);
+            }
+            
+            if (criteria.first_generation && questionnaire.specialConsiderations?.includes('first-generation')) {
+                reasons.push('First-generation college student');
+            }
+            
+            if (criteria.need_based && questionnaire.financialAid?.includes('need-aid')) {
+                reasons.push('Financial need qualification');
+            }
+            
+            const extracurriculars = questionnaire.extracurriculars || [];
+            if (criteria.leadership && extracurriculars.includes('student-government')) {
+                reasons.push('Leadership experience');
+            }
+            
+            if (criteria.community_service && extracurriculars.includes('volunteer-work')) {
+                reasons.push('Community service background');
+            }
+            
+            return reasons.length > 0 ? reasons.slice(0, 2).join(', ') : 'General eligibility match';
+        }
+
+        // Display scholarships
+        function displayScholarships(scholarships) {
+            const scholarshipGrid = document.getElementById('scholarshipGrid');
+            const loadingState = document.getElementById('loadingState');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            if (loadingState) loadingState.style.display = 'none';
+            
+            if (scholarships.length === 0) {
+                scholarshipGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No scholarships found</h3>
+                        <p>Try adjusting your filters or complete your profile for better matches.</p>
+                    </div>
+                `;
+                resultsCount.textContent = 'No scholarships match your criteria';
+                return;
+            }
+            
+            const totalValue = scholarships.reduce((sum, s) => sum + s.amount, 0);
+            resultsCount.textContent = `Found ${scholarships.length} scholarships worth ${Math.round(totalValue / 1000)}K total`;
+            
+            scholarshipGrid.innerHTML = '';
+            scholarships.forEach(scholarship => {
+                const scholarshipCard = createScholarshipCard(scholarship);
+                scholarshipGrid.appendChild(scholarshipCard);
+            });
+        }
+
+        // Create scholarship card
+        function createScholarshipCard(scholarship) {
+            const card = document.createElement('div');
+            card.className = 'scholarship-card';
+            
+            const matchScore = scholarship.matchScore || 50;
+            let matchClass = 'match-low';
+            let matchText = 'Low Match';
+            
+            if (matchScore >= 70) {
+                matchClass = 'match-high';
+                matchText = 'High Match';
+            } else if (matchScore >= 50) {
+                matchClass = 'match-medium';
+                matchText = 'Good Match';
+            }
+            
+            const deadline = new Date(scholarship.deadline);
+            const today = new Date();
+            const daysUntil = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+            
+            let deadlineText = deadline.toLocaleDateString();
+            let deadlineClass = '';
+            
+            if (daysUntil < 0) {
+                deadlineText = 'Expired';
+                deadlineClass = 'text-danger';
+            } else if (daysUntil <= 7) {
+                deadlineText = `${daysUntil} days left`;
+                deadlineClass = 'text-danger';
+            } else if (daysUntil <= 30) {
+                deadlineText = `${daysUntil} days left`;
+                deadlineClass = 'text-warning';
+            }
+            
+            card.innerHTML = `
+                <div class="scholarship-header-info">
+                    <div>
+                        <h3 class="scholarship-title">${scholarship.title}</h3>
+                        <div class="scholarship-organization">${scholarship.organization}</div>
+                        <div class="match-percentage ${matchClass}">${matchText} (${matchScore}%)</div>
+                    </div>
+                    <div class="scholarship-amount">${scholarship.amount.toLocaleString()}</div>
+                </div>
+                
+                <div class="scholarship-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Deadline</div>
+                        <div class="detail-value ${deadlineClass}">${deadlineText}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">${scholarship.difficulty.charAt(0).toUpperCase() + scholarship.difficulty.slice(1)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Type</div>
+                        <div class="detail-value">${scholarship.type.join(', ')}</div>
+                    </div>
+                </div>
+                
+                <div class="scholarship-description">
+                    ${scholarship.description}
+                    ${scholarship.matchReason ? `<br><strong>Why it matches:</strong> ${scholarship.matchReason}` : ''}
+                </div>
+                
+                <div class="scholarship-tags">
+                    ${scholarship.tags.map(tag => `<span class="scholarship-tag">${tag}</span>`).join('')}
+                </div>
+                
+                <div class="scholarship-actions">
+                    <button class="action-btn btn-primary" onclick="applyForScholarship('${scholarship.id}')">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="saveScholarship('${scholarship.id}')">
+                        <i class="fas fa-bookmark"></i> Save for Later
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="viewRequirements('${scholarship.id}')">
+                        <i class="fas fa-list"></i> Requirements
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const scholarships = window.filteredScholarships || [];
+            
+            const totalValue = scholarships.reduce((sum, s) => sum + s.amount, 0);
+            const matchedCount = scholarships.length;
+            const highMatches = scholarships.filter(s => s.matchScore >= 70).length;
+            
+            const today = new Date();
+            const upcomingDeadlines = scholarships.filter(s => {
+                const deadline = new Date(s.deadline);
+                const daysUntil = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                return daysUntil > 0 && daysUntil <= 30;
+            }).length;
+            
+            document.getElementById('totalValueStat').textContent = `${Math.round(totalValue / 1000)}K`;
+            document.getElementById('matchedCountStat').textContent = matchedCount;
+            document.getElementById('upcomingDeadlinesStat').textContent = upcomingDeadlines;
+            document.getElementById('eligibleCountStat').textContent = highMatches;
+        }
+
+        // Load saved scholarship applications
+        async function loadSavedApplications() {
+            try {
+                if (!window.currentUser) return;
+                
+                const q = query(
+                    collection(db, 'scholarshipApplications'),
+                    where('userId', '==', window.currentUser.uid)
+                );
+                
+                const querySnapshot = await getDocs(q);
+                window.savedScholarships = [];
+                
+                querySnapshot.forEach((doc) => {
+                    window.savedScholarships.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log('💾 Loaded saved scholarships:', window.savedScholarships.length);
+            } catch (error) {
+                console.error('Error loading saved scholarships:', error);
+            }
+        }
+
+        // Extract SAT score
+        function extractSATScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/SAT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        // Extract ACT score
+        function extractACTScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/ACT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        // Update auth UI
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                
+                const displayName = window.userData?.name || user.displayName || user.email.split('@')[0];
+                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                
+                if (window.userData?.profilePhotoURL) {
+                    if (navUserAvatar) {
+                        navUserAvatar.src = window.userData.profilePhotoURL;
+                        navUserAvatar.style.display = 'block';
+                    }
+                    if (navAccountText) navAccountText.style.display = 'none';
+                } else {
+                    if (navUserAvatar) navUserAvatar.style.display = 'none';
+                    if (navAccountText) navAccountText.style.display = 'inline';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
+            }
+        }
+
+        // Global functions
+        window.applyForScholarship = async function(scholarshipId) {
+            const scholarship = window.allScholarships.find(s => s.id === scholarshipId);
+            if (!scholarship) return;
+            
+            if (scholarship.url) {
+                window.open(scholarship.url, '_blank');
+            }
+            
+            try {
+                await addDoc(collection(db, 'scholarshipApplications'), {
+                    userId: window.currentUser.uid,
+                    scholarshipId: scholarshipId,
+                    scholarshipTitle: scholarship.title,
+                    amount: scholarship.amount,
+                    status: 'in-progress',
+                    appliedAt: serverTimestamp()
+                });
+                
+                alert(`Great! Opening application page for ${scholarship.title}. We've saved this to your dashboard.`);
+            } catch (error) {
+                console.error('Error saving application:', error);
+            }
+        };
+
+        window.saveScholarship = async function(scholarshipId) {
+            const scholarship = window.allScholarships.find(s => s.id === scholarshipId);
+            if (!scholarship) return;
+            
+            try {
+                await addDoc(collection(db, 'scholarshipApplications'), {
+                    userId: window.currentUser.uid,
+                    scholarshipId: scholarshipId,
+                    scholarshipTitle: scholarship.title,
+                    amount: scholarship.amount,
+                    status: 'saved',
+                    savedAt: serverTimestamp()
+                });
+                
+                alert(`${scholarship.title} has been saved to your profile!`);
+                await loadSavedApplications();
+            } catch (error) {
+                console.error('Error saving scholarship:', error);
+                alert('Error saving scholarship. Please try again.');
+            }
+        };
+
+        window.viewRequirements = function(scholarshipId) {
+            const scholarship = window.allScholarships.find(s => s.id === scholarshipId);
+            if (!scholarship) return;
+            
+            const reqList = scholarship.requirements.map(req => `• ${req}`).join('\n');
+            alert(`Requirements for ${scholarship.title}:\n\n${reqList}\n\nDeadline: ${new Date(scholarship.deadline).toLocaleDateString()}`);
+        };
+
+        window.updateAmountFilter = function() {
+            const minAmount = parseInt(document.getElementById('minAmountRange').value);
+            const display = document.getElementById('amountDisplay');
+            display.textContent = `${minAmount.toLocaleString()} - $50,000+`;
+            applyFilters();
+        };
+
+        window.applyFilters = function() {
+            const minAmount = parseInt(document.getElementById('minAmountRange').value);
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const deadline = document.getElementById('deadlineFilter').value;
+            
+            const selectedTypes = [];
+            document.querySelectorAll('input[name="scholarshipType"]:checked').forEach(checkbox => {
+                selectedTypes.push(checkbox.value);
+            });
+            
+            let filtered = [...window.filteredScholarships];
+            
+            if (minAmount > 500) {
+                filtered = filtered.filter(s => s.amount >= minAmount);
+            }
+            
+            if (difficulty) {
+                filtered = filtered.filter(s => s.difficulty === difficulty);
+            }
+            
+            if (deadline) {
+                const today = new Date();
+                filtered = filtered.filter(s => {
+                    const deadlineDate = new Date(s.deadline);
+                    const daysUntil = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+                    
+                    switch(deadline) {
+                        case 'week': return daysUntil <= 7 && daysUntil > 0;
+                        case 'month': return daysUntil <= 30 && daysUntil > 0;
+                        case 'quarter': return daysUntil <= 90 && daysUntil > 0;
+                        case 'year': return daysUntil <= 365 && daysUntil > 0;
+                        default: return true;
+                    }
+                });
+            }
+            
+            if (selectedTypes.length > 0) {
+                filtered = filtered.filter(s => 
+                    s.type.some(type => selectedTypes.includes(type))
+                );
+            }
+            
+            displayScholarships(filtered);
+        };
+
+        window.sortScholarships = function() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sorted = [...window.filteredScholarships];
+            
+            switch(sortBy) {
+                case 'match':
+                    sorted.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+                    break;
+                case 'amount':
+                    sorted.sort((a, b) => b.amount - a.amount);
+                    break;
+                case 'deadline':
+                    sorted.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+                    break;
+                case 'easy':
+                    const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
+                    sorted.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+                    break;
+            }
+            
+            window.filteredScholarships = sorted;
+            displayScholarships(sorted);
+        };
+
+        window.clearFilters = function() {
+            document.getElementById('minAmountRange').value = 500;
+            document.getElementById('amountDisplay').textContent = '$500 - $50,000+';
+            document.getElementById('difficultyFilter').value = '';
+            document.getElementById('deadlineFilter').value = '';
+            
+            document.querySelectorAll('input[name="scholarshipType"]:checked').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            personalizeScholarships();
+            displayScholarships(window.filteredScholarships);
+            updateStatistics();
+        };
+
+        window.findAIMatches = async function() {
+            const btn = document.getElementById('aiMatchBtn');
+            const btnText = document.getElementById('aiMatchText');
+            
+            btn.disabled = true;
+            btnText.textContent = 'Analyzing...';
+            
+            await personalizeScholarships();
+            displayScholarships(window.filteredScholarships);
+            updateStatistics();
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btnText.textContent = 'Find AI Matches';
+                alert(`Found ${window.filteredScholarships.length} scholarships matched to your profile!`);
+            }, 1500);
+        };
+
+        // Logout
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    try {
+                        await signOut(auth);
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error('Error signing out:', error);
+                    }
+                });
+            }
+        });
+
+    </script>
+
+    <!-- Theme and UI Enhancement Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Scholarship Finder UI loaded');
+            
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = sessionStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    sessionStorage.setItem('theme', newTheme);
+                    
+                    const logo = document.getElementById('navbarLogo');
+                    if (logo) {
+                        logo.src = newTheme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+                    }
+                });
+            }
+            
+            createStarryBackground();
+        });
+
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+    </script>
+</body>
+</html>
