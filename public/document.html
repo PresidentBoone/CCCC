@@ -1,0 +1,2460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Manager - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Navbar - Same as Dashboard */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1, .brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            background: var(--secondary-bg);
+            transform: translateY(-2px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+        }
+
+        .theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        }
+
+        /* Main Container */
+        .document-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 300px);
+        }
+
+        /* Header Section */
+        .page-header {
+            background: var(--gradient);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: var(--primary-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(160, 123, 204, 0.15);
+        }
+
+        .stat-item-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 3px dashed rgba(160, 123, 204, 0.3);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: var(--secondary-bg);
+        }
+
+        .upload-area.drag-over {
+            background: var(--secondary-bg);
+            border-color: var(--accent-color);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.3);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Document Categories */
+        .categories-section {
+            margin-bottom: 2rem;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .category-tab {
+            background: var(--secondary-bg);
+            border: 2px solid transparent;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .category-tab:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .category-tab.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.3);
+        }
+
+        /* Document Grid */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .document-card {
+            background: var(--primary-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(160, 123, 204, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .document-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .document-menu {
+            position: relative;
+        }
+
+        .document-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .document-menu-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .document-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .document-menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .document-menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .document-menu-item:hover {
+            background: var(--secondary-bg);
+        }
+
+        .document-menu-item.danger {
+            color: var(--danger-color);
+        }
+
+        .document-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .document-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .document-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn.primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.3);
+        }
+
+        /* PDF Viewer Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            max-width: 90%;
+            max-height: 90vh;
+            width: 1200px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            background: var(--gradient);
+            color: white;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            background: var(--secondary-bg);
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            border-radius: 12px;
+        }
+
+        .document-preview {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+        }
+
+        /* Share Modal */
+        .share-section {
+            padding: 1rem;
+        }
+
+        .share-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .share-input-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .share-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .share-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.3);
+        }
+
+        .shared-with {
+            margin-top: 1rem;
+        }
+
+        .shared-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .remove-share {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-share:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Version History */
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .version-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .version-item:hover {
+            background: var(--accent-bg);
+            transform: translateX(5px);
+        }
+
+        .version-info {
+            flex: 1;
+        }
+
+        .version-date {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .version-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .version-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Loading and Progress */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: var(--primary-bg);
+            padding: 3rem;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(160, 123, 204, 0.2);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .upload-progress {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--secondary-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            max-width: 400px;
+            padding: 1rem 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-color);
+            z-index: 1001;
+            transform: translateX(120%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification-text h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-text p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Footer - Same as Dashboard */
+        .footer {
+            background: var(--gradient);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-socials a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-socials a img {
+            height: 24px;
+            width: 24px;
+            filter: invert(1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            color: var(--accent-color);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .document-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .page-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-tabs {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                max-height: 95vh;
+            }
+
+            .modal-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5fbf;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- Navigation - Same as Dashboard -->
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">
+                <a href="index.html">
+                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+                </a>
+            </div>
+            <div class="brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li class="dropdown" id="profileDropdown">
+                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                    <span id="navAccountText">Account</span>
+                </a>
+                <div class="dropdown-content" id="authDropdown">
+                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
+                        Welcome, <span id="dropdownDisplayName"></span>!
+                    </div>
+                    <div id="notLoggedIn">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                    <div id="loggedIn" style="display: none;">
+                        <a href="profile.html">Profile</a>
+                        <a href="settings.html">Settings</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="college-profile.html">College Profile</a>
+                        <a href="#" id="logoutBtn">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="document-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-folder-open"></i> Document Manager</h1>
+            <p>Organize, manage, and share all your college application documents in one secure place</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-item-header">
+                    <div class="stat-icon"><i class="fas fa-file"></i></div>
+                    <div>
+                        <div class="stat-value" id="totalDocuments">0</div>
+                        <div class="stat-label">Total Documents</div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item-header">
+                    <div class="stat-icon"><i class="fas fa-database"></i></div>
+                    <div>
+                        <div class="stat-value" id="totalStorage">0 MB</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item-header">
+                    <div class="stat-icon"><i class="fas fa-share-alt"></i></div>
+                    <div>
+                        <div class="stat-value" id="sharedDocuments">0</div>
+                        <div class="stat-label">Shared Documents</div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item-header">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="stat-value" id="recentUploads">0</div>
+                        <div class="stat-label">Recent Uploads</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drag & Drop Files Here</h3>
+                    <p>or click to browse your files</p>
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-plus"></i> Choose Files
+                    </button>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Supported: PDF, DOCX, JPG, PNG (Max 10MB per file)</p>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            </div>
+        </div>
+
+        <!-- Document Categories -->
+        <div class="categories-section">
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all" onclick="filterDocuments('all')">
+                    <i class="fas fa-th"></i> All Documents
+                </div>
+                <div class="category-tab" data-category="transcripts" onclick="filterDocuments('transcripts')">
+                    <i class="fas fa-graduation-cap"></i> Transcripts
+                </div>
+                <div class="category-tab" data-category="resumes" onclick="filterDocuments('resumes')">
+                    <i class="fas fa-file-alt"></i> Resumes
+                </div>
+                <div class="category-tab" data-category="recommendations" onclick="filterDocuments('recommendations')">
+                    <i class="fas fa-star"></i> Recommendations
+                </div>
+                <div class="category-tab" data-category="essays" onclick="filterDocuments('essays')">
+                    <i class="fas fa-pen-fancy"></i> Essays
+                </div>
+                <div class="category-tab" data-category="other" onclick="filterDocuments('other')">
+                    <i class="fas fa-folder"></i> Other
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Grid -->
+        <div class="documents-grid" id="documentsGrid">
+            <!-- Documents will be loaded here dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h3>No Documents Yet</h3>
+            <p>Upload your first document to get started</p>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-plus"></i> Upload Document
+            </button>
+        </div>
+    </div>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal" id="viewerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="viewerTitle">Document Viewer</h2>
+                <button class="modal-close" onclick="closeViewer()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-toolbar">
+                <button class="toolbar-btn" onclick="downloadDocument()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="toolbar-btn" onclick="printDocument()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="toolbar-btn" onclick="openShareModal()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+                <button class="toolbar-btn" onclick="openVersionHistory()">
+                    <i class="fas fa-history"></i> Version History
+                </button>
+                <button class="toolbar-btn" onclick="analyzeWithAI()">
+                    <i class="fas fa-robot"></i> AI Analysis
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfViewer" class="pdf-viewer"></iframe>
+                <img id="imageViewer" class="document-preview" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Share Document</h2>
+                <button class="modal-close" onclick="closeShareModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="share-section">
+                    <div class="share-options">
+                        <div class="share-input-group">
+                            <input type="email" class="share-input" id="shareEmail" placeholder="Enter email address">
+                            <button class="share-btn" onclick="shareDocument()">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                        </div>
+                        <div class="share-input-group">
+                            <input type="text" class="share-input" id="shareLink" readonly placeholder="Shareable link will appear here">
+                            <button class="share-btn" onclick="copyShareLink()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="shared-with" id="sharedWithList">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Shared With</h4>
+                        <!-- Shared users will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div class="modal" id="versionModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Version History</h2>
+                <button class="modal-close" onclick="closeVersionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="version-list" id="versionList">
+                    <!-- Version history will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Processing...</h3>
+            <p style="color: var(--text-secondary);" id="loadingText">Please wait</p>
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-text">
+                <h4 id="notificationTitle">Notification</h4>
+                <p id="notificationMessage">This is a notification message</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Same as Dashboard -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Global variables
+        window.auth = auth;
+        window.db = db;
+        window.storage = storage;
+        window.currentUser = null;
+        window.userData = null;
+        window.documents = [];
+        window.currentDocument = null;
+        window.currentCategory = 'all';
+
+        console.log('📁 Document Manager initialized');
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            updateAuthUI(user);
+            
+            if (user) {
+                window.currentUser = user;
+                await loadUserData(user);
+                await loadDocuments();
+                setupRealtimeListeners();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load user data
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    console.log('📊 User data loaded');
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                showNotification('Error', 'Failed to load user data', 'error');
+            }
+        }
+
+        // Load all documents
+        async function loadDocuments() {
+            try {
+                showLoading('Loading documents...');
+                
+                const userId = window.currentUser.uid;
+                const q = query(
+                    collection(db, 'documents'),
+                    where('userId', '==', userId),
+                    orderBy('uploadedAt', 'desc')
+                );
+                
+                const querySnapshot = await getDocs(q);
+                window.documents = [];
+                
+                querySnapshot.forEach((doc) => {
+                    window.documents.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log(`📄 Loaded ${window.documents.length} documents`);
+                
+                updateStats();
+                displayDocuments();
+                hideLoading();
+                
+            } catch (error) {
+                console.error('❌ Error loading documents:', error);
+                hideLoading();
+                showNotification('Error', 'Failed to load documents', 'error');
+            }
+        }
+
+        // Setup realtime listeners
+        function setupRealtimeListeners() {
+            const userId = window.currentUser.uid;
+            const q = query(
+                collection(db, 'documents'),
+                where('userId', '==', userId)
+            );
+            
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added' && window.documents.length > 0) {
+                        const newDoc = { id: change.doc.id, ...change.doc.data() };
+                        if (!window.documents.find(d => d.id === newDoc.id)) {
+                            window.documents.unshift(newDoc);
+                            displayDocuments();
+                            updateStats();
+                        }
+                    }
+                    if (change.type === 'modified') {
+                        const index = window.documents.findIndex(d => d.id === change.doc.id);
+                        if (index !== -1) {
+                            window.documents[index] = { id: change.doc.id, ...change.doc.data() };
+                            displayDocuments();
+                        }
+                    }
+                    if (change.type === 'removed') {
+                        window.documents = window.documents.filter(d => d.id !== change.doc.id);
+                        displayDocuments();
+                        updateStats();
+                    }
+                });
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalDocs = window.documents.length;
+            const totalSize = window.documents.reduce((sum, doc) => sum + (doc.size || 0), 0);
+            const sharedDocs = window.documents.filter(doc => doc.sharedWith && doc.sharedWith.length > 0).length;
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const recentDocs = window.documents.filter(doc => {
+                const uploadDate = doc.uploadedAt?.toDate?.() || new Date(doc.uploadedAt);
+                return uploadDate > weekAgo;
+            }).length;
+            
+            document.getElementById('totalDocuments').textContent = totalDocs;
+            document.getElementById('totalStorage').textContent = `${(totalSize / (1024 * 1024)).toFixed(2)} MB`;
+            document.getElementById('sharedDocuments').textContent = sharedDocs;
+            document.getElementById('recentUploads').textContent = recentDocs;
+        }
+
+        // Display documents
+        function displayDocuments() {
+            const grid = document.getElementById('documentsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            let filteredDocs = window.documents;
+            if (window.currentCategory !== 'all') {
+                filteredDocs = window.documents.filter(doc => doc.category === window.currentCategory);
+            }
+            
+            if (filteredDocs.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            grid.innerHTML = '';
+            
+            filteredDocs.forEach(doc => {
+                const card = createDocumentCard(doc);
+                grid.appendChild(card);
+            });
+        }
+
+        // Create document card
+        function createDocumentCard(doc) {
+            const card = document.createElement('div');
+            card.className = 'document-card';
+            card.setAttribute('data-doc-id', doc.id);
+            
+            const iconMap = {
+                'transcripts': 'fas fa-graduation-cap',
+                'resumes': 'fas fa-file-alt',
+                'recommendations': 'fas fa-star',
+                'essays': 'fas fa-pen-fancy',
+                'other': 'fas fa-file'
+            };
+            
+            const icon = iconMap[doc.category] || 'fas fa-file';
+            const uploadDate = doc.uploadedAt?.toDate?.() || new Date(doc.uploadedAt);
+            const formattedDate = uploadDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const fileSize = ((doc.size || 0) / 1024).toFixed(2);
+            
+            card.innerHTML = `
+                <div class="document-header">
+                    <div class="document-icon-wrapper">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="document-menu">
+                        <button class="document-menu-btn" onclick="toggleDocumentMenu('${doc.id}')">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="document-menu-dropdown" id="menu-${doc.id}">
+                            <div class="document-menu-item" onclick="renameDocument('${doc.id}')">
+                                <i class="fas fa-edit"></i> Rename
+                            </div>
+                            <div class="document-menu-item" onclick="downloadDocument('${doc.id}')">
+                                <i class="fas fa-download"></i> Download
+                            </div>
+                            <div class="document-menu-item" onclick="openShareModal('${doc.id}')">
+                                <i class="fas fa-share-alt"></i> Share
+                            </div>
+                            <div class="document-menu-item danger" onclick="deleteDocument('${doc.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="document-info">
+                    <h3>${escapeHtml(doc.name)}</h3>
+                    <div class="document-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-database"></i>
+                            <span>${fileSize} KB</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span>${doc.category}</span>
+                        </div>
+                    </div>
+                    <div class="document-tags">
+                        <span class="tag">${doc.fileType.toUpperCase()}</span>
+                        ${doc.sharedWith && doc.sharedWith.length > 0 ? '<span class="tag"><i class="fas fa-share-alt"></i> Shared</span>' : ''}
+                        ${doc.aiAnalyzed ? '<span class="tag"><i class="fas fa-robot"></i> AI Analyzed</span>' : ''}
+                    </div>
+                </div>
+                <div class="document-actions">
+                    <button class="action-btn primary" onclick="viewDocument('${doc.id}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <button class="action-btn secondary" onclick="analyzeWithAI('${doc.id}')">
+                        <i class="fas fa-robot"></i> AI
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+        
+        uploadArea.addEventListener('click', (e) => {
+            if (!e.target.closest('.upload-btn')) {
+                fileInput.click();
+            }
+        });
+        
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+        
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            showLoading('Uploading files...');
+            document.getElementById('uploadProgress').style.display = 'block';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Validate file
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification('Error', `${file.name} is too large (max 10MB)`, 'error');
+                    continue;
+                }
+                
+                const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+                if (!allowedTypes.includes(file.type)) {
+                    showNotification('Error', `${file.name} is not a supported file type`, 'error');
+                    continue;
+                }
+                
+                await uploadFile(file);
+            }
+            
+            hideLoading();
+            fileInput.value = '';
+        }
+        
+        async function uploadFile(file) {
+            try {
+                const userId = window.currentUser.uid;
+                const timestamp = Date.now();
+                const fileName = `${userId}/${timestamp}_${file.name}`;
+                const storageRef = ref(storage, `documents/${fileName}`);
+                
+                const uploadTask = uploadBytesResumable(storageRef, file);
+                
+                return new Promise((resolve, reject) => {
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            document.getElementById('progressFill').style.width = progress + '%';
+                            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+                        },
+                        (error) => {
+                            console.error('Upload error:', error);
+                            showNotification('Error', `Failed to upload ${file.name}`, 'error');
+                            reject(error);
+                        },
+                        async () => {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            
+                            // Determine category
+                            const category = await determineCategory(file.name);
+                            
+                            // Save document metadata to Firestore
+                            const docData = {
+                                userId: userId,
+                                name: file.name,
+                                originalName: file.name,
+                                storagePath: fileName,
+                                downloadURL: downloadURL,
+                                fileType: file.type.split('/')[1] || 'unknown',
+                                size: file.size,
+                                category: category,
+                                uploadedAt: serverTimestamp(),
+                                sharedWith: [],
+                                versions: [{
+                                    versionNumber: 1,
+                                    uploadedAt: serverTimestamp(),
+                                    downloadURL: downloadURL,
+                                    note: 'Initial upload'
+                                }],
+                                aiAnalyzed: false,
+                                tags: []
+                            };
+                            
+                            await addDoc(collection(db, 'documents'), docData);
+                            
+                            showNotification('Success', `${file.name} uploaded successfully!`, 'success');
+                            resolve();
+                        }
+                    );
+                });
+            } catch (error) {
+                console.error('Upload error:', error);
+                showNotification('Error', `Failed to upload ${file.name}`, 'error');
+            }
+        }
+        
+        // Determine document category based on filename
+        async function determineCategory(filename) {
+            const lower = filename.toLowerCase();
+            
+            if (lower.includes('transcript')) return 'transcripts';
+            if (lower.includes('resume') || lower.includes('cv')) return 'resumes';
+            if (lower.includes('recommendation') || lower.includes('letter')) return 'recommendations';
+            if (lower.includes('essay') || lower.includes('statement')) return 'essays';
+            
+            return 'other';
+        }
+        
+        // Filter documents by category
+        window.filterDocuments = function(category) {
+            window.currentCategory = category;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            displayDocuments();
+        };
+        
+        // View document
+        window.viewDocument = async function(docId) {
+            const doc = window.documents.find(d => d.id === docId);
+            if (!doc) return;
+            
+            window.currentDocument = doc;
+            
+            const modal = document.getElementById('viewerModal');
+            const title = document.getElementById('viewerTitle');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const imageViewer = document.getElementById('imageViewer');
+            
+            title.textContent = doc.name;
+            
+            // Show appropriate viewer based on file type
+            if (doc.fileType === 'pdf') {
+                pdfViewer.style.display = 'block';
+                imageViewer.style.display = 'none';
+                pdfViewer.src = doc.downloadURL;
+            } else if (['jpg', 'jpeg', 'png'].includes(doc.fileType)) {
+                pdfViewer.style.display = 'none';
+                imageViewer.style.display = 'block';
+                imageViewer.src = doc.downloadURL;
+            } else {
+                showNotification('Info', 'Preview not available. Click download to view this file.', 'info');
+                return;
+            }
+            
+            modal.classList.add('show');
+        };
+        
+        window.closeViewer = function() {
+            const modal = document.getElementById('viewerModal');
+            modal.classList.remove('show');
+            document.getElementById('pdfViewer').src = '';
+            document.getElementById('imageViewer').src = '';
+        };
+        
+        // Download document
+        window.downloadDocument = async function(docId) {
+            const doc = docId ? window.documents.find(d => d.id === docId) : window.currentDocument;
+            if (!doc) return;
+            
+            try {
+                const link = document.createElement('a');
+                link.href = doc.downloadURL;
+                link.download = doc.name;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Success', 'Download started', 'success');
+            } catch (error) {
+                console.error('Download error:', error);
+                showNotification('Error', 'Failed to download document', 'error');
+            }
+        };
+        
+        // Print document
+        window.printDocument = function() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer.style.display === 'block') {
+                pdfViewer.contentWindow.print();
+            } else {
+                window.print();
+            }
+        };
+        
+        // Share functionality
+        window.openShareModal = function(docId) {
+            const doc = docId ? window.documents.find(d => d.id === docId) : window.currentDocument;
+            if (!doc) return;
+            
+            window.currentDocument = doc;
+            
+            const modal = document.getElementById('shareModal');
+            const shareLink = document.getElementById('shareLink');
+            
+            // Generate shareable link
+            const link = `${window.location.origin}/shared/${doc.id}`;
+            shareLink.value = link;
+            
+            // Load shared users
+            loadSharedUsers(doc);
+            
+            modal.classList.add('show');
+        };
+        
+        window.closeShareModal = function() {
+            document.getElementById('shareModal').classList.remove('show');
+            document.getElementById('shareEmail').value = '';
+        };
+        
+        function loadSharedUsers(doc) {
+            const list = document.getElementById('sharedWithList');
+            
+            if (!doc.sharedWith || doc.sharedWith.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Not shared with anyone yet</p>';
+                return;
+            }
+            
+            list.innerHTML = '<h4 style="margin-bottom: 1rem; color: var(--text-primary);">Shared With</h4>';
+            
+            doc.sharedWith.forEach(email => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'shared-user';
+                userDiv.innerHTML = `
+                    <div>
+                        <i class="fas fa-user"></i>
+                        <span>${escapeHtml(email)}</span>
+                    </div>
+                    <button class="remove-share" onclick="removeShare('${email}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                list.appendChild(userDiv);
+            });
+        }
+        
+        window.shareDocument = async function() {
+            const email = document.getElementById('shareEmail').value.trim();
+            
+            if (!email) {
+                showNotification('Error', 'Please enter an email address', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showNotification('Error', 'Please enter a valid email address', 'error');
+                return;
+            }
+            
+            try {
+                const doc = window.currentDocument;
+                const sharedWith = doc.sharedWith || [];
+                
+                if (sharedWith.includes(email)) {
+                    showNotification('Info', 'Already shared with this user', 'info');
+                    return;
+                }
+                
+                sharedWith.push(email);
+                
+                await updateDoc(doc(db, 'documents', doc.id), {
+                    sharedWith: sharedWith
+                });
+                
+                // Send notification (optional - would need backend)
+                await sendShareNotification(email, doc);
+                
+                document.getElementById('shareEmail').value = '';
+                showNotification('Success', `Document shared with ${email}`, 'success');
+                
+                // Reload shared users
+                const updatedDoc = window.documents.find(d => d.id === doc.id);
+                if (updatedDoc) {
+                    updatedDoc.sharedWith = sharedWith;
+                    loadSharedUsers(updatedDoc);
+                }
+                
+            } catch (error) {
+                console.error('Share error:', error);
+                showNotification('Error', 'Failed to share document', 'error');
+            }
+        };
+        
+        window.removeShare = async function(email) {
+            try {
+                const doc = window.currentDocument;
+                const sharedWith = (doc.sharedWith || []).filter(e => e !== email);
+                
+                await updateDoc(doc(db, 'documents', doc.id), {
+                    sharedWith: sharedWith
+                });
+                
+                showNotification('Success', 'Sharing removed', 'success');
+                
+                const updatedDoc = window.documents.find(d => d.id === doc.id);
+                if (updatedDoc) {
+                    updatedDoc.sharedWith = sharedWith;
+                    loadSharedUsers(updatedDoc);
+                }
+                
+            } catch (error) {
+                console.error('Remove share error:', error);
+                showNotification('Error', 'Failed to remove sharing', 'error');
+            }
+        };
+        
+        window.copyShareLink = function() {
+            const shareLink = document.getElementById('shareLink');
+            shareLink.select();
+            document.execCommand('copy');
+            showNotification('Success', 'Link copied to clipboard', 'success');
+        };
+        
+        async function sendShareNotification(email, doc) {
+            try {
+                // This would typically call your backend API
+                await addDoc(collection(db, 'notifications'), {
+                    recipientEmail: email,
+                    senderName: window.userData?.name || window.currentUser.email,
+                    documentName: doc.name,
+                    documentId: doc.id,
+                    type: 'document_shared',
+                    createdAt: serverTimestamp(),
+                    read: false
+                });
+            } catch (error) {
+                console.error('Notification error:', error);
+            }
+        }
+        
+        // Version history
+        window.openVersionHistory = function() {
+            const doc = window.currentDocument;
+            if (!doc) return;
+            
+            const modal = document.getElementById('versionModal');
+            const versionList = document.getElementById('versionList');
+            
+            versionList.innerHTML = '';
+            
+            if (!doc.versions || doc.versions.length === 0) {
+                versionList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No version history available</p>';
+            } else {
+                doc.versions.reverse().forEach((version, index) => {
+                    const versionItem = document.createElement('div');
+                    versionItem.className = 'version-item';
+                    
+                    const date = version.uploadedAt?.toDate?.() || new Date(version.uploadedAt);
+                    const formattedDate = date.toLocaleString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    versionItem.innerHTML = `
+                        <div class="version-info">
+                            <div class="version-date">Version ${version.versionNumber}</div>
+                            <div class="version-note">${formattedDate} - ${version.note || 'No notes'}</div>
+                        </div>
+                        ${index === 0 ? '<div class="version-badge">Current</div>' : ''}
+                    `;
+                    
+                    versionItem.onclick = () => {
+                        window.open(version.downloadURL, '_blank');
+                    };
+                    
+                    versionList.appendChild(versionItem);
+                });
+            }
+            
+            modal.classList.add('show');
+        };
+        
+        window.closeVersionModal = function() {
+            document.getElementById('versionModal').classList.remove('show');
+        };
+        
+        // AI Analysis
+        window.analyzeWithAI = async function(docId) {
+            const doc = docId ? window.documents.find(d => d.id === docId) : window.currentDocument;
+            if (!doc) return;
+            
+            try {
+                showLoading('AI analyzing document...');
+                
+                // Prepare context for AI
+                const context = {
+                    documentName: doc.name,
+                    documentType: doc.category,
+                    fileType: doc.fileType,
+                    userProfile: {
+                        name: window.userData?.name,
+                        email: window.currentUser?.email,
+                        targetSchools: window.userData?.questionnaire?.targetSchools,
+                        intendedMajor: window.userData?.questionnaire?.intendedMajor
+                    }
+                };
+                
+                // Call AI API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Please analyze this ${doc.category} document titled "${doc.name}". Provide specific feedback on how to improve it for college applications. Consider the document type and the user's goals.`,
+                        userProfile: context.userProfile,
+                        questionnaireData: window.userData?.questionnaire
+                    })
+                });
+                
+                hideLoading();
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Mark as analyzed
+                    await updateDoc(doc(db, 'documents', doc.id), {
+                        aiAnalyzed: true,
+                        aiAnalysis: data.response,
+                        lastAnalyzed: serverTimestamp()
+                    });
+                    
+                    // Show analysis in modal
+                    showAIAnalysisModal(doc.name, data.response);
+                    
+                } else {
+                    showNotification('Error', 'AI analysis failed. Please try again.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('AI analysis error:', error);
+                hideLoading();
+                showNotification('Error', 'Failed to analyze document', 'error');
+            }
+        };
+        
+        function showAIAnalysisModal(docName, analysis) {
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-robot"></i> AI Analysis: ${escapeHtml(docName)}</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding: 2rem; max-height: 600px; overflow-y: auto;">
+                        <div style="background: var(--secondary-bg); padding: 2rem; border-radius: 12px; line-height: 1.8; color: var(--text-primary);">
+                            ${escapeHtml(analysis).replace(/\n/g, '<br>')}
+                        </div>
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button class="action-btn primary" style="flex: 1;" onclick="this.closest('.modal').remove()">
+                                <i class="fas fa-check"></i> Got It
+                            </button>
+                            <button class="action-btn secondary" style="flex: 1;" onclick="copyAnalysis('${analysis.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-copy"></i> Copy Analysis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        window.copyAnalysis = function(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showNotification('Success', 'Analysis copied to clipboard', 'success');
+        };
+        
+        // Document management
+        window.toggleDocumentMenu = function(docId) {
+            // Close all other menus
+            document.querySelectorAll('.document-menu-dropdown').forEach(menu => {
+                if (menu.id !== `menu-${docId}`) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            const menu = document.getElementById(`menu-${docId}`);
+            menu.classList.toggle('show');
+        };
+        
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.document-menu')) {
+                document.querySelectorAll('.document-menu-dropdown').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+        
+        window.renameDocument = async function(docId) {
+            const doc = window.documents.find(d => d.id === docId);
+            if (!doc) return;
+            
+            const newName = prompt('Enter new name:', doc.name);
+            if (!newName || newName === doc.name) return;
+            
+            try {
+                await updateDoc(doc(db, 'documents', docId), {
+                    name: newName
+                });
+                
+                showNotification('Success', 'Document renamed successfully', 'success');
+            } catch (error) {
+                console.error('Rename error:', error);
+                showNotification('Error', 'Failed to rename document', 'error');
+            }
+        };
+        
+        window.deleteDocument = async function(docId) {
+            const doc = window.documents.find(d => d.id === docId);
+            if (!doc) return;
+            
+            if (!confirm(`Are you sure you want to delete "${doc.name}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                showLoading('Deleting document...');
+                
+                // Delete from storage
+                const storageRef = ref(storage, `documents/${doc.storagePath}`);
+                await deleteObject(storageRef);
+                
+                // Delete from Firestore
+                await deleteDoc(doc(db, 'documents', docId));
+                
+                hideLoading();
+                showNotification('Success', 'Document deleted successfully', 'success');
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                hideLoading();
+                showNotification('Error', 'Failed to delete document', 'error');
+            }
+        };
+        
+        // Utility functions
+        function showLoading(text) {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            overlay.classList.add('show');
+        }
+        
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('show');
+            document.getElementById('uploadProgress').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+        }
+        
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            const iconEl = notification.querySelector('.notification-icon i');
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            iconEl.className = icons[type] || icons.info;
+            
+            const colors = {
+                success: 'var(--success-color)',
+                error: 'var(--danger-color)',
+                warning: 'var(--warning-color)',
+                info: 'var(--info-color)'
+            };
+            
+            notification.style.borderLeftColor = colors[type] || colors.info;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function updateAuthUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const dropdownWelcome = document.getElementById('dropdownWelcome');
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const navAccountText = document.getElementById('navAccountText');
+            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
+            if (user) {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (loggedIn) loggedIn.style.display = 'block';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
+                
+                const displayName = window.userData?.name || user.displayName || user.email.split('@')[0];
+                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
+                
+                if (window.userData?.profilePhotoURL) {
+                    if (navUserAvatar) {
+                        navUserAvatar.src = window.userData.profilePhotoURL;
+                        navUserAvatar.style.display = 'block';
+                    }
+                    if (navAccountText) navAccountText.style.display = 'none';
+                } else {
+                    if (navUserAvatar) navUserAvatar.style.display = 'none';
+                    if (navAccountText) navAccountText.style.display = 'inline';
+                }
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (loggedIn) loggedIn.style.display = 'none';
+                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
+                if (navAccountText) navAccountText.style.display = 'inline';
+            }
+        }
+        
+        // Logout
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Error', 'Error signing out', 'error');
+            }
+        };
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', window.logout);
+            }
+        });
+
+    </script>
+
+    <!-- Theme and UI Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Document Manager UI loaded');
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (themeToggle) {
+                const savedTheme = sessionStorage.getItem('theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = body.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    body.setAttribute('data-theme', newTheme);
+                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    sessionStorage.setItem('theme', newTheme);
+                    
+                    const logo = document.getElementById('navbarLogo');
+                    if (logo) {
+                        logo.src = newTheme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+                    }
+                });
+            }
+            
+            createStarryBackground();
+        });
+
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key closes modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+            }
+            
+            // Ctrl/Cmd + U for upload
+            if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                e.preventDefault();
+                document.getElementById('fileInput').click();
+            }
+        });
+    </script>
+</body>
+</html>
