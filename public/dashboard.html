@@ -102,7 +102,22 @@
             object-fit: contain;
         }
 
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
         .cc-brand-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-brand-text h2 {
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-primary);
@@ -148,76 +163,74 @@
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
-            padding: 0.4rem 0.8rem;
-            border-radius: 12px;
+            padding: 0.3rem;
+            border-radius: 50%;
             transition: all 0.3s ease;
             background: transparent;
-            border: 2px solid transparent;
+            border: none;
+            position: relative;
         }
 
-        .cc-profile-button:hover {
-            background: var(--secondary-bg);
-            border-color: rgba(160, 123, 204, 0.2);
+        .cc-profile-button:hover .cc-user-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-profile-button:active .cc-user-avatar {
+            transform: scale(0.95);
         }
 
         /* User Avatar */
         .cc-user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent-color);
+            border: 3px solid var(--accent-color);
             transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
         }
 
-        .cc-user-avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        [data-theme="dark"] .cc-user-avatar {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
         }
 
-        /* Profile Text - Hidden on mobile */
+        /* Profile Text - Hidden completely */
         .cc-profile-text {
-            display: none;
-            font-weight: 600;
-            color: var(--text-primary);
+            display: none !important;
         }
 
-        @media (min-width: 768px) {
-            .cc-profile-text {
-                display: block;
-            }
-        }
-
-        /* Dropdown Chevron */
+        /* Dropdown Chevron - Hidden */
         .cc-dropdown-chevron {
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
-            color: var(--text-secondary);
-        }
-
-        .cc-profile-dropdown.open .cc-dropdown-chevron {
-            transform: rotate(180deg);
+            display: none !important;
         }
 
         /* Dropdown Menu */
         .cc-dropdown-menu {
             position: absolute;
-            top: calc(100% + 0.5rem);
+            top: calc(100% + 0.75rem);
             right: 0;
             background: var(--primary-bg);
-            box-shadow: var(--shadow);
-            border-radius: 16px;
-            padding: 0.5rem;
-            min-width: 260px;
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px) scale(0.95);
+            transform: translateY(-15px) scale(0.9);
+            transform-origin: top right;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(160, 123, 204, 0.2);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            backdrop-filter: blur(20px);
         }
 
         [data-theme="dark"] .cc-dropdown-menu {
+            background: rgba(22, 27, 34, 0.98);
             border-color: rgba(187, 134, 252, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
         }
 
         .cc-dropdown-menu.show {
@@ -226,87 +239,156 @@
             transform: translateY(0) scale(1);
         }
 
+        /* Add arrow pointer to dropdown */
+        .cc-dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu::before {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
         /* Welcome Header in Dropdown */
         .cc-dropdown-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
-            margin-bottom: 0.5rem;
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
         }
 
         [data-theme="dark"] .cc-dropdown-header {
-            border-bottom-color: rgba(187, 134, 252, 0.1);
+            border-bottom-color: rgba(187, 134, 252, 0.15);
+            background: rgba(33, 38, 45, 0.6);
         }
 
         .cc-dropdown-welcome {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .cc-dropdown-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent-color);
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
         }
 
         .cc-dropdown-email {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-top: 0.2rem;
+            margin-top: 0.3rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            padding: 0 0.5rem;
         }
 
         /* Dropdown Links */
         .cc-dropdown-link {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
             color: var(--text-primary);
             text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            font-weight: 500;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
             font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cc-dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--gradient);
+            opacity: 0.1;
+            transition: width 0.3s ease;
         }
 
         .cc-dropdown-link:hover {
             background: var(--secondary-bg);
-            transform: translateX(5px);
+            transform: translateX(4px);
             color: var(--accent-color);
         }
 
+        .cc-dropdown-link:hover::before {
+            width: 4px;
+        }
+
+        [data-theme="dark"] .cc-dropdown-link:hover {
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
         .cc-dropdown-link-icon {
-            font-size: 1.2rem;
-            width: 24px;
+            font-size: 1.3rem;
+            width: 28px;
             text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover .cc-dropdown-link-icon {
+            transform: scale(1.15);
         }
 
         /* Logout Button */
         .cc-dropdown-divider {
-            height: 1px;
-            background: rgba(160, 123, 204, 0.1);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
             margin: 0.5rem 0;
         }
 
         [data-theme="dark"] .cc-dropdown-divider {
-            background: rgba(187, 134, 252, 0.1);
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
         }
 
         .cc-logout-link {
-            color: #ef4444 !important;
+            color: var(--danger-color) !important;
+            font-weight: 700 !important;
         }
 
         .cc-logout-link:hover {
             background: rgba(239, 68, 68, 0.1) !important;
         }
 
+        .cc-logout-link:hover::before {
+            background: var(--danger-color) !important;
+        }
+
         /* Loading State */
         .cc-profile-loading {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: 3px solid var(--secondary-bg);
             border-top-color: var(--accent-color);
@@ -315,6 +397,16 @@
 
         @keyframes cc-spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Active state indicator */
+        .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
         }
 
         /* ============================================
@@ -1201,7 +1293,8 @@
                 height: 40px;
             }
 
-            .cc-brand-text h1 {
+            .cc-brand-text h1,
+            .cc-brand-text h2 {
                 font-size: 1.2rem;
             }
 
@@ -1212,12 +1305,17 @@
             }
 
             .cc-user-avatar {
-                width: 36px;
-                height: 36px;
+                width: 40px;
+                height: 40px;
             }
 
             .cc-dropdown-menu {
-                min-width: 240px;
+                min-width: 260px;
+                right: -0.5rem;
+            }
+
+            .cc-dropdown-menu::before {
+                right: 20px;
             }
 
             .dashboard-container {
@@ -1274,13 +1372,18 @@
                 height: 36px;
             }
 
-            .cc-brand-text h1 {
+            .cc-brand-text h1,
+            .cc-brand-text h2 {
                 font-size: 1.1rem;
             }
 
             .cc-dropdown-menu {
                 right: -0.5rem;
-                min-width: 220px;
+                min-width: 240px;
+            }
+
+            .cc-dropdown-menu::before {
+                right: 18px;
             }
         }
 
@@ -1316,7 +1419,8 @@
                 <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
             <div class="cc-brand-text">
-                <h1>College Climb</h1>
+                <h1>College</h1>
+                <h2>Climb</h2>
             </div>
         </a>
 
@@ -1336,8 +1440,6 @@
                     <!-- Profile content (hidden initially) -->
                     <div id="ccProfileContent" style="display: none;">
                         <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
-                        <span class="cc-profile-text" id="ccProfileName">Account</span>
-                        <span class="cc-dropdown-chevron">▼</span>
                     </div>
                 </div>
 
