@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* ============================================
+           UNIVERSAL NAVBAR STYLES
+           ============================================ */
         :root {
             --primary-bg: #ffffff;
             --secondary-bg: #f8f9ff;
@@ -49,6 +52,275 @@
             overflow-x: hidden;
         }
 
+        /* Navigation Bar */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle Button */
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* Profile Dropdown Container */
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        /* Profile Button */
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 2px solid transparent;
+        }
+
+        .cc-profile-button:hover {
+            background: var(--secondary-bg);
+            border-color: rgba(160, 123, 204, 0.2);
+        }
+
+        /* User Avatar */
+        .cc-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .cc-user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        }
+
+        /* Profile Text - Hidden on mobile */
+        .cc-profile-text {
+            display: none;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        @media (min-width: 768px) {
+            .cc-profile-text {
+                display: block;
+            }
+        }
+
+        /* Dropdown Chevron */
+        .cc-dropdown-chevron {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .cc-profile-dropdown.open .cc-dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown Menu */
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: 16px;
+            padding: 0.5rem;
+            min-width: 260px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.2);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu {
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Welcome Header in Dropdown */
+        .cc-dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .cc-dropdown-header {
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .cc-dropdown-welcome {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Dropdown Links */
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(5px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-link-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Logout Button */
+        .cc-dropdown-divider {
+            height: 1px;
+            background: rgba(160, 123, 204, 0.1);
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .cc-dropdown-divider {
+            background: rgba(187, 134, 252, 0.1);
+        }
+
+        .cc-logout-link {
+            color: #ef4444 !important;
+        }
+
+        .cc-logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        /* Loading State */
+        .cc-profile-loading {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: cc-spin 1s linear infinite;
+        }
+
+        @keyframes cc-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================
+           DASHBOARD SPECIFIC STYLES
+           ============================================ */
+
         .starry-bg {
             position: fixed;
             top: 0;
@@ -74,156 +346,6 @@
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; transform: scale(0.8); }
             50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* Enhanced Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        [data-theme="dark"] .navbar {
-            background: rgba(13, 17, 23, 0.95);
-            border-bottom-color: rgba(187, 134, 252, 0.1);
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .brand-text h1, .brand-text h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-            background: var(--secondary-bg);
-            transform: translateY(-2px);
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--primary-bg);
-            box-shadow: var(--shadow);
-            border-radius: var(--border-radius);
-            padding: 0.5rem 0;
-            min-width: 160px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-
-        .dropdown-content a:hover {
-            background: var(--secondary-bg);
-            transform: translateX(5px);
-        }
-
-        .theme-toggle {
-            background: var(--gradient);
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(180deg);
-            box-shadow: var(--shadow);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
         }
 
         /* Enhanced Dashboard Container */
@@ -429,6 +551,15 @@
             margin-bottom: 2rem;
         }
 
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .ai-badge {
             background: var(--gradient);
             color: white;
@@ -517,6 +648,10 @@
             box-shadow: var(--shadow);
             border: 1px solid rgba(160, 123, 204, 0.1);
             grid-column: 1 / -1;
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
         }
 
         .timeline {
@@ -1057,6 +1192,34 @@
         }
 
         @media (max-width: 768px) {
+            .cc-navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .cc-theme-toggle {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .cc-user-avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .cc-dropdown-menu {
+                min-width: 240px;
+            }
+
             .dashboard-container {
                 padding: 1rem;
                 margin-top: 80px;
@@ -1073,15 +1236,6 @@
 
             .stat-card {
                 padding: 2rem;
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
             }
 
             .chat-widget {
@@ -1110,6 +1264,26 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .cc-navbar {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .cc-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .cc-dropdown-menu {
+                right: -0.5rem;
+                min-width: 220px;
+            }
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -1132,47 +1306,87 @@
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo-section">
-            <div class="logo">
-                <a href="index.html">
-                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
-                </a>
+    <!-- ============================================
+         UNIVERSAL NAVBAR
+         ============================================ -->
+    <nav class="cc-navbar">
+        <!-- Logo Section -->
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
-            <div class="brand-text">
-                <h1>College</h1>
-                <h2>Climb</h2>
+            <div class="cc-brand-text">
+                <h1>College Climb</h1>
             </div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    <span id="navAccountText">Account</span>
-                </a>
-                <div class="dropdown-content" id="authDropdown">
-                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
-                        Welcome, <span id="dropdownDisplayName"></span>!
-                    </div>
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
+        </a>
+
+        <!-- Right Side Navigation -->
+        <div class="cc-nav-right">
+            <!-- Theme Toggle -->
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
+                ☀️
+            </button>
+
+            <!-- Profile Dropdown -->
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <!-- Loading state initially -->
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    
+                    <!-- Profile content (hidden initially) -->
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                        <span class="cc-profile-text" id="ccProfileName">Account</span>
+                        <span class="cc-dropdown-chevron">▼</span>
                     </div>
                 </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
+
+                <!-- Dropdown Menu -->
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <!-- Welcome Header -->
+                    <div class="cc-dropdown-header" id="ccDropdownHeader">
+                        <div class="cc-dropdown-welcome">Hello,</div>
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="essaycoach.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essays</span>
+                    </a>
+                    
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">💰</span>
+                        <span>Scholarships</span>
+                    </a>
+                    
+                    <a href="document.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📄</span>
+                        <span>Documents</span>
+                    </a>
+                    
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+
+                    <!-- Divider -->
+                    <div class="cc-dropdown-divider"></div>
+
+                    <!-- Logout -->
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </nav>
 
     <!-- Main Dashboard -->
@@ -1211,7 +1425,7 @@
                 </div>
             </div>
 
-            <div class="stat-card" onclick="showEssayTracker()">
+            <div class="stat-card" onclick="window.location.href='essaycoach.html'">
                 <div class="stat-header">
                     <div class="stat-icon"><i class="fas fa-pen-fancy"></i></div>
                     <div class="stat-trend">
@@ -1226,7 +1440,7 @@
                 </div>
             </div>
 
-            <div class="stat-card" onclick="showScholarshipTracker()">
+            <div class="stat-card" onclick="window.location.href='scholarship.html'">
                 <div class="stat-header">
                     <div class="stat-icon"><i class="fas fa-trophy"></i></div>
                     <div class="stat-trend">
@@ -1435,6 +1649,226 @@
 
         console.log('🔥 Enhanced Firebase Dashboard initialized');
 
+        // ============================================
+        // NAVBAR FUNCTIONALITY
+        // ============================================
+
+        let currentUserData = null;
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+            updateLogo(savedTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            if (logo) {
+                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+            updateLogo(newTheme);
+        }
+
+        // Dropdown Management
+        function toggleDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                const isOpen = dropdown.classList.contains('show');
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+        }
+
+        function openDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.add('show');
+                container.classList.add('open');
+            }
+        }
+
+        function closeDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.remove('show');
+                container.classList.remove('open');
+            }
+        }
+
+        // Load User Data from Firestore
+        async function loadNavbarUserData(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                
+                if (userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    updateNavbarUI(auth.currentUser);
+                } else {
+                    currentUserData = {
+                        email: auth.currentUser.email,
+                        name: auth.currentUser.displayName || ''
+                    };
+                    updateNavbarUI(auth.currentUser);
+                }
+            } catch (error) {
+                console.error('Error loading navbar user data:', error);
+                currentUserData = {
+                    email: auth.currentUser.email,
+                    name: auth.currentUser.displayName || ''
+                };
+                updateNavbarUI(auth.currentUser);
+            }
+        }
+
+        // Update Navbar UI with User Info
+        function updateNavbarUI(user) {
+            const profileLoading = document.getElementById('ccProfileLoading');
+            const profileContent = document.getElementById('ccProfileContent');
+            const userAvatar = document.getElementById('ccUserAvatar');
+            const profileName = document.getElementById('ccProfileName');
+            const dropdownName = document.getElementById('ccDropdownName');
+            const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+            if (!user) {
+                // Not logged in - redirect to login
+                if (!window.location.pathname.includes('login.html') && 
+                    !window.location.pathname.includes('signup.html') &&
+                    !window.location.pathname.includes('index.html') &&
+                    !window.location.pathname.includes('about.html') &&
+                    !window.location.pathname.includes('pricing.html')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            // Hide loading, show content
+            if (profileLoading) profileLoading.style.display = 'none';
+            if (profileContent) profileContent.style.display = 'flex';
+
+            // Update profile photo
+            if (userAvatar && currentUserData?.profilePhotoURL) {
+                userAvatar.src = currentUserData.profilePhotoURL;
+            } else if (userAvatar) {
+                userAvatar.src = 'images/default-avatar.png';
+            }
+
+            // Update display name
+            const displayName = currentUserData?.name || user.displayName || user.email.split('@')[0];
+            if (profileName) profileName.textContent = displayName;
+            if (dropdownName) dropdownName.textContent = displayName;
+
+            // Update email
+            if (dropdownEmail) dropdownEmail.textContent = user.email;
+        }
+
+        // Logout Function
+        async function handleLogout(e) {
+            e.preventDefault();
+            closeDropdown();
+            
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error signing out. Please try again.');
+            }
+        }
+
+        // Event Listeners
+        function initEventListeners() {
+            // Theme toggle
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // Profile button click
+            const profileButton = document.getElementById('ccProfileButton');
+            if (profileButton) {
+                profileButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
+            }
+
+            // Logout button
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('ccProfileDropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Close dropdown on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+        }
+
+        // Initialize Navbar
+        function initNavbar() {
+            console.log('🎯 Initializing College Climb Navbar...');
+            
+            // Initialize theme
+            initTheme();
+            
+            // Set up event listeners
+            initEventListeners();
+            
+            console.log('✅ Navbar initialized successfully!');
+        }
+
+        // Export for global access
+        window.CollegeClimbNavbar = {
+            toggleTheme,
+            openDropdown,
+            closeDropdown,
+            refresh: () => {
+                if (auth.currentUser) {
+                    loadNavbarUserData(auth.currentUser.uid);
+                }
+            }
+        };
+
+        // ============================================
+        // DASHBOARD FUNCTIONALITY
+        // ============================================
+
         // School database with comprehensive data
         const schoolDatabase = {
             'Harvard University': {
@@ -1498,12 +1932,11 @@
         onAuthStateChanged(auth, async (user) => {
             console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
             
-            updateAuthUI(user);
-            
             if (user) {
                 document.body.classList.add("logged-in");
                 window.currentUser = user;
                 await loadUserData(user);
+                await loadNavbarUserData(user.uid);
                 await initializeDashboard();
             } else {
                 document.body.classList.remove("logged-in");
@@ -1833,10 +2266,6 @@
             const timeline = document.getElementById('applicationTimeline');
             timeline.innerHTML = '';
             
-            // Generate timeline based on user's graduation date and current progress
-            const graduationDate = window.userData?.questionnaire?.graduationYear || '2025';
-            const currentDate = new Date();
-            
             const timelineEvents = [
                 {
                     date: 'Nov 2024',
@@ -2094,42 +2523,6 @@
             return match ? parseInt(match[1]) : null;
         }
 
-        // Update navbar UI
-        function updateAuthUI(user) {
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
-
-            if (user) {
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'block';
-                
-                const displayName = window.userData?.name || user.displayName || user.email.split('@')[0];
-                if (dropdownDisplayName) dropdownDisplayName.textContent = displayName;
-                
-                if (window.userData?.profilePhotoURL) {
-                    if (navUserAvatar) {
-                        navUserAvatar.src = window.userData.profilePhotoURL;
-                        navUserAvatar.style.display = 'block';
-                    }
-                    if (navAccountText) navAccountText.style.display = 'none';
-                } else {
-                    if (navUserAvatar) navUserAvatar.style.display = 'none';
-                    if (navAccountText) navAccountText.style.display = 'inline';
-                }
-            } else {
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
-                if (navUserAvatar) navUserAvatar.style.display = 'none';
-                if (navAccountText) navAccountText.style.display = 'inline';
-            }
-        }
-
         // Enhanced chat functionality with context
         window.sendChatMessage = async function() {
             const input = document.getElementById('chatInput');
@@ -2168,6 +2561,7 @@
                         targetSchools: window.userData?.questionnaire?.targetSchools,
                         graduationYear: window.userData?.questionnaire?.graduationYear
                     },
+                    questionnaireData: window.userData?.questionnaire,
                     applicationData: window.applicationData?.map(app => ({
                         school: app.schoolName,
                         status: app.status,
@@ -2185,7 +2579,8 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        context: contextData
+                        userProfile: contextData.userProfile,
+                        questionnaireData: contextData.questionnaireData
                     })
                 });
 
@@ -2425,17 +2820,6 @@
             }
         };
 
-        // Logout
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('❌ Error signing out:', error);
-                showNotification('Error', 'Error signing out. Please try again.', 'error');
-            }
-        };
-
         // Utility function
         function escapeHtml(text) {
             const map = {
@@ -2448,13 +2832,12 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', window.logout);
-            }
-        });
+        // Initialize navbar on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbar);
+        } else {
+            initNavbar();
+        }
 
     </script>
 
@@ -2463,31 +2846,6 @@
         // Enhanced theme management
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🎨 Enhanced Dashboard UI loaded');
-            
-            // Theme Toggle
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
-            
-            if (themeToggle) {
-                const savedTheme = sessionStorage.getItem('theme') || 'dark';
-                body.setAttribute('data-theme', savedTheme);
-                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-                
-                themeToggle.addEventListener('click', function() {
-                    const currentTheme = body.getAttribute('data-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    
-                    body.setAttribute('data-theme', newTheme);
-                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-                    sessionStorage.setItem('theme', newTheme);
-                    
-                    // Update logo
-                    const logo = document.getElementById('navbarLogo');
-                    if (logo) {
-                        logo.src = newTheme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
-                    }
-                });
-            }
             
             // Initialize animations
             initializeAnimations();
