@@ -652,7 +652,7 @@
             border: 2px solid rgba(160, 123, 204, 0.1);
             border-radius: 16px;
             background: var(--primary-bg);
-            color: var(--text-primary);
+            color: var (--text-primary);
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             line-height: 1.8;
@@ -958,13 +958,13 @@
     <div class="starry-bg" id="starryBg"></div>
 
     <!-- ============================================
-         UNIVERSAL NAVBAR (from dashboard.html)
+         UNIVERSAL NAVBAR
          ============================================ -->
     <nav class="cc-navbar">
         <!-- Logo Section -->
         <a href="index.html" class="cc-logo-section">
             <div class="cc-logo">
-                <img src="images/logo-dark.png" alt="College Climb" id="navLogo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
             <div class="cc-brand-text">
                 <h1>College</h1>
@@ -975,50 +975,64 @@
         <!-- Right Side Navigation -->
         <div class="cc-nav-right">
             <!-- Theme Toggle -->
-            <button class="cc-theme-toggle" id="themeToggle" onclick="CollegeClimbNavbar.toggleTheme()" aria-label="Toggle theme">
-                <i class="fas fa-moon" id="themeIcon"></i>
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
+                ☀️
             </button>
 
             <!-- Profile Dropdown -->
-            <div class="cc-profile-dropdown" id="profileDropdown">
-                <button class="cc-profile-button" onclick="CollegeClimbNavbar.toggleDropdown()" aria-label="Profile menu">
-                    <img src="images/default-avatar.png" alt="User" class="cc-user-avatar" id="userAvatar">
-                    <span class="cc-profile-text" id="userName">Loading...</span>
-                    <i class="fas fa-chevron-down cc-dropdown-chevron"></i>
-                </button>
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <!-- Loading state initially -->
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    
+                    <!-- Profile content (hidden initially) -->
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                    </div>
+                </div>
 
-                <div class="cc-dropdown-menu" id="dropdownMenu">
-                    <div class="cc-dropdown-header">
-                        <div class="cc-dropdown-welcome">Welcome back,</div>
-                        <div class="cc-dropdown-name" id="dropdownName">Student</div>
-                        <div class="cc-dropdown-email" id="dropdownEmail">student@example.com</div>
+                <!-- Dropdown Menu -->
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <!-- Welcome Header -->
+                    <div class="cc-dropdown-header" id="ccDropdownHeader">
+                        <div class="cc-dropdown-welcome">Hello,</div>
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
                     </div>
 
+                    <!-- Navigation Links -->
                     <a href="dashboard.html" class="cc-dropdown-link">
-                        <span class="cc-dropdown-link-icon"><i class="fas fa-home"></i></span>
-                        Dashboard
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
                     </a>
-
-                    <a href="profile.html" class="cc-dropdown-link">
-                        <span class="cc-dropdown-link-icon"><i class="fas fa-user"></i></span>
-                        My Profile
-                    </a>
-
+                    
                     <a href="essaycoach.html" class="cc-dropdown-link">
-                        <span class="cc-dropdown-link-icon"><i class="fas fa-pen"></i></span>
-                        Essay Coach
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essays</span>
+                    </a>
+                    
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">💰</span>
+                        <span>Scholarships</span>
+                    </a>
+                    
+                    <a href="document.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📄</span>
+                        <span>Documents</span>
+                    </a>
+                    
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>Profile</span>
                     </a>
 
-                    <a href="settings.html" class="cc-dropdown-link">
-                        <span class="cc-dropdown-link-icon"><i class="fas fa-cog"></i></span>
-                        Settings
-                    </a>
-
+                    <!-- Divider -->
                     <div class="cc-dropdown-divider"></div>
 
-                    <a href="#" class="cc-logout-link" onclick="CollegeClimbNavbar.handleLogout(event)">
-                        <span class="cc-dropdown-link-icon"><i class="fas fa-sign-out-alt"></i></span>
-                        Logout
+                    <!-- Logout -->
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
                     </a>
                 </div>
             </div>
@@ -1909,7 +1923,7 @@
                 schoolItem.innerHTML = `
                     <div>
                         <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${school}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${progress}% complete</div>
+                        <div style="font-size: 0.8rem; color: var (--text-secondary);">${progress}% complete</div>
                     </div>
                     <div style="width: 40px; height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden;">
                         <div style="width: ${progress}%; height: 100%; background: ${progressColor};"></div>
