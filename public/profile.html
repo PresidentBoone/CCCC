@@ -1796,6 +1796,89 @@
             }
         });
 
+        // Profile photo upload handler
+        document.getElementById('photoUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('Please upload a valid image file (JPG, PNG, GIF, or WebP)', 'error');
+                return;
+            }
+
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                showMessage('Image size must be less than 10MB', 'error');
+                return;
+            }
+
+            try {
+                // Show upload button as disabled
+                const uploadBtn = document.querySelector('.profile-photo-upload');
+                if (uploadBtn) {
+                    uploadBtn.disabled = true;
+                    uploadBtn.textContent = '⏳';
+                }
+
+                // Create storage reference
+                const storageRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}_${file.name}`);
+                
+                // Upload file
+                console.log('📤 Uploading photo to Firebase Storage...');
+                const snapshot = await uploadBytes(storageRef, file);
+                console.log('✅ Photo uploaded successfully');
+                
+                // Get download URL
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                console.log('✅ Download URL obtained:', downloadURL);
+                
+                // Update Firestore with new photo URL
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    profilePhotoURL: downloadURL,
+                    profilePhotoUpdated: new Date()
+                });
+                
+                // Update all photo elements immediately
+                const photoElements = [
+                    document.getElementById('profilePhoto'),
+                    document.getElementById('profilePhotoPreview'),
+                    document.getElementById('navUserAvatar')
+                ];
+                
+                photoElements.forEach(element => {
+                    if (element) {
+                        element.src = downloadURL;
+                        if (element.id === 'navUserAvatar') {
+                            element.style.display = 'block';
+                        }
+                    }
+                });
+                
+                // Update currentUserData
+                currentUserData.profilePhotoURL = downloadURL;
+                
+                // Re-enable upload button
+                if (uploadBtn) {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = '📷';
+                }
+                
+                showMessage('Profile photo updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error uploading photo:', error);
+                showMessage('Failed to upload photo. Please try again.', 'error');
+                
+                // Re-enable upload button
+                const uploadBtn = document.querySelector('.profile-photo-upload');
+                if (uploadBtn) {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = '📷';
+                }
+            }
+        });
+
         // Utility functions
         function showMessage(text, type) {
             const messageEl = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');

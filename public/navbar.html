@@ -1,0 +1,779 @@
+<!-- ============================================
+     COLLEGE CLIMB UNIVERSAL NAVBAR
+     Exact code from dashboard.html
+     ============================================ -->
+
+<!-- NAVBAR CSS - EXACT FROM DASHBOARD.HTML -->
+<style>
+    /* ============================================
+       UNIVERSAL NAVBAR STYLES
+       ============================================ */
+    :root {
+        --primary-bg: #ffffff;
+        --secondary-bg: #f8f9ff;
+        --accent-bg: #2a357a;
+        --text-primary: #333333;
+        --text-secondary: #666666;
+        --accent-color: #a07bcc;
+        --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+        --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+        --border-radius: 16px;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    [data-theme="dark"] {
+        --primary-bg: #0d1117;
+        --secondary-bg: #161b22;
+        --accent-bg: #21262d;
+        --text-primary: #f0f6fc;
+        --text-secondary: #8b949e;
+        --accent-color: #bb86fc;
+        --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--primary-bg);
+        transition: all 0.3s ease;
+        overflow-x: hidden;
+    }
+
+    /* Navigation Bar */
+    .cc-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .cc-navbar {
+        background: rgba(13, 17, 23, 0.95);
+        border-bottom-color: rgba(187, 134, 252, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .cc-logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .cc-logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .cc-logo:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .cc-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .cc-brand-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        line-height: 1;
+    }
+
+    .cc-brand-text h1 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+        margin: 0;
+    }
+
+    .cc-brand-text h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+        margin: 0;
+    }
+
+    .cc-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Theme Toggle Button */
+    .cc-theme-toggle {
+        background: var(--gradient);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+    }
+
+    .cc-theme-toggle:hover {
+        transform: scale(1.1) rotate(180deg);
+        box-shadow: var(--shadow);
+    }
+
+    /* Profile Dropdown Container */
+    .cc-profile-dropdown {
+        position: relative;
+    }
+
+    /* Profile Button */
+    .cc-profile-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        padding: 0.3rem;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        position: relative;
+    }
+
+    .cc-profile-button:hover .cc-user-avatar {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+    }
+
+    .cc-profile-button:active .cc-user-avatar {
+        transform: scale(0.95);
+    }
+
+    /* User Avatar */
+    .cc-user-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--accent-color);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+    }
+
+    [data-theme="dark"] .cc-user-avatar {
+        border-color: var(--accent-color);
+        box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
+    }
+
+    /* Profile Text - Hidden completely */
+    .cc-profile-text {
+        display: none !important;
+    }
+
+    /* Dropdown Chevron - Hidden */
+    .cc-dropdown-chevron {
+        display: none !important;
+    }
+
+    /* Dropdown Menu */
+    .cc-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 0.75rem);
+        right: 0;
+        background: var(--primary-bg);
+        box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+        border-radius: 20px;
+        padding: 0.75rem;
+        min-width: 280px;
+        max-width: 320px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-15px) scale(0.9);
+        transform-origin: top right;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(160, 123, 204, 0.15);
+        backdrop-filter: blur(20px);
+    }
+
+    [data-theme="dark"] .cc-dropdown-menu {
+        background: rgba(22, 27, 34, 0.98);
+        border-color: rgba(187, 134, 252, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
+    }
+
+    .cc-dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+
+    /* Add arrow pointer to dropdown */
+    .cc-dropdown-menu::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        right: 16px;
+        width: 12px;
+        height: 12px;
+        background: var(--primary-bg);
+        border: 1px solid rgba(160, 123, 204, 0.15);
+        border-bottom: none;
+        border-right: none;
+        transform: rotate(45deg);
+    }
+
+    [data-theme="dark"] .cc-dropdown-menu::before {
+        background: rgba(22, 27, 34, 0.98);
+        border-color: rgba(187, 134, 252, 0.2);
+    }
+
+    /* Welcome Header in Dropdown */
+    .cc-dropdown-header {
+        padding: 1.25rem;
+        border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+        margin-bottom: 0.75rem;
+        background: var(--secondary-bg);
+        border-radius: 14px;
+        text-align: center;
+    }
+
+    [data-theme="dark"] .cc-dropdown-header {
+        border-bottom-color: rgba(187, 134, 252, 0.15);
+        background: rgba(33, 38, 45, 0.6);
+    }
+
+    .cc-dropdown-welcome {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .cc-dropdown-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.3rem;
+    }
+
+    .cc-dropdown-email {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 0.3rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 0 0.5rem;
+    }
+
+    /* Dropdown Links */
+    .cc-dropdown-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.9rem 1.1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.25s ease;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cc-dropdown-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: var(--gradient);
+        opacity: 0.1;
+        transition: width 0.3s ease;
+    }
+
+    .cc-dropdown-link:hover {
+        background: var(--secondary-bg);
+        transform: translateX(4px);
+        color: var(--accent-color);
+    }
+
+    .cc-dropdown-link:hover::before {
+        width: 4px;
+    }
+
+    [data-theme="dark"] .cc-dropdown-link:hover {
+        background: rgba(33, 38, 45, 0.8);
+    }
+
+    .cc-dropdown-link:active {
+        transform: translateX(2px) scale(0.98);
+    }
+
+    .cc-dropdown-link-icon {
+        font-size: 1.3rem;
+        width: 28px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .cc-dropdown-link:hover .cc-dropdown-link-icon {
+        transform: scale(1.15);
+    }
+
+    /* Logout Button */
+    .cc-dropdown-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+        margin: 0.5rem 0;
+    }
+
+    [data-theme="dark"] .cc-dropdown-divider {
+        background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
+    }
+
+    .cc-logout-link {
+        color: var(--danger-color) !important;
+        font-weight: 700 !important;
+    }
+
+    .cc-logout-link:hover {
+        background: rgba(239, 68, 68, 0.1) !important;
+    }
+
+    .cc-logout-link:hover::before {
+        background: var(--danger-color) !important;
+    }
+
+    /* Loading State */
+    .cc-profile-loading {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 3px solid var(--secondary-bg);
+        border-top-color: var(--accent-color);
+        animation: cc-spin 1s linear infinite;
+    }
+
+    @keyframes cc-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Active state indicator */
+    .cc-profile-dropdown.open .cc-user-avatar {
+        box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+        border-color: var(--accent-color);
+    }
+
+    [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+        box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .cc-navbar {
+            padding: 0.75rem 1rem;
+        }
+
+        .cc-logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .cc-brand-text h1,
+        .cc-brand-text h2 {
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle {
+            width: 38px;
+            height: 38px;
+            font-size: 1rem;
+        }
+
+        .cc-user-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .cc-dropdown-menu {
+            min-width: 260px;
+            right: -0.5rem;
+        }
+
+        .cc-dropdown-menu::before {
+            right: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cc-navbar {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .cc-logo {
+            width: 36px;
+            height: 36px;
+        }
+
+        .cc-brand-text h1,
+        .cc-brand-text h2 {
+            font-size: 1.1rem;
+        }
+
+        .cc-dropdown-menu {
+            right: -0.5rem;
+            min-width: 240px;
+        }
+
+        .cc-dropdown-menu::before {
+            right: 18px;
+        }
+    }
+</style>
+
+<!-- NAVBAR HTML - EXACT FROM DASHBOARD.HTML -->
+<nav class="cc-navbar">
+    <!-- Logo Section -->
+    <a href="index.html" class="cc-logo-section">
+        <div class="cc-logo">
+            <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+        </div>
+        <div class="cc-brand-text">
+            <h1>College</h1>
+            <h2>Climb</h2>
+        </div>
+    </a>
+
+    <!-- Right Side Navigation -->
+    <div class="cc-nav-right">
+        <!-- Theme Toggle -->
+        <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
+            ☀️
+        </button>
+
+        <!-- Profile Dropdown -->
+        <div class="cc-profile-dropdown" id="ccProfileDropdown">
+            <div class="cc-profile-button" id="ccProfileButton">
+                <!-- Loading state initially -->
+                <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                
+                <!-- Profile content (hidden initially) -->
+                <div id="ccProfileContent" style="display: none;">
+                    <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                </div>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                <!-- Welcome Header -->
+                <div class="cc-dropdown-header" id="ccDropdownHeader">
+                    <div class="cc-dropdown-welcome">Hello,</div>
+                    <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                    <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                </div>
+
+                <!-- Navigation Links -->
+                <a href="dashboard.html" class="cc-dropdown-link">
+                    <span class="cc-dropdown-link-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="essaycoach.html" class="cc-dropdown-link">
+                    <span class="cc-dropdown-link-icon">✍️</span>
+                    <span>Essays</span>
+                </a>
+                
+                <a href="scholarship.html" class="cc-dropdown-link">
+                    <span class="cc-dropdown-link-icon">💰</span>
+                    <span>Scholarships</span>
+                </a>
+                
+                <a href="document.html" class="cc-dropdown-link">
+                    <span class="cc-dropdown-link-icon">📄</span>
+                    <span>Documents</span>
+                </a>
+                
+                <a href="profile.html" class="cc-dropdown-link">
+                    <span class="cc-dropdown-link-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+
+                <!-- Divider -->
+                <div class="cc-dropdown-divider"></div>
+
+                <!-- Logout -->
+                <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                    <span class="cc-dropdown-link-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- NAVBAR JAVASCRIPT - EXACT FROM DASHBOARD.HTML -->
+<script type="module">
+    // ============================================
+    // NAVBAR FUNCTIONALITY
+    // ============================================
+
+    let currentUserData = null;
+
+    // Theme Management
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+        updateLogo(savedTheme);
+    }
+
+    function updateThemeButton(theme) {
+        const themeToggle = document.getElementById('ccThemeToggle');
+        if (themeToggle) {
+            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+    }
+
+    function updateLogo(theme) {
+        const logo = document.getElementById('ccNavbarLogo');
+        if (logo) {
+            logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+        }
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeButton(newTheme);
+        updateLogo(newTheme);
+    }
+
+    // Dropdown Management
+    function toggleDropdown() {
+        const dropdown = document.getElementById('ccDropdownMenu');
+        const container = document.getElementById('ccProfileDropdown');
+        
+        if (dropdown && container) {
+            const isOpen = dropdown.classList.contains('show');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        }
+    }
+
+    function openDropdown() {
+        const dropdown = document.getElementById('ccDropdownMenu');
+        const container = document.getElementById('ccProfileDropdown');
+        
+        if (dropdown && container) {
+            dropdown.classList.add('show');
+            container.classList.add('open');
+        }
+    }
+
+    function closeDropdown() {
+        const dropdown = document.getElementById('ccDropdownMenu');
+        const container = document.getElementById('ccProfileDropdown');
+        
+        if (dropdown && container) {
+            dropdown.classList.remove('show');
+            container.classList.remove('open');
+        }
+    }
+
+    // Load User Data from Firestore
+    async function loadNavbarUserData(userId) {
+        try {
+            const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+            const userDoc = await getDoc(doc(window.db, 'users', userId));
+            
+            if (userDoc.exists()) {
+                currentUserData = userDoc.data();
+                updateNavbarUI(window.auth.currentUser);
+            } else {
+                currentUserData = {
+                    email: window.auth.currentUser.email,
+                    name: window.auth.currentUser.displayName || ''
+                };
+                updateNavbarUI(window.auth.currentUser);
+            }
+        } catch (error) {
+            console.error('Error loading navbar user data:', error);
+            currentUserData = {
+                email: window.auth.currentUser.email,
+                name: window.auth.currentUser.displayName || ''
+            };
+            updateNavbarUI(window.auth.currentUser);
+        }
+    }
+
+    // Update Navbar UI with User Info
+    function updateNavbarUI(user) {
+        const profileLoading = document.getElementById('ccProfileLoading');
+        const profileContent = document.getElementById('ccProfileContent');
+        const userAvatar = document.getElementById('ccUserAvatar');
+        const profileName = document.getElementById('ccProfileName');
+        const dropdownName = document.getElementById('ccDropdownName');
+        const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+        if (!user) {
+            // Not logged in - redirect to login
+            if (!window.location.pathname.includes('login.html') && 
+                !window.location.pathname.includes('signup.html') &&
+                !window.location.pathname.includes('index.html') &&
+                !window.location.pathname.includes('about.html') &&
+                !window.location.pathname.includes('pricing.html')) {
+                window.location.href = 'login.html';
+            }
+            return;
+        }
+
+        // Hide loading, show content
+        if (profileLoading) profileLoading.style.display = 'none';
+        if (profileContent) profileContent.style.display = 'flex';
+
+        // Update profile photo
+        if (userAvatar && currentUserData?.profilePhotoURL) {
+            userAvatar.src = currentUserData.profilePhotoURL;
+        } else if (userAvatar) {
+            userAvatar.src = 'images/default-avatar.png';
+        }
+
+        // Update display name
+        const displayName = currentUserData?.name || user.displayName || user.email.split('@')[0];
+        if (profileName) profileName.textContent = displayName;
+        if (dropdownName) dropdownName.textContent = displayName;
+
+        // Update email
+        if (dropdownEmail) dropdownEmail.textContent = user.email;
+    }
+
+    // Logout Function
+    async function handleLogout(e) {
+        e.preventDefault();
+        closeDropdown();
+        
+        try {
+            const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js');
+            await signOut(window.auth);
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error('Error signing out:', error);
+            alert('Error signing out. Please try again.');
+        }
+    }
+
+    // Event Listeners
+    function initEventListeners() {
+        // Theme toggle
+        const themeToggle = document.getElementById('ccThemeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Profile button click
+        const profileButton = document.getElementById('ccProfileButton');
+        if (profileButton) {
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+        }
+
+        // Logout button
+        const logoutBtn = document.getElementById('ccLogoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('ccProfileDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Close dropdown on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+            }
+        });
+    }
+
+    // Initialize Navbar
+    function initNavbar() {
+        console.log('🎯 Initializing College Climb Navbar...');
+        
+        // Initialize theme
+        initTheme();
+        
+        // Set up event listeners
+        initEventListeners();
+        
+        console.log('✅ Navbar initialized successfully!');
+    }
+
+    // Export for global access
+    window.CollegeClimbNavbar = {
+        toggleTheme,
+        openDropdown,
+        closeDropdown,
+        refresh: () => {
+            if (window.auth?.currentUser) {
+                loadNavbarUserData(window.auth.currentUser.uid);
+            }
+        }
+    };
+
+    // Initialize navbar on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNavbar);
+    } else {
+        initNavbar();
+    }
+</script>
