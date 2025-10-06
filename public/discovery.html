@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Your Perfect College - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Starry Background */
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Navigation Bar - Same as dashboard.html */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1, .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+        }
+
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        /* Main Container */
+        .discovery-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Hero Section */
+        .discovery-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a07bcc 100%);
+            border-radius: 32px;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discovery-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .discovery-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .discovery-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .filter-select, .filter-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: 12px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        /* Loading State */
+        .loading-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(160, 123, 204, 0.2);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* College Grid */
+        .college-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* College Card */
+        .college-card {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .college-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(42, 53, 122, 0.2);
+        }
+
+        .college-card-header {
+            background: var(--gradient);
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+
+        .match-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .college-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .college-location {
+            font-size: 1rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .college-card-body {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .college-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: rgba(160, 123, 204, 0.1);
+            color: var(--accent-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .match-explanation {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .match-explanation h4 {
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .match-explanation p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-small {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: var(--gradient);
+            padding: 2rem;
+            color: white;
+            border-radius: 24px 24px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .discovery-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .discovery-hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .discovery-hero h1 {
+                font-size: 2rem;
+            }
+
+            .discovery-hero p {
+                font-size: 1rem;
+            }
+
+            .college-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quality-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .financial-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 0.5rem;
+                max-height: 95vh;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-small {
+                width: 100%;
+            }
+
+            .college-chat-widget {
+                width: 100%;
+                right: 0;
+                bottom: 0;
+                border-radius: 20px 20px 0 0;
+                height: 70vh;
+            }
+
+            #myListsPanel {
+                position: fixed;
+                right: -100%;
+                top: 80px;
+                width: 90%;
+                max-width: 320px;
+                transition: right 0.3s ease;
+                z-index: 1001;
+            }
+
+            #myListsPanel.show {
+                right: 10px;
+            }
+
+            .cc-navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1,
+            .cc-brand-text h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filter-section {
+                padding: 1rem;
+            }
+
+            .discovery-hero {
+                padding: 1.5rem 1rem;
+            }
+
+            .discovery-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .college-name {
+                font-size: 1.25rem;
+            }
+
+            .comparison-table {
+                font-size: 0.85rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* College Lists Styling */
+        .college-list-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-height: 40px;
+        }
+        
+        .college-list-item {
+            background: var(--secondary-bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .college-list-item:hover {
+            border-color: var(--accent-color);
+            transform: translateX(3px);
+        }
+        
+        .college-list-item button {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .college-list-item button:hover {
+            opacity: 1;
+        }
+        
+        .list-category {
+            margin-bottom: 1rem;
+        }
+        
+        .empty-list {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 1rem;
+            font-style: italic;
+        }
+        
+        /* Comparison Table Styles */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .comparison-table th {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.2);
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        }
+        
+        .comparison-table tr:hover {
+            background: var(--secondary-bg);
+        }
+        
+        .comparison-winner {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+        
+        /* College Chat Widget */
+        .college-chat-widget {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 380px;
+            height: 500px;
+            background: var(--primary-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .college-chat-widget.active {
+            display: flex;
+        }
+        
+        .chat-widget-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-widget-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .chat-widget-input {
+            padding: 1rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-widget-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 20px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            outline: none;
+        }
+        
+        .chat-widget-input button {
+            padding: 0.75rem 1.25rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-widget-input button:hover {
+            transform: scale(1.05);
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .chat-bubble.user {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .chat-bubble.ai {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .compare-checkbox {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            width: 24px;
+            height: 24px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .financial-aid-estimate {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .financial-breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .similar-colleges-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .similar-college-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .similar-college-card:hover {
+            transform: translateX(5px);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .career-outcomes-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .quality-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .quality-metric {
+            text-align: center;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .list-dropdown {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .list-dropdown button:hover {
+            background: var(--secondary-bg);
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* Smooth transitions */
+        .college-card {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Improved modal animations */
+        .modal {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- Navigation -->
+    <nav class="cc-navbar">
+        <a href="dashboard.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <div class="cc-nav-right">
+            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+            
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                </div>
+
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span>👤</span>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#" class="cc-dropdown-link" id="ccLogoutBtn">
+                        <span>🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="discovery-container">
+        <!-- Hero Section -->
+        <div class="discovery-hero">
+            <h1>Discover Your Perfect College Match</h1>
+            <p>AI-powered recommendations based on your profile, preferences, and goals. Find colleges where you'll thrive academically, socially, and financially.</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">State</label>
+                    <select class="filter-select" id="filterState">
+                        <option value="">All States</option>
+                        <option value="CA">California</option>
+                        <option value="NY">New York</option>
+                        <option value="TX">Texas</option>
+                        <option value="FL">Florida</option>
+                        <option value="MA">Massachusetts</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">School Type</label>
+                    <select class="filter-select" id="filterType">
+                        <option value="">All Types</option>
+                        <option value="1">Public</option>
+                        <option value="2">Private Nonprofit</option>
+                        <option value="3">Private For-Profit</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Size</label>
+                    <select class="filter-select" id="filterSize">
+                        <option value="">Any Size</option>
+                        <option value="small">Small (&lt;5,000)</option>
+                        <option value="medium">Medium (5,000-15,000)</option>
+                        <option value="large">Large (&gt;15,000)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Max Tuition</label>
+                    <select class="filter-select" id="filterTuition">
+                        <option value="">Any Price</option>
+                        <option value="10000">Under $10,000</option>
+                        <option value="25000">Under $25,000</option>
+                        <option value="50000">Under $50,000</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="loadRecommendations()">
+                    <i class="fas fa-magic"></i>
+                    Get AI Recommendations
+                </button>
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i>
+                    Reset Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-container" id="loadingContainer" style="display: none;">
+            <div class="loading-spinner"></div>
+            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Finding Your Perfect Matches...</h3>
+            <p style="color: var(--text-secondary);">Our AI is analyzing thousands of colleges to find the best fits for you</p>
+        </div>
+
+        <!-- College Grid -->
+        <div class="college-grid" id="collegeGrid"></div>
+
+        <!-- No Results -->
+        <div id="noResults" style="display: none; text-align: center; padding: 4rem 2rem;">
+            <i class="fas fa-search" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.5; margin-bottom: 1rem;"></i>
+            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No colleges found</h3>
+            <p style="color: var(--text-secondary);">Try adjusting your filters or complete your profile for better recommendations</p>
+            <a href="profile.html" class="btn btn-primary" style="margin-top: 1.5rem; text-decoration: none;">
+                Complete Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- College Comparison Panel -->
+    <div class="modal" id="comparisonModal">
+        <div class="modal-content" style="max-width: 1400px;">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeComparison()">×</button>
+                <h2>Compare Colleges</h2>
+            </div>
+            <div class="modal-body" id="comparisonBody">
+                <!-- Comparison content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- My Lists Panel -->
+    <div class="filter-section" style="position: fixed; right: 20px; top: 120px; width: 280px; z-index: 100;" id="myListsPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">
+                <i class="fas fa-list"></i> My Lists
+            </h3>
+            <button onclick="toggleListsPanel()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="myListsContent">
+            <div class="list-category">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h4 style="color: var(--success-color); font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas fa-check-circle"></i> Safety (<span id="safetyCount">0</span>)
+                    </h4>
+                </div>
+                <div id="safetyList" class="college-list-items"></div>
+            </div>
+            
+            <div class="list-category" style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h4 style="color: var(--info-color); font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas fa-equals"></i> Match (<span id="matchCount">0</span>)
+                    </h4>
+                </div>
+                <div id="matchList" class="college-list-items"></div>
+            </div>
+            
+            <div class="list-category" style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h4 style="color: var(--danger-color); font-size: 0.9rem; font-weight: 600;">
+                        <i class="fas fa-star"></i> Reach (<span id="reachCount">0</span>)
+                    </h4>
+                </div>
+                <div id="reachList" class="college-list-items"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 1rem; z-index: 999;">
+        <button class="btn btn-primary" onclick="toggleComparison()" id="compareBtn" style="display: none; border-radius: 50%; width: 60px; height: 60px; padding: 0; box-shadow: var(--shadow);">
+            <i class="fas fa-balance-scale"></i>
+            <span id="compareCount" style="position: absolute; top: -8px; right: -8px; background: var(--danger-color); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">0</span>
+        </button>
+        <button class="btn btn-secondary" onclick="toggleListsPanel()" style="border-radius: 50%; width: 60px; height: 60px; padding: 0; box-shadow: var(--shadow);">
+            <i class="fas fa-list"></i>
+        </button>
+    </div>
+
+    <!-- College Detail Modal -->
+    <div class="modal" id="collegeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <h2 id="modalCollegeName" style="font-size: 2rem; margin-bottom: 0.5rem;"></h2>
+                <p id="modalCollegeLocation" style="opacity: 0.9;"></p>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const COLLEGE_SCORECARD_API_KEY = 'GUkeMEMkyx7QF0jyPEa2c91azSrb5S0ISElPdau2';
+        const API_BASE_URL = 'https://api.data.gov/ed/collegescorecard/v1/schools';
+
+        let currentUser = null;
+        let userData = null;
+        let allColleges = [];
+        let comparedColleges = [];
+        let myLists = {
+            safety: [],
+            match: [],
+            reach: []
+        };
+        let currentCollegeChat = null;
+
+        // Auth State
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadUserData(user.uid);
+                initNavbar();
+                loadRecommendations();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                    console.log('User data loaded:', userData);
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        function initNavbar() {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            updateLogo(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const current = document.body.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                updateLogo(newTheme);
+            });
+
+            const profileButton = document.getElementById('ccProfileButton');
+            const dropdown = document.getElementById('ccDropdownMenu');
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', () => {
+                dropdown.classList.remove('show');
+            });
+
+            document.getElementById('ccLogoutBtn').addEventListener('click', async (e) => {
+                e.preventDefault();
+                await signOut(auth);
+                window.location.href = 'login.html';
+            });
+
+            if (userData?.profilePhotoURL) {
+                document.getElementById('ccUserAvatar').src = userData.profilePhotoURL;
+            }
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+        }
+
+        window.loadRecommendations = async function() {
+            const grid = document.getElementById('collegeGrid');
+            const loading = document.getElementById('loadingContainer');
+            const noResults = document.getElementById('noResults');
+
+            grid.innerHTML = '';
+            noResults.style.display = 'none';
+            loading.style.display = 'block';
+
+            try {
+                // Build API query based on filters and user profile
+                const params = new URLSearchParams({
+                    'api_key': COLLEGE_SCORECARD_API_KEY,
+                    'fields': 'id,school.name,school.city,school.state,school.school_url,latest.admissions.admission_rate.overall,latest.student.size,latest.cost.tuition.in_state,latest.cost.tuition.out_of_state,latest.admissions.sat_scores.average.overall,latest.admissions.act_scores.midpoint.cumulative,latest.student.demographics.race_ethnicity.white,latest.student.demographics.race_ethnicity.black,latest.student.demographics.race_ethnicity.hispanic,latest.student.demographics.race_ethnicity.asian,latest.completion.completion_rate_4yr_150nt,latest.earnings.10_yrs_after_entry.median,school.ownership,school.locale,school.degrees_awarded.predominant,latest.academics.program_percentage.humanities,latest.academics.program_percentage.business_marketing,latest.academics.program_percentage.engineering,latest.academics.program_percentage.biological,latest.academics.program_percentage.computer',
+                    'per_page': 100,
+                    'school.operating': 1,
+                    'latest.admissions.admission_rate.overall__range': '0..',
+                    'latest.student.size__range': '100..'
+                });
+
+                // Apply filters
+                const stateFilter = document.getElementById('filterState').value;
+                if (stateFilter) params.set('school.state', stateFilter);
+
+                const typeFilter = document.getElementById('filterType').value;
+                if (typeFilter) params.set('school.ownership', typeFilter);
+
+                const sizeFilter = document.getElementById('filterSize').value;
+                if (sizeFilter === 'small') params.set('latest.student.size__range', '100..5000');
+                else if (sizeFilter === 'medium') params.set('latest.student.size__range', '5000..15000');
+                else if (sizeFilter === 'large') params.set('latest.student.size__range', '15000..');
+
+                const tuitionFilter = document.getElementById('filterTuition').value;
+                if (tuitionFilter) params.set('latest.cost.tuition.out_of_state__range', `0..${tuitionFilter}`);
+
+                const response = await fetch(`${API_BASE_URL}?${params}`);
+                const data = await response.json();
+
+                loading.style.display = 'none';
+
+                if (!data.results || data.results.length === 0) {
+                    noResults.style.display = 'block';
+                    return;
+                }
+
+                allColleges = data.results;
+
+                // Get AI-powered match scores and explanations
+                const scoredColleges = await scoreColleges(allColleges);
+
+                // Display colleges
+                displayColleges(scoredColleges);
+                
+                // Load saved lists
+                await loadSavedLists();
+
+            } catch (error) {
+                console.error('Error loading colleges:', error);
+                loading.style.display = 'none';
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger-color);">Error loading colleges. Please try again.</div>';
+            }
+        };
+
+        async function scoreColleges(colleges) {
+            const questionnaire = userData?.questionnaire || {};
+            const userGPA = parseFloat(questionnaire.currentGPA?.split('-')[0] || questionnaire.unweightedGPA || '3.0');
+            const userSAT = extractSATScore(questionnaire.satScore || questionnaire.testScores);
+            const userACT = extractACTScore(questionnaire.actScore || questionnaire.testScores);
+
+            return colleges.map(college => {
+                const schoolData = college.latest || {};
+                const admission = schoolData.admissions || {};
+                const cost = schoolData.cost || {};
+                const student = schoolData.student || {};
+
+                let matchScore = 0;
+                const matchReasons = [];
+
+                // Academic match (30 points)
+                const avgSAT = admission.sat_scores?.average?.overall || 1200;
+                const avgACT = admission.act_scores?.midpoint?.cumulative || 25;
+                
+                if (userSAT) {
+                    const satDiff = Math.abs(userSAT - avgSAT);
+                    if (satDiff < 100) {
+                        matchScore += 30;
+                        matchReasons.push('Your SAT score is highly competitive here');
+                    } else if (satDiff < 200) {
+                        matchScore += 20;
+                        matchReasons.push('Your SAT score is within the competitive range');
+                    } else if (userSAT > avgSAT) {
+                        matchScore += 25;
+                        matchReasons.push('You exceed the average SAT score');
+                    }
+                }
+
+                // Financial fit (25 points)
+                const tuition = cost.tuition?.out_of_state || 0;
+                const userBudget = extractBudgetMax(questionnaire.budgetRange);
+                if (userBudget && tuition <= userBudget) {
+                    matchScore += 25;
+                    matchReasons.push('Fits within your budget range');
+                } else if (tuition <= 30000) {
+                    matchScore += 15;
+                    matchReasons.push('Moderate tuition costs');
+                }
+
+                // Size preference (15 points)
+                const enrollment = student.size || 10000;
+                const preferredSize = questionnaire.collegeSize;
+                if (preferredSize === 'small' && enrollment < 5000) {
+                    matchScore += 15;
+                    matchReasons.push('Matches your preference for small schools');
+                } else if (preferredSize === 'medium' && enrollment >= 5000 && enrollment <= 15000) {
+                    matchScore += 15;
+                    matchReasons.push('Matches your preference for medium-sized schools');
+                } else if (preferredSize === 'large' && enrollment > 15000) {
+                    matchScore += 15;
+                    matchReasons.push('Matches your preference for large schools');
+                }
+
+                // Location match (10 points)
+                const schoolState = college.school?.state;
+                if (questionnaire.locationPreference === 'hometown' && schoolState === userState()) {
+                    matchScore += 10;
+                    matchReasons.push('Located in your preferred area');
+                }
+
+                // Academic interests match (20 points)
+                const academicMatch = matchAcademicInterests(schoolData.academics, questionnaire.academicInterests);
+                matchScore += academicMatch.score;
+                if (academicMatch.reason) matchReasons.push(academicMatch.reason);
+
+                return {
+                    ...college,
+                    matchScore: Math.min(matchScore, 100),
+                    matchReasons
+                };
+            }).sort((a, b) => b.matchScore - a.matchScore);
+        }
+
+        function matchAcademicInterests(academics, interests) {
+            if (!academics || !interests || !Array.isArray(interests)) {
+                return { score: 10, reason: null };
+            }
+
+            const programMap = {
+                'computer-science': academics.program_percentage?.computer || 0,
+                'engineering': academics.program_percentage?.engineering || 0,
+                'business': academics.program_percentage?.business_marketing || 0,
+                'humanities': academics.program_percentage?.humanities || 0,
+                'physical-sciences': academics.program_percentage?.biological || 0
+            };
+
+            let totalStrength = 0;
+            let matchedPrograms = [];
+
+            interests.forEach(interest => {
+                const strength = programMap[interest] || 0;
+                if (strength > 0.05) {
+                    totalStrength += strength * 100;
+                    matchedPrograms.push(interest);
+                }
+            });
+
+            if (totalStrength > 15) {
+                return { score: 20, reason: 'Strong programs in your areas of interest' };
+            } else if (totalStrength > 5) {
+                return { score: 12, reason: 'Offers programs in your interests' };
+            }
+
+            return { score: 5, reason: null };
+        }
+
+        function displayColleges(colleges) {
+            const grid = document.getElementById('collegeGrid');
+            grid.innerHTML = '';
+
+            colleges.slice(0, 20).forEach(college => {
+                const card = createCollegeCard(college);
+                grid.appendChild(card);
+            });
+        }
+
+        function createCollegeCard(college) {
+            const card = document.createElement('div');
+            card.className = 'college-card';
+            card.style.position = 'relative';
+            
+            const schoolData = college.latest || {};
+            const admission = schoolData.admissions || {};
+            const cost = schoolData.cost || {};
+            const student = schoolData.student || {};
+            const completion = schoolData.completion || {};
+            const earnings = schoolData.earnings || {};
+
+            const admissionRate = admission.admission_rate?.overall;
+            const avgSAT = admission.sat_scores?.average?.overall;
+            const avgACT = admission.act_scores?.midpoint?.cumulative;
+            const tuition = cost.tuition?.out_of_state || cost.tuition?.in_state;
+            const enrollment = student.size;
+            const gradRate = completion.completion_rate_4yr_150nt;
+            const medianEarnings = earnings['10_yrs_after_entry']?.median;
+
+            const matchColor = college.matchScore >= 80 ? '#10b981' : 
+                              college.matchScore >= 60 ? '#3b82f6' : '#f59e0b';
+
+            card.innerHTML = `
+                <input type="checkbox" class="compare-checkbox" data-college-id="${college.id}" ${comparedColleges.find(c => c.id === college.id) ? 'checked' : ''}>
+                <div class="college-card-header">
+                    <div class="match-badge" style="background: ${matchColor};">
+                        ${college.matchScore}% Match
+                    </div>
+                    <h3 class="college-name">${college.school?.name || 'Unknown College'}</h3>
+                    <p class="college-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${college.school?.city || 'Unknown'}, ${college.school?.state || ''}
+                    </p>
+                </div>
+                <div class="college-card-body">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${admissionRate ? (admissionRate * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">Acceptance Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${avgSAT || avgACT || 'N/A'}</div>
+                            <div class="stat-label">Avg ${avgSAT ? 'SAT' : 'ACT'}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${tuition ? '$' + (tuition / 1000).toFixed(0) + 'K' : 'N/A'}</div>
+                            <div class="stat-label">Annual Tuition</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${enrollment ? (enrollment / 1000).toFixed(1) + 'K' : 'N/A'}</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                    </div>
+
+                    <div class="college-tags">
+                        ${college.school?.ownership === 1 ? '<span class="tag">Public</span>' : 
+                          college.school?.ownership === 2 ? '<span class="tag">Private</span>' : ''}
+                        ${gradRate && gradRate > 0.7 ? '<span class="tag">High Grad Rate</span>' : ''}
+                        ${medianEarnings && medianEarnings > 50000 ? '<span class="tag">Strong Earnings</span>' : ''}
+                        ${enrollment && enrollment < 5000 ? '<span class="tag">Small Campus</span>' : 
+                          enrollment > 15000 ? '<span class="tag">Large Campus</span>' : ''}
+                    </div>
+
+                    <div class="match-explanation">
+                        <h4><i class="fas fa-lightbulb"></i> Why This Match?</h4>
+                        <p>${generateMatchExplanation(college, userData)}</p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-small" onclick="viewCollegeDetails('${college.id}')">
+                            <i class="fas fa-info-circle"></i> Full Details
+                        </button>
+                        <div style="position: relative;">
+                            <button class="btn btn-secondary btn-small" onclick="toggleListDropdown(event, '${college.id}')">
+                                <i class="fas fa-bookmark"></i> Add to List
+                            </button>
+                            <div class="list-dropdown" id="listDropdown-${college.id}" style="display: none; position: absolute; top: 100%; left: 0; background: var(--primary-bg); border: 1px solid rgba(160, 123, 204, 0.2); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem; min-width: 150px; z-index: 100;">
+                                <button onclick="addToList('${college.id}', 'safety')" style="display: block; width: 100%; padding: 0.5rem; text-align: left; background: none; border: none; cursor: pointer; color: var(--text-primary); border-radius: 4px;">
+                                    <i class="fas fa-check-circle" style="color: var(--success-color);"></i> Safety
+                                </button>
+                                <button onclick="addToList('${college.id}', 'match')" style="display: block; width: 100%; padding: 0.5rem; text-align: left; background: none; border: none; cursor: pointer; color: var(--text-primary); border-radius: 4px;">
+                                    <i class="fas fa-equals" style="color: var(--info-color);"></i> Match
+                                </button>
+                                <button onclick="addToList('${college.id}', 'reach')" style="display: block; width: 100%; padding: 0.5rem; text-align: left; background: none; border: none; cursor: pointer; color: var(--text-primary); border-radius: 4px;">
+                                    <i class="fas fa-star" style="color: var(--danger-color);"></i> Reach
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-small" onclick="openCollegeChat('${college.id}')">
+                            <i class="fas fa-comments"></i> Chat
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add checkbox event listener
+            const checkbox = card.querySelector('.compare-checkbox');
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToComparison(college.id);
+            });
+
+            return card;
+        }
+
+        function generateMatchExplanation(college, userData) {
+            const reasons = college.matchReasons || [];
+            
+            if (reasons.length === 0) {
+                return 'This college offers quality programs and could be a good fit based on general criteria.';
+            }
+
+            const questionnaire = userData?.questionnaire || {};
+            let explanation = '';
+
+            if (reasons.length > 0) {
+                explanation = reasons.slice(0, 3).join('. ') + '.';
+            }
+
+            // Add personalized touches
+            if (questionnaire.intendedMajor) {
+                explanation += ` Great options for ${questionnaire.intendedMajor} students.`;
+            }
+
+            return explanation;
+        }
+
+        window.viewCollegeDetails = async function(collegeId) {
+            const college = allColleges.find(c => c.id === collegeId);
+            if (!college) return;
+
+            const modal = document.getElementById('collegeModal');
+            const modalName = document.getElementById('modalCollegeName');
+            const modalLocation = document.getElementById('modalCollegeLocation');
+            const modalBody = document.getElementById('modalBody');
+
+            modalName.textContent = college.school?.name || 'Unknown College';
+            modalLocation.textContent = `${college.school?.city}, ${college.school?.state}`;
+
+            const schoolData = college.latest || {};
+            const admission = schoolData.admissions || {};
+            const cost = schoolData.cost || {};
+            const student = schoolData.student || {};
+            const demographics = student.demographics?.race_ethnicity || {};
+
+            // Financial Aid Estimate
+            const financialEstimate = estimateFinancialAid(college, userData);
+            const financialHTML = `
+                <div class="financial-aid-estimate">
+                    <h4><i class="fas fa-dollar-sign"></i> Estimated Financial Aid</h4>
+                    <div class="financial-breakdown">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Sticker Price</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary);">$${financialEstimate.sticker.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Est. Aid</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--success-color);">-$${financialEstimate.estimatedAid.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Est. Net Price</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-color);">$${financialEstimate.netPrice.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">4-Year Total</div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary);">$${financialEstimate.fourYearCost.toLocaleString()}</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); font-style: italic;">
+                        *Estimates based on your profile. Actual aid may vary. Complete FAFSA for official estimates.
+                    </p>
+                </div>
+            `;
+            
+            // Career Outcomes
+            const outcomes = getCareerOutcomes(college);
+            const careerHTML = `
+                <div class="career-outcomes-section">
+                    <h4><i class="fas fa-briefcase"></i> Career Outcomes</h4>
+                    <div class="quality-metrics">
+                        <div class="quality-metric">
+                            <div class="metric-value">$${outcomes.medianEarnings?.toLocaleString() || 'N/A'}</div>
+                            <div class="metric-label">Median Earnings (10yr)</div>
+                        </div>
+                        <div class="quality-metric">
+                            <div class="metric-value">${outcomes.graduationRate ? (outcomes.graduationRate * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="metric-label">4-Year Grad Rate</div>
+                        </div>
+                        <div class="quality-metric">
+                            <div class="metric-value">${outcomes.roi ? outcomes.roi.toFixed(1) + 'x' : 'N/A'}</div>
+                            <div class="metric-label">Est. ROI</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Quality of Life
+            const quality = getQualityOfLife(college);
+            const qualityHTML = `
+                <div class="detail-section">
+                    <h3><i class="fas fa-home"></i> Campus Life & Quality</h3>
+                    <div class="quality-metrics">
+                        <div class="quality-metric">
+                            <div class="metric-value">${quality.diversityScore.toFixed(0)}</div>
+                            <div class="metric-label">Diversity Score</div>
+                        </div>
+                        <div class="quality-metric">
+                            <div class="metric-value">${quality.campusType}</div>
+                            <div class="metric-label">Institution Type</div>
+                        </div>
+                        <div class="quality-metric">
+                            <div class="metric-value">${quality.setting || 'N/A'}</div>
+                            <div class="metric-label">Campus Setting</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Similar Colleges
+            const similarColleges = findSimilarColleges(college);
+            const similarHTML = `
+                <div class="similar-colleges-section">
+                    <h4><i class="fas fa-university"></i> Students Also Consider</h4>
+                    ${similarColleges.map(s => `
+                        <div class="similar-college-card" onclick="viewCollegeDetails('${s.college.id}')">
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary);">${s.college.school.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">${s.college.school.city}, ${s.college.school.state}</div>
+                            </div>
+                            <div style="background: var(--accent-color); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                                ${s.similarity.toFixed(0)}% similar
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            modalBody.innerHTML = `
+                ${financialHTML}
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-chart-line"></i> Admissions</h3>
+                    <div class="detail-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${admission.admission_rate?.overall ? (admission.admission_rate.overall * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">Acceptance Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${admission.sat_scores?.average?.overall || 'N/A'}</div>
+                            <div class="stat-label">Average SAT</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${admission.act_scores?.midpoint?.cumulative || 'N/A'}</div>
+                            <div class="stat-label">Average ACT</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-dollar-sign"></i> Cost & Financial Aid</h3>
+                    <div class="detail-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${cost.tuition?.in_state ? '$' + cost.tuition.in_state.toLocaleString() : 'N/A'}</div>
+                            <div class="stat-label">In-State Tuition</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${cost.tuition?.out_of_state ? '$' + cost.tuition.out_of_state.toLocaleString() : 'N/A'}</div>
+                            <div class="stat-label">Out-of-State Tuition</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-users"></i> Student Body</h3>
+                    <div class="detail-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${student.size ? student.size.toLocaleString() : 'N/A'}</div>
+                            <div class="stat-label">Total Enrollment</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${demographics.white ? (demographics.white * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">White Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${demographics.black ? (demographics.black * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">Black Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${demographics.hispanic ? (demographics.hispanic * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">Hispanic Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${demographics.asian ? (demographics.asian * 100).toFixed(1) + '%' : 'N/A'}</div>
+                            <div class="stat-label">Asian Students</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${careerHTML}
+                
+                ${qualityHTML}
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-sparkles"></i> AI-Powered Match Analysis</h3>
+                    <div class="match-explanation">
+                        <p>${generateMatchExplanation(college, userData)}</p>
+                    </div>
+                </div>
+
+                ${similarHTML}
+
+                ${college.school?.school_url ? `
+                    <div style="margin-top: 2rem;">
+                        <a href="${college.school.school_url}" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Visit College Website
+                        </a>
+                    </div>
+                ` : ''}
+            `;
+
+            modal.classList.add('active');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('collegeModal').classList.remove('active');
+        };
+
+        window.saveCollege = async function(collegeId) {
+            if (!currentUser) {
+                showNotification('Please log in to save colleges', 'warning');
+                return;
+            }
+
+            try {
+                const userRef = doc(db, 'users', currentUser.uid);
+                await updateDoc(userRef, {
+                    savedColleges: arrayUnion(collegeId)
+                });
+                showNotification('College saved to your profile!', 'success');
+            } catch (error) {
+                console.error('Error saving college:', error);
+                showNotification('Error saving college. Please try again.', 'error');
+            }
+        };
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--danger-color)' : type === 'warning' ? 'var(--warning-color)' : 'var(--info-color)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                font-weight: 600;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        window.resetFilters = function() {
+            document.getElementById('filterState').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterSize').value = '';
+            document.getElementById('filterTuition').value = '';
+            loadRecommendations();
+        };
+
+        function extractSATScore(testScores) {
+            if (!testScores) return null;
+            if (typeof testScores === 'number') return testScores;
+            const match = testScores.match(/(\d{4})|(\d{3,4})/);
+            if (match) {
+                const score = parseInt(match[0]);
+                return score >= 400 && score <= 1600 ? score : null;
+            }
+            const ranges = {
+                '1600': 1600, '1500-1590': 1545, '1400-1490': 1445,
+                '1300-1390': 1345, '1200-1290': 1245, '1100-1190': 1145
+            };
+            return ranges[testScores] || null;
+        }
+
+        function extractACTScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/ACT:?\s*(\d+)/i);
+            if (match) return parseInt(match[1]);
+            const ranges = {
+                '36': 36, '34-35': 34.5, '32-33': 32.5, '30-31': 30.5
+            };
+            return ranges[testScores] || null;
+        }
+
+        function extractBudgetMax(budgetRange) {
+            const map = {
+                'under-10k': 10000, '10k-20k': 20000, '20k-30k': 30000,
+                '30k-40k': 40000, '40k-50k': 50000, '50k-60k': 60000,
+                '60k-70k': 70000, 'over-70k': 100000
+            };
+            return map[budgetRange] || null;
+        }
+
+        function userState() {
+            return userData?.location?.split(',')[1]?.trim() || '';
+        }
+
+        // Create stars
+        function createStars() {
+            const bg = document.getElementById('starryBg');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                bg.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        // === FEATURE #1: College Comparison ===
+        window.toggleComparison = function() {
+            if (comparedColleges.length === 0) {
+                showNotification('Please select colleges to compare by clicking the compare checkbox on college cards.', 'info');
+                return;
+            }
+
+            if (comparedColleges.length < 2) {
+                showNotification('Please select at least 2 colleges to compare.', 'warning');
+                return;
+            }
+
+            const modal = document.getElementById('comparisonModal');
+            const body = document.getElementById('comparisonBody');
+
+            body.innerHTML = createComparisonTable(comparedColleges);
+            modal.classList.add('active');
+        };
+
+        window.closeComparison = function() {
+            document.getElementById('comparisonModal').classList.remove('active');
+        };
+
+        function createComparisonTable(colleges) {
+            if (colleges.length < 2) return '<p>Add at least 2 colleges to compare.</p>';
+            
+            const metrics = [
+                { key: 'acceptance_rate', label: 'Acceptance Rate', format: (v) => `${(v.overall * 100).toFixed(1)}%`, lower: true },
+                { key: 'sat_scores', label: 'Avg SAT', format: (v) => v?.average?.overall || 'N/A' },
+                { key: 'tuition', label: 'Annual Tuition', format: (v) => `$${v.out_of_state?.toLocaleString()}` },
+                { key: 'size', label: 'Enrollment', format: (v) => v?.toLocaleString() },
+                { key: 'completion_rate_4yr', label: '4-Year Grad Rate', format: (v) => `${(v * 100).toFixed(1)}%` },
+                { key: 'median_earnings', label: 'Median Earnings (10yr)', format: (v) => `$${v?.toLocaleString()}` }
+            ];
+            
+            let html = '<table class="comparison-table"><thead><tr><th>Metric</th>';
+            colleges.forEach(c => html += `<th>${c.school.name}</th>`);
+            html += '</tr></thead><tbody>';
+            
+            metrics.forEach(metric => {
+                html += `<tr><td><strong>${metric.label}</strong></td>`;
+                
+                const values = colleges.map(c => {
+                    const data = c.latest || {};
+                    let val;
+                    if (metric.key === 'acceptance_rate') val = data.admissions?.admission_rate;
+                    else if (metric.key === 'sat_scores') val = data.admissions?.sat_scores;
+                    else if (metric.key === 'tuition') val = data.cost?.tuition;
+                    else if (metric.key === 'size') val = data.student?.size;
+                    else if (metric.key === 'completion_rate_4yr') val = data.completion?.completion_rate_4yr_150nt;
+                    else if (metric.key === 'median_earnings') val = data.earnings?.['10_yrs_after_entry']?.median;
+                    
+                    return { college: c, value: val, formatted: val ? metric.format(val) : 'N/A' };
+                });
+                
+                // Find best value
+                const numericValues = values.filter(v => v.value).map(v => {
+                    if (metric.key === 'sat_scores') return v.value.average?.overall || 0;
+                    if (metric.key === 'tuition') return v.value.out_of_state || 0;
+                    if (metric.key === 'acceptance_rate') return v.value.overall || 0;
+                    return v.value || 0;
+                });
+                
+                const best = metric.lower ? Math.min(...numericValues) : Math.max(...numericValues);
+                
+                values.forEach(v => {
+                    const isBest = v.value && (
+                        (metric.key === 'sat_scores' && v.value.average?.overall === best) ||
+                        (metric.key === 'tuition' && v.value.out_of_state === best) ||
+                        (metric.key === 'acceptance_rate' && v.value.overall === best) ||
+                        (v.value === best)
+                    );
+                    html += `<td ${isBest ? 'class="comparison-winner"' : ''}>${v.formatted}</td>`;
+                });
+                
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            return html;
+        }
+
+        window.addToComparison = function(collegeId) {
+            const college = allColleges.find(c => c.id === collegeId);
+            if (!college) return;
+
+            if (comparedColleges.find(c => c.id === collegeId)) {
+                comparedColleges = comparedColleges.filter(c => c.id !== collegeId);
+                showNotification(`${college.school.name} removed from comparison`, 'info');
+            } else {
+                if (comparedColleges.length >= 4) {
+                    showNotification('You can compare up to 4 colleges at a time.', 'warning');
+                    // Uncheck the checkbox
+                    const checkbox = document.querySelector(`input[data-college-id="${collegeId}"]`);
+                    if (checkbox) checkbox.checked = false;
+                    return;
+                }
+                comparedColleges.push(college);
+                showNotification(`${college.school.name} added to comparison`, 'success');
+            }
+
+            updateCompareButton();
+
+            // Update checkbox state
+            const checkbox = document.querySelector(`input[data-college-id="${collegeId}"]`);
+            if (checkbox) checkbox.checked = comparedColleges.find(c => c.id === collegeId);
+        };
+
+        function updateCompareButton() {
+            const btn = document.getElementById('compareBtn');
+            const count = document.getElementById('compareCount');
+            
+            if (comparedColleges.length > 0) {
+                btn.style.display = 'flex';
+                count.textContent = comparedColleges.length;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        // === FEATURE #3: Save to Lists ===
+        window.addToList = async function(collegeId, listType) {
+            const college = allColleges.find(c => c.id === collegeId);
+            if (!college) {
+                showNotification('College not found', 'error');
+                return;
+            }
+
+            if (!currentUser) {
+                showNotification('Please log in to save colleges to lists', 'warning');
+                return;
+            }
+
+            // Remove from other lists
+            Object.keys(myLists).forEach(key => {
+                myLists[key] = myLists[key].filter(c => c.id !== collegeId);
+            });
+
+            // Add to specified list
+            if (!myLists[listType].find(c => c.id === collegeId)) {
+                myLists[listType].push(college);
+            }
+
+            // Save to Firebase
+            try {
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    collegeLists: myLists
+                });
+
+                // Close dropdown
+                document.querySelectorAll('.list-dropdown').forEach(d => d.style.display = 'none');
+
+                showNotification(`${college.school.name} added to ${listType} list!`, 'success');
+            } catch (error) {
+                console.error('Error saving list:', error);
+                showNotification('Error saving to list. Please try again.', 'error');
+            }
+
+            updateMyLists();
+        };
+
+        function updateMyLists() {
+            ['safety', 'match', 'reach'].forEach(listType => {
+                const container = document.getElementById(`${listType}List`);
+                const count = document.getElementById(`${listType}Count`);
+                const colleges = myLists[listType];
+                
+                count.textContent = colleges.length;
+                
+                if (colleges.length === 0) {
+                    container.innerHTML = '<div class="empty-list">No colleges yet</div>';
+                    return;
+                }
+                
+                container.innerHTML = colleges.map(c => `
+                    <div class="college-list-item">
+                        <span onclick="viewCollegeDetails('${c.id}')" style="cursor: pointer; flex: 1;">${c.school.name}</span>
+                        <button onclick="removeFromList('${c.id}', '${listType}')" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            });
+        }
+
+        window.removeFromList = async function(collegeId, listType) {
+            myLists[listType] = myLists[listType].filter(c => c.id !== collegeId);
+            
+            try {
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    collegeLists: myLists
+                });
+            } catch (error) {
+                console.error('Error removing from list:', error);
+            }
+            
+            updateMyLists();
+        };
+
+        window.toggleListsPanel = function() {
+            const panel = document.getElementById('myListsPanel');
+            panel.classList.toggle('show');
+        };
+
+        // === FEATURE #8: Similar Colleges ===
+        function findSimilarColleges(college) {
+            const schoolData = college.latest || {};
+            const targetAcceptance = schoolData.admissions?.admission_rate?.overall || 0.5;
+            const targetSAT = schoolData.admissions?.sat_scores?.average?.overall || 1200;
+            const targetSize = schoolData.student?.size || 10000;
+            
+            return allColleges
+                .filter(c => c.id !== college.id)
+                .map(c => {
+                    const data = c.latest || {};
+                    const acceptance = data.admissions?.admission_rate?.overall || 0.5;
+                    const sat = data.admissions?.sat_scores?.average?.overall || 1200;
+                    const size = data.student?.size || 10000;
+                    
+                    const acceptanceDiff = Math.abs(acceptance - targetAcceptance);
+                    const satDiff = Math.abs(sat - targetSAT) / 1600;
+                    const sizeDiff = Math.abs(Math.log(size) - Math.log(targetSize));
+                    
+                    const similarity = 100 - (acceptanceDiff * 30 + satDiff * 40 + sizeDiff * 10);
+                    
+                    return { college: c, similarity };
+                })
+                .sort((a, b) => b.similarity - a.similarity)
+                .slice(0, 5);
+        }
+
+        // === FEATURE #10: Financial Aid Estimator ===
+        function estimateFinancialAid(college, userProfile) {
+            const tuition = college.latest?.cost?.tuition?.out_of_state || 50000;
+            const questionnaire = userProfile?.questionnaire || {};
+            
+            let estimatedAid = 0;
+            
+            // Merit-based aid
+            const userGPA = parseFloat(questionnaire.currentGPA?.split('-')[0] || questionnaire.unweightedGPA || '3.0');
+            if (userGPA >= 3.8) estimatedAid += tuition * 0.4;
+            else if (userGPA >= 3.5) estimatedAid += tuition * 0.25;
+            else if (userGPA >= 3.0) estimatedAid += tuition * 0.15;
+            
+            // Need-based aid
+            if (questionnaire.financialAid?.includes('need-aid')) {
+                estimatedAid += tuition * 0.3;
+            }
+            
+            // First-generation bonus
+            if (questionnaire.specialConsiderations?.includes('first-generation')) {
+                estimatedAid += 5000;
+            }
+            
+            const netPrice = Math.max(tuition - estimatedAid, tuition * 0.2);
+            
+            return {
+                sticker: tuition,
+                estimatedAid: estimatedAid,
+                netPrice: netPrice,
+                fourYearCost: netPrice * 4
+            };
+        }
+
+        // === FEATURE #14: College-Specific AI Chat ===
+        window.openCollegeChat = function(collegeId) {
+            const college = allColleges.find(c => c.id === collegeId);
+            if (!college) return;
+            
+            currentCollegeChat = college;
+            
+            // Remove existing widget if any
+            const existing = document.getElementById('collegeChatWidget');
+            if (existing) existing.remove();
+            
+            const widget = document.createElement('div');
+            widget.className = 'college-chat-widget active';
+            widget.id = 'collegeChatWidget';
+            widget.innerHTML = `
+                <div class="chat-widget-header">
+                    <h3>${college.school.name} Q&A</h3>
+                    <button onclick="closeCollegeChat()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
+                </div>
+                <div class="chat-widget-messages" id="collegeChatMessages">
+                    <div class="chat-bubble ai">
+                        Hi! I'm here to answer questions about ${college.school.name}. Ask me about admissions, programs, campus life, or anything else!
+                    </div>
+                </div>
+                <div class="chat-widget-input">
+                    <input type="text" id="collegeChatInput" placeholder="Ask about this college..." onkeypress="if(event.key==='Enter') sendCollegeChat()">
+                    <button onclick="sendCollegeChat()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            `;
+            
+            document.body.appendChild(widget);
+        };
+
+        window.closeCollegeChat = function() {
+            const widget = document.getElementById('collegeChatWidget');
+            if (widget) widget.remove();
+            currentCollegeChat = null;
+        };
+
+        window.sendCollegeChat = async function() {
+            const input = document.getElementById('collegeChatInput');
+            const message = input.value.trim();
+            if (!message || !currentCollegeChat) return;
+            
+            const messagesContainer = document.getElementById('collegeChatMessages');
+            
+            // Add user message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user';
+            userBubble.textContent = message;
+            messagesContainer.appendChild(userBubble);
+            
+            input.value = '';
+            input.disabled = true;
+            
+            // Add typing indicator
+            const typingBubble = document.createElement('div');
+            typingBubble.className = 'chat-bubble ai';
+            typingBubble.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Thinking...';
+            messagesContainer.appendChild(typingBubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            try {
+                const collegeData = currentCollegeChat.latest || {};
+                const context = {
+                    collegeName: currentCollegeChat.school.name,
+                    location: `${currentCollegeChat.school.city}, ${currentCollegeChat.school.state}`,
+                    acceptanceRate: collegeData.admissions?.admission_rate?.overall,
+                    avgSAT: collegeData.admissions?.sat_scores?.average?.overall,
+                    tuition: collegeData.cost?.tuition?.out_of_state,
+                    enrollment: collegeData.student?.size,
+                    gradRate: collegeData.completion?.completion_rate_4yr_150nt,
+                    earnings: collegeData.earnings?.['10_yrs_after_entry']?.median
+                };
+                
+                // Simulate AI response (replace with actual API call when backend is ready)
+                setTimeout(() => {
+                    typingBubble.remove();
+
+                    const aiBubble = document.createElement('div');
+                    aiBubble.className = 'chat-bubble ai';
+
+                    // Generate contextual response based on college data
+                    let response = '';
+                    if (message.toLowerCase().includes('admission') || message.toLowerCase().includes('accept')) {
+                        response = `${context.collegeName} has an acceptance rate of ${context.acceptanceRate ? (context.acceptanceRate * 100).toFixed(1) + '%' : 'not available'}. The average SAT score is ${context.avgSAT || 'not available'}. Based on your profile, you have a competitive chance for admission.`;
+                    } else if (message.toLowerCase().includes('tuition') || message.toLowerCase().includes('cost') || message.toLowerCase().includes('price')) {
+                        response = `The annual tuition at ${context.collegeName} is approximately $${context.tuition?.toLocaleString() || 'not available'}. Financial aid opportunities may be available based on your profile.`;
+                    } else if (message.toLowerCase().includes('campus') || message.toLowerCase().includes('life') || message.toLowerCase().includes('student')) {
+                        response = `${context.collegeName} has approximately ${context.enrollment ? context.enrollment.toLocaleString() : 'many'} students. The campus is located in ${context.location}. The graduation rate is ${context.gradRate ? (context.gradRate * 100).toFixed(1) + '%' : 'not available'}.`;
+                    } else if (message.toLowerCase().includes('career') || message.toLowerCase().includes('job') || message.toLowerCase().includes('salary')) {
+                        response = `Graduates from ${context.collegeName} earn a median salary of $${context.earnings?.toLocaleString() || 'not available'} ten years after graduation, which is a strong indicator of career outcomes.`;
+                    } else {
+                        response = `That's a great question about ${context.collegeName}! Here's what I can tell you: Located in ${context.location}, this institution serves ${context.enrollment ? context.enrollment.toLocaleString() : 'many'} students. For more detailed information, I recommend visiting their official website or contacting admissions directly.`;
+                    }
+
+                    aiBubble.textContent = response;
+                    messagesContainer.appendChild(aiBubble);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1000);
+            } catch (error) {
+                typingBubble.textContent = 'Sorry, I had trouble answering that. Please try again.';
+                console.error('Chat error:', error);
+            }
+            
+            input.disabled = false;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+
+        // === FEATURE #18: Career Outcomes ===
+        function getCareerOutcomes(college) {
+            const earnings = college.latest?.earnings?.['10_yrs_after_entry']?.median;
+            const gradRate = college.latest?.completion?.completion_rate_4yr_150nt;
+            
+            return {
+                medianEarnings: earnings,
+                graduationRate: gradRate,
+                roi: earnings && gradRate ? (earnings * 0.8) / (college.latest?.cost?.tuition?.out_of_state || 1) : null
+            };
+        }
+
+        // === FEATURE #19: Quality of Life ===
+        function getQualityOfLife(college) {
+            const demographics = college.latest?.student?.demographics?.race_ethnicity || {};
+            const location = college.school?.locale;
+            
+            // Calculate diversity index
+            const diversityScore = Object.values(demographics).reduce((acc, val) => {
+                return acc + (val * (1 - val));
+            }, 0);
+            
+            return {
+                diversityScore: diversityScore * 100,
+                setting: location,
+                campusType: college.school?.ownership === 1 ? 'Public' : 'Private'
+            };
+        }
+
+        // === Helper Functions ===
+        window.toggleListDropdown = function(event, collegeId) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(`listDropdown-${collegeId}`);
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.list-dropdown').forEach(d => {
+                if (d.id !== `listDropdown-${collegeId}`) {
+                    d.style.display = 'none';
+                }
+            });
+            
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.list-dropdown').forEach(d => {
+                d.style.display = 'none';
+            });
+        });
+
+        async function loadSavedLists() {
+            if (!currentUser) return;
+            
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists() && userDoc.data().collegeLists) {
+                    myLists = userDoc.data().collegeLists;
+                    updateMyLists();
+                }
+            } catch (error) {
+                console.error('Error loading saved lists:', error);
+            }
+        }
+    </script>
+</body>
+</html>
