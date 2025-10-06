@@ -1231,7 +1231,7 @@
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -1661,19 +1661,31 @@
             }
         }
 
+        // Helper function to extract category scores from AI feedback
+        function extractCategoryScore(text, keyword) {
+            const regex = new RegExp(`${keyword}[^\\d]*(\\d+)`, 'i');
+            const match = text.match(regex);
+            return match ? parseInt(match[1]) : null;
+        }
+
         // Display AI analysis results
         function displayEssayAnalysis(analysisText) {
-            // Parse the analysis (this would be more sophisticated in production)
-            const score = Math.floor(Math.random() * 30) + 70; // 70-100 range
             const scoreCircle = document.getElementById('scoreCircle');
             const scoreNumber = document.getElementById('scoreNumber');
             const scoreTitle = document.getElementById('scoreTitle');
             const scoreDescription = document.getElementById('scoreDescription');
             const feedbackCategories = document.getElementById('feedbackCategories');
-            
+
+            // Try to extract score from AI response
+            let score = 85; // Default
+            const scoreMatch = analysisText.match(/score[:\s]*(\d+)/i) || analysisText.match(/(\d+)\s*(?:out of 100|\/100)/i);
+            if (scoreMatch) {
+                score = parseInt(scoreMatch[1]);
+            }
+
             // Update overall score
             scoreNumber.textContent = score;
-            
+
             if (score >= 90) {
                 scoreCircle.className = 'score-circle score-excellent';
                 scoreTitle.textContent = 'Excellent Essay!';
@@ -1691,12 +1703,12 @@
                 scoreTitle.textContent = 'Needs Development';
                 scoreDescription.textContent = 'Your essay would benefit from significant revision and development.';
             }
-            
-            // Create detailed feedback categories
+
+            // Parse AI feedback for categories
             const categories = [
                 {
                     title: 'Content & Theme',
-                    score: Math.floor(Math.random() * 20) + 80,
+                    score: extractCategoryScore(analysisText, 'content|theme') || score,
                     icon: 'fas fa-lightbulb',
                     feedback: 'Your essay effectively addresses the prompt with clear themes and personal insights.'
                 },

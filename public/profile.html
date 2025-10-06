@@ -76,10 +76,11 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Navigation */
-        .navbar {
+        /* Navigation Bar */
+        .cc-navbar {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -90,20 +91,24 @@
             z-index: 1000;
             transition: all 0.3s ease;
             border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        [data-theme="dark"] .navbar {
+        [data-theme="dark"] .cc-navbar {
             background: rgba(13, 17, 23, 0.95);
             border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .logo-section {
+        .cc-logo-section {
             display: flex;
             align-items: center;
             gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        .logo {
+        .cc-logo {
             width: 50px;
             height: 50px;
             border-radius: 12px;
@@ -111,87 +116,47 @@
             transition: transform 0.3s ease;
         }
 
-        .logo:hover {
+        .cc-logo:hover {
             transform: scale(1.1) rotate(5deg);
         }
 
-        .logo img {
+        .cc-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .brand-text h1, .brand-text h2 {
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1 {
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-primary);
             line-height: 1;
+            margin: 0;
         }
 
-        .nav-links {
+        .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
             display: flex;
-            list-style: none;
-            gap: 2rem;
             align-items: center;
+            gap: 1rem;
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-            background: var(--secondary-bg);
-            transform: translateY(-2px);
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--primary-bg);
-            box-shadow: var(--shadow);
-            border-radius: var(--border-radius);
-            padding: 0.5rem 0;
-            min-width: 160px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-        }
-
-        .dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-
-        .dropdown-content a:hover {
-            background: var(--secondary-bg);
-            transform: translateX(5px);
-        }
-
-        .theme-toggle {
+        /* Theme Toggle Button */
+        .cc-theme-toggle {
             background: var(--gradient);
             border: none;
             border-radius: 50%;
@@ -206,25 +171,266 @@
             font-size: 1.2rem;
         }
 
-        .theme-toggle:hover {
+        .cc-theme-toggle:hover {
             transform: scale(1.1) rotate(180deg);
             box-shadow: var(--shadow);
         }
 
-        /* User Avatar in Navbar */
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
+        /* Profile Dropdown Container */
+        .cc-profile-dropdown {
+            position: relative;
         }
 
-        .user-avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.4);
+        /* Profile Button */
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            position: relative;
+        }
+
+        .cc-profile-button:hover .cc-user-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-profile-button:active .cc-user-avatar {
+            transform: scale(0.95);
+        }
+
+        /* User Avatar */
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        [data-theme="dark"] .cc-user-avatar {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
+        }
+
+        /* Profile Text - Hidden completely */
+        .cc-profile-text {
+            display: none !important;
+        }
+
+        /* Dropdown Chevron - Hidden */
+        .cc-dropdown-chevron {
+            display: none !important;
+        }
+
+        /* Dropdown Menu */
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transform-origin: top right;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            backdrop-filter: blur(20px);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Add arrow pointer to dropdown */
+        .cc-dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu::before {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
+        /* Welcome Header in Dropdown */
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .cc-dropdown-header {
+            border-bottom-color: rgba(187, 134, 252, 0.15);
+            background: rgba(33, 38, 45, 0.6);
+        }
+
+        .cc-dropdown-welcome {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 0.5rem;
+        }
+
+        /* Dropdown Links */
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cc-dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--gradient);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-link:hover::before {
+            width: 4px;
+        }
+
+        [data-theme="dark"] .cc-dropdown-link:hover {
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        .cc-dropdown-link-icon {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover .cc-dropdown-link-icon {
+            transform: scale(1.15);
+        }
+
+        /* Logout Button */
+        .cc-dropdown-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .cc-dropdown-divider {
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+            font-weight: 700 !important;
+        }
+
+        .cc-logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .cc-logout-link:hover::before {
+            background: var(--danger-color) !important;
+        }
+
+        /* Loading State */
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: cc-spin 1s linear infinite;
+        }
+
+        @keyframes cc-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Active state indicator */
+        .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
         }
 
         /* Main Profile Container */
@@ -818,46 +1024,57 @@
     <div class="starry-bg" id="starryBg"></div>
 
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo-section">
-            <div class="logo">
-                <a href="index.html">
-                    <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
-                </a>
+    <nav class="cc-navbar">
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
-            <div class="brand-text">
+            <div class="cc-brand-text">
                 <h1>College</h1>
                 <h2>Climb</h2>
             </div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
-                    <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
-                    <span id="navAccountText">Account</span>
-                </a>
-                <div class="dropdown-content" id="authDropdown">
-                    <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
-                        Welcome, <span id="dropdownDisplayName"></span>!
+        </a>
+        <div class="cc-nav-right">
+            <button class="cc-theme-toggle" id="themeToggle">☀️</button>
+            <div class="cc-profile-dropdown" id="profileDropdown">
+                <button class="cc-profile-button" id="profileButton">
+                    <div class="cc-profile-loading" id="profileLoading"></div>
+                    <img id="navUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                </button>
+                <div class="cc-dropdown-menu" id="dropdownMenu">
+                    <div class="cc-dropdown-header" id="dropdownHeader">
+                        <div class="cc-dropdown-welcome">Welcome Back</div>
+                        <div class="cc-dropdown-name" id="dropdownName">Loading...</div>
+                        <div class="cc-dropdown-email" id="dropdownEmail"></div>
                     </div>
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
-                    </div>
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="myapp.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📚</span>
+                        <span>My Applications</span>
+                    </a>
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="essaycoach.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essay Coach</span>
+                    </a>
+                    <a href="settings.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                    <div class="cc-dropdown-divider"></div>
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="logoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
                 </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
+            </div>
+        </div>
     </nav>
 
     <!-- Main Profile Container -->
@@ -971,9 +1188,23 @@
             </div>
         </div>
 
+        <!-- Current Questionnaire Data Display -->
+        <div class="profile-section questionnaire-full fade-in-up" id="currentQuestionnaireDisplay" style="display: none;">
+            <h2 class="section-title">📋 Your College Profile Summary</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Here's a summary of your college preferences and information. You can update this data in the section below.
+            </p>
+            <div id="questionnaireDataDisplay" class="questionnaire-grid">
+                <!-- Data will be populated by JavaScript -->
+            </div>
+        </div>
+
         <!-- Questionnaire Section -->
         <div class="profile-section questionnaire-full fade-in-up">
-            <h2 class="section-title">📋 Complete College Questionnaire</h2>
+            <h2 class="section-title">📋 Update College Questionnaire</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Fill out or update your college preferences to get personalized recommendations and AI assistance.
+            </p>
             <form id="questionnaireForm">
                 <div class="questionnaire-grid">
                     <!-- Basic Information -->
@@ -1475,42 +1706,66 @@
 
         // Update navbar UI
         function updateAuthUI(user) {
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
             const navUserAvatar = document.getElementById('navUserAvatar');
-            const navAccountText = document.getElementById('navAccountText');
-            const dropdownWelcome = document.getElementById('dropdownWelcome');
-            const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+            const profileLoading = document.getElementById('profileLoading');
+            const dropdownName = document.getElementById('dropdownName');
+            const dropdownEmail = document.getElementById('dropdownEmail');
 
             if (user) {
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
+                // Hide loading spinner
+                if (profileLoading) profileLoading.style.display = 'none';
 
-                // Show avatar if available, otherwise show "Account"
-                if (currentUserData && currentUserData.profilePhotoURL) {
-                    navUserAvatar.src = currentUserData.profilePhotoURL;
+                // Show avatar
+                if (navUserAvatar) {
+                    if (currentUserData && currentUserData.profilePhotoURL) {
+                        navUserAvatar.src = currentUserData.profilePhotoURL;
+                    }
                     navUserAvatar.style.display = 'block';
-                    navAccountText.style.display = 'none';
-                } else {
-                    navUserAvatar.style.display = 'none';
-                    navAccountText.style.display = 'inline';
                 }
 
-                // Always use the Firestore name for display
-                if (dropdownWelcome && dropdownDisplayName) {
-                    dropdownDisplayName.textContent =
-                        (currentUserData && currentUserData.name)
-                            ? currentUserData.name
-                            : '';
-                    dropdownWelcome.style.display = 'block';
+                // Update dropdown header
+                if (dropdownName) {
+                    dropdownName.textContent = (currentUserData && currentUserData.name)
+                        ? currentUserData.name
+                        : user.displayName || user.email.split('@')[0];
+                }
+                if (dropdownEmail) {
+                    dropdownEmail.textContent = user.email;
                 }
             } else {
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
-                navUserAvatar.style.display = 'none';
-                navAccountText.style.display = 'inline';
-                if (dropdownWelcome) dropdownWelcome.style.display = 'none';
+                // Show loading
+                if (profileLoading) profileLoading.style.display = 'block';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
             }
+        }
+
+        // Dropdown toggle functionality
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        if (profileButton && dropdownMenu) {
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+                profileDropdown.classList.toggle('open');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!profileDropdown.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                    profileDropdown.classList.remove('open');
+                }
+            });
+
+            // Close dropdown when clicking a link
+            dropdownMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    dropdownMenu.classList.remove('show');
+                    profileDropdown.classList.remove('open');
+                });
+            });
         }
 
         // Load user profile data
@@ -1735,6 +1990,140 @@
             }
 
             console.log('📋 Questionnaire population completed');
+
+            // Also display the questionnaire data in read-only view
+            displayQuestionnaireData(questionnaire);
+        }
+
+        // Display questionnaire data in read-only format
+        function displayQuestionnaireData(questionnaire) {
+            const displayContainer = document.getElementById('questionnaireDataDisplay');
+            const displaySection = document.getElementById('currentQuestionnaireDisplay');
+
+            if (!questionnaire || Object.keys(questionnaire).length === 0) {
+                if (displaySection) displaySection.style.display = 'none';
+                return;
+            }
+
+            if (displaySection) displaySection.style.display = 'block';
+            if (!displayContainer) return;
+
+            const data = [];
+
+            // Basic Info
+            if (questionnaire.currentGradeLevel) {
+                data.push({ label: 'Current Grade', value: questionnaire.currentGradeLevel });
+            }
+            if (questionnaire.expectedGraduation || questionnaire.graduationYear) {
+                data.push({ label: 'Expected Graduation', value: questionnaire.expectedGraduation || questionnaire.graduationYear });
+            }
+            if (questionnaire.applicationTimeline) {
+                data.push({ label: 'Application Timeline', value: questionnaire.applicationTimeline });
+            }
+
+            // Academic Performance
+            if (questionnaire.currentGPA || questionnaire.unweightedGPA) {
+                data.push({ label: 'GPA', value: questionnaire.currentGPA || questionnaire.unweightedGPA });
+            }
+            if (questionnaire.weightedGPA) {
+                data.push({ label: 'Weighted GPA', value: questionnaire.weightedGPA });
+            }
+            if (questionnaire.testScores) {
+                data.push({ label: 'Test Scores', value: questionnaire.testScores });
+            }
+            if (questionnaire.satScore) {
+                data.push({ label: 'SAT Score', value: questionnaire.satScore });
+            }
+            if (questionnaire.actScore) {
+                data.push({ label: 'ACT Score', value: questionnaire.actScore });
+            }
+
+            // College Preferences
+            if (questionnaire.collegeSize) {
+                data.push({ label: 'Preferred College Size', value: questionnaire.collegeSize });
+            }
+            if (questionnaire.locationPreference) {
+                data.push({ label: 'Location Preference', value: questionnaire.locationPreference });
+            }
+            if (questionnaire.campusSetting) {
+                data.push({ label: 'Campus Setting', value: questionnaire.campusSetting });
+            }
+            if (questionnaire.budgetRange) {
+                data.push({ label: 'Budget Range', value: questionnaire.budgetRange });
+            }
+
+            // Interests
+            if (questionnaire.intendedMajor) {
+                data.push({ label: 'Intended Major', value: questionnaire.intendedMajor });
+            }
+            if (questionnaire.targetSchools && questionnaire.targetSchools.length > 0) {
+                data.push({ label: 'Target Schools', value: questionnaire.targetSchools.join(', ') });
+            }
+
+            // Checkbox arrays
+            if (questionnaire.collegeTypes && questionnaire.collegeTypes.length > 0) {
+                data.push({ label: 'College Types', value: questionnaire.collegeTypes.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+            if (questionnaire.academicInterests && questionnaire.academicInterests.length > 0) {
+                data.push({ label: 'Academic Interests', value: questionnaire.academicInterests.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+            if (questionnaire.careerGoals && questionnaire.careerGoals.length > 0) {
+                data.push({ label: 'Career Goals', value: questionnaire.careerGoals.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+            if (questionnaire.extracurriculars && questionnaire.extracurriculars.length > 0) {
+                data.push({ label: 'Extracurriculars', value: questionnaire.extracurriculars.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+            if (questionnaire.financialAid && questionnaire.financialAid.length > 0) {
+                data.push({ label: 'Financial Aid', value: questionnaire.financialAid.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+            if (questionnaire.specialConsiderations && questionnaire.specialConsiderations.length > 0) {
+                data.push({ label: 'Special Considerations', value: questionnaire.specialConsiderations.map(v => v.replace(/-/g, ' ')).join(', ') });
+            }
+
+            // Text areas
+            if (questionnaire.collegeWorries) {
+                data.push({ label: 'College Worries', value: questionnaire.collegeWorries, isLong: true });
+            }
+            if (questionnaire.additionalInfo) {
+                data.push({ label: 'Additional Info', value: questionnaire.additionalInfo, isLong: true });
+            }
+
+            // Application status
+            if (questionnaire.applicationStarted) {
+                data.push({ label: 'Application Started', value: questionnaire.applicationStarted });
+            }
+            if (questionnaire.essayStarted) {
+                data.push({ label: 'Essay Started', value: questionnaire.essayStarted });
+            }
+            if (questionnaire.resumeStarted) {
+                data.push({ label: 'Resume Started', value: questionnaire.resumeStarted });
+            }
+
+            // Build HTML
+            let html = '';
+            data.forEach(item => {
+                if (item.isLong) {
+                    html += `
+                        <div class="question-group" style="grid-column: 1 / -1;">
+                            <div class="form-label">${item.label}</div>
+                            <div style="padding: 1rem; background: var(--primary-bg); border-radius: 8px; white-space: pre-wrap; color: var(--text-primary);">
+                                ${item.value}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="question-group">
+                            <div class="form-label">${item.label}</div>
+                            <div style="padding: 0.75rem; background: var(--primary-bg); border-radius: 8px; color: var(--text-primary); text-transform: capitalize;">
+                                ${item.value}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            displayContainer.innerHTML = html;
         }
 
         // Update the questionnaire form handler to merge with existing data
@@ -1787,9 +2176,15 @@
 
                 // Update currentUserData for immediate use
                 if (!currentUserData.questionnaire) currentUserData.questionnaire = {};
-                Object.assign(currentUserData.questionnaire, questionnaireData);
+                Object.assign(currentUserData.questionnaire, mergedQuestionnaire);
+
+                // Refresh the display
+                displayQuestionnaireData(mergedQuestionnaire);
 
                 showMessage('Questionnaire updated successfully!', 'success');
+
+                // Scroll to the top to show the updated summary
+                document.getElementById('currentQuestionnaireDisplay').scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 console.error('❌ Error updating questionnaire:', error);
                 showMessage('Failed to update questionnaire. Please try again.', 'error');
@@ -1964,6 +2359,62 @@
                 showMessage('Failed to delete account. Please check your password.', 'error');
             }
         };
+
+        // Personal Info Form Handler
+        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const personalData = {
+                    name: document.getElementById('displayName').value,
+                    phone: document.getElementById('phoneNumber').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    location: document.getElementById('location').value,
+                    personalInfoUpdated: new Date()
+                };
+
+                await updateDoc(doc(db, 'users', currentUser.uid), personalData);
+
+                // Update currentUserData
+                Object.assign(currentUserData, personalData);
+
+                // Update profile name display
+                document.getElementById('profileName').textContent = personalData.name;
+
+                // Update navbar
+                updateAuthUI(currentUser);
+
+                showMessage('Personal information updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error updating personal info:', error);
+                showMessage('Failed to update personal information. Please try again.', 'error');
+            }
+        });
+
+        // Academic Info Form Handler
+        document.getElementById('academicInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            try {
+                const academicData = {
+                    currentGrade: document.getElementById('currentGrade').value,
+                    currentSchool: document.getElementById('currentSchool').value,
+                    gpa: document.getElementById('gpa').value,
+                    graduationYear: document.getElementById('graduationYear').value,
+                    academicInfoUpdated: new Date()
+                };
+
+                await updateDoc(doc(db, 'users', currentUser.uid), academicData);
+
+                // Update currentUserData
+                Object.assign(currentUserData, academicData);
+
+                showMessage('Academic information updated successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Error updating academic info:', error);
+                showMessage('Failed to update academic information. Please try again.', 'error');
+            }
+        });
 
         // Logout functionality
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
