@@ -1,0 +1,1572 @@
+<div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <strong>AI Coach:</strong> Hi! I'm here to help with your applications. I can answer questions about deadlines, essays, recommendations, and strategy. What would you like to know?
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your applications..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+            <button class="btn btn-primary" onclick="sendChatMessage()" id="chatSend" style="flex: 0;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div id="notificationContent"></div>
+    </div>
+
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, serverTimestamp, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.userData = null;
+        window.applications = [];
+
+        // School database
+        const schoolDatabase = {
+            'Harvard University': { acceptance_rate: 3.4, avg_gpa: 4.18, avg_sat: 1520, location: 'Cambridge, MA', deadline: '2025-01-01', applicationFee: 75 },
+            'Stanford University': { acceptance_rate: 3.9, avg_gpa: 4.16, avg_sat: 1505, location: 'Stanford, CA', deadline: '2025-01-01', applicationFee: 90 },
+            'MIT': { acceptance_rate: 6.7, avg_gpa: 4.17, avg_sat: 1535, location: 'Cambridge, MA', deadline: '2025-01-01', applicationFee: 75 },
+            'UC Berkeley': { acceptance_rate: 14.5, avg_gpa: 4.0, avg_sat: 1415, location: 'Berkeley, CA', deadline: '2024-11-30', applicationFee: 70 },
+            'Yale University': { acceptance_rate: 4.6, avg_gpa: 4.14, avg_sat: 1515, location: 'New Haven, CT', deadline: '2025-01-01', applicationFee: 80 },
+            'Princeton University': { acceptance_rate: 5.8, avg_gpa: 4.15, avg_sat: 1510, location: 'Princeton, NJ', deadline: '2025-01-01', applicationFee: 75 },
+            'Columbia University': { acceptance_rate: 6.1, avg_gpa: 4.13, avg_sat: 1505, location: 'New York, NY', deadline: '2025-01-01', applicationFee: 85 },
+            'University of Pennsylvania': { acceptance_rate: 8.4, avg_gpa: 4.10, avg_sat: 1490, location: 'Philadelphia, PA', deadline: '2025-01-01', applicationFee: 75 },
+            'Duke University': { acceptance_rate: 8.9, avg_gpa: 4.13, avg_sat: 1505, location: 'Durham, NC', deadline: '2025-01-02', applicationFee: 85 },
+            'Northwestern University': { acceptance_rate: 9.3, avg_gpa: 4.09, avg_sat: 1480, location: 'Evanston, IL', deadline: '2025-01-03', applicationFee: 75 }
+        };
+
+        // Initialize
+        function initNavbar() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', theme);
+            updateTheme(theme);
+            
+            document.getElementById('ccThemeToggle')?.addEventListener('click', toggleTheme);
+            document.getElementById('ccLogoutBtn')?.addEventListener('click', handleLogout);
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.cc-profile-dropdown')) {
+                    document.getElementById('ccDropdownMenu')?.classList.remove('show');
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateTheme(newTheme);
+        }
+
+        function updateTheme(theme) {
+            const btn = document.getElementById('ccThemeToggle');
+            const logo = document.getElementById('ccNavbarLogo');
+            if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+            if (logo) logo.src = `https://via.placeholder.com/50/${theme === 'dark' ? 'a07bcc' : '2a357a'}/ffffff?text=CC`;
+        }
+
+        window.toggleDropdown = function() {
+            document.getElementById('ccDropdownMenu')?.classList.toggle('show');
+        };
+
+        async function handleLogout(e) {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUser = user;
+                await loadUserData(user);
+                await initApplicationsPage();
+            } else {
+                // Demo mode for testing
+                console.log('Demo mode - showing sample data');
+                window.currentUser = { uid: 'demo', email: 'demo@collegeclimb.com' };
+                window.userData = {
+                    name: 'Demo Student',
+                    email: 'demo@collegeclimb.com',
+                    questionnaire: {
+                        unweightedGPA: '3.9',
+                        testScores: 'SAT: 1450',
+                        intendedMajor: 'Computer Science',
+                        targetSchools: ['Stanford University', 'MIT', 'UC Berkeley', 'Duke University'],
+                        financialAid: ['need-aid']
+                    }
+                };
+                updateNavbarUI(window.currentUser);
+                await initApplicationsPage();
+            }
+        });
+
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    updateNavbarUI(user);
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        function updateNavbarUI(user) {
+            const name = document.getElementById('ccDropdownName');
+            const email = document.getElementById('ccDropdownEmail');
+            if (name) name.textContent = window.userData?.name || user.email?.split('@')[0] || 'Student';
+            if (email) email.textContent = user.email || 'demo@collegeclimb.com';
+        }
+
+        // Initialize page
+        async function initApplicationsPage() {
+            console.log('🚀 Initializing Applications Page');
+            await loadApplications();
+            generateAIInsights();
+            setupFilters();
+            setupRealtimeSync();
+        }
+
+        // Load applications
+        async function loadApplications() {
+            try {
+                const userId = window.currentUser.uid;
+                
+                if (userId === 'demo') {
+                    // Demo data
+                    window.applications = [
+                        {
+                            id: '1',
+                            schoolName: 'Stanford University',
+                            deadline: '2025-01-01',
+                            status: 'in-progress',
+                            progress: 65,
+                            essayStatus: 'in-progress',
+                            recommendationStatus: { required: 2, submitted: 1 },
+                            applicationFee: 90,
+                            transcriptSubmitted: true,
+                            testScoresSubmitted: true
+                        },
+                        {
+                            id: '2',
+                            schoolName: 'MIT',
+                            deadline: '2025-01-01',
+                            status: 'in-progress',
+                            progress: 45,
+                            essayStatus: 'not-started',
+                            recommendationStatus: { required: 2, submitted: 0 },
+                            applicationFee: 75,
+                            transcriptSubmitted: false,
+                            testScoresSubmitted: true
+                        },
+                        {
+                            id: '3',
+                            schoolName: 'UC Berkeley',
+                            deadline: '2024-11-30',
+                            status: 'submitted',
+                            progress: 100,
+                            essayStatus: 'complete',
+                            recommendationStatus: { required: 2, submitted: 2 },
+                            applicationFee: 70,
+                            transcriptSubmitted: true,
+                            testScoresSubmitted: true
+                        },
+                        {
+                            id: '4',
+                            schoolName: 'Duke University',
+                            deadline: '2025-01-02',
+                            status: 'not-started',
+                            progress: 10,
+                            essayStatus: 'not-started',
+                            recommendationStatus: { required: 2, submitted: 0 },
+                            applicationFee: 85,
+                            transcriptSubmitted: false,
+                            testScoresSubmitted: false
+                        }
+                    ];
+                } else {
+                    // Real data
+                    const appsQuery = query(
+                        collection(db, 'applications'),
+                        where('userId', '==', userId)
+                    );
+                    const snapshot = await getDocs(appsQuery);
+                    window.applications = [];
+                    snapshot.forEach(doc => {
+                        window.applications.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    // Create from target schools if none exist
+                    if (window.applications.length === 0 && window.userData?.questionnaire?.targetSchools) {
+                        await createApplicationsFromTargetSchools();
+                        const newSnapshot = await getDocs(appsQuery);
+                        window.applications = [];
+                        newSnapshot.forEach(doc => {
+                            window.applications.push({ id: doc.id, ...doc.data() });
+                        });
+                    }
+                }
+
+                updateStats();
+                renderApplications();
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                showNotification('Failed to load applications');
+            }
+        }
+
+        async function createApplicationsFromTargetSchools() {
+            const targetSchools = window.userData.questionnaire.targetSchools;
+            for (const schoolName of targetSchools) {
+                const school = schoolDatabase[schoolName];
+                if (school) {
+                    await addDoc(collection(db, 'applications'), {
+                        userId: window.currentUser.uid,
+                        schoolName,
+                        deadline: school.deadline,
+                        status: 'not-started',
+                        progress: 0,
+                        essayStatus: 'not-started',
+                        recommendationStatus: { required: 2, submitted: 0 },
+                        applicationFee: school.applicationFee,
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = window.applications.length;
+            const submitted = window.applications.filter(a => a.status === 'submitted').length;
+            const inProgress = window.applications.filter(a => a.status === 'in-progress').length;
+            const totalCost = window.applications.reduce((sum, a) => sum + (a.applicationFee || 0), 0);
+            const avgProgress = total > 0 ? Math.round(window.applications.reduce((sum, a) => sum + (a.progress || 0), 0) / total) : 0;
+
+            document.getElementById('totalApps').textContent = total;
+            document.getElementById('completedApps').textContent = submitted;
+            document.getElementById('inProgressApps').textContent = inProgress;
+            document.getElementById('totalCost').textContent = `${totalCost}`;
+            document.getElementById('overallProgress').textContent = `${avgProgress}%`;
+
+            // Next deadline
+            const now = new Date();
+            const upcoming = window.applications
+                .filter(a => new Date(a.deadline) > now && a.status !== 'submitted')
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            
+            if (upcoming.length > 0) {
+                const days = Math.ceil((new Date(upcoming[0].deadline) - now) / (1000 * 60 * 60 * 24));
+                document.getElementById('nextDeadline').textContent = `${days}d`;
+            } else {
+                document.getElementById('nextDeadline').textContent = '--';
+            }
+        }
+
+        // Render applications
+        function renderApplications(filter = 'all', sort = 'deadline') {
+            const grid = document.getElementById('applicationsGrid');
+            const empty = document.getElementById('emptyState');
+
+            let filtered = window.applications;
+            if (filter !== 'all') {
+                filtered = filtered.filter(a => a.status === filter);
+            }
+
+            filtered = sortApplications(filtered, sort);
+
+            if (filtered.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+            grid.innerHTML = filtered.map(app => createApplicationCard(app)).join('');
+        }
+
+        function sortApplications(apps, sortBy) {
+            const sorted = [...apps];
+            switch(sortBy) {
+                case 'deadline':
+                    sorted.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+                    break;
+                case 'progress':
+                    sorted.sort((a, b) => (b.progress || 0) - (a.progress || 0));
+                    break;
+                case 'probability':
+                    sorted.sort((a, b) => {
+                        const probA = calculateAdmitProbability(schoolDatabase[a.schoolName] || {});
+                        const probB = calculateAdmitProbability(schoolDatabase[b.schoolName] || {});
+                        return probB - probA;
+                    });
+                    break;
+                case 'name':
+                    sorted.sort((a, b) => a.schoolName.localeCompare(b.schoolName));
+                    break;
+            }
+            return sorted;
+        }
+
+        function createApplicationCard(app) {
+            const school = schoolDatabase[app.schoolName] || {};
+            const now = new Date();
+            const deadline = new Date(app.deadline);
+            const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+            
+            let deadlineClass = 'safe';
+            if (daysUntil <= 7) deadlineClass = 'urgent';
+            else if (daysUntil <= 30) deadlineClass = 'warning';
+
+            const admitProb = calculateAdmitProbability(school);
+            const probColor = admitProb >= 60 ? 'var(--success-color)' : admitProb >= 40 ? 'var(--warning-color)' : 'var(--danger-color)';
+            const probLabel = admitProb >= 60 ? '🎯 Target' : admitProb >= 40 ? '📈 Reach' : '🚀 High Reach';
+
+            return `
+                <div class="application-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div>
+                            <h3 class="school-name-app">${app.schoolName}</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">${school.location || ''}</p>
+                        </div>
+                        <div class="deadline-badge ${deadlineClass}">
+                            <i class="fas fa-calendar-alt"></i>
+                            ${daysUntil > 0 ? `${daysUntil} days` : 'Overdue'}
+                        </div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.9rem; font-weight: 600;">Application Progress</span>
+                            <span style="font-size: 0.9rem; font-weight: 700; color: var(--accent-color);">${app.progress || 0}%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${app.progress || 0}%"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: var(--secondary-bg); border-radius: 12px;">
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);">Admit Probability:</span>
+                        <span style="font-size: 1.2rem; font-weight: 700; color: ${probColor};">${admitProb}%</span>
+                        <span style="font-size: 0.85rem; color: var(--text-secondary); margin-left: auto;">${probLabel}</span>
+                    </div>
+
+                    <div class="status-indicators">
+                        <div class="status-item">
+                            <div class="status-icon ${app.essayStatus === 'complete' ? 'complete' : app.essayStatus === 'in-progress' ? 'pending' : 'incomplete'}">
+                                <i class="fas fa-pen-fancy"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600;">Essays</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.essayStatus || 'Not started'}</div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-icon ${app.recommendationStatus?.submitted === app.recommendationStatus?.required ? 'complete' : app.recommendationStatus?.submitted > 0 ? 'pending' : 'incomplete'}">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600;">Recommendations</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.recommendationStatus?.submitted || 0}/${app.recommendationStatus?.required || 2}</div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-icon ${app.transcriptSubmitted ? 'complete' : 'incomplete'}">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600;">Transcript</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.transcriptSubmitted ? 'Submitted' : 'Pending'}</div>
+                            </div>
+                        </div>
+
+                        <div class="status-item">
+                            <div class="status-icon ${app.testScoresSubmitted ? 'complete' : 'incomplete'}">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600;">Test Scores</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.testScoresSubmitted ? 'Submitted' : 'Pending'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="app-actions">
+                        <button class="btn btn-primary" onclick="openDetails('${app.id}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                        <button class="btn btn-secondary" onclick="updateProgress('${app.id}')">
+                            <i class="fas fa-edit"></i> Update
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateAdmitProbability(school) {
+            if (!school.avg_gpa) return 50;
+            
+            const userGPA = parseFloat(window.userData?.questionnaire?.unweightedGPA || 3.5);
+            const userSAT = extractSAT(window.userData?.questionnaire?.testScores) || 1200;
+            
+            let prob = 50;
+            const gpaRatio = userGPA / school.avg_gpa;
+            if (gpaRatio >= 1.05) prob += 20;
+            else if (gpaRatio >= 0.98) prob += 10;
+            else if (gpaRatio < 0.90) prob -= 15;
+
+            const satRatio = userSAT / school.avg_sat;
+            if (satRatio >= 1.05) prob += 18;
+            else if (satRatio >= 0.98) prob += 10;
+            else if (satRatio < 0.90) prob -= 12;
+
+            if (school.acceptance_rate > 20) prob += 15;
+            else if (school.acceptance_rate > 10) prob += 8;
+            else if (school.acceptance_rate <= 5) prob -= 5;
+
+            return Math.max(5, Math.min(95, Math.round(prob)));
+        }
+
+        function extractSAT(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/SAT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        // AI Insights
+        function generateAIInsights() {
+            const container = document.getElementById('strategicInsightsList');
+            const insights = [];
+
+            const reachCount = window.applications.filter(a => {
+                const prob = calculateAdmitProbability(schoolDatabase[a.schoolName] || {});
+                return prob < 40;
+            }).length;
+
+            const targetCount = window.applications.filter(a => {
+                const prob = calculateAdmitProbability(schoolDatabase[a.schoolName] || {});
+                return prob >= 40 && prob <= 70;
+            }).length;
+
+            const safetyCount = window.applications.filter(a => {
+                const prob = calculateAdmitProbability(schoolDatabase[a.schoolName] || {});
+                return prob > 70;
+            }).length;
+
+            if (safetyCount === 0) {
+                insights.push({
+                    type: 'warning',
+                    text: `<strong>⚠️ Add Safety Schools:</strong> You have ${reachCount} reach and ${targetCount} target schools, but no safety schools. Add 2-3 schools with 70%+ admit probability.`
+                });
+            } else {
+                insights.push({
+                    type: 'success',
+                    text: `<strong>✅ Great Balance!</strong> Your list has ${reachCount} reach, ${targetCount} target, and ${safetyCount} safety schools.`
+                });
+            }
+
+            const now = new Date();
+            const urgent = window.applications.filter(a => {
+                const days = Math.ceil((new Date(a.deadline) - now) / (1000 * 60 * 60 * 24));
+                return days <= 14 && days > 0 && a.progress < 80;
+            }).length;
+
+            if (urgent > 0) {
+                insights.push({
+                    type: 'warning',
+                    text: `<strong>⏰ Urgent Action:</strong> ${urgent} application${urgent > 1 ? 's' : ''} with deadlines in 2 weeks need attention!`
+                });
+            }
+
+            const avgProgress = window.applications.length > 0 ? 
+                Math.round(window.applications.reduce((sum, a) => sum + (a.progress || 0), 0) / window.applications.length) : 0;
+
+            if (avgProgress >= 75) {
+                insights.push({
+                    type: 'success',
+                    text: `<strong>🎉 Amazing Progress!</strong> You're ${avgProgress}% done. Keep it up!`
+                });
+            } else if (avgProgress >= 50) {
+                insights.push({
+                    type: 'normal',
+                    text: `<strong>💪 Halfway There!</strong> You're ${avgProgress}% complete. Stay focused!`
+                });
+            }
+
+            container.innerHTML = insights.map(i => `
+                <div class="insight-item ${i.type}">
+                    <p style="margin: 0; color: var(--text-primary); line-height: 1.6;">${i.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // Filters
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderApplications(this.dataset.filter, document.getElementById('sortSelect').value);
+                });
+            });
+
+            document.getElementById('sortSelect')?.addEventListener('change', function() {
+                const filter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+                renderApplications(filter, this.value);
+            });
+        }
+
+        // Real-time sync
+        function setupRealtimeSync() {
+            if (window.currentUser.uid === 'demo') return;
+
+            const appsQuery = query(
+                collection(db, 'applications'),
+                where('userId', '==', window.currentUser.uid)
+            );
+
+            onSnapshot(appsQuery, () => {
+                loadApplications();
+            });
+        }
+
+        // Modal functions
+        window.openDetails = function(appId) {
+            const app = window.applications.find(a => a.id === appId);
+            if (!app) return;
+
+            const modal = document.getElementById('appDetailsModal');
+            document.getElementById('modalSchoolName').textContent = app.schoolName;
+            document.getElementById('modalContent').innerHTML = `
+                <div style="padding: 1rem;">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Application Status</h3>
+                    <p style="color: var(--text-secondary);">Progress: ${app.progress}%</p>
+                    <p style="color: var(--text-secondary);">Deadline: ${new Date(app.deadline).toLocaleDateString()}</p>
+                    <p style="color: var(--text-secondary);">Status: ${app.status}</p>
+                    
+                    <div style="margin-top: 2rem;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='essaycoach.html'">
+                            <i class="fas fa-pen"></i> Work on Essays
+                        </button>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('active');
+        };
+
+        window.closeModal = function(id) {
+            document.getElementById(id)?.classList.remove('active');
+        };
+
+        window.updateProgress = async function(appId) {
+            const app = window.applications.find(a => a.id === appId);
+            if (!app) return;
+
+            const newProgress = prompt(`Update progress for ${app.schoolName} (0-100):`, app.progress);
+            if (newProgress === null) return;
+
+            const value = Math.max(0, Math.min(100, parseInt(newProgress) || 0));
+            
+            if (window.currentUser.uid === 'demo') {
+                app.progress = value;
+                renderApplications();
+                updateStats();
+                showNotification('Progress updated!');
+            } else {
+                try {
+                    await updateDoc(doc(db, 'applications', appId), {
+                        progress: value,
+                        lastUpdated: serverTimestamp()
+                    });
+                    showNotification('Progress updated!');
+                } catch (error) {
+                    console.error('Update error:', error);
+                    showNotification('Failed to update');
+                }
+            }
+        };
+
+        // Chat
+        window.toggleChat = function() {
+            const widget = document.getElementById('chatWidget');
+            const toggle = document.getElementById('chatToggle');
+            widget.classList.toggle('open');
+            toggle.classList.toggle('hidden');
+        };
+
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML += `<div class="chat-message user"><strong>You:</strong> ${escapeHtml(msg)}</div>`;
+            input.value = '';
+            input.disabled = true;
+
+            messages.innerHTML += '<div class="chat-message ai"><div class="loading"></div></div>';
+            messages.scrollTop = messages.scrollHeight;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: msg,
+                        userProfile: { name: window.userData?.name, applications: window.applications },
+                        questionnaireData: window.userData?.questionnaire
+                    })
+                });
+
+                const lastMsg = messages.lastElementChild;
+                if (response.ok) {
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styles */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1, .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            cursor: pointer;
+        }
+
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: var(--shadow);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+            margin: 0.5rem 0;
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+        }
+
+        /* Main Container */
+        .applications-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient);
+            border-radius: 32px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Overview Stats */
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-mini-card {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-mini-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-mini-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-mini-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-mini-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* AI Insights */
+        .ai-insights-panel {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--accent-color);
+            margin-bottom: 2rem;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .ai-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .insight-item {
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .insight-item.warning {
+            border-left-color: var(--warning-color);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .insight-item.success {
+            border-left-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .sort-select {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Applications Grid */
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .application-card {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .application-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .application-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(42, 53, 122, 0.2);
+        }
+
+        .school-name-app {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .deadline-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .deadline-badge.urgent {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .deadline-badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .deadline-badge.safe {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .progress-section {
+            margin: 1.5rem 0;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: rgba(160, 123, 204, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .status-indicators {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+        }
+
+        .status-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .status-icon.complete {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+        }
+
+        .status-icon.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+        }
+
+        .status-icon.incomplete {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        .app-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            background: var(--primary-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transform: translateY(100vh);
+            transition: transform 0.4s ease;
+            overflow: hidden;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .chat-widget.open {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 16px;
+        }
+
+        .chat-message.user {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-message.ai {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 20px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+        }
+
+        .chat-toggle.hidden {
+            transform: scale(0);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(160, 123, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            max-width: 400px;
+            padding: 1rem 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-color);
+            z-index: 10001;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .applications-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+            }
+            
+            .chat-widget {
+                width: calc(100% - 40px);
+                height: calc(100vh - 40px);
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Navigation -->
+    <nav class="cc-navbar">
+        <a href="dashboard.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="https://via.placeholder.com/50/a07bcc/ffffff?text=CC" alt="College Climb">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <div class="cc-nav-right">
+            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+            <div class="cc-profile-dropdown">
+                <img id="ccUserAvatar" class="cc-user-avatar" src="https://via.placeholder.com/44/a07bcc/ffffff?text=U" alt="Profile" onclick="toggleDropdown()">
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <div class="cc-dropdown-header">
+                        <div class="cc-dropdown-name" id="ccDropdownName">Student</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail">student@example.com</div>
+                    </div>
+                    <a href="dashboard.html" class="cc-dropdown-link">📊 Dashboard</a>
+                    <a href="essaycoach.html" class="cc-dropdown-link">✍️ Essays</a>
+                    <a href="scholarship.html" class="cc-dropdown-link">💰 Scholarships</a>
+                    <a href="applications.html" class="cc-dropdown-link">📋 My Applications</a>
+                    <a href="profile.html" class="cc-dropdown-link">👤 Profile</a>
+                    <div class="cc-dropdown-divider"></div>
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="applications-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>🎓 My Applications</h1>
+            <p>Track, manage, and optimize your college applications with AI-powered insights</p>
+        </div>
+
+        <!-- Overview Stats -->
+        <div class="overview-stats">
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">📝</div>
+                <div class="stat-mini-value" id="totalApps">0</div>
+                <div class="stat-mini-label">Total Applications</div>
+            </div>
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">✅</div>
+                <div class="stat-mini-value" id="completedApps">0</div>
+                <div class="stat-mini-label">Submitted</div>
+            </div>
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">⏳</div>
+                <div class="stat-mini-value" id="inProgressApps">0</div>
+                <div class="stat-mini-label">In Progress</div>
+            </div>
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">💰</div>
+                <div class="stat-mini-value" id="totalCost">$0</div>
+                <div class="stat-mini-label">Application Fees</div>
+            </div>
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">📅</div>
+                <div class="stat-mini-value" id="nextDeadline">--</div>
+                <div class="stat-mini-label">Next Deadline</div>
+            </div>
+            <div class="stat-mini-card">
+                <div class="stat-mini-icon">📊</div>
+                <div class="stat-mini-value" id="overallProgress">0%</div>
+                <div class="stat-mini-label">Overall Progress</div>
+            </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="ai-insights-panel">
+            <div class="ai-header">
+                <div class="ai-icon">🤖</div>
+                <div>
+                    <div class="ai-title">AI Application Strategy</div>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">Personalized recommendations based on your profile</p>
+                </div>
+            </div>
+            <div id="strategicInsightsList">
+                <div class="loading"></div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All Applications</button>
+                <button class="filter-btn" data-filter="in-progress">In Progress</button>
+                <button class="filter-btn" data-filter="submitted">Submitted</button>
+                <button class="filter-btn" data-filter="not-started">Not Started</button>
+            </div>
+            <div class="filter-group">
+                <select class="sort-select" id="sortSelect">
+                    <option value="deadline">Sort by Deadline</option>
+                    <option value="progress">Sort by Progress</option>
+                    <option value="probability">Sort by Admit Probability</option>
+                    <option value="name">Sort by School Name</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Applications Grid -->
+        <div class="applications-grid" id="applicationsGrid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                <div class="loading"></div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">📚</div>
+            <h3>No Applications Yet</h3>
+            <p>Start your college journey by adding schools from your target list</p>
+            <button class="btn btn-primary" onclick="window.location.href='collegesearch.html'">
+                <i class="fas fa-plus"></i> Browse Colleges
+            </button>
+        </div>
+    </div>
+
+    <!-- Application Details Modal -->
+    <div class="modal-overlay" id="appDetailsModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('appDetailsModal')">×</button>
+            <h2 class="modal-title" id="modalSchoolName">School Details</h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div>
+                <strong>AI Application Coach</strong>
+                <div style="font-size: 0.85rem; opacity: 0.9;">Get personalized guidance</div>
+            </div>
+            <button onclick="toggleChat()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <strong
