@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Session - Test Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Desmos Calculator -->
+    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+        }
+
+        /* Practice Container */
+        .practice-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .practice-header {
+            background: var(--gradient);
+            border-radius: 24px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 2px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--primary-bg);
+        }
+
+        .action-btn.flagged {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        /* Question Content */
+        .question-prompt {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        /* Answer Choices */
+        .answer-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .answer-choice {
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            background: var(--secondary-bg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .answer-choice:hover {
+            border-color: var(--accent-color);
+            background: var(--primary-bg);
+            transform: translateX(5px);
+        }
+
+        .answer-choice.selected {
+            border-color: var(--accent-color);
+            background: rgba(160, 123, 204, 0.1);
+        }
+
+        .answer-choice.correct {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .answer-choice.incorrect {
+            border-color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .answer-choice.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .choice-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .answer-choice.correct .choice-letter {
+            background: var(--success-color);
+        }
+
+        .answer-choice.incorrect .choice-letter {
+            background: var(--danger-color);
+        }
+
+        .choice-text {
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        /* Explanation Panel */
+        .explanation-panel {
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--info-color);
+            display: none;
+        }
+
+        .explanation-panel.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .explanation-content {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn.primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.4);
+        }
+
+        .nav-btn.secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Desmos Calculator */
+        .calculator-panel {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .calculator-panel.show {
+            display: block;
+        }
+
+        #calculator {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+        }
+
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(160, 123, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            display: none;
+        }
+
+        .completion-screen.show {
+            display: block;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .completion-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .completion-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .completion-stat {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        .completion-stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .practice-container {
+                padding: 0 1rem;
+            }
+
+            .practice-header {
+                padding: 1.5rem;
+            }
+
+            .question-card {
+                padding: 1.5rem;
+            }
+
+            .nav-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="practice-container">
+        <!-- Header -->
+        <div class="practice-header">
+            <div class="header-left">
+                <h1 id="sessionTitle">Practice Session</h1>
+                <p style="opacity: 0.9; margin: 0;">Answer questions to improve your score</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="currentQuestion">0</div>
+                    <div class="stat-label">Question</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="correctCount">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="scoreDisplay">--</div>
+                    <div class="stat-label">Score</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div class="loading-container" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Generating personalized questions...</div>
+        </div>
+
+        <!-- Calculator Panel -->
+        <div class="calculator-panel" id="calculatorPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.3rem; font-weight: 700;">Desmos Calculator</h3>
+                <button class="action-btn" onclick="toggleCalculator()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+            <div id="calculator"></div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card" id="questionCard" style="display: none;">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Question 1 of 10</div>
+                <div class="question-actions">
+                    <button class="action-btn" id="calculatorBtn" onclick="toggleCalculator()">
+                        <i class="fas fa-calculator"></i> Calculator
+                    </button>
+                    <button class="action-btn" id="flagBtn" onclick="toggleFlag()">
+                        <i class="fas fa-flag"></i> <span id="flagText">Flag</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-prompt" id="questionPrompt"></div>
+
+            <div class="answer-choices" id="answerChoices"></div>
+
+            <div class="explanation-panel" id="explanationPanel">
+                <div class="explanation-title">
+                    <i class="fas fa-lightbulb"></i> Explanation
+                </div>
+                <div class="explanation-content" id="explanationContent"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" onclick="previousQuestion()" id="prevBtn" disabled>
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn primary" onclick="submitAnswer()" id="submitBtn" disabled>
+                    Submit Answer <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">
+                    Next Question <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div class="completion-screen" id="completionScreen">
+            <div class="completion-icon">🎉</div>
+            <h2 class="completion-title">Practice Session Complete!</h2>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                Great job! Here's how you performed:
+            </p>
+
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="finalCorrect">0</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="finalAccuracy">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="finalScore">--</div>
+                    <div class="stat-label">Estimated Score</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="finalTime">0m</div>
+                    <div class="stat-label">Time Spent</div>
+                </div>
+            </div>
+
+            <div class="nav-buttons" style="margin-top: 2rem;">
+                <button class="nav-btn secondary" onclick="window.location.href='testprep.html'">
+                    <i class="fas fa-home"></i> Back to Dashboard
+                </button>
+                <button class="nav-btn primary" onclick="restartPractice()">
+                    <i class="fas fa-redo"></i> Practice Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        let currentUser = null;
+        let userData = null;
+        let testPrepData = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+        let correctAnswers = 0;
+        let startTime = Date.now();
+        let calculator = null;
+        let sessionSubject = 'sat-math'; // Default
+
+        // Get subject from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('subject')) {
+            sessionSubject = urlParams.get('subject');
+        }
+
+        // Initialize
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadUserData();
+                await loadTestPrepData();
+                initializeSession();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function loadUserData() {
+            const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+            if (userDoc.exists()) {
+                userData = userDoc.data();
+            }
+        }
+
+        async function loadTestPrepData() {
+            const testPrepDoc = await getDoc(doc(db, 'testprep', currentUser.uid));
+            if (testPrepDoc.exists()) {
+                testPrepData = testPrepDoc.data();
+            } else {
+                testPrepData = {
+                    questionsCompleted: 0,
+                    currentScore: { sat: 0, act: 0 },
+                    flaggedQuestions: [],
+                    subjectProgress: {}
+                };
+            }
+        }
+
+        async function initializeSession() {
+            // Update title
+            const titles = {
+                'sat-math': 'SAT Math Practice',
+                'sat-reading': 'SAT Reading & Writing Practice',
+                'act-math': 'ACT Math Practice',
+                'act-english': 'ACT English Practice',
+                'act-reading': 'ACT Reading Practice',
+                'act-science': 'ACT Science Practice'
+            };
+            document.getElementById('sessionTitle').textContent = titles[sessionSubject] || 'Practice Session';
+
+            // Initialize Desmos calculator
+            if (sessionSubject.includes('math')) {
+                const calcElement = document.getElementById('calculator');
+                calculator = Desmos.GraphingCalculator(calcElement, {
+                    expressionsCollapsed: true,
+                    settingsMenu: false,
+                    expressions: false
+                });
+            } else {
+                document.getElementById('calculatorBtn').style.display = 'none';
+            }
+
+            // Generate questions
+            await generateQuestions();
+        }
+
+        async function generateQuestions() {
+            try {
+                // Show loading
+                document.getElementById('loadingScreen').style.display = 'flex';
+
+                // Determine weak areas from testPrepData
+                const weakAreas = testPrepData.weakAreas || [];
+                const difficulty = calculateDifficulty();
+
+                // Generate 10 questions using AI
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: buildQuestionPrompt(sessionSubject, difficulty, weakAreas),
+                        userProfile: userData,
+                        questionnaireData: userData?.questionnaire
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to generate questions');
+
+                const data = await response.json();
+                
+                // Parse AI response into questions
+                currentQuestions = parseAIQuestions(data.response);
+
+                // If parsing failed, use fallback questions
+                if (currentQuestions.length === 0) {
+                    currentQuestions = getFallbackQuestions(sessionSubject);
+                }
+
+                // Hide loading and show first question
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('questionCard').style.display = 'block';
+                displayQuestion();
+
+            } catch (error) {
+                console.error('Error generating questions:', error);
+                // Use fallback questions
+                currentQuestions = getFallbackQuestions(sessionSubject);
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('questionCard').style.display = 'block';
+                displayQuestion();
+            }
+        }
+
+        function buildQuestionPrompt(subject, difficulty, weakAreas) {
+            const subjectInfo = {
+                'sat-math': 'SAT Math (algebra, geometry, trigonometry, data analysis)',
+                'sat-reading': 'SAT Reading and Writing (reading comprehension, grammar, vocabulary)',
+                'act-math': 'ACT Math (pre-algebra, algebra, geometry, trigonometry)',
+                'act-english': 'ACT English (grammar, punctuation, sentence structure)',
+                'act-reading': 'ACT Reading (reading comprehension, main ideas, details)',
+                'act-science': 'ACT Science (data interpretation, scientific reasoning)'
+            };
+
+            let prompt = `You are an expert test prep tutor. Generate 10 practice questions for ${subjectInfo[subject]}.
+
+IMPORTANT FORMAT:
+For each question, use this EXACT format:
+
+QUESTION 1:
+[Question text]
+A) [Option A]
+B) [Option B]
+C) [Option C]
+D) [Option D]
+CORRECT: [A/B/C/D]
+EXPLANATION: [Detailed explanation]
+
+QUESTION 2:
+...
+
+Requirements:
+- Difficulty level: ${difficulty}
+- Questions should be realistic and test actual concepts
+- Include step-by-step explanations
+- Make sure answers are clearly correct
+${weakAreas.length > 0 ? `- Focus on these weak areas: ${weakAreas.join(', ')}` : ''}
+
+Generate 10 questions now:`;
+
+            return prompt;
+        }
+
+        function calculateDifficulty() {
+            if (!testPrepData.questionsCompleted) return 'Medium';
+            
+            const accuracy = testPrepData.questionsCompleted > 0 
+                ? (correctAnswers / testPrepData.questionsCompleted) * 100 
+                : 50;
+
+            if (accuracy > 80) return 'Hard';
+            if (accuracy > 60) return 'Medium';
+            return 'Easy';
+        }
+
+        function parseAIQuestions(aiResponse) {
+            const questions = [];
+            const questionBlocks = aiResponse.split(/QUESTION \d+:/);
+
+            for (let i = 1; i < questionBlocks.length; i++) {
+                const block = questionBlocks[i].trim();
+                
+                // Extract question text (everything before first option)
+                const questionMatch = block.match(/^([\s\S]*?)(?=A\))/);
+                if (!questionMatch) continue;
+                
+                const questionText = questionMatch[1].trim();
+
+                // Extract options
+                const optionMatches = block.match(/([A-D])\)\s*([^\n]+)/g);
+                if (!optionMatches || optionMatches.length !== 4) continue;
+
+                const options = optionMatches.map(opt => {
+                    const match = opt.match(/([A-D])\)\s*(.+)/);
+                    return match ? match[2].trim() : '';
+                });
+
+                // Extract correct answer
+                const correctMatch = block.match(/CORRECT:\s*([A-D])/);
+                if (!correctMatch) continue;
+                const correctIndex = correctMatch[1].charCodeAt(0) - 65; // A=0, B=1, etc.
+
+                // Extract explanation
+                const explanationMatch = block.match(/EXPLANATION:\s*([\s\S]+?)(?=QUESTION|\s*$)/);
+                const explanation = explanationMatch ? explanationMatch[1].trim() : 'No explanation provided.';
+
+                questions.push({
+                    prompt: questionText,
+                    options: options,
+                    correctAnswer: correctIndex,
+                    explanation: explanation,
+                    difficulty: calculateDifficulty(),
+                    subject: sessionSubject
+                });
+            }
+
+            return questions;
+        }
+
+        function getFallbackQuestions(subject) {
+            const fallbacks = {
+                'sat-math': [
+                    {
+                        prompt: 'If 3x + 7 = 22, what is the value of x?',
+                        options: ['3', '5', '7', '15'],
+                        correctAnswer: 1,
+                        explanation: 'Subtract 7 from both sides: 3x = 15. Then divide by 3: x = 5.',
+                        subject: 'sat-math'
+                    },
+                    {
+                        prompt: 'A rectangle has a length of 12 cm and a width of 5 cm. What is its perimeter?',
+                        options: ['17 cm', '34 cm', '60 cm', '24 cm'],
+                        correctAnswer: 1,
+                        explanation: 'Perimeter = 2(length + width) = 2(12 + 5) = 2(17) = 34 cm',
+                        subject: 'sat-math'
+                    }
+                ],
+                'sat-reading': [
+                    {
+                        prompt: 'Which word best describes someone who is "meticulous"?',
+                        options: ['Careless', 'Careful', 'Creative', 'Chaotic'],
+                        correctAnswer: 1,
+                        explanation: 'Meticulous means showing great attention to detail; very careful and precise.',
+                        subject: 'sat-reading'
+                    }
+                ]
+            };
+
+            // Return 10 copies/variations of fallback questions
+            const baseQuestions = fallbacks[subject] || fallbacks['sat-math'];
+            const questions = [];
+            for (let i = 0; i < 10; i++) {
+                questions.push({...baseQuestions[i % baseQuestions.length]});
+            }
+            return questions;
+        }
+
+        function displayQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            // Update question number
+            document.getElementById('questionNumber').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+
+            // Update prompt
+            document.getElementById('questionPrompt').textContent = question.prompt;
+
+            // Clear and populate answer choices
+            const choicesContainer = document.getElementById('answerChoices');
+            choicesContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const choice = document.createElement('div');
+                choice.className = 'answer-choice';
+                choice.onclick = () => selectAnswer(index);
+                choice.innerHTML = `
+                    <div class="choice-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="choice-text">${option}</div>
+                `;
+                choicesContainer.appendChild(choice);
+            });
+
+            // Reset UI state
+            document.getElementById('explanationPanel').classList.remove('show');
+            document.getElementById('submitBtn').style.display = 'flex';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+
+            // Update flag button
+            const isFlagged = testPrepData.flaggedQuestions?.some(
+                q => q.prompt === question.prompt
+            );
+            updateFlagButton(isFlagged);
+
+            selectedAnswer = null;
+        }
+
+        window.selectAnswer = function(index) {
+            // Remove previous selection
+            document.querySelectorAll('.answer-choice').forEach(choice => {
+                choice.classList.remove('selected');
+            });
+
+            // Add selection to clicked choice
+            document.querySelectorAll('.answer-choice')[index].classList.add('selected');
+            
+            selectedAnswer = index;
+            document.getElementById('submitBtn').disabled = false;
+        };
+
+        window.submitAnswer = async function() {
+            if (selectedAnswer === null) return;
+
+            const question = currentQuestions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correctAnswer;
+
+            // Update UI
+            const choices = document.querySelectorAll('.answer-choice');
+            choices.forEach((choice, index) => {
+                choice.classList.add('disabled');
+                choice.onclick = null;
+                
+                if (index === question.correctAnswer) {
+                    choice.classList.add('correct');
+                } else if (index === selectedAnswer && !isCorrect) {
+                    choice.classList.add('incorrect');
+                }
+            });
+
+            // Show explanation
+            document.getElementById('explanationContent').textContent = question.explanation;
+            document.getElementById('explanationPanel').classList.add('show');
+
+            // Update stats
+            if (isCorrect) {
+                correctAnswers++;
+                document.getElementById('correctCount').textContent = correctAnswers;
+            }
+
+            // Update buttons
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'flex';
+
+            // Save progress
+            await saveProgress(isCorrect);
+        };
+
+        window.nextQuestion = function() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showCompletionScreen();
+            }
+        };
+
+        window.previousQuestion = function() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        };
+
+        window.toggleFlag = async function() {
+            const question = currentQuestions[currentQuestionIndex];
+            const flaggedQuestions = testPrepData.flaggedQuestions || [];
+            
+            const existingIndex = flaggedQuestions.findIndex(
+                q => q.prompt === question.prompt
+            );
+
+            if (existingIndex >= 0) {
+                // Unflag
+                flaggedQuestions.splice(existingIndex, 1);
+            } else {
+                // Flag
+                flaggedQuestions.push(question);
+            }
+
+            // Update Firestore
+            await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                flaggedQuestions: flaggedQuestions
+            });
+
+            testPrepData.flaggedQuestions = flaggedQuestions;
+            updateFlagButton(existingIndex < 0);
+        };
+
+        function updateFlagButton(isFlagged) {
+            const flagBtn = document.getElementById('flagBtn');
+            const flagText = document.getElementById('flagText');
+            
+            if (isFlagged) {
+                flagBtn.classList.add('flagged');
+                flagText.textContent = 'Flagged';
+            } else {
+                flagBtn.classList.remove('flagged');
+                flagText.textContent = 'Flag';
+            }
+        }
+
+        window.toggleCalculator = function() {
+            const panel = document.getElementById('calculatorPanel');
+            panel.classList.toggle('show');
+        };
+
+        async function saveProgress(isCorrect) {
+            try {
+                const subjectKey = sessionSubject.replace('-', '');
+                const subjectProgress = testPrepData.subjectProgress || {};
+                
+                if (!subjectProgress[subjectKey]) {
+                    subjectProgress[subjectKey] = { correct: 0, total: 0, score: 0 };
+                }
+
+                subjectProgress[subjectKey].total++;
+                if (isCorrect) {
+                    subjectProgress[subjectKey].correct++;
+                }
+
+                // Calculate score (simplified)
+                const accuracy = subjectProgress[subjectKey].correct / subjectProgress[subjectKey].total;
+                subjectProgress[subjectKey].score = Math.round(accuracy * 800); // SAT scale
+
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    questionsCompleted: (testPrepData.questionsCompleted || 0) + 1,
+                    subjectProgress: subjectProgress,
+                    lastStudyDate: new Date().toISOString()
+                });
+
+            } catch (error) {
+                console.error('Error saving progress:', error);
+            }
+        }
+
+        function showCompletionScreen() {
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('completionScreen').classList.add('show');
+
+            const accuracy = Math.round((correctAnswers / currentQuestions.length) * 100);
+            const timeSpent = Math.round((Date.now() - startTime) / 60000); // minutes
+            const estimatedScore = Math.round((accuracy / 100) * 800); // Simplified SAT scale
+
+            document.getElementById('finalCorrect').textContent = 
+                `${correctAnswers}/${currentQuestions.length}`;
+            document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('finalScore').textContent = estimatedScore;
+            document.getElementById('finalTime').textContent = `${timeSpent}m`;
+        }
+
+        window.restartPractice = function() {
+            location.reload();
+        };
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+    </script>
+</body>
+</html>
