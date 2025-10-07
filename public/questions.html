@@ -17,6 +17,7 @@
             --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
             --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
             --border-radius: 12px;
+            --danger-color: #ef4444;
         }
 
         [data-theme="dark"] {
@@ -95,111 +96,361 @@
             100% { background-position: 0% 50%; }
         }
 
-        .navbar {
+        /* Navigation Bar */
+        .cc-navbar {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        [data-theme="dark"] .navbar {
+        [data-theme="dark"] .cc-navbar {
             background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .logo-section {
+        .cc-logo-section {
             display: flex;
             align-items: center;
             gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
-        .logo img {
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .brand-text h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .brand-text h2 {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--accent-color);
-            line-height: 1;
-        }
-
-        .nav-links {
+        .cc-brand-text {
             display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
         }
 
-        .nav-links a {
-            text-decoration: none;
+        .cc-brand-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
             color: var(--text-primary);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
+            line-height: 1;
+            margin: 0;
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
+        .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .nav-links a:hover {
-            color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .theme-toggle {
+        /* Theme Toggle Button */
+        .cc-theme-toggle {
             background: var(--gradient);
             border: none;
-            border-radius: 20px;
-            width: 40px;
-            height: 40px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             transition: all 0.3s ease;
+            font-size: 1.2rem;
         }
 
-        .theme-toggle:hover {
+        .cc-theme-toggle:hover {
             transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* Profile Dropdown Container */
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        /* Profile Button */
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            position: relative;
+        }
+
+        .cc-profile-button:hover .cc-user-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-profile-button:active .cc-user-avatar {
+            transform: scale(0.95);
+        }
+
+        /* User Avatar */
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        [data-theme="dark"] .cc-user-avatar {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
+        }
+
+        /* Profile Text - Hidden completely */
+        .cc-profile-text {
+            display: none !important;
+        }
+
+        /* Dropdown Chevron - Hidden */
+        .cc-dropdown-chevron {
+            display: none !important;
+        }
+
+        /* Dropdown Menu */
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transform-origin: top right;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            backdrop-filter: blur(20px);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Add arrow pointer to dropdown */
+        .cc-dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu::before {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
+        /* Welcome Header in Dropdown */
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .cc-dropdown-header {
+            border-bottom-color: rgba(187, 134, 252, 0.15);
+            background: rgba(33, 38, 45, 0.6);
+        }
+
+        .cc-dropdown-welcome {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 0.5rem;
+        }
+
+        /* Dropdown Links */
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cc-dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--gradient);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-link:hover::before {
+            width: 4px;
+        }
+
+        [data-theme="dark"] .cc-dropdown-link:hover {
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        .cc-dropdown-link-icon {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover .cc-dropdown-link-icon {
+            transform: scale(1.15);
+        }
+
+        /* Logout Button */
+        .cc-dropdown-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .cc-dropdown-divider {
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+            font-weight: 700 !important;
+        }
+
+        .cc-logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .cc-logout-link:hover::before {
+            background: var(--danger-color) !important;
+        }
+
+        /* Loading State */
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: cc-spin 1s linear infinite;
+        }
+
+        @keyframes cc-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Active state indicator */
+        .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
         }
 
         /* Main Container */
@@ -507,47 +758,60 @@
     </style>
 </head>
 <body data-theme="dark">
-    <body data-auth>
-
     <div class="starry-bg" id="starryBg"></div>
 
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo-section">
-            <div class="logo">
-                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    <img src="images/whiteclearcc.png" alt="College Climb Logo" class="logo-img">
-                </a>
+    <nav class="cc-navbar">
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
-            <div class="brand-text">
-                <h1 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">College</h1>
-                <h2 style="color: var(--text-primary); font-size: 1.5rem; font-weight: bold;">Climb</h2>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+        <div class="cc-nav-right">
+            <button class="cc-theme-toggle" id="themeToggle">☀️</button>
+            <div class="cc-profile-dropdown" id="profileDropdown">
+                <button class="cc-profile-button" id="profileButton">
+                    <div class="cc-profile-loading" id="profileLoading"></div>
+                    <img id="navUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
+                </button>
+                <div class="cc-dropdown-menu" id="dropdownMenu">
+                    <div class="cc-dropdown-header" id="dropdownHeader">
+                        <div class="cc-dropdown-welcome">Welcome Back</div>
+                        <div class="cc-dropdown-name" id="dropdownName">Loading...</div>
+                        <div class="cc-dropdown-email" id="dropdownEmail"></div>
+                    </div>
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="myapp.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📚</span>
+                        <span>My Applications</span>
+                    </a>
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="essaycoach.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essay Coach</span>
+                    </a>
+                    <a href="settings.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                    <div class="cc-dropdown-divider"></div>
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="logoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
         </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li class="dropdown">
-                <a href="#" id="authToggle">Login/Sign Up</a>
-                <!-- Dropdown content -->
-                <div class="dropdown-content" id="authDropdown">
-                    <!-- Not logged in content -->
-                    <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
-                    </div>
-                    <!-- Logged in content -->
-                    <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
-                    </div>
-                </div>
-            </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
-        </ul>
     </nav>
 
     <!-- Questionnaire Form -->
@@ -568,10 +832,38 @@
             <form id="questionnaire" class="questionnaire-form">
                 <!-- Basic Information -->
                 <div class="form-section">
-                    <h3><span class="section-icon">📅</span> Application Timeline</h3>
+                    <h3><span class="section-icon">📅</span> Basic Information</h3>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Current Grade Level</label>
+                            <select name="currentGradeLevel" id="currentGradeLevel" class="form-select">
+                                <option value="">Select your current grade</option>
+                                <option value="9th">9th Grade (Freshman)</option>
+                                <option value="10th">10th Grade (Sophomore)</option>
+                                <option value="11th">11th Grade (Junior)</option>
+                                <option value="12th">12th Grade (Senior)</option>
+                                <option value="gap-year">Gap Year</option>
+                                <option value="college">College Student</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expected High School Graduation Year</label>
+                            <select name="expectedGraduation" id="expectedGraduation" class="form-select">
+                                <option value="">Select year</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label">
-                            When are you planning on applying to college? <span class="required">*</span>
+                            When are you planning on applying to college?
                         </label>
                         <input
                             type="text"
@@ -579,7 +871,6 @@
                             id="applicationTimeline"
                             class="form-input"
                             placeholder="e.g., Fall 2025, Spring 2026"
-                            required
                         />
                     </div>
                 </div>
@@ -589,7 +880,7 @@
                     <h3><span class="section-icon">🏫</span> Target Schools</h3>
                     <div class="form-group">
                         <label class="form-label">
-                            What schools do you want to get into? <span class="required">*</span>
+                            What schools do you want to get into?
                             <small style="color: var(--text-secondary); font-weight: 400;">(separate with commas)</small>
                         </label>
                         <textarea
@@ -598,7 +889,6 @@
                             class="form-textarea"
                             placeholder="e.g., Harvard University, Stanford University, MIT"
                             rows="3"
-                            required
                         ></textarea>
                     </div>
                 </div>
@@ -706,132 +996,319 @@
                     </div>
                 </div>
 
-                <!-- Academic Information -->
+                <!-- Academic Performance -->
                 <div class="form-section">
-                    <h3><span class="section-icon">📊</span> Academic Information</h3>
+                    <h3><span class="section-icon">📊</span> Academic Performance</h3>
                     <div class="grid-2">
                         <div class="form-group">
-                            <label class="form-label">
-                                Current Unweighted GPA <span class="required">*</span>
-                                <small style="color: var(--text-secondary); font-weight: 400;">(0.0 - 4.0)</small>
-                            </label>
-                            <input
-                                type="number"
-                                name="unweightedGPA"
-                                id="unweightedGPA"
-                                class="form-input"
-                                min="0"
-                                max="4.0"
-                                step="0.01"
-                                placeholder="3.75"
-                                required
-                            />
+                            <label class="form-label">Current GPA (if known)</label>
+                            <select name="currentGPA" id="currentGPA" class="form-select">
+                                <option value="">Select GPA range</option>
+                                <option value="4.0+">4.0+ (A+)</option>
+                                <option value="3.7-3.99">3.7-3.99 (A-/A)</option>
+                                <option value="3.3-3.69">3.3-3.69 (B+/A-)</option>
+                                <option value="3.0-3.29">3.0-3.29 (B)</option>
+                                <option value="2.7-2.99">2.7-2.99 (B-)</option>
+                                <option value="2.3-2.69">2.3-2.69 (C+/B-)</option>
+                                <option value="2.0-2.29">2.0-2.29 (C)</option>
+                                <option value="below-2.0">Below 2.0</option>
+                                <option value="not-sure">Not sure/Don't know</option>
+                            </select>
                         </div>
-
                         <div class="form-group">
-                            <label class="form-label">
-                                Current Weighted GPA <span class="required">*</span>
-                                <small style="color: var(--text-secondary); font-weight: 400;">(0.0 - 5.0)</small>
-                            </label>
-                            <input
-                                type="number"
-                                name="weightedGPA"
-                                id="weightedGPA"
-                                class="form-input"
-                                min="0"
-                                max="5.0"
-                                step="0.01"
-                                placeholder="4.25"
-                                required
-                            />
+                            <label class="form-label">SAT Score</label>
+                            <select name="satScore" id="satScore" class="form-select">
+                                <option value="">Not taken/Don't know</option>
+                                <option value="1600">1600 (Perfect)</option>
+                                <option value="1500-1590">1500-1590</option>
+                                <option value="1400-1490">1400-1490</option>
+                                <option value="1300-1390">1300-1390</option>
+                                <option value="1200-1290">1200-1290</option>
+                                <option value="1100-1190">1100-1190</option>
+                                <option value="1000-1090">1000-1090</option>
+                                <option value="900-990">900-990</option>
+                                <option value="below-900">Below 900</option>
+                            </select>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            When will you graduate? <span class="required">*</span>
-                        </label>
-                        <div class="grid-2">
-                            <select name="graduationMonth" id="graduationMonth" class="form-select" required>
-                                <option value="">Select Month</option>
-                                <option value="January">January</option>
-                                <option value="February">February</option>
-                                <option value="March">March</option>
-                                <option value="April">April</option>
-                                <option value="May">May</option>
-                                <option value="June">June</option>
-                                <option value="July">July</option>
-                                <option value="August">August</option>
-                                <option value="September">September</option>
-                                <option value="October">October</option>
-                                <option value="November">November</option>
-                                <option value="December">December</option>
-                            </select>
-                            <select name="graduationYear" id="graduationYear" class="form-select" required>
-                                <option value="">Select Year</option>
-                                <!-- Years will be populated by JavaScript -->
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">ACT Score</label>
+                            <select name="actScore" id="actScore" class="form-select">
+                                <option value="">Not taken/Don't know</option>
+                                <option value="36">36 (Perfect)</option>
+                                <option value="34-35">34-35</option>
+                                <option value="32-33">32-33</option>
+                                <option value="30-31">30-31</option>
+                                <option value="28-29">28-29</option>
+                                <option value="26-27">26-27</option>
+                                <option value="24-25">24-25</option>
+                                <option value="22-23">22-23</option>
+                                <option value="20-21">20-21</option>
+                                <option value="below-20">Below 20</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Test Scores -->
+                <!-- College Preferences -->
                 <div class="form-section">
-                    <h3><span class="section-icon">📝</span> Standardized Tests</h3>
+                    <h3><span class="section-icon">🎯</span> College Preferences</h3>
                     <div class="form-group">
-                        <label class="form-label">
-                            Have you taken the ACT or SAT? <span class="required">*</span>
-                        </label>
-                        <div class="radio-group">
+                        <label class="form-label">What types of colleges interest you most?</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
                             <label class="radio-option">
-                                <input type="radio" name="testTaken" value="yes" required />
-                                <span>✅ Yes</span>
+                                <input type="checkbox" name="collegeTypes" value="public-universities" />
+                                <span>Public Universities</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="testTaken" value="no" required />
-                                <span>❌ No</span>
+                                <input type="checkbox" name="collegeTypes" value="private-universities" />
+                                <span>Private Universities</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="collegeTypes" value="liberal-arts-colleges" />
+                                <span>Liberal Arts Colleges</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="collegeTypes" value="community-colleges" />
+                                <span>Community Colleges</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="collegeTypes" value="historically-black" />
+                                <span>HBCUs</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="collegeTypes" value="technical-schools" />
+                                <span>Technical/Trade Schools</span>
                             </label>
                         </div>
+                    </div>
 
-                        <div id="testConditional" class="conditional-section">
-                            <label class="form-label">Enter your score(s) and specify which test:</label>
-                            <input
-                                type="text"
-                                name="testScores"
-                                class="form-input"
-                                placeholder="e.g., SAT: 1450, ACT: 32"
-                            />
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Preferred College Size</label>
+                            <select name="collegeSize" id="collegeSize" class="form-select">
+                                <option value="">No preference</option>
+                                <option value="very-small">Very Small (Under 1,000)</option>
+                                <option value="small">Small (1,000-5,000)</option>
+                                <option value="medium">Medium (5,000-15,000)</option>
+                                <option value="large">Large (15,000-30,000)</option>
+                                <option value="very-large">Very Large (30,000+)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location Preference</label>
+                            <select name="locationPreference" id="locationPreference" class="form-select">
+                                <option value="">No preference</option>
+                                <option value="hometown">Close to home (within 2 hours)</option>
+                                <option value="in-state">Anywhere in my state</option>
+                                <option value="regional">Regional (neighboring states)</option>
+                                <option value="national">Anywhere in the US</option>
+                                <option value="international">Open to international</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Campus Setting Preference</label>
+                            <select name="campusSetting" id="campusSetting" class="form-select">
+                                <option value="">No preference</option>
+                                <option value="urban">Urban (in a city)</option>
+                                <option value="suburban">Suburban</option>
+                                <option value="small-town">Small town</option>
+                                <option value="rural">Rural</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Annual College Budget</label>
+                            <select name="budgetRange" id="budgetRange" class="form-select">
+                                <option value="">Prefer not to say</option>
+                                <option value="under-10k">Under $10,000</option>
+                                <option value="10k-20k">$10,000 - $20,000</option>
+                                <option value="20k-30k">$20,000 - $30,000</option>
+                                <option value="30k-40k">$30,000 - $40,000</option>
+                                <option value="40k-50k">$40,000 - $50,000</option>
+                                <option value="50k-60k">$50,000 - $60,000</option>
+                                <option value="over-60k">Over $60,000</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Major -->
+                <!-- Academic Interests & Career Goals -->
                 <div class="form-section">
-                    <h3><span class="section-icon">🎯</span> Academic Goals</h3>
+                    <h3><span class="section-icon">💡</span> Academic Interests & Career Goals</h3>
                     <div class="form-group">
-                        <label class="form-label">
-                            What do you intend to major in? <span class="required">*</span>
-                        </label>
-                        <select name="intendedMajor" id="intendedMajor" class="form-select" required>
-                            <option value="">Select Major</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Business">Business</option>
-                            <option value="Medicine/Pre-Med">Medicine/Pre-Med</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Psychology">Psychology</option>
-                            <option value="English">English</option>
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Economics">Economics</option>
-                            <option value="Political Science">Political Science</option>
-                            <option value="Art">Art</option>
-                            <option value="Music">Music</option>
-                            <option value="History">History</option>
-                            <option value="Undecided">Undecided</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        <label class="form-label">Academic Areas of Interest</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="computer-science" />
+                                <span>Computer Science & IT</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="engineering" />
+                                <span>Engineering</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="business" />
+                                <span>Business & Entrepreneurship</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="health-sciences" />
+                                <span>Health Sciences & Medicine</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="arts" />
+                                <span>Arts & Design</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="social-sciences" />
+                                <span>Social Sciences</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="humanities" />
+                                <span>Humanities & Literature</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="academicInterests" value="physical-sciences" />
+                                <span>Physical Sciences</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Career Goals & Interests</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="entrepreneur" />
+                                <span>Start my own business</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="corporate" />
+                                <span>Work in corporate America</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="healthcare" />
+                                <span>Healthcare professional</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="research" />
+                                <span>Research & Academia</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="nonprofit" />
+                                <span>Work for a nonprofit</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="careerGoals" value="unsure-career" />
+                                <span>Still exploring options</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extracurriculars & Special Considerations -->
+                <div class="form-section">
+                    <h3><span class="section-icon">⭐</span> Activities & Special Considerations</h3>
+                    <div class="form-group">
+                        <label class="form-label">Extracurricular Activities & Interests</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="varsity-sports" />
+                                <span>Varsity Sports</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="performing-arts" />
+                                <span>Performing Arts</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="student-government" />
+                                <span>Student Government/Leadership</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="volunteer-work" />
+                                <span>Volunteer Work</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="academic-clubs" />
+                                <span>Academic Clubs</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="extracurriculars" value="part-time-job" />
+                                <span>Part-time Job</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Financial Aid Considerations</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label class="radio-option">
+                                <input type="checkbox" name="financialAid" value="need-aid" />
+                                <span>Will need financial aid</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="financialAid" value="merit-scholarships" />
+                                <span>Interested in merit scholarships</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="financialAid" value="athletic-scholarships" />
+                                <span>Interested in athletic scholarships</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="financialAid" value="work-study" />
+                                <span>Open to work-study programs</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Special Considerations</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label class="radio-option">
+                                <input type="checkbox" name="specialConsiderations" value="first-generation" />
+                                <span>First-generation college student</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="specialConsiderations" value="accessibility-needs" />
+                                <span>Accessibility accommodations needed</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="specialConsiderations" value="lgbtq-friendly" />
+                                <span>LGBTQ+ friendly campus important</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="checkbox" name="specialConsiderations" value="diverse-campus" />
+                                <span>Diverse campus community important</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="form-section">
+                    <h3><span class="section-icon">💭</span> Additional Information</h3>
+                    <div class="form-group">
+                        <label class="form-label">What worries you most about college?</label>
+                        <textarea
+                            name="collegeWorries"
+                            id="collegeWorries"
+                            class="form-textarea"
+                            placeholder="Share your concerns or worries about college..."
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Any additional information you'd like to share?</label>
+                        <textarea
+                            name="additionalInfo"
+                            id="additionalInfo"
+                            class="form-textarea"
+                            placeholder="Share anything else we should know to help you..."
+                            rows="4"
+                        ></textarea>
                     </div>
                 </div>
 
@@ -865,9 +1342,10 @@
             uploadBytes, 
             getDownloadURL 
         } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js';
-        import { 
-            getAuth, 
-            onAuthStateChanged 
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
         } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
 
         // Firebase configuration
@@ -893,9 +1371,33 @@
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             updateAuthBanner(user);
-            updateAuthUI(user);
-            
+
             if (user) {
+                // Load user profile data for avatar and name
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+
+                        // Update avatar
+                        if (userData.profilePhotoURL) {
+                            const navUserAvatar = document.getElementById('navUserAvatar');
+                            if (navUserAvatar) {
+                                navUserAvatar.src = userData.profilePhotoURL;
+                            }
+                        }
+
+                        // Update dropdown with user data
+                        const dropdownName = document.getElementById('dropdownName');
+                        if (dropdownName) {
+                            dropdownName.textContent = userData.name || user.displayName || user.email.split('@')[0];
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading user profile:', error);
+                }
+
+                updateAuthUI(user);
                 await loadExistingData(user.uid);
             } else {
                 // Redirect to login if not authenticated
@@ -918,19 +1420,74 @@
         }
 
         function updateAuthUI(user) {
-            const authToggle = document.getElementById('authToggle');
-            const notLoggedIn = document.getElementById('notLoggedIn');
-            const loggedIn = document.getElementById('loggedIn');
-            
+            const navUserAvatar = document.getElementById('navUserAvatar');
+            const profileLoading = document.getElementById('profileLoading');
+            const dropdownName = document.getElementById('dropdownName');
+            const dropdownEmail = document.getElementById('dropdownEmail');
+
             if (user) {
-                authToggle.textContent = 'Account';
-                if (notLoggedIn) notLoggedIn.style.display = 'none';
-                if (loggedIn) loggedIn.style.display = 'block';
+                // Hide loading spinner
+                if (profileLoading) profileLoading.style.display = 'none';
+
+                // Show avatar
+                if (navUserAvatar) navUserAvatar.style.display = 'block';
+
+                // Update dropdown header
+                if (dropdownName) {
+                    dropdownName.textContent = user.displayName || user.email.split('@')[0];
+                }
+                if (dropdownEmail) {
+                    dropdownEmail.textContent = user.email;
+                }
             } else {
-                authToggle.textContent = 'Login/Sign Up';
-                if (notLoggedIn) notLoggedIn.style.display = 'block';
-                if (loggedIn) loggedIn.style.display = 'none';
+                // Show loading
+                if (profileLoading) profileLoading.style.display = 'block';
+                if (navUserAvatar) navUserAvatar.style.display = 'none';
             }
+        }
+
+        // Dropdown toggle functionality
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        if (profileButton && dropdownMenu) {
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+                profileDropdown.classList.toggle('open');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!profileDropdown.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                    profileDropdown.classList.remove('open');
+                }
+            });
+
+            // Close dropdown when clicking a link
+            dropdownMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    dropdownMenu.classList.remove('show');
+                    profileDropdown.classList.remove('open');
+                });
+            });
+        }
+
+        // Logout functionality
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('❌ Error signing out:', error);
+                    alert('Error signing out. Please try again.');
+                }
+            });
         }
 
         // Load existing questionnaire data if available
@@ -958,66 +1515,71 @@
         // Populate form with existing data
         function populateForm(data) {
             // Basic fields
+            if (data.currentGradeLevel) document.getElementById('currentGradeLevel').value = data.currentGradeLevel;
+            if (data.expectedGraduation) document.getElementById('expectedGraduation').value = data.expectedGraduation;
             if (data.applicationTimeline) document.getElementById('applicationTimeline').value = data.applicationTimeline;
+
             if (data.targetSchools && Array.isArray(data.targetSchools)) {
                 document.getElementById('targetSchools').value = data.targetSchools.join(', ');
             }
-            if (data.unweightedGPA) document.getElementById('unweightedGPA').value = data.unweightedGPA;
-            if (data.weightedGPA) document.getElementById('weightedGPA').value = data.weightedGPA;
-            if (data.graduationMonth) document.getElementById('graduationMonth').value = data.graduationMonth;
-            if (data.graduationYear) document.getElementById('graduationYear').value = data.graduationYear;
-            if (data.intendedMajor) document.getElementById('intendedMajor').value = data.intendedMajor;
-            
-            // Radio buttons
-            if (data.applicationStarted) {
-                const radio = document.querySelector(`input[name="applicationStarted"][value="${data.applicationStarted}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    toggleConditionalSection('applicationConditional', data.applicationStarted === 'yes');
-                }
+
+            // Academic fields
+            if (data.currentGPA) document.getElementById('currentGPA').value = data.currentGPA;
+            if (data.satScore) document.getElementById('satScore').value = data.satScore;
+            if (data.actScore) document.getElementById('actScore').value = data.actScore;
+
+            // College preferences
+            if (data.collegeSize) document.getElementById('collegeSize').value = data.collegeSize;
+            if (data.locationPreference) document.getElementById('locationPreference').value = data.locationPreference;
+            if (data.campusSetting) document.getElementById('campusSetting').value = data.campusSetting;
+            if (data.budgetRange) document.getElementById('budgetRange').value = data.budgetRange;
+
+            // Checkboxes
+            if (data.collegeTypes && Array.isArray(data.collegeTypes)) {
+                data.collegeTypes.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="collegeTypes"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-            
-            if (data.essayStarted) {
-                const radio = document.querySelector(`input[name="essayStarted"][value="${data.essayStarted}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    toggleConditionalSection('essayConditional', data.essayStarted === 'yes');
-                }
+
+            if (data.academicInterests && Array.isArray(data.academicInterests)) {
+                data.academicInterests.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="academicInterests"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-            
-            if (data.resumeStarted) {
-                const radio = document.querySelector(`input[name="resumeStarted"][value="${data.resumeStarted}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    toggleConditionalSection('resumeConditional', data.resumeStarted === 'yes');
-                }
+
+            if (data.careerGoals && Array.isArray(data.careerGoals)) {
+                data.careerGoals.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="careerGoals"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-            
-            if (data.additionalFiles) {
-                const radio = document.querySelector(`input[name="additionalFiles"][value="${data.additionalFiles}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    toggleConditionalSection('additionalConditional', data.additionalFiles === 'yes');
-                }
+
+            if (data.extracurriculars && Array.isArray(data.extracurriculars)) {
+                data.extracurriculars.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="extracurriculars"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-            
-            if (data.testTaken) {
-                const radio = document.querySelector(`input[name="testTaken"][value="${data.testTaken}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    toggleConditionalSection('testConditional', data.testTaken === 'yes');
-                }
+
+            if (data.financialAid && Array.isArray(data.financialAid)) {
+                data.financialAid.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="financialAid"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-            
+
+            if (data.specialConsiderations && Array.isArray(data.specialConsiderations)) {
+                data.specialConsiderations.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="specialConsiderations"][value="${val}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+
             // Text areas
-            if (data.essayText) {
-                const textarea = document.querySelector('textarea[name="essayText"]');
-                if (textarea) textarea.value = data.essayText;
-            }
-            if (data.testScores) {
-                const input = document.querySelector('input[name="testScores"]');
-                if (input) input.value = data.testScores;
-            }
+            if (data.collegeWorries) document.getElementById('collegeWorries').value = data.collegeWorries;
+            if (data.additionalInfo) document.getElementById('additionalInfo').value = data.additionalInfo;
         }
 
         // Upload file to Firebase Storage
@@ -1037,7 +1599,7 @@
         // Handle form submission - UPDATED VERSION
         async function handleSubmit(event) {
             event.preventDefault();
-            
+
             if (!currentUser) {
                 alert('Please log in to submit the questionnaire.');
                 window.location.href = 'login.html';
@@ -1052,13 +1614,31 @@
                 const formData = new FormData(event.target);
                 const questionnaireData = {};
 
-                // Collect form data
+                // Collect single-value form data
                 for (let [key, value] of formData.entries()) {
-                    if (key.includes('File')) {
-                        continue; // Handle file uploads separately
+                    if (!['collegeTypes', 'academicInterests', 'careerGoals', 'extracurriculars', 'financialAid', 'specialConsiderations'].includes(key)) {
+                        questionnaireData[key] = value;
                     }
-                    questionnaireData[key] = value;
                 }
+
+                // Collect checkbox arrays
+                questionnaireData.collegeTypes = [];
+                formData.getAll('collegeTypes').forEach(val => questionnaireData.collegeTypes.push(val));
+
+                questionnaireData.academicInterests = [];
+                formData.getAll('academicInterests').forEach(val => questionnaireData.academicInterests.push(val));
+
+                questionnaireData.careerGoals = [];
+                formData.getAll('careerGoals').forEach(val => questionnaireData.careerGoals.push(val));
+
+                questionnaireData.extracurriculars = [];
+                formData.getAll('extracurriculars').forEach(val => questionnaireData.extracurriculars.push(val));
+
+                questionnaireData.financialAid = [];
+                formData.getAll('financialAid').forEach(val => questionnaireData.financialAid.push(val));
+
+                questionnaireData.specialConsiderations = [];
+                formData.getAll('specialConsiderations').forEach(val => questionnaireData.specialConsiderations.push(val));
 
                 // Convert targetSchools to array
                 if (questionnaireData.targetSchools) {
@@ -1066,31 +1646,6 @@
                         .split(',')
                         .map(school => school.trim())
                         .filter(school => school.length > 0);
-                }
-
-                // Convert GPA values to numbers
-                if (questionnaireData.unweightedGPA) {
-                    questionnaireData.unweightedGPA = parseFloat(questionnaireData.unweightedGPA);
-                }
-                if (questionnaireData.weightedGPA) {
-                    questionnaireData.weightedGPA = parseFloat(questionnaireData.weightedGPA);
-                }
-
-                // Handle file uploads
-                const files = {
-                    essayFile: event.target.essayFile.files[0],
-                    resumeFile: event.target.resumeFile.files[0],
-                    additionalFile: event.target.additionalFile.files[0]
-                };
-
-                // Upload files and get URLs
-                for (const [fileKey, file] of Object.entries(files)) {
-                    if (file) {
-                        const fileName = `${fileKey}_${Date.now()}_${file.name}`;
-                        const url = await uploadFile(file, currentUser.uid, fileName);
-                        questionnaireData[fileKey + 'URL'] = url;
-                        questionnaireData[fileKey + 'Name'] = file.name;
-                    }
                 }
 
                 // Add metadata
@@ -1107,7 +1662,7 @@
 
                 // Show success message
                 alert('Questionnaire submitted successfully! 🎉\n\nYou will now be redirected to your dashboard.');
-                
+
                 // Update banner
                 const banner = document.getElementById('authBanner');
                 banner.innerHTML = `
@@ -1138,60 +1693,6 @@
 
         // Initialize form
         function initializeForm() {
-            // Populate graduation years
-            const currentYear = new Date().getFullYear();
-            const yearSelect = document.getElementById('graduationYear');
-            
-            for (let i = 0; i < 10; i++) {
-                const year = currentYear + i;
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            }
-
-            // Add event listeners for conditional sections
-            document.querySelectorAll('input[name="applicationStarted"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleConditionalSection('applicationConditional', e.target.value === 'yes');
-                });
-            });
-
-            document.querySelectorAll('input[name="essayStarted"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleConditionalSection('essayConditional', e.target.value === 'yes');
-                });
-            });
-
-            document.querySelectorAll('input[name="resumeStarted"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleConditionalSection('resumeConditional', e.target.value === 'yes');
-                });
-            });
-
-            document.querySelectorAll('input[name="additionalFiles"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleConditionalSection('additionalConditional', e.target.value === 'yes');
-                });
-            });
-
-            document.querySelectorAll('input[name="testTaken"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleConditionalSection('testConditional', e.target.value === 'yes');
-                });
-            });
-
-            // File upload feedback
-            document.querySelectorAll('input[type="file"]').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const label = e.target.nextElementSibling;
-                    if (e.target.files[0]) {
-                        label.textContent = `📎 ${e.target.files[0].name}`;
-                        label.style.color = 'var(--accent-color)';
-                    }
-                });
-            });
-
             // Add form submit listener
             document.getElementById('questionnaire').addEventListener('submit', handleSubmit);
         }
@@ -1212,28 +1713,31 @@
         const starryBg = document.getElementById('starryBg');
 
         // Function to update logo images based on theme
-        function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
-            document.querySelectorAll('.logo-img').forEach(img => {
-                img.src = logoSrc;
-            });
+        function updateNavbarLogo(theme) {
+            const logoImg = document.getElementById('navbarLogo');
+            if (!logoImg) return;
+            if (theme === 'dark') {
+                logoImg.src = 'images/whiteclearcc.png';
+            } else {
+                logoImg.src = 'images/blackcc.png';
+            }
         }
 
         // Load saved theme or default to dark
         const savedTheme = localStorage.getItem('theme') || 'dark';
         body.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
-        updateLogos(savedTheme);
+        updateNavbarLogo(savedTheme);
 
         themeToggle.addEventListener('click', () => {
             const currentTheme = body.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
+
             body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
-            updateLogos(newTheme);
-            
+            updateNavbarLogo(newTheme);
+
             if (newTheme === 'dark') {
                 createStars();
             }
@@ -1247,7 +1751,7 @@
         function createStars() {
             starryBg.innerHTML = '';
             const numStars = 150;
-            
+
             for (let i = 0; i < numStars; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -1268,71 +1772,14 @@
 
         // Add scroll effect to navbar
         window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
+            const navbar = document.querySelector('.cc-navbar');
+            if (navbar && window.scrollY > 50) {
                 navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
-            } else {
+            } else if (navbar) {
                 navbar.style.boxShadow = 'none';
             }
         });
     </script>
 
-</body>
-</html>
-                showMessage('Failed to change password. Please check your current password.', 'error');            }        };        window.downloadData = async function() {            try {                const userData = await getDoc(doc(db, 'users', currentUser.uid));                const data = userData.data();                                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });                const url = URL.createObjectURL(blob);                const a = document.createElement('a');                a.href = url;                a.download = `college-climb-data-${new Date().toISOString().split('T')[0]}.json`;                a.click();                URL.revokeObjectURL(url);                                showMessage('Data downloaded successfully!', 'success');            } catch (error) {                console.error('❌ Error downloading data:', error);                showMessage('Failed to download data. Please try again.', 'error');            }        };        window.deleteAccount = async function() {            const confirmation = prompt('Type "DELETE" to confirm account deletion:');            if (confirmation !== 'DELETE') return;            const password = prompt('Enter your password to confirm:');            if (!password) return;            try {                const credential = EmailAuthProvider.credential(currentUser.email, password);                await reauthenticateWithCredential(currentUser, credential);                                // Delete user data from Firestore                await deleteDoc(doc(db, 'users', currentUser.uid));                                // Delete user account                await deleteUser(currentUser);                                alert('Account deleted successfully. You will be redirected to the home page.');                window.location.href = 'index.html';            } catch (error) {                console.error('❌ Error deleting account:', error);                showMessage('Failed to delete account. Please check your password.', 'error');            }        };        // Logout functionality        document.getElementById('logoutBtn').addEventListener('click', async (e) => {            e.preventDefault();            try {                await signOut(auth);                window.location.href = 'index.html';            } catch (error) {                console.error('❌ Error signing out:', error);            }        });        // Theme toggle functionality        document.getElementById('themeToggle').addEventListener('click', () => {            const body = document.body;            const themeToggle = document.getElementById('themeToggle');            let newTheme;            if (body.getAttribute('data-theme') === 'dark') {                newTheme = 'light';                body.setAttribute('data-theme', 'light');                themeToggle.textContent = '🌙';            } else {                newTheme = 'dark';                body.setAttribute('data-theme', 'dark');                themeToggle.textContent = '☀️';            }            localStorage.setItem('theme', newTheme);            updateNavbarLogo(newTheme); // <-- Add this line        });        function updateNavbarLogo(theme) {            const logoImg = document.getElementById('navbarLogo');            if (!logoImg) return;            if (theme === 'dark') {                logoImg.src = 'images/whiteclearcc.png';            } else {                logoImg.src = 'images/blackcc.png';            }        }        // Initialize theme and logo on page load        const savedTheme = localStorage.getItem('theme') || 'dark';        document.body.setAttribute('data-theme', savedTheme);        document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';        updateNavbarLogo(savedTheme); // <-- Add this line        // Create starry background        function createStars() {            const starryBg = document.getElementById('starryBg');            const numberOfStars = 100;            for (let i = 0; i < numberOfStars; i++) {                const star = document.createElement('div');                star.className = 'star';                star.style.left = Math.random() * 100 + '%';                star.style.top = Math.random() * 100 + '%';                star.style.width = Math.random() * 3 + 1 + 'px';                star.style.height = star.style.width;                star.style.animationDelay = Math.random() * 3 + 's';                starryBg.appendChild(star);            }        }        createStars();        // Scroll animations        const observerOptions = {            threshold: 0.1,            rootMargin: '0px 0px -50px 0px'        };        const observer = new IntersectionObserver((entries) => {                       entries.forEach(entry => {                if (entry.isIntersecting) {                    entry.target.classList.add('visible');                }            });        }, observerOptions);        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));        console.log('✅ Profile page initialized successfully');        // Test Firebase Storage connection        async function testStorageConnection() {            try {                const testRef = ref(storage, 'test-connection.txt');                const testBlob = new Blob(['test'], { type: 'text/plain' });                await uploadBytes(testRef, testBlob);                await deleteObject(testRef);                console.log('✅ Firebase Storage connection successful');            } catch (error) {                console.error('❌ Firebase Storage connection failed:', error);                showMessage('Storage service unavailable. Please refresh the page.', 'error');            }        }
-        // Enhanced saveUserData function
-        async function saveUserData(user) {
-            try {
-                // Update Realtime Database with profile activity
-                await set(dbRef(realtimeDb, "users/" + user.uid), {
-                    email: user.email,
-                    displayName: user.displayName || '',
-                    lastLogin: Date.now(),
-                    online: true,
-                    currentPage: 'profile',
-                    profileLastUpdated: Date.now()
-                });
-            } catch (error) {
-                console.error("❌ Error saving user data:", error);
-            }
-        }
-
-        // Update the personal info form handler
-        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!currentUser) return;
-            
-            try {
-                const formData = {
-                    name: document.getElementById('displayName').value,
-                    phone: document.getElementById('phoneNumber').value,
-                    dateOfBirth: document.getElementById('dateOfBirth').value,
-                    location: document.getElementById('location').value,
-                    updatedAt: new Date()
-                };
-
-                // Update Firestore
-                await updateDoc(doc(db, 'users', currentUser.uid), formData);
-                
-                // Update Realtime Database
-                await update(dbRef(realtimeDb, "users/" + currentUser.uid), {
-                    displayName: formData.name,
-                    lastUpdated: Date.now(),
-                    profileComplete: true
-                });
-
-                showMessage('Personal information updated successfully!', 'success');
-                
-                // Update currentUserData for immediate use
-                Object.assign(currentUserData, formData);
-                updateAuthUI(currentUser);
-                
-            } catch (error) {
-                console.error('❌ Error updating personal info:', error);
-                showMessage('Failed to update personal information. Please try again.', 'error');
-            }
-        });
-    </script>
 </body>
 </html>
