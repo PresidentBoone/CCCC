@@ -2974,13 +2974,31 @@
         }
 
         // Check if user has completed questionnaire
-        function checkQuestionnaireCompletion() {
-            const hasQuestionnaire = window.userData?.questionnaire;
-            const hasTargetSchools = window.userData?.questionnaire?.targetSchools?.length > 0;
-            const hasDismissed = sessionStorage.getItem('questionnairePromptDismissed');
+        async function checkQuestionnaireCompletion() {
+            try {
+                if (!window.currentUser) return false;
 
-            if (!hasQuestionnaire || !hasTargetSchools) {
-                if (!hasDismissed) {
+                // Get fresh user data from Firebase
+                const userDoc = await getDoc(doc(db, 'users', window.currentUser.uid));
+                const userData = userDoc.data();
+
+                // Check if user has dismissed the prompt permanently
+                if (userData?.questionnairePromptDismissed) {
+                    console.log('✅ User has permanently dismissed questionnaire prompt');
+                    return true;
+                }
+
+                // Check for questionnaire data from either questions.html or profile.html
+                const hasQuestionnaire = userData?.questionnaire;
+                const hasBasicProfile = userData?.name && userData?.currentGrade;
+                const hasTargetSchools = userData?.questionnaire?.targetSchools?.length > 0;
+                const hasAcademicInfo = userData?.questionnaire?.currentGradeLevel || userData?.questionnaire?.currentGPA;
+
+                // If user has filled out either the questionnaire OR basic profile info, don't show popup
+                const isProfileComplete = hasQuestionnaire && (hasTargetSchools || hasAcademicInfo || hasBasicProfile);
+
+                if (!isProfileComplete) {
+                    console.log('📋 Profile incomplete, showing questionnaire prompt');
                     // Show questionnaire prompt after a short delay
                     setTimeout(() => {
                         const modal = document.getElementById('questionnairePromptModal');
@@ -2988,10 +3006,15 @@
                             modal.style.display = 'flex';
                         }
                     }, 2000);
+                    return false;
+                } else {
+                    console.log('✅ Profile is complete');
+                    return true;
                 }
+            } catch (error) {
+                console.error('Error checking questionnaire completion:', error);
                 return false;
             }
-            return true;
         }
 
         // Navigate to questionnaire
@@ -2999,13 +3022,30 @@
             window.location.href = 'questions.html';
         }
 
-        // Dismiss questionnaire prompt
-        function dismissQuestionnairePrompt() {
+        // Navigate to profile
+        function goToProfile() {
+            window.location.href = 'profile.html';
+        }
+
+        // Dismiss questionnaire prompt permanently
+        async function dismissQuestionnairePrompt() {
             const modal = document.getElementById('questionnairePromptModal');
             if (modal) {
                 modal.style.display = 'none';
             }
-            sessionStorage.setItem('questionnairePromptDismissed', 'true');
+
+            // Save dismissal to Firebase so it never shows again
+            if (window.currentUser) {
+                try {
+                    await updateDoc(doc(db, 'users', window.currentUser.uid), {
+                        questionnairePromptDismissed: true,
+                        questionnairePromptDismissedAt: new Date()
+                    });
+                    console.log('✅ Questionnaire prompt permanently dismissed in Firebase');
+                } catch (error) {
+                    console.error('Error saving questionnaire prompt dismissal:', error);
+                }
+            }
         }
 
         // Initialize dashboard with real data
@@ -4358,17 +4398,23 @@
             endTour();
         };
 
-        function endTour() {
+        async function endTour() {
             document.getElementById('tourOverlay').classList.remove('active');
             document.getElementById('tourSpotlight').style.display = 'none';
             document.getElementById('tourTooltip').style.display = 'none';
             currentTourStep = 0;
 
-            // Save that user completed tour
+            // Save that user completed tour in Firebase permanently
             if (window.currentUser) {
-                updateDoc(doc(db, 'users', window.currentUser.uid), {
-                    tourCompleted: true
-                });
+                try {
+                    await updateDoc(doc(db, 'users', window.currentUser.uid), {
+                        tourCompleted: true,
+                        tourCompletedAt: new Date()
+                    });
+                    console.log('✅ Tour completion saved to Firebase');
+                } catch (error) {
+                    console.error('Error saving tour completion:', error);
+                }
             }
         }
 
@@ -4522,14 +4568,17 @@
                 const userDoc = await getDoc(doc(db, 'users', window.currentUser.uid));
                 const userData = userDoc.data();
 
-                if (!userData?.tourCompleted && !sessionStorage.getItem('tourShown')) {
-                    sessionStorage.setItem('tourShown', 'true');
+                // Only show tour if user has never completed it (saved in Firebase)
+                if (!userData?.tourCompleted) {
                     setTimeout(() => {
                         const modal = document.getElementById('tourWelcomeModal');
                         if (modal) {
                             modal.style.display = 'flex';
+                            console.log('🎯 Showing welcome tour for first-time user');
                         }
                     }, 3000);
+                } else {
+                    console.log('✅ User has already completed tour');
                 }
             } catch (error) {
                 console.error('Error checking first time user:', error);
@@ -4544,10 +4593,22 @@
             startTour();
         }
 
-        function dismissTourModal() {
+        async function dismissTourModal() {
             const modal = document.getElementById('tourWelcomeModal');
             if (modal) {
                 modal.style.display = 'none';
+            }
+            // Mark tour as completed in Firebase so it never shows again
+            if (window.currentUser) {
+                try {
+                    await updateDoc(doc(db, 'users', window.currentUser.uid), {
+                        tourCompleted: true,
+                        tourDismissedAt: new Date()
+                    });
+                    console.log('✅ Tour marked as completed in Firebase');
+                } catch (error) {
+                    console.error('Error saving tour dismissal:', error);
+                }
             }
         }
 
