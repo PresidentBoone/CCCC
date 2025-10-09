@@ -646,7 +646,7 @@
             border: 2px solid rgba(160, 123, 204, 0.1);
             border-radius: 16px;
             background: var(--primary-bg);
-            color: var (--text-primary);
+            color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             line-height: 1.8;
@@ -661,8 +661,345 @@
         }
 
         .essay-textarea::placeholder {
-            color: var (--text-secondary);
+            color: var(--text-secondary);
             opacity: 0.7;
+        }
+
+        /* Contenteditable essay editor with highlighting */
+        .essay-editing-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .essay-textarea-editable {
+            width: 100%;
+            min-height: 400px;
+            padding: 2rem;
+            border: 2px solid rgba(160, 123, 204, 0.1);
+            border-radius: 16px;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            outline: none;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .essay-textarea-editable:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .essay-textarea-editable:empty:before {
+            content: attr(data-placeholder);
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Text highlighting styles */
+        .highlight-red {
+            background-color: rgba(239, 68, 68, 0.3);
+            border-bottom: 2px solid #ef4444;
+            padding: 2px 0;
+            cursor: help;
+            position: relative;
+        }
+
+        .highlight-yellow {
+            background-color: rgba(245, 158, 11, 0.3);
+            border-bottom: 2px solid #f59e0b;
+            padding: 2px 0;
+            cursor: help;
+            position: relative;
+        }
+
+        .highlight-green {
+            background-color: rgba(16, 185, 129, 0.3);
+            border-bottom: 2px solid #10b981;
+            padding: 2px 0;
+            cursor: help;
+            position: relative;
+        }
+
+        [data-theme="dark"] .highlight-red {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
+        [data-theme="dark"] .highlight-yellow {
+            background-color: rgba(245, 158, 11, 0.2);
+        }
+
+        [data-theme="dark"] .highlight-green {
+            background-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Highlight legend samples */
+        .highlight-sample {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .highlight-sample.highlight-red {
+            background-color: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        .highlight-sample.highlight-yellow {
+            background-color: rgba(245, 158, 11, 0.3);
+            border-color: #f59e0b;
+        }
+
+        .highlight-sample.highlight-green {
+            background-color: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+        }
+
+        .highlight-legend {
+            background: var(--secondary-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            border-bottom: 2px solid var(--secondary-bg);
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            border-top: 2px solid var(--secondary-bg);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(160, 123, 204, 0.1);
+        }
+
+        /* College Selection List */
+        .college-selection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .college-selection-list label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .college-selection-list label:hover {
+            background: rgba(160, 123, 204, 0.1);
+            transform: translateX(5px);
+        }
+
+        .college-selection-list input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Chat Interface Styles */
+        .chat-messages {
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            animation: messageSlideIn 0.3s ease;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .chat-bubble {
+            background: var(--primary-bg);
+            padding: 1rem;
+            border-radius: 16px;
+            max-width: 70%;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .chat-message.user .chat-bubble {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .chat-input-container input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: 12px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-container input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .chat-input-container button {
+            padding: 1rem 1.5rem;
         }
 
         /* AI Feedback Section */
@@ -926,6 +1263,112 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Essay Progress Styles */
+        .essay-progress {
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(160, 123, 204, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(160, 123, 204, 0.5);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--secondary-bg);
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        [data-theme="dark"] .footer {
+            background: var(--accent-bg);
+            border-top-color: rgba(187, 134, 252, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .footer-socials a:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-socials img {
+            width: 18px;
+            height: 18px;
+            filter: invert(1);
+        }
+
+        [data-theme="dark"] .footer-socials img {
+            filter: invert(0.8);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .cc-navbar {
@@ -944,6 +1387,32 @@
 
             .essay-main-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .essay-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .essay-header p {
+                font-size: 1rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .prompt-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .essay-coach-container {
+                padding: 1rem;
             }
         }
     </style>
@@ -1105,12 +1574,37 @@
                             </div>
                         </div>
 
-                        <textarea 
-                            class="essay-textarea" 
-                            id="essayText"
-                            placeholder="Start writing your personal statement here. Remember to be authentic, specific, and showcase what makes you unique..."
-                            oninput="updateWordCount(); saveProgress();">
-                        </textarea>
+                        <!-- Essay editing area with highlighting support -->
+                        <div class="essay-editing-container">
+                            <div
+                                class="essay-textarea-editable"
+                                id="essayText"
+                                contenteditable="true"
+                                data-placeholder="Start writing your personal statement here. Remember to be authentic, specific, and showcase what makes you unique..."
+                                oninput="updateWordCount(); saveProgress(); clearHighlights();">
+                            </div>
+                        </div>
+
+                        <!-- Highlighting Legend -->
+                        <div class="highlight-legend" id="highlightLegend" style="display: none; margin-top: 1rem;">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">
+                                <i class="fas fa-info-circle"></i> AI Feedback Legend:
+                            </div>
+                            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="highlight-sample highlight-red"></span>
+                                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Needs Change</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="highlight-sample highlight-yellow"></span>
+                                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Could Be Better</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="highlight-sample highlight-green"></span>
+                                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Great! Keep This</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1157,6 +1651,11 @@
                         <span id="analyzeBtnText">Analyze My Essay</span>
                     </button>
 
+                    <button class="ai-analysis-btn" id="askAIBtn" onclick="openChatModal()" style="background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);">
+                        <i class="fas fa-comments"></i>
+                        Ask AI Questions
+                    </button>
+
                     <div class="feedback-content" id="feedbackContent">
                         <!-- Overall Score -->
                         <div class="feedback-score" id="overallScore">
@@ -1200,6 +1699,62 @@
                             <!-- Progress for each target school -->
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- College Selection Modal -->
+    <div id="collegeSelectionModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-university"></i> Select Target College(s)</h2>
+                <button class="modal-close" onclick="closeCollegeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Which college(s) is this essay for? This helps me tailor specific advice for those schools.
+                </p>
+                <div id="collegeCheckboxes" class="college-selection-list">
+                    <!-- Will be populated with user's target schools -->
+                </div>
+                <div style="margin-top: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); cursor: pointer;">
+                        <input type="checkbox" id="generalEssayCheckbox" style="width: 18px; height: 18px;">
+                        <span>General/Common App (not school-specific)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCollegeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="startAnalysisWithColleges()">
+                    <i class="fas fa-magic"></i> Analyze Essay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Essay Chat Modal -->
+    <div id="essayChatModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-comments"></i> Essay Coach Chat</h2>
+                <button class="modal-close" onclick="closeChatModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="chatMessages" class="chat-messages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div class="chat-input-container">
+                    <input
+                        type="text"
+                        id="chatInput"
+                        placeholder="Ask me anything about your essay..."
+                        onkeypress="if(event.key==='Enter') sendChatMessage()"
+                    />
+                    <button class="btn btn-primary" onclick="sendChatMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1504,16 +2059,16 @@
             updateWordCount();
         }
 
-        // Update word count and progress
+        // Update word count and progress (works with contenteditable)
         function updateWordCount() {
-            const textarea = document.getElementById('essayText');
-            const text = textarea.value.trim();
+            const essayDiv = document.getElementById('essayText');
+            const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
             const words = text ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
             const characters = text.length;
-            
+
             document.getElementById('wordCount').textContent = words;
             document.getElementById('charCount').textContent = characters;
-            
+
             // Update progress based on word count
             if (window.selectedPrompt) {
                 const progress = Math.min((words / window.selectedPrompt.wordLimit) * 100, 100);
@@ -1522,25 +2077,48 @@
             }
         }
 
+        // Clear all highlights from essay
+        function clearHighlights() {
+            const essayDiv = document.getElementById('essayText');
+            const highlightedElements = essayDiv.querySelectorAll('.highlight-red, .highlight-yellow, .highlight-green');
+
+            highlightedElements.forEach(el => {
+                const parent = el.parentNode;
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            });
+
+            // Hide legend
+            document.getElementById('highlightLegend').style.display = 'none';
+
+            // Normalize the text content
+            essayDiv.normalize();
+        }
+
         // Save progress automatically
         async function saveProgress() {
             if (!window.currentUser || !window.selectedPrompt) return;
-            
+
             try {
+                const essayDiv = document.getElementById('essayText');
+                const content = essayDiv.innerText || essayDiv.textContent || '';
+
                 const essayData = {
                     userId: window.currentUser.uid,
                     type: 'personal-statement',
                     promptId: window.selectedPrompt.id,
                     promptTitle: window.selectedPrompt.title,
-                    content: document.getElementById('essayText').value,
-                    wordCount: document.getElementById('wordCount').textContent,
+                    content: content,
+                    wordCount: parseInt(document.getElementById('wordCount').textContent || '0'),
                     lastUpdated: serverTimestamp(),
                     isDraft: true
                 };
-                
+
                 await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}`), essayData);
                 console.log('📝 Essay progress saved');
-                
+
             } catch (error) {
                 console.error('❌ Error saving progress:', error);
             }
@@ -1593,70 +2171,162 @@
             }
         }
 
-        // Analyze essay with AI
+        // Analyze essay with AI - NEW VERSION with highlighting
         async function analyzeEssay() {
-            const textarea = document.getElementById('essayText');
-            const essayText = textarea.value.trim();
-            
+            const essayDiv = document.getElementById('essayText');
+            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
+
             if (!essayText) {
                 alert('Please write some content before requesting analysis.');
                 return;
             }
-            
+
             if (essayText.split(/\s+/).length < 50) {
                 alert('Please write at least 50 words for a meaningful analysis.');
                 return;
             }
-            
+
+            // Clear any existing highlights
+            clearHighlights();
+
+            // Open college selection modal
+            populateCollegeCheckboxes();
+            document.getElementById('collegeSelectionModal').style.display = 'flex';
+        }
+
+        // Populate college checkboxes with user's target schools
+        function populateCollegeCheckboxes() {
+            const container = document.getElementById('collegeCheckboxes');
+            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+
+            container.innerHTML = '';
+
+            if (targetSchools.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i>
+                        <p style="margin-top: 0.5rem;">No target schools found in your profile.</p>
+                        <p style="font-size: 0.9rem;">You can still get general essay advice!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            targetSchools.forEach(school => {
+                const label = document.createElement('label');
+                label.innerHTML = `
+                    <input type="checkbox" value="${school}" class="college-checkbox">
+                    <span style="color: var(--text-primary); font-weight: 500;">${school}</span>
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        // Close college selection modal
+        function closeCollegeModal() {
+            document.getElementById('collegeSelectionModal').style.display = 'none';
+        }
+
+        // Start analysis with selected colleges
+        async function startAnalysisWithColleges() {
+            const checkboxes = document.querySelectorAll('.college-checkbox:checked');
+            const generalCheckbox = document.getElementById('generalEssayCheckbox');
+
+            const selectedColleges = Array.from(checkboxes).map(cb => cb.value);
+            const isGeneral = generalCheckbox.checked;
+
+            if (selectedColleges.length === 0 && !isGeneral) {
+                alert('Please select at least one college or mark as general essay.');
+                return;
+            }
+
+            // Close modal
+            closeCollegeModal();
+
+            // Start analysis
+            await performAIAnalysisWithHighlighting(selectedColleges, isGeneral);
+        }
+
+        // Perform AI analysis with text highlighting
+        async function performAIAnalysisWithHighlighting(targetColleges, isGeneral) {
             const analyzeBtn = document.getElementById('analyzeBtn');
             const btnText = document.getElementById('analyzeBtnText');
             const feedbackContent = document.getElementById('feedbackContent');
-            
+            const essayDiv = document.getElementById('essayText');
+            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
+
             // Show loading state
             analyzeBtn.disabled = true;
             btnText.innerHTML = '<div class="loading"></div> Analyzing...';
-            
+
             try {
-                // Prepare context for analysis
-                const analysisContext = {
-                    userProfile: {
-                        name: window.userData?.name,
-                        intendedMajor: window.userData?.questionnaire?.intendedMajor,
-                        targetSchools: window.userData?.questionnaire?.targetSchools,
-                        academicInterests: window.userData?.questionnaire?.academicInterests,
-                        extracurriculars: window.userData?.questionnaire?.extracurriculars,
-                        careerGoals: window.userData?.questionnaire?.careerGoals
-                    },
-                    essayData: {
-                        prompt: window.selectedPrompt?.fullText,
-                        promptTitle: window.selectedPrompt?.title,
-                        wordLimit: window.selectedPrompt?.wordLimit,
-                        currentWordCount: parseInt(document.getElementById('wordCount').textContent)
-                    },
-                    analysisRequest: 'comprehensive-essay-analysis'
-                };
-                
+                // Create enhanced prompt with highlighting instructions
+                const enhancedPrompt = `You are an expert college essay coach. Analyze this essay and provide specific feedback with text highlighting.
+
+ESSAY TEXT:
+"${essayText}"
+
+CONTEXT:
+- Student Name: ${window.userData?.name || 'Student'}
+- Intended Major: ${window.userData?.questionnaire?.intendedMajor || 'Not specified'}
+- Target Colleges: ${targetColleges.length > 0 ? targetColleges.join(', ') : 'General/Common App'}
+- Essay Type: ${isGeneral ? 'General/Common App' : 'School-Specific'}
+- Current Word Count: ${essayText.split(/\s+/).length}
+- Word Limit: ${window.selectedPrompt?.wordLimit || 650}
+- Extracurriculars: ${window.userData?.questionnaire?.extracurriculars?.join(', ') || 'Not specified'}
+- Career Goals: ${window.userData?.questionnaire?.careerGoals?.join(', ') || 'Not specified'}
+
+IMPORTANT INSTRUCTIONS:
+1. DO NOT write the essay for the student
+2. DO NOT provide complete rewritten versions
+3. DO provide specific, actionable suggestions
+4. Identify specific phrases/sentences that need work
+
+Please provide feedback in this EXACT format:
+
+HIGHLIGHTS:
+[List 3-5 specific text excerpts with feedback. Use this format:]
+RED: "[exact text from essay]" - [why this needs to change - be specific: cliche, vague, doesn't add value, etc.]
+YELLOW: "[exact text from essay]" - [why this could be better - be specific with improvement suggestions]
+GREEN: "[exact text from essay]" - [why this is great - what makes it strong, encourage more of this]
+
+OVERALL SUGGESTIONS:
+[3-5 specific, actionable suggestions for improving the essay. Be detailed and reference their major, interests, and target schools. DO NOT write sentences for them.]
+
+TAILORED ADVICE:
+${targetColleges.length > 0 ? `[Specific advice for ${targetColleges.join(' and ')} - what do these schools value? How can the essay align better?]` : '[General advice for making this essay stand out]'}
+
+Remember: Guide them to improve their OWN writing. Don't write it for them.`;
+
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Please provide a comprehensive analysis of this college essay: "${essayText}"`,
-                        userProfile: analysisContext.userProfile,
-                        questionnaireData: window.userData?.questionnaire,
-                        essayContext: analysisContext.essayData
+                        message: enhancedPrompt,
+                        userProfile: {
+                            name: window.userData?.name,
+                            intendedMajor: window.userData?.questionnaire?.intendedMajor,
+                            targetSchools: targetColleges
+                        },
+                        questionnaireData: window.userData?.questionnaire
                     })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Analysis request failed');
                 }
-                
+
                 const data = await response.json();
+
+                // Parse and apply highlights
+                applyHighlightsFromAI(data.response, essayText);
+
+                // Display feedback
                 displayEssayAnalysis(data.response);
                 feedbackContent.classList.add('show');
-                
+
             } catch (error) {
                 console.error('❌ Error analyzing essay:', error);
                 alert('Sorry, I had trouble analyzing your essay. Please try again.');
@@ -1665,6 +2335,211 @@
                 btnText.innerHTML = '<i class="fas fa-magic"></i> Analyze My Essay';
             }
         }
+
+        // Apply highlights from AI response
+        function applyHighlightsFromAI(aiResponse, essayText) {
+            const essayDiv = document.getElementById('essayText');
+            const highlightLegend = document.getElementById('highlightLegend');
+
+            // Extract highlight sections from AI response
+            const highlightSection = aiResponse.match(/HIGHLIGHTS:([\s\S]*?)(?=OVERALL SUGGESTIONS:|$)/i);
+
+            if (!highlightSection || !highlightSection[1]) {
+                console.log('No highlights found in AI response');
+                return;
+            }
+
+            const highlights = highlightSection[1].trim();
+
+            // Parse individual highlights (supports both regular quotes "" and smart quotes "")
+            const redMatches = highlights.match(/RED:\s*[""\"]([^""\"]+)[""\"].*?-\s*([^\n]+)/gi) || [];
+            const yellowMatches = highlights.match(/YELLOW:\s*[""\"]([^""\"]+)[""\"].*?-\s*([^\n]+)/gi) || [];
+            const greenMatches = highlights.match(/GREEN:\s*[""\"]([^""\"]+)[""\"].*?-\s*([^\n]+)/gi) || [];
+
+            let htmlContent = essayDiv.innerHTML || essayDiv.textContent;
+
+            // Apply red highlights
+            redMatches.forEach(match => {
+                const textMatch = match.match(/[""\"]([^""\"]+)[""\"]/) ;
+                if (textMatch && textMatch[1]) {
+                    const textToHighlight = textMatch[1].trim();
+                    const escapedText = escapeRegExp(textToHighlight);
+                    const regex = new RegExp(`(${escapedText})`, 'gi');
+                    htmlContent = htmlContent.replace(regex, '<span class="highlight-red" title="Needs improvement">$1</span>');
+                }
+            });
+
+            // Apply yellow highlights
+            yellowMatches.forEach(match => {
+                const textMatch = match.match(/[""\"]([^""\"]+)[""\"]/);
+                if (textMatch && textMatch[1]) {
+                    const textToHighlight = textMatch[1].trim();
+                    const escapedText = escapeRegExp(textToHighlight);
+                    const regex = new RegExp(`(${escapedText})`, 'gi');
+                    htmlContent = htmlContent.replace(regex, '<span class="highlight-yellow" title="Could be better">$1</span>');
+                }
+            });
+
+            // Apply green highlights
+            greenMatches.forEach(match => {
+                const textMatch = match.match(/[""\"]([^""\"]+)[""\"]/);
+                if (textMatch && textMatch[1]) {
+                    const textToHighlight = textMatch[1].trim();
+                    const escapedText = escapeRegExp(textToHighlight);
+                    const regex = new RegExp(`(${escapedText})`, 'gi');
+                    htmlContent = htmlContent.replace(regex, '<span class="highlight-green" title="Great! Keep this">$1</span>');
+                }
+            });
+
+            essayDiv.innerHTML = htmlContent;
+
+            // Show legend
+            highlightLegend.style.display = 'block';
+
+            console.log('✅ Applied highlights to essay');
+        }
+
+        // Helper function to escape regex special characters
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // ============================================
+        // CHAT MODAL FUNCTIONS
+        // ============================================
+
+        // Open chat modal
+        function openChatModal() {
+            const modal = document.getElementById('essayChatModal');
+            const chatMessages = document.getElementById('chatMessages');
+
+            modal.style.display = 'flex';
+
+            // Add welcome message if chat is empty
+            if (chatMessages.children.length === 0) {
+                addChatMessage('ai', `Hi ${window.userData?.name || 'there'}! 👋 I'm here to help with your essay. Ask me anything!`);
+            }
+        }
+
+        // Close chat modal
+        function closeChatModal() {
+            document.getElementById('essayChatModal').style.display = 'none';
+        }
+
+        // Send chat message
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            addChatMessage('user', message);
+
+            // Clear input
+            input.value = '';
+
+            // Get essay context
+            const essayDiv = document.getElementById('essayText');
+            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
+
+            // Show typing indicator
+            const typingId = addChatMessage('ai', '<div class="loading"></div> Thinking...');
+
+            try {
+                // Create context-aware prompt
+                const contextPrompt = `The student is working on a college essay${essayText ? ' (current draft included below)' : ''}.
+
+${essayText ? `CURRENT ESSAY DRAFT:\n"${essayText.substring(0, 1000)}${essayText.length > 1000 ? '...' : ''}"\n\n` : ''}STUDENT'S QUESTION: ${message}
+
+CONTEXT:
+- Student: ${window.userData?.name || 'Student'}
+- Intended Major: ${window.userData?.questionnaire?.intendedMajor || 'Not specified'}
+- Target Schools: ${window.userData?.questionnaire?.targetSchools?.join(', ') || 'Not specified'}
+
+IMPORTANT:
+- Provide helpful, specific guidance
+- DO NOT write the essay for them
+- Reference their essay if they ask about it
+- Keep responses concise (2-3 paragraphs max)`;
+
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: contextPrompt,
+                        userProfile: {
+                            name: window.userData?.name,
+                            intendedMajor: window.userData?.questionnaire?.intendedMajor,
+                            targetSchools: window.userData?.questionnaire?.targetSchools
+                        },
+                        questionnaireData: window.userData?.questionnaire
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Chat request failed');
+                }
+
+                const data = await response.json();
+
+                // Remove typing indicator
+                document.getElementById(typingId)?.remove();
+
+                // Add AI response
+                addChatMessage('ai', data.response);
+
+            } catch (error) {
+                console.error('❌ Error in chat:', error);
+
+                // Remove typing indicator
+                document.getElementById(typingId)?.remove();
+
+                addChatMessage('ai', 'Sorry, I had trouble processing that. Please try again.');
+            }
+        }
+
+        // Add message to chat
+        function addChatMessage(sender, text) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageId = 'msg-' + Date.now();
+
+            const messageDiv = document.createElement('div');
+            messageDiv.id = messageId;
+            messageDiv.className = `chat-message ${sender}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'chat-avatar';
+            avatar.textContent = sender === 'user' ? (window.userData?.name?.[0]?.toUpperCase() || 'U') : '🤖';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble';
+            bubble.innerHTML = text;
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            return messageId;
+        }
+
+        // Expose functions globally for inline onclick handlers
+        window.selectPrompt = selectPrompt;
+        window.updateWordCount = updateWordCount;
+        window.saveProgress = saveProgress;
+        window.analyzeEssay = analyzeEssay;
+        window.clearHighlights = clearHighlights;
+        window.openChatModal = openChatModal;
+        window.closeChatModal = closeChatModal;
+        window.sendChatMessage = sendChatMessage;
+        window.closeCollegeModal = closeCollegeModal;
+        window.startAnalysisWithColleges = startAnalysisWithColleges;
 
         // Helper function to extract category scores from AI feedback
         function extractCategoryScore(text, keyword) {
@@ -1933,7 +2808,7 @@
                 schoolItem.innerHTML = `
                     <div>
                         <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${school}</div>
-                        <div style="font-size: 0.8rem; color: var (--text-secondary);">${progress}% complete</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${progress}% complete</div>
                     </div>
                     <div style="width: 40px; height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden;">
                         <div style="width: ${progress}%; height: 100%; background: ${progressColor};"></div>
@@ -1966,12 +2841,14 @@
                 return;
             }
             
-            const essayText = document.getElementById('essayText').value.trim();
+            const essayDiv = document.getElementById('essayText');
+            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
+
             if (!essayText) {
                 alert('Please write some content before saving.');
                 return;
             }
-            
+
             try {
                 const essayData = {
                     userId: window.currentUser.uid,
@@ -1979,14 +2856,14 @@
                     promptId: window.selectedPrompt.id,
                     promptTitle: window.selectedPrompt.title,
                     content: essayText,
-                    wordCount: parseInt(document.getElementById('wordCount').textContent),
+                    wordCount: parseInt(document.getElementById('wordCount').textContent || '0'),
                     lastUpdated: serverTimestamp(),
                     isDraft: false
                 };
-                
+
                 await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}_${Date.now()}`), essayData);
-                
-                alert('Essay saved successfully!');
+
+                alert('✅ Essay saved successfully!');
                 await loadUserEssays();
                 
             } catch (error) {
@@ -1997,12 +2874,14 @@
 
         // Export essay
         window.exportEssay = function() {
-            const essayText = document.getElementById('essayText').value.trim();
+            const essayDiv = document.getElementById('essayText');
+            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
+
             if (!essayText) {
                 alert('No content to export.');
                 return;
             }
-            
+
             const promptTitle = window.selectedPrompt ? window.selectedPrompt.title : 'Essay';
             const blob = new Blob([essayText], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
@@ -2016,7 +2895,9 @@
         // Clear essay
         window.clearEssay = function() {
             if (confirm('Are you sure you want to clear this essay? This action cannot be undone.')) {
-                document.getElementById('essayText').value = '';
+                const essayDiv = document.getElementById('essayText');
+                essayDiv.innerHTML = '';
+                clearHighlights();
                 updateWordCount();
             }
         };
@@ -2411,11 +3292,15 @@
             console.log(`📝 Essay Coach loaded in ${Math.round(loadTime)}ms`);
         });
 
-        // Initialize navbar on load
+        // Initialize navbar and starry background on load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavbar);
+            document.addEventListener('DOMContentLoaded', () => {
+                initNavbar();
+                createStarryBackground();
+            });
         } else {
             initNavbar();
+            createStarryBackground();
         }
 
     </script>
