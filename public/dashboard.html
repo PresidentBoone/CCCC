@@ -3048,6 +3048,11 @@
             }
         }
 
+        // Expose questionnaire modal functions globally for onclick handlers
+        window.goToQuestionnaire = goToQuestionnaire;
+        window.goToProfile = goToProfile;
+        window.dismissQuestionnairePrompt = dismissQuestionnairePrompt;
+
         // Initialize dashboard with real data
         async function initializeDashboard() {
             try {
@@ -4611,6 +4616,10 @@
                 }
             }
         }
+
+        // Expose tour modal functions globally for onclick handlers
+        window.startTourFromModal = startTourFromModal;
+        window.dismissTourModal = dismissTourModal;
 
         // Global keyboard handler for ESC key
         document.addEventListener('keydown', function(e) {
