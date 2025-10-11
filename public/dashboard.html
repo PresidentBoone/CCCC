@@ -1463,6 +1463,11 @@
                         <span>Essays</span>
                     </a>
                     
+                    <a href="adaptive-timeline.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📅</span>
+                        <span>Timeline</span>
+                    </a>
+                    
                     <a href="scholarship.html" class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">💰</span>
                         <span>Scholarships</span>
@@ -1598,10 +1603,46 @@
                     <h2 class="panel-title">
                         <i class="fas fa-calendar-alt"></i>
                         Your Application Timeline
+                        <button class="btn-secondary" onclick="openFullTimeline()" style="margin-left: auto; padding: 8px 16px; font-size: 0.9rem;">
+                            <i class="fas fa-expand"></i> View Full Timeline
+                        </button>
                     </h2>
                 </div>
-                <div class="timeline" id="applicationTimeline">
-                    <!-- Timeline items will be populated by JavaScript -->
+                
+                <!-- Timeline Controls (Compact) -->
+                <div class="timeline-controls-compact" style="margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                        <div>
+                            <label for="dash-student-type" style="font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; display: block;">Application Type</label>
+                            <select id="dash-student-type" style="padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; width: 100%;">
+                                <option value="">Select Type</option>
+                                <option value="ED">Early Decision</option>
+                                <option value="EA">Early Action</option>
+                                <option value="RD">Regular Decision</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dash-graduation-year" style="font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; display: block;">Graduation Year</label>
+                            <select id="dash-graduation-year" style="padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; width: 100%;">
+                                <option value="">Select Year</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="generateDashboardTimeline()" style="padding: 8px 16px; font-size: 0.9rem;">
+                            <i class="fas fa-sync"></i> Update
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Timeline Content -->
+                <div id="dashboardTimelineContent">
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                        <i class="fas fa-rocket" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <h3 style="margin-bottom: 10px;">Ready to Start Your Journey?</h3>
+                        <p>Select your application type and graduation year to see your personalized timeline.</p>
+                    </div>
                 </div>
             </div>
 
@@ -3012,6 +3053,232 @@
         window.addEventListener('load', function() {
             const loadTime = performance.now();
             console.log(`🚀 Dashboard loaded in ${Math.round(loadTime)}ms`);
+        });
+
+        // ============================================
+        // ADAPTIVE TIMELINE INTEGRATION
+        // ============================================
+
+        // Dashboard Timeline Functions
+        function generateDashboardTimeline() {
+            const appType = document.getElementById('dash-student-type').value;
+            const gradYear = document.getElementById('dash-graduation-year').value;
+            
+            if (!appType || !gradYear) {
+                showNotification('Please select both application type and graduation year', 'warning');
+                return;
+            }
+
+            showTimelineLoading();
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                renderDashboardTimeline(appType, gradYear);
+            }, 1000);
+        }
+
+        function showTimelineLoading() {
+            const content = document.getElementById('dashboardTimelineContent');
+            content.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--accent-color);"></i>
+                    <h3>Generating Your Timeline...</h3>
+                    <p style="color: var(--text-secondary);">Creating your personalized application roadmap</p>
+                </div>
+            `;
+        }
+
+        function renderDashboardTimeline(appType, gradYear) {
+            const content = document.getElementById('dashboardTimelineContent');
+            const currentDate = new Date();
+            const year = parseInt(gradYear) - 1; // Application year
+
+            // Sample timeline data based on application type
+            const timeline = generateSampleTimeline(appType, year);
+            
+            content.innerHTML = `
+                <div class="timeline-summary" style="margin-bottom: 20px; padding: 15px; background: var(--secondary-bg); border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin-bottom: 5px;">${appType === 'ED' ? 'Early Decision' : appType === 'EA' ? 'Early Action' : 'Regular Decision'} Timeline</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Class of ${gradYear}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--accent-color);">${timeline.urgentTasks}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Urgent Tasks</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-items" style="max-height: 400px; overflow-y: auto;">
+                    ${timeline.items.map(item => `
+                        <div class="timeline-item-dashboard" style="
+                            display: flex; 
+                            align-items: center; 
+                            padding: 12px; 
+                            margin-bottom: 10px; 
+                            background: var(--primary-bg); 
+                            border-radius: 8px; 
+                            border-left: 4px solid ${getUrgencyColor(item.urgency)};
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                            <div style="
+                                width: 40px; 
+                                height: 40px; 
+                                border-radius: 50%; 
+                                background: ${getUrgencyColor(item.urgency)}20; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                margin-right: 15px;
+                            ">
+                                <i class="fas fa-${item.icon}" style="color: ${getUrgencyColor(item.urgency)};"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 4px;">${item.title}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">${item.description}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.8rem; color: ${getUrgencyColor(item.urgency)}; font-weight: 600;">
+                                    ${item.deadline}
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px;">
+                                    ${item.urgency.toUpperCase()}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn-primary" onclick="openFullTimeline()" style="width: 100%;">
+                        <i class="fas fa-external-link-alt"></i> Open Full Timeline Manager
+                    </button>
+                </div>
+            `;
+        }
+
+        function generateSampleTimeline(appType, year) {
+            const items = [];
+            let urgentTasks = 0;
+
+            // Generate different timelines based on application type
+            if (appType === 'ED') {
+                items.push(
+                    { 
+                        title: 'Early Decision Application Due', 
+                        description: 'Submit your binding early decision application',
+                        deadline: 'Nov 1', 
+                        urgency: 'urgent', 
+                        icon: 'file-alt' 
+                    },
+                    { 
+                        title: 'Complete Common Application', 
+                        description: 'Finish personal statement and activity list',
+                        deadline: 'Oct 25', 
+                        urgency: 'urgent', 
+                        icon: 'edit' 
+                    },
+                    { 
+                        title: 'Request Recommendation Letters', 
+                        description: 'Ask teachers and counselors for recommendations',
+                        deadline: 'Oct 15', 
+                        urgency: 'overdue', 
+                        icon: 'user-friends' 
+                    }
+                );
+                urgentTasks = 3;
+            } else if (appType === 'EA') {
+                items.push(
+                    { 
+                        title: 'Early Action Applications Due', 
+                        description: 'Submit your non-binding early applications',
+                        deadline: 'Nov 15', 
+                        urgency: 'warning', 
+                        icon: 'file-alt' 
+                    },
+                    { 
+                        title: 'Finalize Essay Drafts', 
+                        description: 'Complete supplemental essays for EA schools',
+                        deadline: 'Nov 1', 
+                        urgency: 'urgent', 
+                        icon: 'pen' 
+                    },
+                    { 
+                        title: 'Send Test Scores', 
+                        description: 'Ensure SAT/ACT scores are sent to all schools',
+                        deadline: 'Oct 30', 
+                        urgency: 'urgent', 
+                        icon: 'graduation-cap' 
+                    }
+                );
+                urgentTasks = 2;
+            } else {
+                items.push(
+                    { 
+                        title: 'Regular Decision Applications Due', 
+                        description: 'Submit all regular decision applications',
+                        deadline: 'Jan 1', 
+                        urgency: 'upcoming', 
+                        icon: 'file-alt' 
+                    },
+                    { 
+                        title: 'Complete FAFSA', 
+                        description: 'Submit financial aid application',
+                        deadline: 'Dec 15', 
+                        urgency: 'warning', 
+                        icon: 'dollar-sign' 
+                    },
+                    { 
+                        title: 'Scholarship Applications', 
+                        description: 'Apply for merit-based scholarships',
+                        deadline: 'Dec 1', 
+                        urgency: 'warning', 
+                        icon: 'award' 
+                    }
+                );
+                urgentTasks = 1;
+            }
+
+            return { items, urgentTasks };
+        }
+
+        function getUrgencyColor(urgency) {
+            switch(urgency) {
+                case 'overdue': return '#ef4444';
+                case 'urgent': return '#f59e0b';
+                case 'warning': return '#f59e0b';
+                case 'upcoming': return '#3b82f6';
+                case 'future': return '#10b981';
+                default: return '#6b7280';
+            }
+        }
+
+        function openFullTimeline() {
+            window.open('/timeline', '_blank');
+        }
+
+        // Initialize dashboard timeline on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-load timeline if preferences are saved
+            const savedAppType = localStorage.getItem('userAppType');
+            const savedGradYear = localStorage.getItem('userGradYear');
+            
+            if (savedAppType && savedGradYear) {
+                document.getElementById('dash-student-type').value = savedAppType;
+                document.getElementById('dash-graduation-year').value = savedGradYear;
+                generateDashboardTimeline();
+            }
+        });
+
+        // Save preferences when changed
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'dash-student-type') {
+                localStorage.setItem('userAppType', e.target.value);
+            }
+            if (e.target.id === 'dash-graduation-year') {
+                localStorage.setItem('userGradYear', e.target.value);
+            }
         });
     </script>
 </body>

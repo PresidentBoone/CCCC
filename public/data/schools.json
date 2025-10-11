@@ -1,0 +1,341 @@
+{
+  "schools": [
+    {
+      "id": "harvard",
+      "name": "Harvard University",
+      "type": "Private",
+      "location": "Cambridge, MA",
+      "acceptanceRate": 3.4,
+      "averageGPA": 4.18,
+      "averageSAT": 1520,
+      "averageACT": 34,
+      "tuition": 57261,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["EA", "RD"],
+      "deadlines": {
+        "EA": "2024-11-01T23:59:59",
+        "RD": "2025-01-01T23:59:59"
+      },
+      "supplements": [
+        {
+          "title": "Harvard Supplemental Essay",
+          "prompt": "Harvard has long recognized the importance of student body diversity of all kinds. We welcome you to write about distinctive aspects of your background, personal development or the intellectual interests you might bring to your Harvard classmates.",
+          "wordLimit": 150
+        }
+      ]
+    },
+    {
+      "id": "stanford",
+      "name": "Stanford University",
+      "type": "Private",
+      "location": "Stanford, CA",
+      "acceptanceRate": 3.9,
+      "averageGPA": 4.18,
+      "averageSAT": 1505,
+      "averageACT": 34,
+      "tuition": 56169,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["REA", "RD"],
+      "deadlines": {
+        "REA": "2024-11-01T23:59:59",
+        "RD": "2025-01-05T23:59:59"
+      },
+      "supplements": [
+        {
+          "title": "What matters to you, and why?",
+          "prompt": "What matters to you, and why?",
+          "wordLimit": 250
+        },
+        {
+          "title": "Stanford Community",
+          "prompt": "The Stanford community is deeply curious and driven to learn in and out of the classroom. Reflect on an idea or experience that makes you genuinely excited about learning.",
+          "wordLimit": 250
+        }
+      ]
+    },
+    {
+      "id": "mit",
+      "name": "Massachusetts Institute of Technology",
+      "type": "Private",
+      "location": "Cambridge, MA",
+      "acceptanceRate": 6.7,
+      "averageGPA": 4.17,
+      "averageSAT": 1535,
+      "averageACT": 35,
+      "tuition": 57986,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["EA", "RD"],
+      "deadlines": {
+        "EA": "2024-11-01T23:59:59",
+        "RD": "2025-01-01T23:59:59"
+      }
+    },
+    {
+      "id": "yale",
+      "name": "Yale University",
+      "type": "Private",
+      "location": "New Haven, CT",
+      "acceptanceRate": 4.6,
+      "averageGPA": 4.14,
+      "averageSAT": 1515,
+      "averageACT": 34,
+      "tuition": 62250,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["SCEA", "RD"],
+      "deadlines": {
+        "SCEA": "2024-11-01T23:59:59",
+        "RD": "2025-01-02T23:59:59"
+      }
+    },
+    {
+      "id": "princeton",
+      "name": "Princeton University",
+      "type": "Private",
+      "location": "Princeton, NJ",
+      "acceptanceRate": 5.8,
+      "averageGPA": 4.16,
+      "averageSAT": 1510,
+      "averageACT": 34,
+      "tuition": 57410,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["SCEA", "RD"],
+      "deadlines": {
+        "SCEA": "2024-11-01T23:59:59",
+        "RD": "2025-01-01T23:59:59"
+      }
+    },
+    {
+      "id": "columbia",
+      "name": "Columbia University",
+      "type": "Private",
+      "location": "New York, NY",
+      "acceptanceRate": 5.1,
+      "averageGPA": 4.12,
+      "averageSAT": 1505,
+      "averageACT": 34,
+      "tuition": 61850,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "RD": "2025-01-01T23:59:59"
+      }
+    },
+    {
+      "id": "upenn",
+      "name": "University of Pennsylvania",
+      "type": "Private",
+      "location": "Philadelphia, PA",
+      "acceptanceRate": 8.1,
+      "averageGPA": 4.04,
+      "averageSAT": 1485,
+      "averageACT": 33,
+      "tuition": 60042,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "RD": "2025-01-05T23:59:59"
+      }
+    },
+    {
+      "id": "duke",
+      "name": "Duke University",
+      "type": "Private",
+      "location": "Durham, NC",
+      "acceptanceRate": 7.7,
+      "averageGPA": 4.13,
+      "averageSAT": 1490,
+      "averageACT": 33,
+      "tuition": 60244,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "RD": "2025-01-02T23:59:59"
+      }
+    },
+    {
+      "id": "northwestern",
+      "name": "Northwestern University",
+      "type": "Private",
+      "location": "Evanston, IL",
+      "acceptanceRate": 9.3,
+      "averageGPA": 4.09,
+      "averageSAT": 1480,
+      "averageACT": 33,
+      "tuition": 58701,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "RD": "2025-01-03T23:59:59"
+      }
+    },
+    {
+      "id": "uchicago",
+      "name": "University of Chicago",
+      "type": "Private",
+      "location": "Chicago, IL",
+      "acceptanceRate": 7.2,
+      "averageGPA": 4.15,
+      "averageSAT": 1505,
+      "averageACT": 34,
+      "tuition": 59298,
+      "hasSupplements": true,
+      "offersInterviews": true,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "EA", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "EA": "2024-11-01T23:59:59",
+        "RD": "2025-01-02T23:59:59"
+      }
+    },
+    {
+      "id": "vanderbilt",
+      "name": "Vanderbilt University",
+      "type": "Private",
+      "location": "Nashville, TN",
+      "acceptanceRate": 9.1,
+      "averageGPA": 4.05,
+      "averageSAT": 1470,
+      "averageACT": 33,
+      "tuition": 56966,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "ED2", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "ED2": "2025-01-01T23:59:59",
+        "RD": "2025-01-01T23:59:59"
+      }
+    },
+    {
+      "id": "berkeley",
+      "name": "University of California, Berkeley",
+      "type": "Public",
+      "location": "Berkeley, CA",
+      "acceptanceRate": 14.5,
+      "averageGPA": 4.0,
+      "averageSAT": 1415,
+      "averageACT": 31,
+      "tuition": 44007,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["RD"],
+      "deadlines": {
+        "RD": "2024-11-30T23:59:59"
+      }
+    },
+    {
+      "id": "ucla",
+      "name": "University of California, Los Angeles",
+      "type": "Public",
+      "location": "Los Angeles, CA",
+      "acceptanceRate": 12.3,
+      "averageGPA": 4.0,
+      "averageSAT": 1405,
+      "averageACT": 31,
+      "tuition": 43473,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["RD"],
+      "deadlines": {
+        "RD": "2024-11-30T23:59:59"
+      }
+    },
+    {
+      "id": "umich",
+      "name": "University of Michigan",
+      "type": "Public",
+      "location": "Ann Arbor, MI",
+      "acceptanceRate": 22.9,
+      "averageGPA": 3.88,
+      "averageSAT": 1435,
+      "averageACT": 32,
+      "tuition": 51200,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["EA", "RD"],
+      "deadlines": {
+        "EA": "2024-11-01T23:59:59",
+        "RD": "2025-02-01T23:59:59"
+      }
+    },
+    {
+      "id": "nyu",
+      "name": "New York University",
+      "type": "Private",
+      "location": "New York, NY",
+      "acceptanceRate": 16.2,
+      "averageGPA": 3.69,
+      "averageSAT": 1450,
+      "averageACT": 32,
+      "tuition": 56500,
+      "hasSupplements": true,
+      "offersInterviews": false,
+      "hasScholarships": true,
+      "applicationTypes": ["ED", "ED2", "RD"],
+      "deadlines": {
+        "ED": "2024-11-01T23:59:59",
+        "ED2": "2025-01-01T23:59:59",
+        "RD": "2025-01-05T23:59:59"
+      }
+    }
+  ],
+  "applicationTypes": {
+    "ED": {
+      "name": "Early Decision",
+      "binding": true,
+      "description": "Binding commitment to attend if accepted"
+    },
+    "EA": {
+      "name": "Early Action",
+      "binding": false,
+      "description": "Non-binding early application"
+    },
+    "REA": {
+      "name": "Restrictive Early Action",
+      "binding": false,
+      "description": "Non-binding but restricts other early applications"
+    },
+    "SCEA": {
+      "name": "Single Choice Early Action",
+      "binding": false,
+      "description": "Non-binding but cannot apply EA elsewhere"
+    },
+    "ED2": {
+      "name": "Early Decision II",
+      "binding": true,
+      "description": "Second round of binding early decision"
+    },
+    "RD": {
+      "name": "Regular Decision",
+      "binding": false,
+      "description": "Standard application timeline"
+    }
+  }
+}

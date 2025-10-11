@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Timeline - CollegeClimb</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .timeline-controls {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        .timeline-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ai-recommendations,
+        .progress-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .timeline-header h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .timeline-content {
+            min-height: 500px;
+        }
+
+        .school-timeline {
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .school-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .school-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .school-info p {
+            opacity: 0.9;
+        }
+
+        .deadline-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .tasks-container {
+            padding: 0;
+        }
+
+        .task-category {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .category-header {
+            background: #f8fafc;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .task-list {
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.3s;
+        }
+
+        .task-item:hover {
+            background: #f8fafc;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .task-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .task-deadline {
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-todo { background: #fef2f2; color: #dc2626; }
+        .status-progress { background: #fef3c7; color: #d97706; }
+        .status-done { background: #f0fdf4; color: #16a34a; }
+
+        .urgency-overdue { background: #fee2e2; color: #dc2626; }
+        .urgency-urgent { background: #fef3c7; color: #d97706; }
+        .urgency-warning { background: #fef3c7; color: #d97706; }
+        .urgency-upcoming { background: #dbeafe; color: #2563eb; }
+        .urgency-future { background: #f0fdf4; color: #16a34a; }
+
+        .recommendation-item {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .recommendation-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-timeline"></i> Adaptive Timeline</h1>
+            <p>Your personalized college application roadmap with AI-powered recommendations</p>
+        </div>
+
+        <!-- Timeline Controls -->
+        <div class="timeline-controls">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="student-type">Application Type</label>
+                    <select id="student-type">
+                        <option value="">Select Application Type</option>
+                        <option value="ED">Early Decision (ED)</option>
+                        <option value="EA">Early Action (EA)</option>
+                        <option value="RD">Regular Decision (RD)</option>
+                        <option value="mixed">Mixed Applications</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="graduation-year">Graduation Year</label>
+                    <select id="graduation-year">
+                        <option value="">Select Year</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="college-list">Add College</label>
+                    <select id="college-list">
+                        <option value="">Choose a college...</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <button class="btn" onclick="generateTimeline()">
+                        <i class="fas fa-magic"></i> Generate Timeline
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Timeline Section -->
+            <div class="timeline-section">
+                <div class="timeline-header">
+                    <h2>Your Application Timeline</h2>
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="switchView('timeline')">Timeline</button>
+                        <button class="view-btn" onclick="switchView('calendar')">Calendar</button>
+                    </div>
+                </div>
+                <div class="timeline-content" id="timeline-content">
+                    <div class="empty-state">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Ready to Start Your Journey?</h3>
+                        <p>Select your application type and graduation year to generate your personalized timeline.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- AI Recommendations -->
+                <div class="ai-recommendations">
+                    <h3><i class="fas fa-brain"></i> AI Recommendations</h3>
+                    <div id="recommendations-content">
+                        <p style="color: #666; text-align: center; padding: 20px;">
+                            Generate your timeline to receive personalized recommendations
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Progress Summary -->
+                <div class="progress-summary">
+                    <h3><i class="fas fa-chart-line"></i> Progress Summary</h3>
+                    <div id="progress-content">
+                        <p style="color: #666; text-align: center; padding: 20px;">
+                            Your progress will appear here once you start working on tasks
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="utils/date-helpers.js"></script>
+    <script src="data/timeline-templates.js"></script>
+    <script src="js/adaptive-timeline.js"></script>
+</body>
+</html>
