@@ -1,14 +1,31 @@
 {
-  "name": "college-climb",
-  "version": "1.0.0",
+  "name": "college-climb-enhanced",
+  "version": "2.0.0",
+  "description": "AI-powered college application platform with comprehensive test prep, essay coaching, and timeline management",
+  "main": "index.js",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'No build step needed'",
-    "start": "vercel dev"
+    "build": "echo 'Static site - no build step needed'",
+    "start": "vercel dev",
+    "deploy": "vercel --prod",
+    "preview": "vercel"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "firebase": "^12.0.0"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "college",
+    "education",
+    "ai",
+    "test-prep",
+    "essay-coaching",
+    "timeline-management"
+  ],
+  "author": "CollegeClimb",
+  "license": "MIT"
 }
