@@ -1857,7 +1857,9 @@
         function populateQuestionnaire(questionnaire) {
             console.log('📋 Populating questionnaire with data:', questionnaire);
             
-            // Single select fields from questions.html
+            // ===== ENHANCED MAPPING LOGIC =====
+            
+            // 1. Single select fields
             const questionFields = {
                 'currentGradeLevel': questionnaire.currentGradeLevel,
                 'expectedGraduation': questionnaire.expectedGraduation || questionnaire.graduationYear,
@@ -1881,20 +1883,72 @@
                 }
             });
 
-            // Handle questionnaire data that needs mapping to profile fields
-            if (questionnaire.applicationTimeline) {
+            // 2. Handle timeline -> graduation year mapping
+            if (questionnaire.applicationTimeline && !questionnaire.expectedGraduation) {
                 const element = document.getElementById('expectedGraduation');
                 if (element && !element.value) {
-                    // Try to extract year from application timeline
                     const yearMatch = questionnaire.applicationTimeline.match(/\d{4}/);
                     if (yearMatch) {
                         element.value = yearMatch[0];
+                        console.log('✅ Mapped timeline to graduation year:', yearMatch[0]);
                     }
                 }
             }
 
-            // Map intended major to academic interests
+            // 3. ENHANCED TEST SCORES MAPPING (from questions.html testScores field)
+            if (questionnaire.testScores && typeof questionnaire.testScores === 'string') {
+                console.log('📊 Processing test scores:', questionnaire.testScores);
+                
+                // Extract SAT score
+                const satMatch = questionnaire.testScores.match(/SAT:?\s*(\d+)/i);
+                if (satMatch) {
+                    const satScore = parseInt(satMatch[1]);
+                    const satElement = document.getElementById('satScore');
+                    if (satElement && !satElement.value) {
+                        let satRange = '';
+                        if (satScore >= 1600) satRange = '1600';
+                        else if (satScore >= 1500) satRange = '1500-1590';
+                        else if (satScore >= 1400) satRange = '1400-1490';
+                        else if (satScore >= 1300) satRange = '1300-1390';
+                        else if (satScore >= 1200) satRange = '1200-1290';
+                        else if (satScore >= 1100) satRange = '1100-1190';
+                        else if (satScore >= 1000) satRange = '1000-1090';
+                        else if (satScore >= 900) satRange = '900-990';
+                        else satRange = 'below-900';
+                        
+                        satElement.value = satRange;
+                        console.log(`✅ Mapped SAT ${satScore} to range:`, satRange);
+                    }
+                }
+                
+                // Extract ACT score
+                const actMatch = questionnaire.testScores.match(/ACT:?\s*(\d+)/i);
+                if (actMatch) {
+                    const actScore = parseInt(actMatch[1]);
+                    const actElement = document.getElementById('actScore');
+                    if (actElement && !actElement.value) {
+                        let actRange = '';
+                        if (actScore >= 36) actRange = '36';
+                        else if (actScore >= 34) actRange = '34-35';
+                        else if (actScore >= 32) actRange = '32-33';
+                        else if (actScore >= 30) actRange = '30-31';
+                        else if (actScore >= 28) actRange = '28-29';
+                        else if (actScore >= 26) actRange = '26-27';
+                        else if (actScore >= 24) actRange = '24-25';
+                        else if (actScore >= 22) actRange = '22-23';
+                        else if (actScore >= 20) actRange = '20-21';
+                        else actRange = 'below-20';
+                        
+                        actElement.value = actRange;
+                        console.log(`✅ Mapped ACT ${actScore} to range:`, actRange);
+                    }
+                }
+            }
+
+            // 4. Map intended major to academic interests
             if (questionnaire.intendedMajor) {
+                console.log('🎓 Mapping intended major:', questionnaire.intendedMajor);
+                
                 const majorToInterestMap = {
                     'Computer Science': 'computer-science',
                     'Engineering': 'engineering',
@@ -1910,79 +1964,44 @@
                     'Political Science': 'social-sciences',
                     'Art': 'arts',
                     'Music': 'arts',
-                    'History': 'humanities'
+                    'History': 'humanities',
+                    'Law': 'law',
+                    'Education': 'education'
                 };
                 
                 const mappedInterest = majorToInterestMap[questionnaire.intendedMajor];
                 if (mappedInterest) {
                     const checkbox = document.querySelector(`input[name="academicInterests"][value="${mappedInterest}"]`);
-                    if (checkbox) {
+                    if (checkbox && !checkbox.checked) {
                         checkbox.checked = true;
+                        console.log(`✅ Auto-selected academic interest: ${mappedInterest}`);
                     }
                 }
             }
 
-            // Handle test scores from questions.html
-            if (questionnaire.testScores) {
-                // Parse test scores string like "SAT: 1450, ACT: 32"
-                const satMatch = questionnaire.testScores.match(/SAT:?\s*(\d+)/i);
-                const actMatch = questionnaire.testScores.match(/ACT:?\s*(\d+)/i);
-                
-                if (satMatch) {
-                    const satScore = parseInt(satMatch[1]);
-                    const satElement = document.getElementById('satScore');
-                    if (satElement && !satElement.value) {
-                        // Map score to range
-                        if (satScore >= 1600) satElement.value = '1600';
-                        else if (satScore >= 1500) satElement.value = '1500-1590';
-                        else if (satScore >= 1400) satElement.value = '1400-1490';
-                        else if (satScore >= 1300) satElement.value = '1300-1390';
-                        else if (satScore >= 1200) satElement.value = '1200-1290';
-                        else if (satScore >= 1100) satElement.value = '1100-1190';
-                        else if (satScore >= 1000) satElement.value = '1000-1090';
-                        else if (satScore >= 900) satElement.value = '900-990';
-                        else satElement.value = 'below-900';
-                    }
-                }
-                
-                if (actMatch) {
-                    const actScore = parseInt(actMatch[1]);
-                    const actElement = document.getElementById('actScore');
-                    if (actElement && !actElement.value) {
-                        // Map score to range
-                        if (actScore >= 36) actElement.value = '36';
-                        else if (actScore >= 34) actElement.value = '34-35';
-                        else if (actScore >= 32) actElement.value = '32-33';
-                        else if (actScore >= 30) actElement.value = '30-31';
-                        else if (actScore >= 28) actElement.value = '28-29';
-                        else if (actScore >= 26) actElement.value = '26-27';
-                        else if (actScore >= 24) actElement.value = '24-25';
-                        else if (actScore >= 22) actElement.value = '22-23';
-                        else if (actScore >= 20) actElement.value = '20-21';
-                        else actElement.value = 'below-20';
-                    }
-                }
-            }
-
-            // Checkbox groups from profile form
+            // 5. Checkbox groups (from both questions.html and profile.html)
             const checkboxGroups = [
-                'collegeTypes', 'academicInterests', 'careerGoals', 'extracurriculars', 
-                'financialAid', 'specialConsiderations'
+                'collegeTypes', 
+                'academicInterests', 
+                'careerGoals', 
+                'extracurriculars', 
+                'financialAid', 
+                'specialConsiderations'
             ];
             
             checkboxGroups.forEach(group => {
                 if (questionnaire[group] && Array.isArray(questionnaire[group])) {
+                    console.log(`✅ Processing ${group}:`, questionnaire[group]);
                     questionnaire[group].forEach(value => {
                         const checkbox = document.querySelector(`input[name="${group}"][value="${value}"]`);
                         if (checkbox) {
                             checkbox.checked = true;
-                            console.log(`✅ Checked ${group}:`, value);
                         }
                     });
                 }
             });
 
-            // Textarea fields
+            // 6. Textarea fields
             if (questionnaire.collegeWorries) {
                 const element = document.getElementById('collegeWorries');
                 if (element) element.value = questionnaire.collegeWorries;
@@ -1993,10 +2012,10 @@
                 if (element) element.value = questionnaire.additionalInfo;
             }
 
-            console.log('📋 Questionnaire population completed');
-
-            // Also display the questionnaire data in read-only view
+            // 7. Display the summary
             displayQuestionnaireData(questionnaire);
+            
+            console.log('✅ Questionnaire population complete');
         }
 
         // Display questionnaire data in read-only format
@@ -2204,77 +2223,128 @@
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
             if (!validTypes.includes(file.type)) {
                 showMessage('Please upload a valid image file (JPG, PNG, GIF, or WebP)', 'error');
+                e.target.value = ''; // Reset file input
                 return;
             }
 
             // Validate file size (10MB max)
             if (file.size > 10 * 1024 * 1024) {
                 showMessage('Image size must be less than 10MB', 'error');
+                e.target.value = ''; // Reset file input
                 return;
             }
 
             try {
-                // Show upload button as disabled
-                const uploadBtn = document.querySelector('.profile-photo-upload');
-                if (uploadBtn) {
-                    uploadBtn.disabled = true;
-                    uploadBtn.textContent = '⏳';
+                // Update all upload buttons to show loading state
+                const uploadButtons = document.querySelectorAll('.profile-photo-upload, button:contains("Choose Photo")');
+                uploadButtons.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.classList.contains('profile-photo-upload')) {
+                        btn.textContent = '⏳';
+                    } else {
+                        btn.textContent = '⏳ Uploading...';
+                    }
+                });
+
+                console.log('📤 Starting photo upload...');
+
+                // Delete old photo if exists
+                if (currentUserData?.profilePhotoURL) {
+                    try {
+                        const oldPhotoRef = ref(storage, currentUserData.profilePhotoURL);
+                        await deleteObject(oldPhotoRef);
+                        console.log('✅ Old photo deleted');
+                    } catch (err) {
+                        console.log('ℹ️ No old photo to delete or already deleted');
+                    }
                 }
 
-                // Create storage reference
-                const storageRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}_${file.name}`);
+                // Create unique filename
+                const timestamp = Date.now();
+                const filename = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                const storageRef = ref(storage, `profile-photos/${currentUser.uid}/${filename}`);
                 
-                // Upload file
-                console.log('📤 Uploading photo to Firebase Storage...');
-                const snapshot = await uploadBytes(storageRef, file);
+                // Upload file with metadata
+                const metadata = {
+                    contentType: file.type,
+                    customMetadata: {
+                        uploadedBy: currentUser.uid,
+                        uploadedAt: new Date().toISOString()
+                    }
+                };
+
+                const snapshot = await uploadBytes(storageRef, file, metadata);
                 console.log('✅ Photo uploaded successfully');
                 
                 // Get download URL
                 const downloadURL = await getDownloadURL(snapshot.ref);
                 console.log('✅ Download URL obtained:', downloadURL);
                 
-                // Update Firestore with new photo URL
+                // Update Firestore
                 await updateDoc(doc(db, 'users', currentUser.uid), {
                     profilePhotoURL: downloadURL,
+                    profilePhotoPath: snapshot.ref.fullPath,
                     profilePhotoUpdated: new Date()
                 });
                 
-                // Update all photo elements immediately
-                const photoElements = [
-                    document.getElementById('profilePhoto'),
-                    document.getElementById('profilePhotoPreview'),
-                    document.getElementById('navUserAvatar')
-                ];
+                console.log('✅ Firestore updated with new photo URL');
+
+                // Update ALL photo elements on the page
+                const photoElements = {
+                    'profilePhoto': downloadURL,
+                    'profilePhotoPreview': downloadURL,
+                    'navUserAvatar': downloadURL
+                };
                 
-                photoElements.forEach(element => {
+                Object.entries(photoElements).forEach(([id, url]) => {
+                    const element = document.getElementById(id);
                     if (element) {
-                        element.src = downloadURL;
-                        if (element.id === 'navUserAvatar') {
+                        element.src = url;
+                        if (id === 'navUserAvatar') {
                             element.style.display = 'block';
                         }
+                        console.log(`✅ Updated ${id}`);
                     }
                 });
                 
                 // Update currentUserData
                 currentUserData.profilePhotoURL = downloadURL;
+                currentUserData.profilePhotoPath = snapshot.ref.fullPath;
                 
-                // Re-enable upload button
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.textContent = '📷';
-                }
+                // Reset file input
+                e.target.value = '';
                 
+                // Show success message
                 showMessage('Profile photo updated successfully!', 'success');
+                
             } catch (error) {
                 console.error('❌ Error uploading photo:', error);
-                showMessage('Failed to upload photo. Please try again.', 'error');
                 
-                // Re-enable upload button
-                const uploadBtn = document.querySelector('.profile-photo-upload');
-                if (uploadBtn) {
-                    uploadBtn.disabled = false;
-                    uploadBtn.textContent = '📷';
+                let errorMessage = 'Failed to upload photo. ';
+                if (error.code === 'storage/unauthorized') {
+                    errorMessage += 'You don\'t have permission to upload files.';
+                } else if (error.code === 'storage/canceled') {
+                    errorMessage += 'Upload was canceled.';
+                } else if (error.code === 'storage/unknown') {
+                    errorMessage += 'An unknown error occurred. Please check your internet connection.';
+                } else {
+                    errorMessage += 'Please try again.';
                 }
+                
+                showMessage(errorMessage, 'error');
+                e.target.value = ''; // Reset file input
+                
+            } finally {
+                // Re-enable all upload buttons
+                const uploadButtons = document.querySelectorAll('.profile-photo-upload, button:contains("Uploading")');
+                uploadButtons.forEach(btn => {
+                    btn.disabled = false;
+                    if (btn.classList.contains('profile-photo-upload')) {
+                        btn.textContent = '📷';
+                    } else {
+                        btn.textContent = '📷 Choose Photo';
+                    }
+                });
             }
         });
 
@@ -2506,7 +2576,7 @@
         async function testStorageConnection() {
             try {
                 const testRef = ref(storage, 'test-connection.txt');
-                const testBlob = new Blob(['test'], { type: 'text/plain' });
+                const testBlob = new Blob([JSON.stringify({ test: 'connection' })], { type: 'application/json' });
                 await uploadBytes(testRef, testBlob);
                 await deleteObject(testRef);
                 console.log('✅ Firebase Storage connection successful');

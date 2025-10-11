@@ -1,0 +1,9 @@
+/public
+    /dashboard.html
+    /dashboard.css
+    /dashboard.js
+    /timeline.js
+    /timeline.css
+    /resources.html
+    /resources.css
+    /resources.js

@@ -773,6 +773,62 @@
             border: 1px solid rgba(160, 123, 204, 0.1);
         }
 
+        /* Enhanced highlight tooltips */
+        .highlight-red:hover::after,
+        .highlight-yellow:hover::after,
+        .highlight-green:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-bg);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: normal;
+            max-width: 300px;
+            width: max-content;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .highlight-red:hover::before,
+        .highlight-yellow:hover::before,
+        .highlight-green:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--accent-bg);
+            margin-bottom: 2px;
+            z-index: 1000;
+        }
+
+        .highlight-red,
+        .highlight-yellow,
+        .highlight-green {
+            cursor: help;
+            transition: all 0.2s ease;
+        }
+
+        .highlight-red:hover {
+            background-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .highlight-yellow:hover {
+            background-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .highlight-green:hover {
+            background-color: rgba(16, 185, 129, 0.5);
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -1081,7 +1137,7 @@
             gap: 1rem;
             margin-bottom: 2rem;
             padding: 1.5rem;
-            background: var(--secondary-bg);
+            background: var (--secondary-bg);
             border-radius: 12px;
             border: 1px solid rgba(160, 123, 204, 0.1);
         }
@@ -1793,906 +1849,1255 @@
 
     <!-- Firebase & JavaScript Integration -->
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+    // Import Firebase modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, updateDoc, deleteDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+        authDomain: "collegeclimb-ai.firebaseapp.com",
+        projectId: "collegeclimb-ai",
+        storageBucket: "collegeclimb-ai.firebasestorage.app",
+        messagingSenderId: "187139654658",
+        appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+        measurementId: "G-E0B2RQM9XS"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // Export to window for use in navbar script
-        window.auth = auth;
-        window.db = db;
-        window.getDoc = getDoc;
-        window.doc = doc;
-        window.setDoc = setDoc;
-        window.serverTimestamp = serverTimestamp;
-        window.collection = collection;
-        window.query = query;
-        window.where = where;
-        window.getDocs = getDocs;
-        window.orderBy = orderBy;
-        window.deleteDoc = deleteDoc;
-        window.signOut = signOut;
-        window.currentUser = null;
-        window.userData = null;
-        window.currentEssay = null;
-        window.selectedPrompt = null;
+    // Global exports
+    window.auth = auth;
+    window.db = db;
+    window.getDoc = getDoc;
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.serverTimestamp = serverTimestamp;
+    window.collection = collection;
+    window.query = query;
+    window.where = where;
+    window.getDocs = getDocs;
+    window.orderBy = orderBy;
+    window.deleteDoc = deleteDoc;
+    window.signOut = signOut;
+    window.addDoc = addDoc;
+    window.updateDoc = updateDoc;
+    window.Timestamp = Timestamp;
 
-        console.log('📝 Essay Coach initialized');
+    // Global state
+    window.currentUser = null;
+    window.userData = null;
+    window.selectedPrompt = null;
+    window.currentDraftId = null;
+    window.lastAnalysis = null;
 
-        // Common Application prompts
-        const commonAppPrompts = [
-            {
-                id: 'ca1',
-                title: 'Background & Story',
-                preview: 'Some students have a background, identity, interest, or talent...',
-                fullText: 'Some students have a background, identity, interest, or talent that is so meaningful they believe their application would be incomplete without it. If this sounds like you, then please share your story.',
-                wordLimit: 650
-            },
-            {
-                id: 'ca2', 
-                title: 'Learning from Obstacles',
-                preview: 'The lessons we take from obstacles we encounter...',
-                fullText: 'The lessons we take from obstacles we encounter and setbacks we experience can be fundamental to later success. Recount a time when you faced a challenge, setback, or failure. How did it affect you, and what did you learn from the experience?',
-                wordLimit: 650
-            },
-            {
-                id: 'ca3',
-                title: 'Challenging a Belief',
-                preview: 'Reflect on a time when you questioned or challenged...',
-                fullText: 'Reflect on a time when you questioned or challenged a belief or idea. What prompted your thinking? What was the outcome?',
-                wordLimit: 650
-            },
-            {
-                id: 'ca4',
-                title: 'Gratitude',
-                preview: 'Reflect on something that someone has done for you...',
-                fullText: 'Reflect on something that someone has done for you that has made you happy or thankful in a surprising way. How has this gratitude affected or motivated you?',
-                wordLimit: 650
-            },
-            {
-                id: 'ca5',
-                title: 'Personal Growth',
-                preview: 'Discuss an accomplishment, event, or realization...',
-                fullText: 'Discuss an accomplishment, event, or realization that sparked a period of personal growth and a new understanding of yourself or others.',
-                wordLimit: 650
-            },
-            {
-                id: 'ca6',
-                title: 'Engaging Topic',
-                preview: 'Describe a topic, idea, or concept you find so engaging...',
-                fullText: 'Describe a topic, idea, or concept you find so engaging that it makes you lose all track of time. Why does it captivate you? What or who do you turn to when you want to learn more?',
-                wordLimit: 650
-            },
-            {
-                id: 'ca7',
-                title: 'Free Choice',
-                preview: 'Share an essay on any topic of your choice...',
-                fullText: 'Share an essay on any topic of your choice. It can be one you\'ve already written, one that responds to a different prompt, or one of your own design.',
-                wordLimit: 650
-            }
-        ];
+    console.log('📝 Essay Coach initializing...');
 
-        // School-specific prompts database
-        const schoolPrompts = {
-            'Harvard University': [
-                'Harvard has long recognized the importance of enrolling a diverse student body. How will the life experiences that shape who you are today enable you to contribute to Harvard?',
-                'Briefly describe an intellectual experience (course, project, book, discussion, paper, poetry, or research topic in engineering, mathematics, science or other modes of inquiry) that has meant the most to you.'
-            ],
-            'Stanford University': [
-                'What is the most significant challenge that society faces today?',
-                'How did you spend your most recent summer break?',
-                'What historical moment or event do you wish you could have witnessed?'
-            ],
-            'MIT': [
-                'We know you lead a busy life, full of activities, many of which are required of you. Tell us about something you do simply for the pleasure of it.',
-                'Although you may not yet know what you want to major in, which department or program at MIT appeals to you and why?'
-            ]
-        };
+    // Common Application prompts
+    const commonAppPrompts = [
+        {
+            id: 'ca1',
+            title: 'Background & Story',
+            preview: 'Some students have a background, identity, interest, or talent...',
+            fullText: 'Some students have a background, identity, interest, or talent that is so meaningful they believe their application would be incomplete without it. If this sounds like you, then please share your story.',
+            wordLimit: 650
+        },
+        {
+            id: 'ca2', 
+            title: 'Learning from Obstacles',
+            preview: 'The lessons we take from obstacles we encounter...',
+            fullText: 'The lessons we take from obstacles we encounter and setbacks we experience can be fundamental to later success. Recount a time when you faced a challenge, setback, or failure. How did it affect you, and what did you learn from the experience?',
+            wordLimit: 650
+        },
+        {
+            id: 'ca3',
+            title: 'Challenging a Belief',
+            preview: 'Reflect on a time when you questioned or challenged...',
+            fullText: 'Reflect on a time when you questioned or challenged a belief or idea. What prompted your thinking? What was the outcome?',
+            wordLimit: 650
+        },
+        {
+            id: 'ca4',
+            title: 'Gratitude',
+            preview: 'Reflect on something that someone has done for you...',
+            fullText: 'Reflect on something that someone has done for you that has made you happy or thankful in a surprising way. How has this gratitude affected or motivated you?',
+            wordLimit: 650
+        },
+        {
+            id: 'ca5',
+            title: 'Personal Growth',
+            preview: 'Discuss an accomplishment, event, or realization...',
+            fullText: 'Discuss an accomplishment, event, or realization that sparked a period of personal growth and a new understanding of yourself or others.',
+            wordLimit: 650
+        },
+        {
+            id: 'ca6',
+            title: 'Engaging Topic',
+            preview: 'Describe a topic, idea, or concept you find so engaging...',
+            fullText: 'Describe a topic, idea, or concept you find so engaging that it makes you lose all track of time. Why does it captivate you? What or who do you turn to when you want to learn more?',
+            wordLimit: 650
+        },
+        {
+            id: 'ca7',
+            title: 'Free Choice',
+            preview: 'Share an essay on any topic of your choice...',
+            fullText: 'Share an essay on any topic of your choice. It can be one you\'ve already written, one that responds to a different prompt, or one of your own design.',
+            wordLimit: 650
+        }
+    ];
 
-        // Auth state management
-        onAuthStateChanged(auth, async (user) => {
-            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+    // School-specific prompts
+    const schoolPrompts = {
+        'Harvard University': [
+            { text: 'Harvard has long recognized the importance of enrolling a diverse student body. How will the life experiences that shape who you are today enable you to contribute to Harvard?', limit: 200 },
+            { text: 'Briefly describe an intellectual experience that has meant the most to you.', limit: 200 }
+        ],
+        'Stanford University': [
+            { text: 'What is the most significant challenge that society faces today?', limit: 250 },
+            { text: 'How did you spend your most recent summer break?', limit: 250 }
+        ],
+        'MIT': [
+            { text: 'We know you lead a busy life. Tell us about something you do simply for the pleasure of it.', limit: 200 },
+            { text: 'Which department or program at MIT appeals to you and why?', limit: 100 }
+        ],
+        'Yale University': [
+            { text: 'What inspires you?', limit: 200 },
+            { text: 'If you could teach any college course, what would it be?', limit: 200 }
+        ],
+        'Princeton University': [
+            { text: 'What is your sense of purpose?', limit: 250 }
+        ]
+    };
+
+    // Auth state observer
+    onAuthStateChanged(auth, async (user) => {
+        console.log('👤 Auth state:', user ? user.email : 'No user');
+        
+        if (user) {
+            window.currentUser = user;
+            await loadUserData(user);
+            await loadNavbarUserData(user.uid);
+            await initializeEssayCoach();
+        } else {
+            console.log('❌ No user - redirecting to login');
+            window.location.href = 'login.html';
+        }
+    });
+
+    // Load user data from Firestore with full sync
+    async function loadUserData(user) {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
             
-            if (user) {
-                window.currentUser = user;
-                await loadUserData(user);
-                await loadNavbarUserData(user.uid);
-                await initializeEssayCoach();
+            if (userDoc.exists()) {
+                window.userData = userDoc.data();
+                console.log('✅ User data loaded:', {
+                    name: window.userData.name,
+                    hasQuestionnaire: !!window.userData.questionnaire,
+                    targetSchools: window.userData.questionnaire?.targetSchools?.length || 0
+                });
+                personalizeEssayCoach();
             } else {
-                window.location.href = 'login.html';
+                // Create default user document
+                window.userData = {
+                    email: user.email,
+                    name: user.displayName || user.email.split('@')[0],
+                    createdAt: serverTimestamp(),
+                    questionnaire: {}
+                };
+                
+                await setDoc(doc(db, 'users', user.uid), window.userData);
+                console.log('✅ Created new user document');
+            }
+        } catch (error) {
+            console.error('❌ Error loading user data:', error);
+            window.userData = {
+                email: user.email,
+                name: user.displayName || user.email.split('@')[0]
+            };
+        }
+    }
+
+    // Initialize Essay Coach with full data loading
+    async function initializeEssayCoach() {
+        try {
+            console.log('🚀 Initializing Essay Coach features...');
+            
+            loadPersonalStatementPrompts();
+            loadSupplementalPrompts();
+            await loadUserEssays();
+            await loadPastAnalyses();
+            generatePersonalizedTips();
+            updateProgressTracker();
+            await loadMostRecentDraft();
+            
+            console.log('✅ Essay Coach fully initialized');
+            
+        } catch (error) {
+            console.error('❌ Error initializing Essay Coach:', error);
+        }
+    }
+
+    // Personalize interface
+    function personalizeEssayCoach() {
+        const headerMessage = document.getElementById('headerMessage');
+        if (!headerMessage) return;
+        
+        const userData = window.userData;
+        const name = userData?.name || userData?.firstName || 'there';
+        const major = userData?.questionnaire?.intendedMajor;
+        
+        if (major) {
+            headerMessage.textContent = `Hi ${name}! Let's craft compelling essays that showcase your passion for ${major} and your unique story.`;
+        } else {
+            headerMessage.textContent = `Hi ${name}! Let's create essays that truly represent who you are and what you'll bring to college.`;
+        }
+    }
+
+    // Load personal statement prompts
+    function loadPersonalStatementPrompts() {
+        const promptGrid = document.getElementById('personalPromptGrid');
+        if (!promptGrid) return;
+        
+        promptGrid.innerHTML = '';
+        
+        commonAppPrompts.forEach(prompt => {
+            const card = document.createElement('div');
+            card.className = 'prompt-card';
+            card.innerHTML = `
+                <div class="prompt-title">${prompt.title}</div>
+                <div class="prompt-preview">${prompt.preview}</div>
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-color);">
+                    ${prompt.wordLimit} word limit
+                </div>
+            `;
+            card.addEventListener('click', () => selectPrompt(prompt));
+            promptGrid.appendChild(card);
+        });
+        
+        console.log(`✅ Loaded ${commonAppPrompts.length} prompts`);
+    }
+
+    // Load supplemental prompts
+    function loadSupplementalPrompts() {
+        const container = document.getElementById('supplementalPrompts');
+        if (!container) return;
+        
+        const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+        
+        if (targetSchools.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    <i class="fas fa-university" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No target schools yet</p>
+                    <p style="margin-bottom: 1.5rem;">Add schools to your profile to see their essay prompts</p>
+                    <a href="profile.html" class="btn btn-primary" style="text-decoration: none; display: inline-flex;">
+                        <i class="fas fa-plus"></i> Add Schools
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = '';
+        let totalPrompts = 0;
+        
+        targetSchools.forEach(schoolName => {
+            const prompts = schoolPrompts[schoolName];
+            if (prompts) {
+                const section = document.createElement('div');
+                section.style.marginBottom = '2rem';
+                
+                const promptCards = prompts.map((prompt, idx) => `
+                    <div class="prompt-card" onclick="selectSupplementalPrompt('${schoolName}', ${idx})">
+                        <div class="prompt-title">Essay ${idx + 1}</div>
+                        <div class="prompt-preview">${prompt.text.substring(0, 100)}...</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-color);">
+                            ${prompt.limit} word limit
+                        </div>
+                    </div>
+                `).join('');
+                
+                section.innerHTML = `
+                    <h4 style="color: var(--accent-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-university"></i> ${schoolName}
+                    </h4>
+                    <div class="prompt-grid">
+                        ${promptCards}
+                    </div>
+                `;
+                
+                container.appendChild(section);
+                totalPrompts += prompts.length;
             }
         });
+        
+        if (totalPrompts === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No supplemental essay data available for your target schools yet.</p>
+                </div>
+            `;
+        }
+        
+        console.log(`✅ Loaded ${totalPrompts} supplemental prompts`);
+    }
 
-        // Load user data
-        async function loadUserData(user) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                
-                if (userDoc.exists()) {
-                    window.userData = userDoc.data();
-                    console.log('📊 User data loaded:', window.userData);
-                    personalizeEssayCoach();
-                } else {
-                    window.userData = {
-                        email: user.email,
-                        name: user.displayName || user.email.split('@')[0]
-                    };
-                }
-            } catch (error) {
-                console.error('❌ Error loading user data:', error);
+    // Select prompt
+    function selectPrompt(prompt) {
+        document.querySelectorAll('.prompt-card').forEach(card => card.classList.remove('selected'));
+        event.target.closest('.prompt-card')?.classList.add('selected');
+        
+        window.selectedPrompt = prompt;
+        
+        const progressTitle = document.getElementById('essayProgressTitle');
+        if (progressTitle) {
+            progressTitle.textContent = `${prompt.title} (${prompt.wordLimit} words)`;
+        }
+        
+        const essayDiv = document.getElementById('essayText');
+        if (essayDiv && !essayDiv.textContent.trim()) {
+            essayDiv.setAttribute('data-placeholder', 
+                `Prompt: ${prompt.fullText}\n\nStart writing your response here...`);
+        }
+        
+        // Load draft for this specific prompt
+        loadDraftForPrompt(prompt.id);
+        
+        updateWordCount();
+        console.log(`✅ Selected prompt: ${prompt.title}`);
+    }
+
+    // Select supplemental prompt
+    window.selectSupplementalPrompt = function(schoolName, index) {
+        const prompts = schoolPrompts[schoolName];
+        if (!prompts || !prompts[index]) return;
+        
+        const prompt = {
+            id: `${schoolName}_${index}`,
+            title: `${schoolName} - Essay ${index + 1}`,
+            fullText: prompts[index].text,
+            wordLimit: prompts[index].limit,
+            school: schoolName
+        };
+        
+        selectPrompt(prompt);
+        document.querySelector('[onclick*="personal-statement"]')?.click();
+    };
+
+    // Update word count
+    function updateWordCount() {
+        const essayDiv = document.getElementById('essayText');
+        if (!essayDiv) return;
+        
+        const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
+        const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+        const chars = text.length;
+        
+        document.getElementById('wordCount').textContent = words;
+        document.getElementById('charCount').textContent = chars;
+        
+        if (window.selectedPrompt?.wordLimit) {
+            const progress = Math.min((words / window.selectedPrompt.wordLimit) * 100, 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('essayProgressPercent').textContent = Math.round(progress) + '%';
+        }
+    }
+
+    // Clear highlights
+    function clearHighlights() {
+        const essayDiv = document.getElementById('essayText');
+        if (!essayDiv) return;
+        
+        const highlighted = essayDiv.querySelectorAll('.highlight-red, .highlight-yellow, .highlight-green');
+        highlighted.forEach(el => {
+            const parent = el.parentNode;
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
             }
-        }
+            parent.removeChild(el);
+        });
+        
+        const legend = document.getElementById('highlightLegend');
+        if (legend) legend.style.display = 'none';
+        
+        essayDiv.normalize();
+    }
 
-        // Initialize Essay Coach with user data
-        async function initializeEssayCoach() {
-            try {
-                console.log('🚀 Initializing Essay Coach...');
-                
-                loadPersonalStatementPrompts();
-                loadSupplementalPrompts();
-                await loadUserEssays();
-                generatePersonalizedTips();
-                updateProgressTracker();
-                await loadEssayDraft();
-                
-                console.log('✅ Essay Coach initialized');
-                
-            } catch (error) {
-                console.error('❌ Error initializing Essay Coach:', error);
-            }
+    // ENHANCED Auto-save with proper draft management
+    async function saveProgress() {
+        if (!window.currentUser || !window.selectedPrompt) {
+            console.log('⏭️ Skipping auto-save: No user or prompt selected');
+            return;
         }
-
-        // Personalize based on user data
-        function personalizeEssayCoach() {
-            const userData = window.userData;
-            const headerMessage = document.getElementById('headerMessage');
+        
+        try {
+            const essayDiv = document.getElementById('essayText');
+            const content = (essayDiv.innerText || essayDiv.textContent || '').trim();
             
-            if (userData?.name) {
-                const questionnaire = userData.questionnaire;
-                if (questionnaire?.intendedMajor) {
-                    headerMessage.textContent = `Hi ${userData.name}! Let's craft compelling essays that showcase your passion for ${questionnaire.intendedMajor} and your unique story.`;
-                } else {
-                    headerMessage.textContent = `Hi ${userData.name}! Let's create essays that truly represent who you are and what you'll bring to college.`;
-                }
-            }
-        }
-
-        // Load Personal Statement prompts
-        function loadPersonalStatementPrompts() {
-            const promptGrid = document.getElementById('personalPromptGrid');
-            if (!promptGrid) return;
-            
-            promptGrid.innerHTML = '';
-            
-            commonAppPrompts.forEach(prompt => {
-                const promptCard = document.createElement('div');
-                promptCard.className = 'prompt-card';
-                promptCard.onclick = () => selectPrompt(prompt);
-                
-                promptCard.innerHTML = `
-                    <div class="prompt-title">${prompt.title}</div>
-                    <div class="prompt-preview">${prompt.preview}</div>
-                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-color);">
-                        ${prompt.wordLimit} word limit
-                    </div>
-                `;
-                
-                promptGrid.appendChild(promptCard);
-            });
-        }
-
-        // Load supplemental prompts based on target schools
-        function loadSupplementalPrompts() {
-            const supplementalContainer = document.getElementById('supplementalPrompts');
-            if (!supplementalContainer) return;
-            
-            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
-            
-            if (targetSchools.length === 0) {
-                supplementalContainer.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <p>Complete your profile to see school-specific essay prompts for your target colleges.</p>
-                        <a href="profile.html" style="color: var(--accent-color); text-decoration: none;">
-                            Update Profile →
-                        </a>
-                    </div>
-                `;
+            if (!content || content.length < 10) {
+                console.log('⏭️ Skipping auto-save: Content too short');
                 return;
             }
             
-            supplementalContainer.innerHTML = '';
-            targetSchools.forEach(schoolName => {
-                if (schoolPrompts[schoolName]) {
-                    const schoolSection = document.createElement('div');
-                    schoolSection.style.marginBottom = '2rem';
-                    
-                    schoolSection.innerHTML = `
-                        <h4 style="color: var(--accent-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-university"></i> ${schoolName}
-                        </h4>
-                        <div class="prompt-grid">
-                            ${schoolPrompts[schoolName].map((prompt, index) => `
-                                <div class="prompt-card" onclick="selectSupplementalPrompt('${schoolName}', ${index})">
-                                    <div class="prompt-title">Essay ${index + 1}</div>
-                                    <div class="prompt-preview">${prompt.substring(0, 100)}...</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    
-                    supplementalContainer.appendChild(schoolSection);
-                }
-            });
+            const draftId = `${window.currentUser.uid}_${window.selectedPrompt.id}_draft`;
+            window.currentDraftId = draftId;
+            
+            const draftData = {
+                userId: window.currentUser.uid,
+                type: window.selectedPrompt.school ? 'supplemental' : 'personal-statement',
+                school: window.selectedPrompt.school || null,
+                promptId: window.selectedPrompt.id,
+                promptTitle: window.selectedPrompt.title,
+                promptFullText: window.selectedPrompt.fullText,
+                content: content,
+                wordCount: parseInt(document.getElementById('wordCount')?.textContent || '0'),
+                charCount: parseInt(document.getElementById('charCount')?.textContent || '0'),
+                lastUpdated: serverTimestamp(),
+                isDraft: true,
+                version: Date.now()
+            };
+            
+            await setDoc(doc(db, 'essay_drafts', draftId), draftData);
+            
+            console.log('💾 Auto-saved draft:', draftId);
+            
+            // Show subtle save indicator
+            showSaveIndicator();
+            
+        } catch (error) {
+            console.error('❌ Error auto-saving:', error);
         }
+    }
 
-        // Select prompt
-        function selectPrompt(prompt) {
-            document.querySelectorAll('.prompt-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            event.target.closest('.prompt-card').classList.add('selected');
-            window.selectedPrompt = prompt;
-            
-            const textarea = document.getElementById('essayText');
-            const progressTitle = document.getElementById('essayProgressTitle');
-            
-            if (progressTitle) {
-                progressTitle.textContent = `${prompt.title} (${prompt.wordLimit} words)`;
-            }
-            
-            if (textarea && !textarea.textContent.trim()) {
-                textarea.setAttribute('data-placeholder', `Prompt: ${prompt.fullText}\n\nStart writing your response here...`);
-            }
-            
-            updateWordCount();
-        }
+    // Show save indicator
+    function showSaveIndicator() {
+        const wordCountEl = document.querySelector('.word-count');
+        if (!wordCountEl) return;
+        
+        const indicator = document.createElement('span');
+        indicator.textContent = ' ✓ Saved';
+        indicator.style.color = 'var(--success-color)';
+        indicator.style.fontSize = '0.8rem';
+        indicator.style.marginLeft = '0.5rem';
+        indicator.style.opacity = '0';
+        indicator.style.transition = 'opacity 0.3s';
+        indicator.className = 'save-indicator';
+        
+        const existing = wordCountEl.querySelector('.save-indicator');
+        if (existing) existing.remove();
+        
+        wordCountEl.appendChild(indicator);
+        
+        setTimeout(() => indicator.style.opacity = '1', 10);
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+            setTimeout(() => indicator.remove(), 300);
+        }, 2000);
+    }
 
-        // Update word count (fixed for contenteditable)
-        function updateWordCount() {
-            const essayDiv = document.getElementById('essayText');
-            if (!essayDiv) return;
+    // Load draft for specific prompt
+    async function loadDraftForPrompt(promptId) {
+        if (!window.currentUser) return;
+        
+        try {
+            const draftId = `${window.currentUser.uid}_${promptId}_draft`;
+            const draftDoc = await getDoc(doc(db, 'essay_drafts', draftId));
             
-            const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
-            const words = text ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
-            const characters = text.length;
-
-            const wordCountEl = document.getElementById('wordCount');
-            const charCountEl = document.getElementById('charCount');
-            
-            if (wordCountEl) wordCountEl.textContent = words;
-            if (charCountEl) charCountEl.textContent = characters;
-
-            if (window.selectedPrompt) {
-                const progress = Math.min((words / window.selectedPrompt.wordLimit) * 100, 100);
-                const progressFill = document.getElementById('progressFill');
-                const progressPercent = document.getElementById('essayProgressPercent');
-                
-                if (progressFill) progressFill.style.width = progress + '%';
-                if (progressPercent) progressPercent.textContent = Math.round(progress) + '%';
-            }
-        }
-
-        // Clear all highlights
-        function clearHighlights() {
-            const essayDiv = document.getElementById('essayText');
-            if (!essayDiv) return;
-            
-            const highlightedElements = essayDiv.querySelectorAll('.highlight-red, .highlight-yellow, .highlight-green');
-            highlightedElements.forEach(el => {
-                const parent = el.parentNode;
-                while (el.firstChild) {
-                    parent.insertBefore(el.firstChild, el);
-                }
-                parent.removeChild(el);
-            });
-
-            const legend = document.getElementById('highlightLegend');
-            if (legend) legend.style.display = 'none';
-            
-            essayDiv.normalize();
-        }
-
-        // Save progress automatically
-        async function saveProgress() {
-            if (!window.currentUser || !window.selectedPrompt) return;
-
-            try {
+            if (draftDoc.exists()) {
+                const draft = draftDoc.data();
                 const essayDiv = document.getElementById('essayText');
-                const content = essayDiv.innerText || essayDiv.textContent || '';
-
-                const essayData = {
-                    userId: window.currentUser.uid,
-                    type: 'personal-statement',
-                    promptId: window.selectedPrompt.id,
-                    promptTitle: window.selectedPrompt.title,
-                    content: content,
-                    wordCount: parseInt(document.getElementById('wordCount')?.textContent || '0'),
-                    lastUpdated: serverTimestamp(),
-                    isDraft: true
-                };
-
-                await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}`), essayData);
-                console.log('📝 Essay progress saved');
-
-            } catch (error) {
-                console.error('❌ Error saving progress:', error);
-            }
-        }
-
-        // Load essay draft
-        async function loadEssayDraft() {
-            if (!window.currentUser) return;
-            
-            try {
-                const essaysQuery = query(
-                    collection(db, 'essays'),
-                    where('userId', '==', window.currentUser.uid),
-                    where('type', '==', 'personal-statement'),
-                    where('isDraft', '==', true)
-                );
                 
-                const querySnapshot = await getDocs(essaysQuery);
-                
-                if (!querySnapshot.empty) {
-                    const essayDoc = querySnapshot.docs[0];
-                    const essayData = essayDoc.data();
-                    
-                    const essayDiv = document.getElementById('essayText');
-                    if (essayDiv) {
-                        essayDiv.textContent = essayData.content || '';
-                    }
-                    
-                    const prompt = commonAppPrompts.find(p => p.id === essayData.promptId);
-                    if (prompt) {
-                        window.selectedPrompt = prompt;
-                        const progressTitle = document.getElementById('essayProgressTitle');
-                        if (progressTitle) {
-                            progressTitle.textContent = `${prompt.title} (${prompt.wordLimit} words)`;
-                        }
-                        
-                        setTimeout(() => {
-                            const promptCards = document.querySelectorAll('.prompt-card');
-                            promptCards.forEach((card, index) => {
-                                if (commonAppPrompts[index].id === prompt.id) {
-                                    card.classList.add('selected');
-                                }
-                            });
-                        }, 500);
-                    }
-                    
+                if (essayDiv && draft.content) {
+                    essayDiv.textContent = draft.content;
                     updateWordCount();
-                    console.log('📄 Loaded essay draft');
+                    console.log('✅ Loaded draft for prompt:', promptId);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error loading draft:', error);
+        }
+    }
+
+    // Load most recent draft
+    async function loadMostRecentDraft() {
+        if (!window.currentUser) return;
+        
+        try {
+            const q = query(
+                collection(db, 'essay_drafts'),
+                where('userId', '==', window.currentUser.uid),
+                where('isDraft', '==', true),
+                orderBy('lastUpdated', 'desc')
+            );
+            
+            const snapshot = await getDocs(q);
+            
+            if (!snapshot.empty) {
+                const latestDraft = snapshot.docs[0].data();
+                const essayDiv = document.getElementById('essayText');
+                
+                if (essayDiv && latestDraft.content) {
+                    essayDiv.textContent = latestDraft.content;
                 }
                 
-            } catch (error) {
-                console.error('❌ Error loading essay draft:', error);
+                const prompt = commonAppPrompts.find(p => p.id === latestDraft.promptId);
+                if (prompt) {
+                    window.selectedPrompt = prompt;
+                    updateWordCount();
+                    
+                    setTimeout(() => {
+                        const cards = document.querySelectorAll('.prompt-card');
+                        cards.forEach((card, idx) => {
+                            if (commonAppPrompts[idx]?.id === prompt.id) {
+                                card.classList.add('selected');
+                            }
+                        });
+                    }, 500);
+                }
+                
+                console.log('✅ Loaded most recent draft');
             }
+        } catch (error) {
+            console.error('❌ Error loading recent draft:', error);
         }
+    }
 
-        // Generate personalized tips
-        function generatePersonalizedTips() {
-            const tipsContainer = document.getElementById('personalizedTips');
-            if (!tipsContainer) return;
-            
-            const questionnaire = window.userData?.questionnaire;
-            const tips = [];
-            
-            if (questionnaire?.intendedMajor) {
-                tips.push({
-                    icon: 'fas fa-graduation-cap',
-                    title: `${questionnaire.intendedMajor} Focus`,
-                    content: `Since you're interested in ${questionnaire.intendedMajor}, consider including specific examples of how you've explored this field through coursework, projects, or experiences.`
-                });
-            }
-            
-            if (questionnaire?.extracurriculars?.length > 0) {
-                const activities = questionnaire.extracurriculars.slice(0, 2).join(' and ');
-                tips.push({
-                    icon: 'fas fa-star',
-                    title: 'Leverage Your Activities',
-                    content: `Your involvement in ${activities} could provide excellent material for demonstrating leadership, passion, or personal growth in your essays.`
-                });
-            }
-            
+    // Generate tips
+    function generatePersonalizedTips() {
+        const container = document.getElementById('personalizedTips');
+        if (!container) return;
+        
+        const questionnaire = window.userData?.questionnaire;
+        const tips = [];
+        
+        if (questionnaire?.intendedMajor) {
             tips.push({
+                icon: 'fas fa-graduation-cap',
+                title: `${questionnaire.intendedMajor} Focus`,
+                content: `Connect your experiences to ${questionnaire.intendedMajor}. Show specific examples of your passion.`
+            });
+        }
+        
+        if (questionnaire?.extracurriculars?.length > 0) {
+            tips.push({
+                icon: 'fas fa-star',
+                title: 'Leverage Activities',
+                content: `Your ${questionnaire.extracurriculars[0]} involvement is great essay material. Show impact and growth.`
+            });
+        }
+        
+        tips.push(
+            {
                 icon: 'fas fa-edit',
                 title: 'Show, Don\'t Tell',
-                content: 'Use specific examples and anecdotes rather than general statements. Let your experiences demonstrate your qualities.'
-            });
-            
-            tips.push({
-                icon: 'fas fa-clock',
-                title: 'Start Strong',
-                content: 'Your opening paragraph should grab attention. Consider starting with a scene, dialogue, or thought-provoking question.'
-            });
-            
-            tipsContainer.innerHTML = '';
-            tips.forEach(tip => {
-                const tipCard = document.createElement('div');
-                tipCard.className = 'tip-card';
-                tipCard.innerHTML = `
-                    <div class="tip-title">
-                        <i class="${tip.icon}"></i> ${tip.title}
-                    </div>
-                    <div class="tip-content">${tip.content}</div>
-                `;
-                tipsContainer.appendChild(tipCard);
-            });
-        }
-
-        // Load user's essays
-        async function loadUserEssays() {
-            if (!window.currentUser) return;
-            
-            try {
-                const essaysQuery = query(
-                    collection(db, 'essays'),
-                    where('userId', '==', window.currentUser.uid),
-                    orderBy('lastUpdated', 'desc')
-                );
-                
-                const querySnapshot = await getDocs(essaysQuery);
-                const essayList = document.getElementById('essayList');
-                
-                if (!essayList) return;
-                
-                if (querySnapshot.empty) {
-                    essayList.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                            <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                            <p>No essays yet. Start writing your first essay!</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                essayList.innerHTML = '';
-                let completedEssays = 0;
-                
-                querySnapshot.forEach((doc) => {
-                    const essay = doc.data();
-                    if (!essay.isDraft) completedEssays++;
-                    
-                    const essayItem = document.createElement('div');
-                    essayItem.className = 'essay-item';
-                    essayItem.onclick = () => loadEssay(doc.id);
-                    
-                    const wordCount = essay.wordCount || '0';
-                    const lastUpdated = essay.lastUpdated ? 
-                        new Date(essay.lastUpdated.toDate()).toLocaleDateString() : 'Unknown';
-                    
-                    essayItem.innerHTML = `
-                        <div class="essay-info">
-                            <h4>${essay.promptTitle || 'Untitled Essay'}</h4>
-                            <div class="essay-meta">
-                                ${wordCount} words • Last updated: ${lastUpdated}
-                                ${essay.isDraft ? ' • Draft' : ' • Complete'}
-                            </div>
-                        </div>
-                        <div class="essay-actions">
-                            <button class="essay-action-btn" onclick="event.stopPropagation(); editEssay('${doc.id}')" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="essay-action-btn" onclick="event.stopPropagation(); deleteEssay('${doc.id}')" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    essayList.appendChild(essayItem);
-                });
-                
-                const totalCount = document.getElementById('totalEssaysCount');
-                if (totalCount) totalCount.textContent = completedEssays;
-                
-            } catch (error) {
-                console.error('❌ Error loading user essays:', error);
+                content: 'Use vivid scenes and specific moments rather than general statements about yourself.'
+            },
+            {
+                icon: 'fas fa-lightbulb',
+                title: 'Be Authentic',
+                content: 'Write in your natural voice. Admissions officers can spot inauthentic writing instantly.'
             }
-        }
+        );
+        
+        container.innerHTML = tips.map(tip => `
+            <div class="tip-card">
+                <div class="tip-title"><i class="${tip.icon}"></i> ${tip.title}</div>
+                <div class="tip-content">${tip.content}</div>
+            </div>
+        `).join('');
+    }
 
-        // Update progress tracker
-        function updateProgressTracker() {
-            const schoolProgress = document.getElementById('schoolProgress');
-            if (!schoolProgress) return;
+    // ENHANCED Load user essays with proper data sync
+    async function loadUserEssays() {
+        if (!window.currentUser) return;
+        
+        const essayList = document.getElementById('essayList');
+        if (!essayList) return;
+        
+        try {
+            const q = query(
+                collection(db, 'essays'),
+                where('userId', '==', window.currentUser.uid),
+                orderBy('lastUpdated', 'desc')
+            );
             
-            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+            const snapshot = await getDocs(q);
             
-            if (targetSchools.length === 0) {
-                schoolProgress.innerHTML = `
-                    <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-                        Add target schools to track essay progress
+            if (snapshot.empty) {
+                essayList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p style="font-size: 1.1rem;">No saved essays yet</p>
+                        <p style="font-size: 0.9rem;">Start writing and save your first essay!</p>
                     </div>
                 `;
+                document.getElementById('totalEssaysCount').textContent = '0';
                 return;
             }
             
-            schoolProgress.innerHTML = '';
-            targetSchools.forEach(school => {
-                const schoolItem = document.createElement('div');
-                schoolItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--secondary-bg);';
+            essayList.innerHTML = '';
+            let count = 0;
+            
+            snapshot.forEach(docSnapshot => {
+                const essay = docSnapshot.data();
+                count++;
                 
-                const progress = Math.floor(Math.random() * 100);
-                const progressColor = progress >= 75 ? 'var(--success-color)' : 
-                                    progress >= 50 ? 'var(--warning-color)' : 'var(--danger-color)';
+                const lastUpdated = essay.lastUpdated?.toDate ? 
+                    essay.lastUpdated.toDate().toLocaleDateString() : 
+                    'Unknown date';
                 
-                schoolItem.innerHTML = `
+                const item = document.createElement('div');
+                item.className = 'essay-item';
+                item.innerHTML = `
+                    <div class="essay-info">
+                        <h4>${essay.promptTitle || 'Untitled Essay'}</h4>
+                        <div class="essay-meta">
+                            ${essay.wordCount || 0} words • ${lastUpdated}
+                            ${essay.school ? ` • ${essay.school}` : ''}
+                            ${essay.isDraft ? ' • <span style="color: var(--warning-color);">Draft</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="essay-actions">
+                        <button class="essay-action-btn" onclick="window.loadEssay('${docSnapshot.id}')" title="Load">
+                            <i class="fas fa-folder-open"></i>
+                        </button>
+                        <button class="essay-action-btn" onclick="window.deleteEssay('${docSnapshot.id}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                essayList.appendChild(item);
+            });
+            
+            document.getElementById('totalEssaysCount').textContent = count;
+            console.log(`✅ Loaded ${count} essays`);
+            
+        } catch (error) {
+            console.error('❌ Error loading essays:', error);
+            essayList.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--danger-color);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error loading essays. Please refresh.</p>
+                </div>
+            `;
+        }
+    }
+
+    // NEW: Load past AI analyses
+    async function loadPastAnalyses() {
+        if (!window.currentUser) return;
+        
+        try {
+            const q = query(
+                collection(db, 'essay_analyses'),
+                where('userId', '==', window.currentUser.uid),
+                orderBy('timestamp', 'desc')
+            );
+            
+            const snapshot = await getDocs(q);
+            console.log(`✅ Loaded ${snapshot.size} past analyses`);
+            
+            // Store for future restoration
+            window.pastAnalyses = [];
+            snapshot.forEach(doc => {
+                window.pastAnalyses.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            
+        } catch (error) {
+            console.error('❌ Error loading past analyses:', error);
+        }
+    }
+
+    // Update progress tracker
+    function updateProgressTracker() {
+        const container = document.getElementById('schoolProgress');
+        if (!container) return;
+        
+        const schools = window.userData?.questionnaire?.targetSchools || [];
+        
+        if (schools.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; color: var(--text-secondary); padding: 1rem;">
+                    <i class="fas fa-info-circle"></i>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Add target schools to track progress</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = schools.map(school => {
+            const progress = Math.floor(Math.random() * 100);
+            const color = progress >= 75 ? 'var(--success-color)' : 
+                         progress >= 50 ? 'var(--warning-color)' : 'var(--danger-color)';
+            
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--secondary-bg);">
                     <div>
-                        <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${school}</div>
+                        <div style="font-weight: 600; color: var(--text-primary);">${school}</div>
                         <div style="font-size: 0.8rem; color: var(--text-secondary);">${progress}% complete</div>
                     </div>
                     <div style="width: 40px; height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden;">
-                        <div style="width: ${progress}%; height: 100%; background: ${progressColor};"></div>
+                        <div style="width: ${progress}%; height: 100%; background: ${color};"></div>
                     </div>
-                `;
-                
-                schoolProgress.appendChild(schoolItem);
-            });
-        }
+                </div>
+            `;
+        }).join('');
+    }
 
-        // Analyze essay
-        async function analyzeEssay() {
-            const essayDiv = document.getElementById('essayText');
-            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
-
-            if (!essayText) {
-                alert('Please write some content before requesting analysis.');
-                return;
-            }
-
-            if (essayText.split(/\s+/).length < 50) {
-                alert('Please write at least 50 words for a meaningful analysis.');
-                return;
-            }
-
-            clearHighlights();
-            populateCollegeCheckboxes();
-            document.getElementById('collegeSelectionModal').style.display = 'flex';
-        }
-
-        // Populate college checkboxes
-        function populateCollegeCheckboxes() {
-            const container = document.getElementById('collegeCheckboxes');
-            if (!container) return;
-            
-            const targetSchools = window.userData?.questionnaire?.targetSchools || [];
-
-            container.innerHTML = '';
-
-            if (targetSchools.length === 0) {
-                container.innerHTML = `
-                    <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
-                        <i class="fas fa-info-circle"></i>
-                        <p style="margin-top: 0.5rem;">No target schools found in your profile.</p>
-                        <p style="font-size: 0.9rem;">You can still get general essay advice!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            targetSchools.forEach(school => {
-                const label = document.createElement('label');
-                label.innerHTML = `
-                    <input type="checkbox" value="${school}" class="college-checkbox">
-                    <span style="color: var(--text-primary); font-weight: 500;">${school}</span>
-                `;
-                container.appendChild(label);
-            });
-        }
-
-        // Close college modal
-        window.closeCollegeModal = function() {
-            document.getElementById('collegeSelectionModal').style.display = 'none';
-        };
-
-        // Start analysis with colleges
-        window.startAnalysisWithColleges = async function() {
-            const checkboxes = document.querySelectorAll('.college-checkbox:checked');
-            const generalCheckbox = document.getElementById('generalEssayCheckbox');
-
-            const selectedColleges = Array.from(checkboxes).map(cb => cb.value);
-            const isGeneral = generalCheckbox?.checked || false;
-
-            if (selectedColleges.length === 0 && !isGeneral) {
-                alert('Please select at least one college or mark as general essay.');
-                return;
-            }
-
-            closeCollegeModal();
-            await performAIAnalysis(selectedColleges, isGeneral);
-        };
-
-        // Perform AI analysis
-        async function performAIAnalysis(targetColleges, isGeneral) {
-            const analyzeBtn = document.getElementById('analyzeBtn');
-            const btnText = document.getElementById('analyzeBtnText');
-            const feedbackContent = document.getElementById('feedbackContent');
-
-            analyzeBtn.disabled = true;
-            btnText.innerHTML = '<div class="loading"></div> Analyzing...';
-
-            try {
-                const essayDiv = document.getElementById('essayText');
-                const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
-
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: `Analyze this essay: "${essayText}"`,
-                        userProfile: {
-                            name: window.userData?.name,
-                            intendedMajor: window.userData?.questionnaire?.intendedMajor,
-                            targetSchools: targetColleges
-                        }
-                    })
-                });
-
-                if (!response.ok) throw new Error('Analysis failed');
-
-                const data = await response.json();
-                displayEssayAnalysis(data.response);
-                feedbackContent.classList.add('show');
-
-            } catch (error) {
-                console.error('❌ Error analyzing essay:', error);
-                alert('Sorry, I had trouble analyzing your essay. Please try again.');
-            } finally {
-                analyzeBtn.disabled = false;
-                btnText.innerHTML = '<i class="fas fa-magic"></i> Analyze My Essay';
-            }
-        }
-
-        // Display analysis
-        function displayEssayAnalysis(analysisText) {
-            const scoreNumber = document.getElementById('scoreNumber');
-            const scoreTitle = document.getElementById('scoreTitle');
-            const scoreDescription = document.getElementById('scoreDescription');
-            const scoreCircle = document.getElementById('scoreCircle');
-            const feedbackCategories = document.getElementById('feedbackCategories');
-
-            const score = 85;
-            if (scoreNumber) scoreNumber.textContent = score;
-            if (scoreCircle) scoreCircle.className = 'score-circle score-excellent';
-            if (scoreTitle) scoreTitle.textContent = 'Excellent Essay!';
-            if (scoreDescription) scoreDescription.textContent = 'Your essay demonstrates strong personal voice and compelling storytelling.';
-
-            if (feedbackCategories) {
-                feedbackCategories.innerHTML = `
-                    <div class="feedback-category">
-                        <div class="category-header">
-                            <div class="category-title">
-                                <i class="fas fa-robot"></i> AI Detailed Analysis
-                            </div>
-                        </div>
-                        <div class="category-feedback">${analysisText}</div>
-                    </div>
-                `;
-            }
-        }
-
-        // Open chat modal
-        window.openChatModal = function() {
-            const modal = document.getElementById('essayChatModal');
-            const chatMessages = document.getElementById('chatMessages');
-
-            if (modal) modal.style.display = 'flex';
-
-            if (chatMessages && chatMessages.children.length === 0) {
-                addChatMessage('ai', `Hi ${window.userData?.name || 'there'}! 👋 I'm here to help with your essay. Ask me anything!`);
-            }
-        };
-
-        // Close chat modal
-        window.closeChatModal = function() {
-            const modal = document.getElementById('essayChatModal');
-            if (modal) modal.style.display = 'none';
-        };
-
-        // Send chat message
-        window.sendChatMessage = async function() {
-            const input = document.getElementById('chatInput');
-            if (!input) return;
-            
-            const message = input.value.trim();
-            if (!message) return;
-
-            addChatMessage('user', message);
-            input.value = '';
-
-            const typingId = addChatMessage('ai', '<div class="loading"></div> Thinking...');
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: message,
-                        userProfile: { name: window.userData?.name }
-                    })
-                });
-
-                if (!response.ok) throw new Error('Chat failed');
-
-                const data = await response.json();
-                document.getElementById(typingId)?.remove();
-                addChatMessage('ai', data.response);
-
-            } catch (error) {
-                console.error('❌ Error in chat:', error);
-                document.getElementById(typingId)?.remove();
-                addChatMessage('ai', 'Sorry, I had trouble processing that. Please try again.');
-            }
-        };
-
-        // Add chat message
-        function addChatMessage(sender, text) {
-            const chatMessages = document.getElementById('chatMessages');
-            if (!chatMessages) return '';
-            
-            const messageId = 'msg-' + Date.now();
-            const messageDiv = document.createElement('div');
-            messageDiv.id = messageId;
-            messageDiv.className = `chat-message ${sender}`;
-
-            const avatar = document.createElement('div');
-            avatar.className = 'chat-avatar';
-            avatar.textContent = sender === 'user' ? (window.userData?.name?.[0]?.toUpperCase() || 'U') : '🤖';
-
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble';
-            bubble.innerHTML = text;
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(bubble);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            return messageId;
-        }
-
-        // Tab switching
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.essay-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.essay-content').forEach(content => content.classList.remove('active'));
-            const targetContent = document.getElementById(tabId + '-content');
-            if (targetContent) targetContent.classList.add('active');
-        };
-
-        // Save essay
-        window.saveEssay = async function() {
-            if (!window.currentUser || !window.selectedPrompt) {
-                alert('Please select a prompt first.');
-                return;
-            }
-            
-            const essayDiv = document.getElementById('essayText');
-            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
-
-            if (!essayText) {
-                alert('Please write some content before saving.');
-                return;
-            }
-
-            try {
-                await setDoc(doc(db, 'essays', `${window.currentUser.uid}_${window.selectedPrompt.id}_${Date.now()}`), {
-                    userId: window.currentUser.uid,
-                    type: 'personal-statement',
-                    promptId: window.selectedPrompt.id,
-                    promptTitle: window.selectedPrompt.title,
-                    content: essayText,
-                    wordCount: parseInt(document.getElementById('wordCount')?.textContent || '0'),
-                    lastUpdated: serverTimestamp(),
-                    isDraft: false
-                });
-
-                alert('✅ Essay saved successfully!');
-                await loadUserEssays();
-                
-            } catch (error) {
-                console.error('❌ Error saving essay:', error);
-                alert('Failed to save essay. Please try again.');
-            }
-        };
-
-        // Export essay
-        window.exportEssay = function() {
-            const essayDiv = document.getElementById('essayText');
-            const essayText = (essayDiv.innerText || essayDiv.textContent || '').trim();
-
-            if (!essayText) {
-                alert('No content to export.');
-                return;
-            }
-
-            const promptTitle = window.selectedPrompt ? window.selectedPrompt.title : 'Essay';
-            const blob = new Blob([essayText], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${promptTitle.replace(/[^a-z0-9]/gi, '_')}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        };
-
-        // Clear essay
-        window.clearEssay = function() {
-            if (confirm('Are you sure you want to clear this essay? This action cannot be undone.')) {
-                const essayDiv = document.getElementById('essayText');
-                if (essayDiv) essayDiv.innerHTML = '';
-                clearHighlights();
-                updateWordCount();
-            }
-        };
-
-        // Load essay
-        window.loadEssay = async function(essayId) {
-            try {
-                const essayDoc = await getDoc(doc(db, 'essays', essayId));
-                if (essayDoc.exists()) {
-                    const essay = essayDoc.data();
-                    const essayDiv = document.getElementById('essayText');
-                    if (essayDiv) essayDiv.textContent = essay.content || '';
-                    
-                    const prompt = commonAppPrompts.find(p => p.id === essay.promptId);
-                    if (prompt) {
-                        window.selectedPrompt = prompt;
-                        const progressTitle = document.getElementById('essayProgressTitle');
-                        if (progressTitle) progressTitle.textContent = `${prompt.title} (${prompt.wordLimit} words)`;
-                    }
-                    
-                    updateWordCount();
-                    document.querySelector('.essay-tab')?.click();
-                }
-            } catch (error) {
-                console.error('❌ Error loading essay:', error);
-                alert('Failed to load essay.');
-            }
-        };
-
-        // Edit and delete essay
-        window.editEssay = (essayId) => window.loadEssay(essayId);
+    // Analyze essay
+    async function analyzeEssay() {
+        const essayDiv = document.getElementById('essayText');
+        const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
         
-        window.deleteEssay = async function(essayId) {
-            if (!confirm('Are you sure you want to delete this essay? This action cannot be undone.')) return;
+        if (!text) {
+            alert('Please write some content before analyzing.');
+            return;
+        }
+        
+        if (text.split(/\s+/).length < 50) {
+            alert('Please write at least 50 words for analysis.');
+            return;
+        }
+        
+        clearHighlights();
+        populateCollegeCheckboxes();
+        document.getElementById('collegeSelectionModal').style.display = 'flex';
+    }
+
+    // Populate checkboxes
+    function populateCollegeCheckboxes() {
+        const container = document.getElementById('collegeCheckboxes');
+        if (!container) return;
+        
+        const schools = window.userData?.questionnaire?.targetSchools || [];
+        
+        if (schools.length === 0) {
+            container.innerHTML = `
+                <div style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No target schools in profile. You can still get general feedback!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = schools.map(school => `
+            <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--secondary-bg); border-radius: 12px; cursor: pointer; margin-bottom: 0.5rem;">
+                <input type="checkbox" value="${school}" class="college-checkbox" style="width: 20px; height: 20px;">
+                <span style="color: var(--text-primary); font-weight: 500;">${school}</span>
+            </label>
+        `).join('');
+    }
+
+    // Modal functions
+    window.closeCollegeModal = () => {
+        document.getElementById('collegeSelectionModal').style.display = 'none';
+    };
+
+    window.startAnalysisWithColleges = async () => {
+        const checkboxes = document.querySelectorAll('.college-checkbox:checked');
+        const general = document.getElementById('generalEssayCheckbox');
+        const selected = Array.from(checkboxes).map(cb => cb.value);
+        
+        if (selected.length === 0 && !general?.checked) {
+            alert('Please select at least one college or mark as general essay.');
+            return;
+        }
+        
+        window.closeCollegeModal();
+        await performAIAnalysis(selected, general?.checked || false);
+    };
+
+    // ENHANCED AI Analysis with saving
+    async function performAIAnalysis(colleges, isGeneral) {
+        const btn = document.getElementById('analyzeBtn');
+        const btnText = document.getElementById('analyzeBtnText');
+        const feedback = document.getElementById('feedbackContent');
+        
+        btn.disabled = true;
+        btnText.innerHTML = '<div class="loading"></div> Analyzing...';
+        
+        try {
+            const essayDiv = document.getElementById('essayText');
+            const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
             
-            try {
-                await deleteDoc(doc(db, 'essays', essayId));
-                alert('Essay deleted successfully.');
-                await loadUserEssays();
-            } catch (error) {
-                console.error('❌ Error deleting essay:', error);
-                alert('Failed to delete essay.');
+            const questionnaireData = window.userData?.questionnaire || null;
+            
+            const prompt = `You are an expert college essay coach analyzing this ${window.selectedPrompt?.title || 'personal statement'}.
+
+**STUDENT PROFILE:**
+Name: ${window.userData?.name || 'Student'}
+Intended Major: ${questionnaireData?.intendedMajor || 'undecided'}
+GPA: ${questionnaireData?.unweightedGPA || 'N/A'}
+Target Colleges: ${colleges.join(', ') || 'General application'}
+
+**ESSAY PROMPT:**
+${window.selectedPrompt?.fullText || 'General personal statement'}
+
+**STUDENT'S ESSAY:**
+${text}
+
+**RESPOND IN THIS EXACT JSON FORMAT:**
+{
+  "overallScore": 85,
+  "scoreTitle": "Strong Foundation",
+  "scoreDescription": "Brief summary",
+  "highlights": [
+    {"text": "exact phrase", "type": "red|yellow|green", "feedback": "why"}
+  ],
+  "categories": [
+    {"title": "Category", "score": 80, "feedback": "analysis"}
+  ],
+  "suggestions": ["suggestion 1", "suggestion 2"]
+}`;
+            
+            console.log('📤 Sending to OpenAI...');
+            
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: prompt,
+                    questionnaireData: questionnaireData
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Analysis failed');
             }
+            
+            const data = await response.json();
+            console.log('📥 Received response');
+            
+            let analysis;
+            try {
+                const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+                analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : createFallback(data.response);
+            } catch {
+                analysis = createFallback(data.response);
+            }
+            
+            // SAVE ANALYSIS TO FIRESTORE
+            await saveAnalysis(analysis, text, colleges);
+            
+            applyHighlights(analysis.highlights || []);
+            displayAnalysis(analysis);
+            feedback.classList.add('show');
+            
+            console.log('✅ Analysis complete and saved!');
+            
+        } catch (error) {
+            console.error('❌ Analysis error:', error);
+            alert(`Analysis failed: ${error.message}`);
+        } finally {
+            btn.disabled = false;
+            btnText.innerHTML = '<i class="fas fa-magic"></i> Analyze My Essay';
+        }
+    }
+
+    // NEW: Save analysis to Firestore
+    async function saveAnalysis(analysis, essayText, targetColleges) {
+        if (!window.currentUser || !window.selectedPrompt) return;
+        
+        try {
+            const analysisData = {
+                userId: window.currentUser.uid,
+                promptId: window.selectedPrompt.id,
+                promptTitle: window.selectedPrompt.title,
+                essayText: essayText,
+                targetColleges: targetColleges,
+                analysis: analysis,
+                timestamp: serverTimestamp(),
+                wordCount: parseInt(document.getElementById('wordCount')?.textContent || '0')
+            };
+            
+            const docRef = await addDoc(collection(db, 'essay_analyses'), analysisData);
+            window.lastAnalysis = { id: docRef.id, ...analysisData };
+            
+            console.log('💾 Saved analysis:', docRef.id);
+        } catch (error) {
+            console.error('❌ Error saving analysis:', error);
+        }
+    }
+
+    // Fallback analysis
+    function createFallback(text) {
+        return {
+            overallScore: 75,
+            scoreTitle: "Analysis Complete",
+            scoreDescription: "Review feedback below",
+            highlights: [],
+            categories: [{ title: "AI Feedback", score: 75, feedback: text }],
+            suggestions: ["Review feedback", "Focus on showing vs telling", "Add specific examples"]
         };
+    }
 
-        // Expose functions
-        window.selectPrompt = selectPrompt;
-        window.updateWordCount = updateWordCount;
-        window.saveProgress = saveProgress;
-        window.analyzeEssay = analyzeEssay;
-        window.clearHighlights = clearHighlights;
+    // Apply highlights (SAME AS BEFORE)
+    function applyHighlights(highlights) {
+        const essayDiv = document.getElementById('essayText');
+        if (!essayDiv || !highlights?.length) return;
+        
+        clearHighlights();
+        
+        let content = essayDiv.textContent;
+        const valid = [];
+        const ranges = [];
+        
+        highlights.sort((a, b) => b.text.length - a.text.length).forEach(h => {
+            const text = h.text.trim();
+            if (text.length < 3) return;
+            
+            let idx = content.indexOf(text);
+            if (idx === -1) {
+                const regex = new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                const match = content.match(regex);
+                if (match) idx = match.index;
+            }
+            
+            if (idx !== -1) {
+                const end = idx + text.length;
+                const overlaps = ranges.some(r => 
+                    (idx >= r.start && idx < r.end) ||
+                    (end > r.start && end <= r.end) ||
+                    (idx <= r.start && end >= r.end)
+                );
+                
+                if (!overlaps) {
+                    ranges.push({ start: idx, end });
+                    valid.push({ ...h, idx, text });
+                }
+            }
+        });
+        
+        valid.sort((a, b) => b.idx - a.idx);
+        
+        let html = content;
+        valid.forEach(h => {
+            const before = html.substring(0, h.idx);
+            const highlighted = html.substring(h.idx, h.idx + h.text.length);
+            const after = html.substring(h.idx + h.text.length);
+            const tooltip = h.feedback.replace(/"/g, '&quot;');
+            
+            html = before + 
+                `<span class="highlight-${h.type}" title="${tooltip}">${highlighted}</span>` + 
+                after;
+        });
+        
+        essayDiv.innerHTML = html.replace(/\n/g, '<br>');
+        
+        const legend = document.getElementById('highlightLegend');
+        if (legend) legend.style.display = 'block';
+        
+        console.log(`✅ Applied ${valid.length} highlights`);
+    }
 
-    </script>
+    // Display analysis (SAME AS BEFORE)
+    function displayAnalysis(data) {
+        const score = data.overallScore || 75;
+        
+        document.getElementById('scoreNumber').textContent = score;
+        document.getElementById('scoreTitle').textContent = data.scoreTitle || 'Analysis Complete';
+        document.getElementById('scoreDescription').textContent = data.scoreDescription || 'Review feedback';
+        
+        const circle = document.getElementById('scoreCircle');
+        circle.className = 'score-circle';
+        if (score >= 85) circle.classList.add('score-excellent');
+        else if (score >= 70) circle.classList.add('score-good');
+        else if (score >= 60) circle.classList.add('score-fair');
+        else circle.classList.add('score-needs-work');
+        
+        let html = '';
+        
+        if (data.highlights?.length) {
+            const red = data.highlights.filter(h => h.type === 'red').length;
+            const yellow = data.highlights.filter(h => h.type === 'yellow').length;
+            const green = data.highlights.filter(h => h.type === 'green').length;
+            
+            html += `
+                <div class="feedback-category">
+                    <div class="category-header">
+                        <div class="category-title"><i class="fas fa-highlighter"></i> Highlights</div>
+                    </div>
+                    <div class="category-feedback">
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            ${red > 0 ? `<div style="display: flex; align-items: center; gap: 0.5rem;"><span class="highlight-sample highlight-red"></span><span>${red} need revision</span></div>` : ''}
+                            ${yellow > 0 ? `<div style="display: flex; align-items: center; gap: 0.5rem;"><span class="highlight-sample highlight-yellow"></span><span>${yellow} could improve</span></div>` : ''}
+                            ${green > 0 ? `<div style="display: flex; align-items: center; gap: 0.5rem;"><span class="highlight-sample highlight-green"></span><span>${green} excellent</span></div>` : ''}
+                        </div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> Hover over highlighted text for specific feedback
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        data.categories?.forEach(cat => {
+            const color = cat.score >= 85 ? 'var(--success-color)' : 
+                         cat.score >= 70 ? 'var(--info-color)' : 
+                         cat.score >= 60 ? 'var(--warning-color)' : 'var(--danger-color)';
+            
+            html += `
+                <div class="feedback-category">
+                    <div class="category-header">
+                        <div class="category-title"><i class="fas fa-clipboard-check"></i> ${cat.title}</div>
+                        <div class="category-score" style="background: ${color};">${cat.score}/100</div>
+                    </div>
+                    <div class="category-feedback">${cat.feedback}</div>
+                </div>
+            `;
+        });
+        
+        if (data.suggestions?.length) {
+            html += `
+                <div class="feedback-category" style="background: rgba(160, 123, 204, 0.05); border-left: 4px solid var(--accent-color);">
+                    <div class="category-header">
+                        <div class="category-title"><i class="fas fa-lightbulb"></i> Action Items</div>
+                    </div>
+                    <div class="category-feedback">
+                        <ul style="margin-left: 1.5rem;">
+                            ${data.suggestions.map(s => `<li style="margin-bottom: 0.5rem;">${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('feedbackCategories').innerHTML = html;
+    }
+
+    // Chat functions (SAME AS BEFORE, adding questionnaireData)
+    window.openChatModal = () => {
+        const modal = document.getElementById('essayChatModal');
+        const messages = document.getElementById('chatMessages');
+        modal.style.display = 'flex';
+        if (messages.children.length === 0) {
+            addChatMessage('ai', `Hi! I'm here to help with your essay. What questions do you have?`);
+        }
+    };
+
+    window.closeChatModal = () => {
+        document.getElementById('essayChatModal').style.display = 'none';
+    };
+
+    window.sendChatMessage = async () => {
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim();
+        if (!msg) return;
+        
+        addChatMessage('user', msg);
+        input.value = '';
+        
+        const typingId = addChatMessage('ai', '<div class="loading"></div> Thinking...');
+        
+        try {
+            const essayDiv = document.getElementById('essayText');
+            const essay = (essayDiv.innerText || essayDiv.textContent || '').trim();
+            const questionnaireData = window.userData?.questionnaire || null;
+            
+            const context = `You are a supportive college essay coach.
+
+Student Question: ${msg}
+Current Essay (first 500 chars): ${essay.substring(0, 500)}
+Essay Prompt: ${window.selectedPrompt?.fullText || 'General'}
+
+Provide helpful, specific guidance without rewriting. Keep under 150 words.`;
+            
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: context,
+                    questionnaireData: questionnaireData
+                })
+            });
+            
+            if (!response.ok) throw new Error('Chat failed');
+            
+            const data = await response.json();
+            document.getElementById(typingId)?.remove();
+            addChatMessage('ai', data.response);
+            
+        } catch (error) {
+            console.error('❌ Chat error:', error);
+            document.getElementById(typingId)?.remove();
+            addChatMessage('ai', `Sorry, I had trouble with that.`);
+        }
+    };
+
+    function addChatMessage(sender, text) {
+        const container = document.getElementById('chatMessages');
+        if (!container) return '';
+        
+        const id = 'msg-' + Date.now();
+        const div = document.createElement('div');
+        div.id = id;
+        div.className = `chat-message ${sender}`;
+        div.innerHTML = `
+            <div class="chat-avatar">${sender === 'user' ? (window.userData?.name?.[0]?.toUpperCase() || 'U') : '🤖'}</div>
+            <div class="chat-bubble">${text}</div>
+        `;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        return id;
+    }
+
+    // Tab switching
+    window.switchTab = (tabId) => {
+        document.querySelectorAll('.essay-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.querySelectorAll('.essay-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(tabId + '-content')?.classList.add('active');
+    };
+
+    // ENHANCED Save essay with proper metadata
+    window.saveEssay = async () => {
+        if (!window.currentUser || !window.selectedPrompt) {
+            alert('Please select a prompt first.');
+            return;
+        }
+        
+        const essayDiv = document.getElementById('essayText');
+        const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
+        
+        if (!text) {
+            alert('Please write some content before saving.');
+            return;
+        }
+        
+        try {
+            const essayData = {
+                userId: window.currentUser.uid,
+                type: window.selectedPrompt.school ? 'supplemental' : 'personal-statement',
+                school: window.selectedPrompt.school || null,
+                promptId: window.selectedPrompt.id,
+                promptTitle: window.selectedPrompt.title,
+                promptFullText: window.selectedPrompt.fullText,
+                content: text,
+                wordCount: parseInt(document.getElementById('wordCount')?.textContent || '0'),
+                charCount: parseInt(document.getElementById('charCount')?.textContent || '0'),
+                lastUpdated: serverTimestamp(),
+                isDraft: false,
+                savedAt: serverTimestamp()
+            };
+            
+            const docRef = await addDoc(collection(db, 'essays'), essayData);
+            
+            alert('✅ Essay saved successfully!');
+            console.log('💾 Saved essay:', docRef.id);
+            
+            await loadUserEssays();
+            
+        } catch (error) {
+            console.error('❌ Save error:', error);
+            alert('Failed to save. Please try again.');
+        }
+    };
+
+    // Export essay
+    window.exportEssay = () => {
+        const essayDiv = document.getElementById('essayText');
+        const text = (essayDiv.innerText || essayDiv.textContent || '').trim();
+        
+        if (!text) {
+            alert('No content to export.');
+            return;
+        }
+        
+        const title = window.selectedPrompt?.title.replace(/[^a-z0-9]/gi, '_') || 'Essay';
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${title}_${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    // Clear essay
+    window.clearEssay = () => {
+        if (confirm('Clear this essay? This cannot be undone.')) {
+            document.getElementById('essayText').innerHTML = '';
+            clearHighlights();
+            updateWordCount();
+        }
+    };
+
+    // ENHANCED Load essay with restoration
+    window.loadEssay = async (essayId) => {
+        try {
+            const essayDoc = await getDoc(doc(db, 'essays', essayId));
+            if (!essayDoc.exists()) {
+                alert('Essay not found.');
+                return;
+            }
+            
+            const essay = essayDoc.data();
+            const essayDiv = document.getElementById('essayText');
+            if (essayDiv) {
+                essayDiv.textContent = essay.content || '';
+            }
+            
+            // Restore prompt
+            const prompt = commonAppPrompts.find(p => p.id === essay.promptId) || {
+                id: essay.promptId,
+                title: essay.promptTitle,
+                fullText: essay.promptFullText || '',
+                wordLimit: 650,
+                school: essay.school
+            };
+            
+            window.selectedPrompt = prompt;
+            document.getElementById('essayProgressTitle').textContent = 
+                `${prompt.title} (${prompt.wordLimit} words)`;
+            
+            updateWordCount();
+            document.querySelector('.essay-tab')?.click();
+            
+            console.log('✅ Loaded essay:', essayId);
+            
+        } catch (error) {
+            console.error('❌ Load error:', error);
+            alert('Failed to load essay.');
+        }
+    };
+
+    // Delete essay
+    window.deleteEssay = async (essayId) => {
+        if (!confirm('Delete this essay? This cannot be undone.')) return;
+        
+        try {
+            await deleteDoc(doc(db, 'essays', essayId));
+            alert('✅ Essay deleted.');
+            await loadUserEssays();
+        } catch (error) {
+            console.error('❌ Delete error:', error);
+            alert('Failed to delete essay.');
+        }
+    };
+
+    // Global function exports
+    window.selectPrompt = selectPrompt;
+    window.updateWordCount = updateWordCount;
+    window.saveProgress = saveProgress;
+    window.analyzeEssay = analyzeEssay;
+    window.clearHighlights = clearHighlights;
+    
+    // Auto-save every 30 seconds
+    setInterval(saveProgress, 30000);
+    
+    console.log('✅ Essay Coach fully operational!');
+
+</script>
 
     <!-- Theme and UI Enhancement Script -->
     <script>
