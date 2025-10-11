@@ -3,9 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaptive Timeline - CollegeClimb</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Adaptive Timeline - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* ============================================
+           UNIVERSAL NAVBAR STYLES
+           ============================================ */
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,15 +44,380 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #333;
         }
+
+        /* Navigation Bar */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle Button */
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* Profile Dropdown Container */
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        /* Profile Button */
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            position: relative;
+        }
+
+        .cc-profile-button:hover .cc-user-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-profile-button:active .cc-user-avatar {
+            transform: scale(0.95);
+        }
+
+        /* User Avatar */
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        [data-theme="dark"] .cc-user-avatar {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
+        }
+
+        /* Profile Text - Hidden completely */
+        .cc-profile-text {
+            display: none !important;
+        }
+
+        /* Dropdown Chevron - Hidden */
+        .cc-dropdown-chevron {
+            display: none !important;
+        }
+
+        /* Dropdown Menu */
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transform-origin: top right;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            backdrop-filter: blur(20px);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Add arrow pointer to dropdown */
+        .cc-dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu::before {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
+        /* Welcome Header in Dropdown */
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .cc-dropdown-header {
+            border-bottom-color: rgba(187, 134, 252, 0.15);
+            background: rgba(33, 38, 45, 0.6);
+        }
+
+        .cc-dropdown-welcome {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 0.5rem;
+        }
+
+        /* Dropdown Links */
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cc-dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--gradient);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-link:hover::before {
+            width: 4px;
+        }
+
+        [data-theme="dark"] .cc-dropdown-link:hover {
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        .cc-dropdown-link-icon {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover .cc-dropdown-link-icon {
+            transform: scale(1.15);
+        }
+
+        /* Logout Button */
+        .cc-dropdown-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .cc-dropdown-divider {
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+            font-weight: 700 !important;
+        }
+
+        .cc-logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .cc-logout-link:hover::before {
+            background: var(--danger-color) !important;
+        }
+
+        /* Loading State */
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: cc-spin 1s linear infinite;
+        }
+
+        @keyframes cc-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Active state indicator */
+        .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
+        }
+
+        /* ============================================
+           ADAPTIVE TIMELINE SPECIFIC STYLES
+           ============================================ */
 
         .container {
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 100px auto 0 auto;
             padding: 20px;
         }
 
@@ -349,6 +745,98 @@
     </style>
 </head>
 <body>
+    <!-- ============================================
+         UNIVERSAL NAVBAR
+         ============================================ -->
+    <nav class="cc-navbar">
+        <!-- Logo Section -->
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <!-- Right Side Navigation -->
+        <div class="cc-nav-right">
+            <!-- Theme Toggle -->
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
+                ☀️
+            </button>
+
+            <!-- Profile Dropdown -->
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <!-- Loading state initially -->
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    
+                    <!-- Profile content (hidden initially) -->
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                    </div>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <!-- Welcome Header -->
+                    <div class="cc-dropdown-header" id="ccDropdownHeader">
+                        <div class="cc-dropdown-welcome">Hello,</div>
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="essaycoach.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essays</span>
+                    </a>
+                    
+                    <a href="adaptive-timeline.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📅</span>
+                        <span>Timeline</span>
+                    </a>
+                    
+                    <a href="testprep-enhanced.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Test Prep</span>
+                    </a>
+                    
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">💰</span>
+                        <span>Scholarships</span>
+                    </a>
+                    
+                    <a href="document.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📄</span>
+                        <span>Documents</span>
+                    </a>
+                    
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+
+                    <!-- Divider -->
+                    <div class="cc-dropdown-divider"></div>
+
+                    <!-- Logout -->
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -441,5 +929,754 @@
     <script src="utils/date-helpers.js"></script>
     <script src="data/timeline-templates.js"></script>
     <script src="js/adaptive-timeline.js"></script>
+
+    <!-- Universal Navbar JavaScript -->
+    <script type="module">
+        // ============================================
+        // UNIVERSAL NAVBAR JAVASCRIPT
+        // ============================================
+        
+        let currentUserData = null;
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+            updateLogo(savedTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            if (logo) {
+                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+            updateLogo(newTheme);
+        }
+
+        // Dropdown Management
+        function toggleDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                const isOpen = dropdown.classList.contains('show');
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+        }
+
+        function openDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.add('show');
+                container.classList.add('open');
+            }
+        }
+
+        function closeDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.remove('show');
+                container.classList.remove('open');
+            }
+        }
+
+        // Update Navbar UI with User Info
+        function updateNavbarUI(user) {
+            const profileLoading = document.getElementById('ccProfileLoading');
+            const profileContent = document.getElementById('ccProfileContent');
+            const userAvatar = document.getElementById('ccUserAvatar');
+            const dropdownName = document.getElementById('ccDropdownName');
+            const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+            // Hide loading, show content
+            if (profileLoading) profileLoading.style.display = 'none';
+            if (profileContent) profileContent.style.display = 'flex';
+
+            // Update profile photo
+            if (userAvatar) {
+                userAvatar.src = 'images/default-avatar.png';
+            }
+
+            // Update display name
+            const displayName = 'Student';
+            if (dropdownName) dropdownName.textContent = displayName;
+
+            // Update email
+            if (dropdownEmail) dropdownEmail.textContent = 'student@collegeclimb.com';
+        }
+
+        // Event Listeners
+        function initEventListeners() {
+            // Theme toggle
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // Profile button click
+            const profileButton = document.getElementById('ccProfileButton');
+            if (profileButton) {
+                profileButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
+            }
+
+            // Logout button
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout functionality would be implemented here');
+                });
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('ccProfileDropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Close dropdown on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+        }
+
+        // Initialize Navbar
+        function initNavbar() {
+            console.log('🎯 Initializing College Climb Navbar...');
+            
+            // Initialize theme
+            initTheme();
+            
+            // Set up event listeners
+            initEventListeners();
+            
+            // Update UI
+            updateNavbarUI(null);
+            
+            console.log('✅ Navbar initialized successfully!');
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initNavbar);
+        
+        // ============================================
+        // ADAPTIVE TIMELINE FUNCTIONALITY
+        // ============================================
+        
+        let currentTimeline = [];
+        let userProfile = {};
+        let timelineGenerated = false;
+        
+        // Generate Adaptive Timeline
+        async function generateTimeline() {
+            const studentType = document.getElementById('studentType')?.value || 
+                              document.querySelector('select[name="studentType"]')?.value || 'RD';
+            const graduationYear = document.getElementById('graduationYear')?.value || 
+                                 document.querySelector('select[name="graduationYear"]')?.value || '2026';
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1;
+            
+            // Show loading state
+            const generateBtn = document.querySelector('.generate-btn, #generateBtn, [onclick*="generate"]');
+            if (generateBtn) {
+                const originalText = generateBtn.innerHTML;
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Timeline...';
+                generateBtn.disabled = true;
+            }
+            
+            try {
+                const response = await fetch('/api/timeline-recommendations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentType,
+                        graduationYear,
+                        currentMonth
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                currentTimeline = result.tasks;
+                timelineGenerated = true;
+                
+                displayTimeline(result);
+                showNotification(`Generated personalized ${studentType} timeline for Class of ${graduationYear}!`, 'success');
+                
+            } catch (error) {
+                console.error('Timeline generation error:', error);
+                showNotification('Failed to generate timeline. Please try again.', 'error');
+            } finally {
+                // Restore button state
+                if (generateBtn) {
+                    generateBtn.innerHTML = '<i class="fas fa-calendar-alt"></i> Generate Timeline';
+                    generateBtn.disabled = false;
+                }
+            }
+        }
+        
+        // Display Timeline
+        function displayTimeline(data) {
+            const timelineContainer = document.querySelector('.timeline-container, #timeline-display, .timeline-content');
+            
+            if (!timelineContainer) return;
+            
+            const studentType = document.getElementById('studentType')?.value || 'RD';
+            const graduationYear = document.getElementById('graduationYear')?.value || '2026';
+            
+            // Generate comprehensive timeline for the entire year
+            const fullTimeline = generateFullYearTimeline(studentType, graduationYear);
+            
+            timelineContainer.innerHTML = `
+                <div class="timeline-header">
+                    <h2>Your Personalized College Application Timeline</h2>
+                    <div class="timeline-meta">
+                        <span class="timeline-type">${getApplicationTypeLabel(studentType)}</span>
+                        <span class="timeline-year">Class of ${graduationYear}</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-overview">
+                    <div class="overview-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-tasks"></i>
+                            <span class="stat-number">${fullTimeline.reduce((total, month) => total + month.tasks.length, 0)}</span>
+                            <span class="stat-label">Total Tasks</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar"></i>
+                            <span class="stat-number">${fullTimeline.length}</span>
+                            <span class="stat-label">Months</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span class="stat-number">${fullTimeline.reduce((total, month) => total + month.tasks.filter(task => task.priority === 'high').length, 0)}</span>
+                            <span class="stat-label">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-view-controls">
+                    <button onclick="switchTimelineView('timeline')" class="view-btn active" id="timeline-view-btn">
+                        <i class="fas fa-stream"></i> Timeline View
+                    </button>
+                    <button onclick="switchTimelineView('calendar')" class="view-btn" id="calendar-view-btn">
+                        <i class="fas fa-calendar-alt"></i> Calendar View
+                    </button>
+                    <button onclick="switchTimelineView('checklist')" class="view-btn" id="checklist-view-btn">
+                        <i class="fas fa-list-check"></i> Checklist View
+                    </button>
+                </div>
+                
+                <div class="timeline-content" id="timeline-content">
+                    ${renderTimelineView(fullTimeline)}
+                </div>
+            `;
+            
+            timelineContainer.style.display = 'block';
+            timelineContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            // Load saved progress
+            loadTimelineProgress();
+        }
+        
+        // Generate Full Year Timeline
+        function generateFullYearTimeline(studentType, graduationYear) {
+            const currentYear = new Date().getFullYear();
+            const seniorYear = parseInt(graduationYear) - 1; // Senior year starts the year before graduation
+            
+            const timelineTemplates = {
+                'ED': {
+                    8: [
+                        { task: "Research Early Decision schools", priority: "high", category: "research", dueDate: "2024-08-31" },
+                        { task: "Start Common Application account", priority: "high", category: "applications", dueDate: "2024-08-31" },
+                        { task: "Request transcript and test scores", priority: "medium", category: "documents", dueDate: "2024-08-31" }
+                    ],
+                    9: [
+                        { task: "Finalize ED school choice", priority: "high", category: "applications", dueDate: "2024-09-15" },
+                        { task: "Complete Common Application", priority: "high", category: "applications", dueDate: "2024-09-30" },
+                        { task: "Write ED supplemental essays", priority: "high", category: "essays", dueDate: "2024-09-30" },
+                        { task: "Request teacher recommendations", priority: "medium", category: "recommendations", dueDate: "2024-09-15" }
+                    ],
+                    10: [
+                        { task: "Submit ED application", priority: "high", category: "applications", dueDate: "2024-11-01" },
+                        { task: "Submit CSS Profile if required", priority: "high", category: "financial", dueDate: "2024-11-01" },
+                        { task: "Continue working on RD applications", priority: "medium", category: "applications", dueDate: "2024-10-31" }
+                    ],
+                    11: [
+                        { task: "Submit RD applications", priority: "high", category: "applications", dueDate: "2024-12-01" },
+                        { task: "Apply for scholarships", priority: "medium", category: "financial", dueDate: "2024-11-30" },
+                        { task: "Send fall grades to colleges", priority: "medium", category: "academic", dueDate: "2024-11-30" }
+                    ],
+                    12: [
+                        { task: "Submit FAFSA", priority: "high", category: "financial", dueDate: "2024-12-31" },
+                        { task: "Continue scholarship applications", priority: "medium", category: "financial", dueDate: "2024-12-31" },
+                        { task: "Prepare for interviews", priority: "medium", category: "interviews", dueDate: "2024-12-31" }
+                    ]
+                },
+                'EA': {
+                    8: [
+                        { task: "Research Early Action schools", priority: "high", category: "research", dueDate: "2024-08-31" },
+                        { task: "Create college list", priority: "high", category: "research", dueDate: "2024-08-31" }
+                    ],
+                    9: [
+                        { task: "Complete EA applications", priority: "high", category: "applications", dueDate: "2024-09-30" },
+                        { task: "Write personal statement", priority: "high", category: "essays", dueDate: "2024-09-30" },
+                        { task: "Request transcripts", priority: "medium", category: "academic", dueDate: "2024-09-15" }
+                    ],
+                    10: [
+                        { task: "Submit EA applications", priority: "high", category: "applications", dueDate: "2024-11-01" },
+                        { task: "Work on RD supplemental essays", priority: "medium", category: "essays", dueDate: "2024-10-31" }
+                    ],
+                    11: [
+                        { task: "Complete RD applications", priority: "high", category: "applications", dueDate: "2024-12-01" },
+                        { task: "Submit FAFSA", priority: "high", category: "financial", dueDate: "2024-11-30" }
+                    ]
+                },
+                'RD': {
+                    8: [
+                        { task: "Create preliminary college list", priority: "medium", category: "research", dueDate: "2024-08-31" },
+                        { task: "Begin college research", priority: "medium", category: "research", dueDate: "2024-08-31" }
+                    ],
+                    9: [
+                        { task: "Finalize college list", priority: "high", category: "research", dueDate: "2024-09-30" },
+                        { task: "Start Common Application", priority: "high", category: "applications", dueDate: "2024-09-30" }
+                    ],
+                    10: [
+                        { task: "Research colleges and create final list", priority: "high", category: "research", dueDate: "2024-10-31" },
+                        { task: "Begin Common Application", priority: "high", category: "applications", dueDate: "2024-10-31" },
+                        { task: "Draft personal statement", priority: "high", category: "essays", dueDate: "2024-10-31" }
+                    ],
+                    11: [
+                        { task: "Complete college applications", priority: "high", category: "applications", dueDate: "2024-11-30" },
+                        { task: "Write supplemental essays", priority: "high", category: "essays", dueDate: "2024-11-30" },
+                        { task: "Submit FAFSA", priority: "high", category: "financial", dueDate: "2024-11-30" }
+                    ],
+                    12: [
+                        { task: "Submit all RD applications", priority: "high", category: "applications", dueDate: "2024-12-31" },
+                        { task: "Apply for merit scholarships", priority: "medium", category: "financial", dueDate: "2024-12-31" },
+                        { task: "Send mid-year grades", priority: "medium", category: "academic", dueDate: "2024-12-31" }
+                    ]
+                }
+            };
+            
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            const template = timelineTemplates[studentType] || timelineTemplates['RD'];
+            const timeline = [];
+            
+            // Generate 12 months of timeline
+            for (let month = 8; month <= 12; month++) {
+                const tasks = template[month] || [];
+                timeline.push({
+                    month: month,
+                    monthName: monthNames[month - 1],
+                    year: seniorYear,
+                    tasks: tasks
+                });
+            }
+            
+            // Add January through May of graduation year
+            for (let month = 1; month <= 5; month++) {
+                const tasks = month <= 2 ? [
+                    { task: "Wait for admission decisions", priority: "low", category: "waiting", dueDate: `${graduationYear}-${month.toString().padStart(2, '0')}-28` },
+                    { task: "Continue scholarship applications", priority: "medium", category: "financial", dueDate: `${graduationYear}-${month.toString().padStart(2, '0')}-28` }
+                ] : month === 3 ? [
+                    { task: "Review admission offers", priority: "high", category: "decisions", dueDate: `${graduationYear}-03-31` },
+                    { task: "Visit admitted student days", priority: "medium", category: "visits", dueDate: `${graduationYear}-03-31` }
+                ] : month === 4 ? [
+                    { task: "Make final college decision", priority: "high", category: "decisions", dueDate: `${graduationYear}-05-01` },
+                    { task: "Submit enrollment deposit", priority: "high", category: "enrollment", dueDate: `${graduationYear}-05-01` }
+                ] : [
+                    { task: "Complete housing applications", priority: "medium", category: "preparation", dueDate: `${graduationYear}-05-31` },
+                    { task: "Register for orientation", priority: "medium", category: "preparation", dueDate: `${graduationYear}-05-31` }
+                ];
+                
+                timeline.push({
+                    month: month,
+                    monthName: monthNames[month - 1],
+                    year: parseInt(graduationYear),
+                    tasks: tasks
+                });
+            }
+            
+            return timeline;
+        }
+        
+        // Render Timeline View
+        function renderTimelineView(timeline) {
+            return `
+                <div class="timeline-track">
+                    ${timeline.map((monthData, index) => `
+                        <div class="timeline-month ${isCurrentMonth(monthData.month, monthData.year) ? 'current' : ''}">
+                            <div class="month-header">
+                                <div class="month-indicator">
+                                    <div class="month-dot"></div>
+                                    <div class="month-line ${index === timeline.length - 1 ? 'last' : ''}"></div>
+                                </div>
+                                <div class="month-info">
+                                    <h3>${monthData.monthName} ${monthData.year}</h3>
+                                    <p>${monthData.tasks.length} task${monthData.tasks.length !== 1 ? 's' : ''}</p>
+                                </div>
+                            </div>
+                            <div class="month-tasks">
+                                ${monthData.tasks.map(task => `
+                                    <div class="timeline-task ${task.priority}" data-task-id="${generateTaskId(task)}">
+                                        <div class="task-checkbox">
+                                            <input type="checkbox" id="${generateTaskId(task)}" onchange="toggleTask('${generateTaskId(task)}')">
+                                        </div>
+                                        <div class="task-content">
+                                            <div class="task-title">${task.task}</div>
+                                            <div class="task-meta">
+                                                <span class="task-category ${task.category}">${task.category}</span>
+                                                <span class="task-priority ${task.priority}">${task.priority} priority</span>
+                                                ${task.dueDate ? `<span class="task-due">Due: ${formatDate(task.dueDate)}</span>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="task-actions">
+                                            <button onclick="addTaskNote('${generateTaskId(task)}')" class="task-action-btn">
+                                                <i class="fas fa-sticky-note"></i>
+                                            </button>
+                                            <button onclick="setTaskReminder('${generateTaskId(task)}')" class="task-action-btn">
+                                                <i class="fas fa-bell"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Switch Timeline View
+        function switchTimelineView(viewType) {
+            const contentContainer = document.getElementById('timeline-content');
+            if (!contentContainer) return;
+            
+            // Update active button
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${viewType}-view-btn`).classList.add('active');
+            
+            const timeline = generateFullYearTimeline(
+                document.getElementById('studentType')?.value || 'RD',
+                document.getElementById('graduationYear')?.value || '2026'
+            );
+            
+            switch (viewType) {
+                case 'timeline':
+                    contentContainer.innerHTML = renderTimelineView(timeline);
+                    break;
+                case 'calendar':
+                    contentContainer.innerHTML = renderCalendarView(timeline);
+                    break;
+                case 'checklist':
+                    contentContainer.innerHTML = renderChecklistView(timeline);
+                    break;
+            }
+            
+            loadTimelineProgress();
+        }
+        
+        // Render Calendar View
+        function renderCalendarView(timeline) {
+            return `
+                <div class="calendar-view">
+                    <div class="calendar-grid">
+                        ${timeline.map(monthData => `
+                            <div class="calendar-month ${isCurrentMonth(monthData.month, monthData.year) ? 'current' : ''}">
+                                <div class="calendar-month-header">
+                                    <h4>${monthData.monthName} ${monthData.year}</h4>
+                                    <span class="task-count">${monthData.tasks.length} tasks</span>
+                                </div>
+                                <div class="calendar-tasks">
+                                    ${monthData.tasks.slice(0, 3).map(task => `
+                                        <div class="calendar-task ${task.priority}">
+                                            <div class="task-dot"></div>
+                                            <span class="task-text">${task.task}</span>
+                                        </div>
+                                    `).join('')}
+                                    ${monthData.tasks.length > 3 ? `
+                                        <div class="calendar-task-more">
+                                            +${monthData.tasks.length - 3} more tasks
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Render Checklist View
+        function renderChecklistView(timeline) {
+            const allTasks = timeline.flatMap(month => 
+                month.tasks.map(task => ({
+                    ...task,
+                    month: month.monthName,
+                    year: month.year
+                }))
+            );
+            
+            const tasksByCategory = allTasks.reduce((acc, task) => {
+                if (!acc[task.category]) acc[task.category] = [];
+                acc[task.category].push(task);
+                return acc;
+            }, {});
+            
+            return `
+                <div class="checklist-view">
+                    ${Object.entries(tasksByCategory).map(([category, tasks]) => `
+                        <div class="checklist-category">
+                            <h4 class="category-header">
+                                <i class="fas fa-${getCategoryIcon(category)}"></i>
+                                ${category.charAt(0).toUpperCase() + category.slice(1)} Tasks
+                                <span class="category-count">(${tasks.length})</span>
+                            </h4>
+                            <div class="checklist-tasks">
+                                ${tasks.map(task => `
+                                    <div class="checklist-task ${task.priority}" data-task-id="${generateTaskId(task)}">
+                                        <input type="checkbox" id="${generateTaskId(task)}_checklist" onchange="toggleTask('${generateTaskId(task)}')">
+                                        <label for="${generateTaskId(task)}_checklist">
+                                            <span class="task-title">${task.task}</span>
+                                            <span class="task-timeline">${task.month} ${task.year}</span>
+                                        </label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Helper Functions
+        function isCurrentMonth(month, year) {
+            const now = new Date();
+            return now.getMonth() + 1 === month && now.getFullYear() === year;
+        }
+        
+        function generateTaskId(task) {
+            return task.task.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        }
+        
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function getCategoryIcon(category) {
+            const icons = {
+                'research': 'search',
+                'applications': 'file-alt',
+                'essays': 'pen-fancy',
+                'recommendations': 'user-friends',
+                'financial': 'dollar-sign',
+                'academic': 'graduation-cap',
+                'interviews': 'comments',
+                'documents': 'folder',
+                'decisions': 'check-circle',
+                'enrollment': 'university',
+                'preparation': 'clipboard-list',
+                'visits': 'map-marker-alt',
+                'waiting': 'clock'
+            };
+            return icons[category] || 'tasks';
+        }
+        
+        function getApplicationTypeLabel(type) {
+            const labels = {
+                'ED': 'Early Decision',
+                'EA': 'Early Action',
+                'RD': 'Regular Decision'
+            };
+            return labels[type] || 'Regular Decision';
+        }
+        
+        // Task Management Functions
+        function toggleTask(taskId) {
+            const checkbox = document.getElementById(taskId) || document.getElementById(taskId + '_checklist');
+            if (!checkbox) return;
+            
+            const isCompleted = checkbox.checked;
+            const taskElement = checkbox.closest('.timeline-task, .checklist-task');
+            
+            if (taskElement) {
+                taskElement.classList.toggle('completed', isCompleted);
+            }
+            
+            // Save progress
+            saveTaskProgress(taskId, isCompleted);
+            
+            // Show notification
+            const taskTitle = taskElement?.querySelector('.task-title')?.textContent || 'Task';
+            showNotification(
+                isCompleted ? `✅ Completed: ${taskTitle}` : `↩️ Reopened: ${taskTitle}`,
+                isCompleted ? 'success' : 'info'
+            );
+        }
+        
+        function saveTaskProgress(taskId, completed) {
+            const progress = JSON.parse(localStorage.getItem('timeline-progress') || '{}');
+            progress[taskId] = {
+                completed,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('timeline-progress', JSON.stringify(progress));
+        }
+        
+        function loadTimelineProgress() {
+            const progress = JSON.parse(localStorage.getItem('timeline-progress') || '{}');
+            
+            Object.entries(progress).forEach(([taskId, data]) => {
+                const checkbox = document.getElementById(taskId) || document.getElementById(taskId + '_checklist');
+                if (checkbox) {
+                    checkbox.checked = data.completed;
+                    const taskElement = checkbox.closest('.timeline-task, .checklist-task');
+                    if (taskElement) {
+                        taskElement.classList.toggle('completed', data.completed);
+                    }
+                }
+            });
+        }
+        
+        // Task Notes and Reminders
+        function addTaskNote(taskId) {
+            const note = prompt('Add a note for this task:');
+            if (note) {
+                const notes = JSON.parse(localStorage.getItem('timeline-notes') || '{}');
+                notes[taskId] = note;
+                localStorage.setItem('timeline-notes', JSON.stringify(notes));
+                showNotification('Note added successfully!', 'success');
+            }
+        }
+        
+        function setTaskReminder(taskId) {
+            const reminderDate = prompt('Set reminder date (YYYY-MM-DD):');
+            if (reminderDate) {
+                const reminders = JSON.parse(localStorage.getItem('timeline-reminders') || '{}');
+                reminders[taskId] = reminderDate;
+                localStorage.setItem('timeline-reminders', JSON.stringify(reminders));
+                showNotification('Reminder set successfully!', 'success');
+            }
+        }
+        
+        // Progress Analytics
+        function updateProgressStats() {
+            const progress = JSON.parse(localStorage.getItem('timeline-progress') || '{}');
+            const completed = Object.values(progress).filter(p => p.completed).length;
+            const total = currentTimeline.length;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            const progressContainer = document.querySelector('.progress-stats');
+            if (progressContainer) {
+                progressContainer.innerHTML = `
+                    <div class="progress-stat">
+                        <div class="stat-value">${completed}/${total}</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="stat-value">${percentage}%</div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                    <button onclick="this.closest('.notification').remove()" class="notification-close">&times;</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Initialize Adaptive Timeline
+        function initAdaptiveTimeline() {
+            console.log('📅 Initializing Adaptive Timeline...');
+            
+            // Set up event listeners
+            const generateBtn = document.querySelector('.generate-btn, #generateBtn, [onclick*="generate"]');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', generateTimeline);
+            }
+            
+            // Set default values
+            const currentYear = new Date().getFullYear();
+            const graduationYearSelect = document.getElementById('graduationYear');
+            if (graduationYearSelect && !graduationYearSelect.value) {
+                graduationYearSelect.value = (currentYear + 1).toString();
+            }
+            
+            console.log('✅ Adaptive Timeline initialized successfully!');
+        }
+        
+        // Initialize timeline when page loads
+        initAdaptiveTimeline();
+        
+        // Global function exports for onclick handlers
+        window.generateTimeline = generateTimeline;
+        window.switchTimelineView = switchTimelineView;
+        window.toggleTask = toggleTask;
+        window.addTaskNote = addTaskNote;
+        window.setTaskReminder = setTaskReminder;
+    </script>
 </body>
 </html>
