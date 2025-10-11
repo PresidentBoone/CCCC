@@ -23,6 +23,7 @@ const essayChat = require('./api/essay-chat.js');
 const essayStorage = require('./api/essay-storage.js');
 const timelineRecommendations = require('./api/timeline-recommendations.js');
 const timelineData = require('./api/timeline-data.js');
+const testprepGenerate = require('./api/testprep-generate.js');
 
 // Essay Coach API Routes
 app.all('/api/essay-analyze', (req, res) => {
@@ -145,6 +146,33 @@ app.all('/api/timeline-data', (req, res) => {
   }
 });
 
+// Simple test route for debugging
+app.all('/api/test', (req, res) => {
+  console.log('Test route called!');
+  res.json({ message: 'Test route working', method: req.method });
+});
+
+// Test Prep API Routes
+app.all('/api/testprep-generate', (req, res) => {
+  console.log('Test prep API called:', req.method, req.url);
+  
+  // Mock OpenAI API key for testing
+  if (!process.env.OPENAI_API_KEY) {
+    process.env.OPENAI_API_KEY = 'test-key';
+  }
+  
+  try {
+    console.log('Calling testprep handler...');
+    // The module exports the handler function directly
+    testprepGenerate(req, res);
+  } catch (error) {
+    console.error('Test prep generation error:', error);
+    res.status(500).json({ error: 'Test prep generation failed', details: error.message });
+  }
+});
+
+console.log('Test prep route registered successfully');
+
 // Static page routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
@@ -158,6 +186,14 @@ app.get('/timeline', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'adaptive-timeline.html'));
 });
 
+app.get('/testprep', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'testprep-enhanced.html'));
+});
+
+app.get('/testprep-practice', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'testprep-practice.html'));
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`\n🚀 CollegeClimb Test Server`);
@@ -166,15 +202,22 @@ app.listen(PORT, () => {
   console.log(`   🏠 Dashboard: http://localhost:${PORT}/`);
   console.log(`   📝 Essay Coach: http://localhost:${PORT}/essay-coach`);
   console.log(`   📅 Adaptive Timeline: http://localhost:${PORT}/timeline`);
+  console.log(`   📊 Test Prep Dashboard: http://localhost:${PORT}/testprep`);
+  console.log(`   📝 Test Prep Practice: http://localhost:${PORT}/testprep-practice`);
   console.log(`\n🔌 API Endpoints:`);
   console.log(`   • /api/essay-analyze - Essay analysis with AI feedback`);
   console.log(`   • /api/essay-chat - Interactive essay assistance`);
   console.log(`   • /api/essay-storage - Essay saving and management`);
   console.log(`   • /api/timeline-recommendations - AI timeline recommendations`);
   console.log(`   • /api/timeline-data - Timeline data management`);
+  console.log(`   • /api/testprep-generate - AI test prep question generation`);
   console.log(`\n✅ Features available:`);
   console.log(`   • Essay writing and editing with AI feedback`);
   console.log(`   • Adaptive college application timeline`);
+  console.log(`   • Comprehensive SAT/ACT/PSAT test prep system`);
+  console.log(`   • AI-powered diagnostic assessments`);
+  console.log(`   • Real practice questions from official tests`);
+  console.log(`   • Desmos calculator integration for math sections`);
   console.log(`   • AI-powered recommendations`);
   console.log(`   • Task management and progress tracking`);
   console.log(`   • Dark/light theme support`);

@@ -1562,6 +1562,21 @@
                 </div>
             </div>
 
+            <div class="stat-card" onclick="window.location.href='testprep-enhanced.html'">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="testprepTrend">+50 pts</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="testprepScore">--</div>
+                <div class="stat-label">Test Prep Score</div>
+                <div class="stat-description">
+                    Practice SAT/ACT scores and improvement tracking
+                </div>
+            </div>
+
             <div class="stat-card" onclick="showProgressAnalytics()">
                 <div class="stat-header">
                     <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
@@ -1592,6 +1607,108 @@
             </div>
             <div class="school-grid" id="schoolGrid">
                 <!-- Schools will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Test Prep Section -->
+        <div class="testprep-section" style="margin-bottom: 3rem;">
+            <div class="match-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-calculator"></i>
+                    Test Prep Dashboard
+                </h2>
+                <div class="ai-badge">
+                    <i class="fas fa-brain"></i>
+                    AI-Powered
+                </div>
+            </div>
+            <div class="testprep-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                <!-- SAT Prep Card -->
+                <div class="testprep-card" style="background: var(--primary-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid rgba(160, 123, 204, 0.1); transition: all 0.3s ease; cursor: pointer;" onclick="window.location.href='testprep-enhanced.html?test=sat'">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">SAT</div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">SAT Prep</h3>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">Practice & improve</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);" id="satScore">--</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Best Score</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--secondary-bg); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Progress</span>
+                            <span style="font-size: 0.9rem; font-weight: 600;" id="satProgress">0%</span>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: rgba(160, 123, 204, 0.2); border-radius: 3px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s ease;" id="satProgressBar"></div>
+                        </div>
+                    </div>
+                    <button style="width: 100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fas fa-play"></i> Start Practice
+                    </button>
+                </div>
+
+                <!-- ACT Prep Card -->
+                <div class="testprep-card" style="background: var(--primary-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid rgba(160, 123, 204, 0.1); transition: all 0.3s ease; cursor: pointer;" onclick="window.location.href='testprep-enhanced.html?test=act'">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">ACT</div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">ACT Prep</h3>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">Practice & improve</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);" id="actScore">--</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Best Score</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--secondary-bg); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Progress</span>
+                            <span style="font-size: 0.9rem; font-weight: 600;" id="actProgress">0%</span>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: rgba(160, 123, 204, 0.2); border-radius: 3px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--success-color); width: 0%; transition: width 0.3s ease;" id="actProgressBar"></div>
+                        </div>
+                    </div>
+                    <button style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fas fa-play"></i> Start Practice
+                    </button>
+                </div>
+
+                <!-- Diagnostic Assessment Card -->
+                <div class="testprep-card" style="background: var(--primary-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid rgba(160, 123, 204, 0.1); transition: all 0.3s ease; cursor: pointer;" onclick="window.location.href='testprep-practice.html?sessionType=diagnostic'">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas fa-stethoscope"></i>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Diagnostic Test</h3>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">Find weak areas</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--warning-color);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var (--text-secondary);">AI Analysis</div>
+                        </div>
+                    </div>
+                    <div style="background: var (--secondary-bg); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                        <p style="margin: 0; font-size: 0.9rem; color: var (--text-secondary); text-align: center;">
+                            Take a comprehensive assessment to identify your strengths and areas for improvement
+                        </p>
+                    </div>
+                    <button style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fas fa-play"></i> Take Assessment
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -2119,6 +2236,9 @@
                 
                 // Load real application data
                 await loadApplicationData();
+                
+                // Load test prep data
+                await loadTestPrepData();
                 
                 // Calculate and display stats
                 await calculateRealStats();
@@ -2980,6 +3100,105 @@
             document.addEventListener('DOMContentLoaded', initNavbar);
         } else {
             initNavbar();
+        }
+
+        // Load test prep data from Firestore
+        async function loadTestPrepData() {
+            try {
+                const userId = window.currentUser.uid;
+                const testPrepDoc = await getDoc(doc(db, 'testprep', userId));
+                
+                if (testPrepDoc.exists()) {
+                    window.testPrepData = testPrepDoc.data();
+                    console.log('📊 Test prep data loaded:', window.testPrepData);
+                } else {
+                    // Initialize test prep data
+                    window.testPrepData = {
+                        questionsCompleted: 0,
+                        subjectProgress: {},
+                        bestScores: {
+                            sat: null,
+                            act: null,
+                            psat: null
+                        },
+                        weakAreas: [],
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    await setDoc(doc(db, 'testprep', userId), window.testPrepData);
+                    console.log('📝 Initialized test prep data');
+                }
+                
+                // Update test prep UI
+                updateTestPrepUI();
+                
+            } catch (error) {
+                console.error('❌ Error loading test prep data:', error);
+                // Initialize with defaults
+                window.testPrepData = {
+                    questionsCompleted: 0,
+                    subjectProgress: {},
+                    bestScores: { sat: null, act: null, psat: null },
+                    weakAreas: []
+                };
+                updateTestPrepUI();
+            }
+        }
+
+        // Update test prep UI elements
+        function updateTestPrepUI() {
+            const testPrepData = window.testPrepData || {};
+            
+            // Update stat card
+            const bestSATScore = testPrepData.bestScores?.sat || 
+                                 (testPrepData.subjectProgress?.satmath?.score || 0) + 
+                                 (testPrepData.subjectProgress?.satreading?.score || 0);
+            const bestACTScore = testPrepData.bestScores?.act || 
+                                testPrepData.subjectProgress?.actmath?.score || 0;
+            
+            // Display best score (prefer SAT, fallback to ACT)
+            if (bestSATScore && bestSATScore > 400) {
+                document.getElementById('testprepScore').textContent = bestSATScore;
+                document.getElementById('testprepTrend').textContent = '+50 pts';
+            } else if (bestACTScore && bestACTScore > 10) {
+                document.getElementById('testprepScore').textContent = bestACTScore;
+                document.getElementById('testprepTrend').textContent = '+3 pts';
+            } else {
+                document.getElementById('testprepScore').textContent = '--';
+                document.getElementById('testprepTrend').textContent = 'Start practicing';
+            }
+            
+            // Update individual test scores in dashboard cards
+            updateTestScoreCard('sat', bestSATScore);
+            updateTestScoreCard('act', bestACTScore);
+        }
+
+        function updateTestScoreCard(testType, score) {
+            const scoreElement = document.getElementById(`${testType}Score`);
+            const progressElement = document.getElementById(`${testType}Progress`);
+            const progressBarElement = document.getElementById(`${testType}ProgressBar`);
+            
+            if (!scoreElement) return;
+            
+            if (score && score > 0) {
+                if (testType === 'sat') {
+                    scoreElement.textContent = score;
+                    // Calculate progress based on target of 1500
+                    const progress = Math.min((score / 1500) * 100, 100);
+                    progressElement.textContent = `${Math.round(progress)}%`;
+                    progressBarElement.style.width = `${progress}%`;
+                } else if (testType === 'act') {
+                    scoreElement.textContent = score;
+                    // Calculate progress based on target of 32
+                    const progress = Math.min((score / 32) * 100, 100);
+                    progressElement.textContent = `${Math.round(progress)}%`;
+                    progressBarElement.style.width = `${progress}%`;
+                }
+            } else {
+                scoreElement.textContent = '--';
+                progressElement.textContent = '0%';
+                progressBarElement.style.width = '0%';
+            }
         }
 
     </script>

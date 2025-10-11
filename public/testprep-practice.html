@@ -546,8 +546,8 @@
             </div>
 
             <div class="nav-buttons" style="margin-top: 2rem;">
-                <button class="nav-btn secondary" onclick="window.location.href='testprep.html'">
-                    <i class="fas fa-home"></i> Back to Dashboard
+                <button class="nav-btn secondary" onclick="window.location.href='testprep-enhanced.html'">
+                    <i class="fas fa-home"></i> Back to Test Prep
                 </button>
                 <button class="nav-btn primary" onclick="restartPractice()">
                     <i class="fas fa-redo"></i> Practice Again
@@ -661,15 +661,21 @@
                 // Determine weak areas from testPrepData
                 const weakAreas = testPrepData.weakAreas || [];
                 const difficulty = calculateDifficulty();
+                const userLevel = getUserLevel();
 
-                // Generate 10 questions using AI
-                const response = await fetch('/api/chat', {
+                console.log(`Generating questions for ${sessionSubject} at ${difficulty} level...`);
+
+                // Generate questions using enhanced test prep API
+                const response = await fetch('/api/testprep-generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: buildQuestionPrompt(sessionSubject, difficulty, weakAreas),
-                        userProfile: userData,
-                        questionnaireData: userData?.questionnaire
+                        subject: sessionSubject,
+                        difficulty: difficulty.toLowerCase(),
+                        questionCount: 10,
+                        weakAreas: weakAreas,
+                        userLevel: userLevel,
+                        sessionType: 'practice'
                     })
                 });
 
@@ -677,12 +683,27 @@
 
                 const data = await response.json();
                 
-                // Parse AI response into questions
-                currentQuestions = parseAIQuestions(data.response);
+                if (data.success && data.questions && data.questions.length > 0) {
+                    currentQuestions = data.questions.map(q => ({
+                        prompt: q.prompt,
+                        options: q.options || q.choices,
+                        correctAnswer: q.correctAnswer || q.correct,
+                        explanation: q.explanation,
+                        difficulty: q.difficulty || difficulty,
+                        subject: q.subject || sessionSubject,
+                        category: q.category || 'general',
+                        hasImage: q.hasImage || false,
+                        source: q.source || 'Generated'
+                    }));
 
-                // If parsing failed, use fallback questions
-                if (currentQuestions.length === 0) {
-                    currentQuestions = getFallbackQuestions(sessionSubject);
+                    // Display insights if available
+                    if (data.insights) {
+                        displayInsights(data.insights);
+                    }
+
+                    console.log(`Generated ${currentQuestions.length} questions successfully`);
+                } else {
+                    throw new Error('No questions returned from API');
                 }
 
                 // Hide loading and show first question
@@ -692,8 +713,13 @@
 
             } catch (error) {
                 console.error('Error generating questions:', error);
-                // Use fallback questions
+                
+                // Fallback to basic questions with improved error handling
                 currentQuestions = getFallbackQuestions(sessionSubject);
+                
+                // Show user-friendly error message
+                showErrorMessage('Using practice questions while we improve our question generation system.');
+                
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('questionCard').style.display = 'block';
                 displayQuestion();
@@ -803,14 +829,65 @@ Generate 10 questions now:`;
                         options: ['3', '5', '7', '15'],
                         correctAnswer: 1,
                         explanation: 'Subtract 7 from both sides: 3x = 15. Then divide by 3: x = 5.',
-                        subject: 'sat-math'
+                        subject: 'sat-math',
+                        difficulty: 'easy',
+                        category: 'algebra'
                     },
                     {
                         prompt: 'A rectangle has a length of 12 cm and a width of 5 cm. What is its perimeter?',
                         options: ['17 cm', '34 cm', '60 cm', '24 cm'],
                         correctAnswer: 1,
                         explanation: 'Perimeter = 2(length + width) = 2(12 + 5) = 2(17) = 34 cm',
-                        subject: 'sat-math'
+                        subject: 'sat-math',
+                        difficulty: 'easy',
+                        category: 'geometry'
+                    },
+                    {
+                        prompt: 'If y = 2x - 3 and x = 4, what is the value of y?',
+                        options: ['5', '8', '11', '14'],
+                        correctAnswer: 0,
+                        explanation: 'Substitute x = 4: y = 2(4) - 3 = 8 - 3 = 5',
+                        subject: 'sat-math',
+                        difficulty: 'easy',
+                        category: 'algebra'
+                    },
+                    {
+                        prompt: 'What is 15% of 80?',
+                        options: ['10', '12', '15', '20'],
+                        correctAnswer: 1,
+                        explanation: '15% of 80 = 0.15 × 80 = 12',
+                        subject: 'sat-math',
+                        difficulty: 'medium',
+                        category: 'arithmetic'
+                    },
+                    {
+                        prompt: 'The graph of y = f(x) passes through (2, 5). What point does y = f(x - 3) pass through?',
+                        options: ['(-1, 5)', '(5, 5)', '(2, 2)', '(5, 8)'],
+                        correctAnswer: 1,
+                        explanation: 'y = f(x - 3) shifts the graph 3 units right. Point (2, 5) becomes (2 + 3, 5) = (5, 5)',
+                        subject: 'sat-math',
+                        difficulty: 'medium',
+                        category: 'functions'
+                    }
+                ],
+                'act-math': [
+                    {
+                        prompt: 'What is the least common multiple of 6 and 8?',
+                        options: ['14', '24', '48', '2'],
+                        correctAnswer: 1,
+                        explanation: 'LCM of 6 and 8: 6 = 2×3, 8 = 2³. LCM = 2³×3 = 24',
+                        subject: 'act-math',
+                        difficulty: 'easy',
+                        category: 'number-theory'
+                    },
+                    {
+                        prompt: 'In a right triangle, if one angle measures 35°, what is the measure of the other acute angle?',
+                        options: ['35°', '45°', '55°', '65°'],
+                        correctAnswer: 2,
+                        explanation: 'In a right triangle, the three angles sum to 180°. With a 90° angle and 35° angle, the third angle is 180° - 90° - 35° = 55°',
+                        subject: 'act-math',
+                        difficulty: 'medium',
+                        category: 'geometry'
                     }
                 ],
                 'sat-reading': [
@@ -819,7 +896,45 @@ Generate 10 questions now:`;
                         options: ['Careless', 'Careful', 'Creative', 'Chaotic'],
                         correctAnswer: 1,
                         explanation: 'Meticulous means showing great attention to detail; very careful and precise.',
-                        subject: 'sat-reading'
+                        subject: 'sat-reading',
+                        difficulty: 'medium',
+                        category: 'vocabulary'
+                    },
+                    {
+                        prompt: 'In the context "The data corroborates the hypothesis," what does "corroborates" mean?',
+                        options: ['Contradicts', 'Supports', 'Ignores', 'Questions'],
+                        correctAnswer: 1,
+                        explanation: 'Corroborates means to confirm or give support to a statement, theory, or finding.',
+                        subject: 'sat-reading',
+                        difficulty: 'medium',
+                        category: 'vocabulary'
+                    }
+                ],
+                'act-english': [
+                    {
+                        prompt: 'Which sentence is grammatically correct?',
+                        options: [
+                            'Neither the students nor the teacher were prepared.',
+                            'Neither the students nor the teacher was prepared.',
+                            'Neither the students or the teacher were prepared.',
+                            'Neither the students or the teacher was prepared.'
+                        ],
+                        correctAnswer: 1,
+                        explanation: 'With "neither...nor," the verb agrees with the subject closer to it. "Teacher" is singular, so use "was."',
+                        subject: 'act-english',
+                        difficulty: 'medium',
+                        category: 'grammar'
+                    }
+                ],
+                'psat-math': [
+                    {
+                        prompt: 'If 2x + 5 = 13, what is the value of x?',
+                        options: ['4', '6', '8', '9'],
+                        correctAnswer: 0,
+                        explanation: 'Subtract 5 from both sides: 2x = 8. Divide by 2: x = 4.',
+                        subject: 'psat-math',
+                        difficulty: 'easy',
+                        category: 'algebra'
                     }
                 ]
             };
@@ -828,7 +943,11 @@ Generate 10 questions now:`;
             const baseQuestions = fallbacks[subject] || fallbacks['sat-math'];
             const questions = [];
             for (let i = 0; i < 10; i++) {
-                questions.push({...baseQuestions[i % baseQuestions.length]});
+                const questionTemplate = baseQuestions[i % baseQuestions.length];
+                questions.push({
+                    ...questionTemplate,
+                    source: 'Practice Question'
+                });
             }
             return questions;
         }
@@ -836,13 +955,35 @@ Generate 10 questions now:`;
         function displayQuestion() {
             const question = currentQuestions[currentQuestionIndex];
             
-            // Update question number
+            // Update question number and metadata
             document.getElementById('questionNumber').textContent = 
                 `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
 
-            // Update prompt
-            document.getElementById('questionPrompt').textContent = question.prompt;
+            // Update prompt with enhanced formatting
+            const promptElement = document.getElementById('questionPrompt');
+            promptElement.textContent = question.prompt;
+            
+            // Add question metadata
+            const metaInfo = [];
+            if (question.difficulty) metaInfo.push(`Difficulty: ${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}`);
+            if (question.category) metaInfo.push(`Topic: ${question.category.charAt(0).toUpperCase() + question.category.slice(1)}`);
+            if (question.source) metaInfo.push(`Source: ${question.source}`);
+            
+            if (metaInfo.length > 0) {
+                const metaElement = document.createElement('div');
+                metaElement.className = 'question-meta';
+                metaElement.style.cssText = `
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    margin-top: 0.5rem;
+                    padding: 0.5rem;
+                    background: var(--secondary-bg);
+                    border-radius: 8px;
+                `;
+                metaElement.textContent = metaInfo.join(' • ');
+                promptElement.appendChild(metaElement);
+            }
 
             // Clear and populate answer choices
             const choicesContainer = document.getElementById('answerChoices');
@@ -858,6 +999,19 @@ Generate 10 questions now:`;
                 `;
                 choicesContainer.appendChild(choice);
             });
+
+            // Show calculator for math questions
+            if (sessionSubject.includes('math') && calculator) {
+                document.getElementById('calculatorBtn').style.display = 'flex';
+                // Pre-load helpful functions for certain question types
+                if (question.category === 'geometry' || question.category === 'trigonometry') {
+                    calculator.setExpression({ 
+                        id: 'helper', 
+                        latex: 'f(x) = x', 
+                        color: '#2d70b3' 
+                    });
+                }
+            }
 
             // Reset UI state
             document.getElementById('explanationPanel').classList.remove('show');
@@ -1031,6 +1185,82 @@ Generate 10 questions now:`;
         window.restartPractice = function() {
             location.reload();
         };
+
+        function getUserLevel() {
+            if (!testPrepData.questionsCompleted) return 'medium';
+            
+            const accuracy = testPrepData.questionsCompleted > 0 
+                ? (correctAnswers / testPrepData.questionsCompleted) * 100 
+                : 50;
+
+            if (accuracy > 85) return 'advanced';
+            if (accuracy > 70) return 'intermediate';
+            if (accuracy > 50) return 'beginner';
+            return 'basic';
+        }
+
+        function displayInsights(insights) {
+            if (!insights) return;
+            
+            // Create insights notification
+            const insightHTML = `
+                <div class="insight-notification" style="
+                    background: var(--secondary-bg);
+                    border-left: 4px solid var(--accent-color);
+                    padding: 1rem;
+                    margin: 1rem 0;
+                    border-radius: 8px;
+                    font-size: 0.9rem;
+                    color: var(--text-secondary);
+                ">
+                    <strong>📊 AI Insights:</strong> ${insights.recommendation || 'Keep practicing to improve your scores!'}
+                    ${insights.targetAreas ? `<br><strong>Focus Areas:</strong> ${insights.targetAreas.join(', ')}` : ''}
+                </div>
+            `;
+            
+            // Show insights before question card
+            const questionCard = document.getElementById('questionCard');
+            questionCard.insertAdjacentHTML('beforebegin', insightHTML);
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                const notification = document.querySelector('.insight-notification');
+                if (notification) {
+                    notification.style.transition = 'opacity 0.5s ease';
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 10000);
+        }
+
+        function showErrorMessage(message) {
+            const errorHTML = `
+                <div class="error-notification" style="
+                    background: rgba(239, 68, 68, 0.1);
+                    border-left: 4px solid var(--danger-color);
+                    padding: 1rem;
+                    margin: 1rem 0;
+                    border-radius: 8px;
+                    font-size: 0.9rem;
+                    color: var(--text-primary);
+                ">
+                    <strong>⚠️ Notice:</strong> ${message}
+                </div>
+            `;
+            
+            const questionCard = document.getElementById('questionCard');
+            questionCard.insertAdjacentHTML('beforebegin', errorHTML);
+            
+            // Auto-hide after 8 seconds
+            setTimeout(() => {
+                const notification = document.querySelector('.error-notification');
+                if (notification) {
+                    notification.style.transition = 'opacity 0.5s ease';
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 8000);
+        }
 
         // Initialize theme
         const savedTheme = localStorage.getItem('theme') || 'dark';

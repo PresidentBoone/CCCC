@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Test Prep - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            padding-top: 80px;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(13, 17, 23, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient);
+            border-radius: 24px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            opacity: 0.9;
+        }
+
+        /* Score Dashboard */
+        .score-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .score-card {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(42, 53, 122, 0.15);
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .score-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .score-current {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-target {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .score-progress {
+            width: 100%;
+            height: 8px;
+            background: var(--secondary-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .score-progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.5s ease;
+        }
+
+        .score-improvement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        /* Test Options */
+        .test-options {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .test-option {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(160, 123, 204, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .test-option-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .test-option-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .test-option-info h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .test-option-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .test-option-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .test-option-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .test-option-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .test-option-features li i {
+            color: var(--success-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(160, 123, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+        }
+
+        /* Study Plan Section */
+        .study-plan {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .study-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .study-recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recommendation-card {
+            background: var(--primary-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .recommendation-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-description {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Diagnostic Section */
+        .diagnostic-banner {
+            background: linear-gradient(135deg, var(--info-color), var(--accent-color));
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .diagnostic-banner h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .diagnostic-banner p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .diagnostic-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .diagnostic-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .score-dashboard,
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="logo">
+            <img src="images/whiteclearcc.png" alt="College Climb">
+            <div class="brand-text">College Climb</div>
+        </a>
+        <div class="nav-actions">
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="dashboard.html" class="btn btn-secondary" style="text-decoration: none; display: inline-flex;">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🚀 AI-Powered Test Prep</h1>
+            <p>Boost your SAT, ACT, and PSAT scores with personalized AI coaching, real practice questions, and targeted study plans.</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="avgImprovement">150+</div>
+                    <div class="hero-stat-label">Average Score Improvement</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="questionsCompleted">10,000+</div>
+                    <div class="hero-stat-label">Practice Questions Available</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="studentsHelped">95%</div>
+                    <div class="hero-stat-label">Students See Score Improvement</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diagnostic Banner -->
+        <div class="diagnostic-banner">
+            <h3>🧠 Start with Our AI Diagnostic Assessment</h3>
+            <p>Take a quick 15-minute diagnostic to identify your strengths and weaknesses. Our AI will create a personalized study plan just for you!</p>
+            
+            <div class="diagnostic-features">
+                <div class="diagnostic-feature">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Analysis</span>
+                </div>
+                <div class="diagnostic-feature">
+                    <i class="fas fa-target"></i>
+                    <span>Weakness Identification</span>
+                </div>
+                <div class="diagnostic-feature">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Score Prediction</span>
+                </div>
+                <div class="diagnostic-feature">
+                    <i class="fas fa-calendar"></i>
+                    <span>Custom Study Plan</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="startDiagnostic()" style="background: white; color: var(--accent-color); font-weight: 800;">
+                <i class="fas fa-play"></i> Take Diagnostic Assessment (Free)
+            </button>
+        </div>
+
+        <!-- Current Scores Dashboard -->
+        <div class="score-dashboard">
+            <div class="score-card">
+                <div class="score-header">
+                    <div class="score-title">SAT Score</div>
+                    <div class="score-icon"><i class="fas fa-graduation-cap"></i></div>
+                </div>
+                <div class="score-current" id="satScore">1200</div>
+                <div class="score-target">Target: <span id="satTarget">1400</span></div>
+                <div class="score-progress">
+                    <div class="score-progress-fill" id="satProgress" style="width: 60%;"></div>
+                </div>
+                <div class="score-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+50 this month</span>
+                </div>
+            </div>
+
+            <div class="score-card">
+                <div class="score-header">
+                    <div class="score-title">ACT Score</div>
+                    <div class="score-icon"><i class="fas fa-certificate"></i></div>
+                </div>
+                <div class="score-current" id="actScore">26</div>
+                <div class="score-target">Target: <span id="actTarget">30</span></div>
+                <div class="score-progress">
+                    <div class="score-progress-fill" id="actProgress" style="width: 65%;"></div>
+                </div>
+                <div class="score-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+2 this month</span>
+                </div>
+            </div>
+
+            <div class="score-card">
+                <div class="score-header">
+                    <div class="score-title">Study Streak</div>
+                    <div class="score-icon"><i class="fas fa-fire"></i></div>
+                </div>
+                <div class="score-current" id="studyStreak">7</div>
+                <div class="score-target">Days in a row</div>
+                <div class="score-progress">
+                    <div class="score-progress-fill" style="width: 70%;"></div>
+                </div>
+                <div class="score-improvement">
+                    <i class="fas fa-trophy"></i>
+                    <span>Keep it up!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Options -->
+        <div class="test-options">
+            <h2 class="section-title">Choose Your Practice Mode</h2>
+            
+            <div class="test-grid">
+                <!-- SAT Practice -->
+                <div class="test-option" onclick="selectTest('sat')">
+                    <div class="test-option-header">
+                        <div class="test-option-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="test-option-info">
+                            <h3>SAT Practice</h3>
+                            <p>Math, Reading & Writing</p>
+                        </div>
+                    </div>
+                    <div class="test-option-description">
+                        Practice with real College Board questions and AI-generated problems targeting your weak areas.
+                    </div>
+                    <ul class="test-option-features">
+                        <li><i class="fas fa-check"></i> Official practice questions</li>
+                        <li><i class="fas fa-check"></i> AI-powered explanations</li>
+                        <li><i class="fas fa-check"></i> Desmos calculator integration</li>
+                        <li><i class="fas fa-check"></i> Adaptive difficulty</li>
+                    </ul>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start SAT Practice
+                    </button>
+                </div>
+
+                <!-- ACT Practice -->
+                <div class="test-option" onclick="selectTest('act')">
+                    <div class="test-option-header">
+                        <div class="test-option-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div class="test-option-info">
+                            <h3>ACT Practice</h3>
+                            <p>Math, English, Reading, Science</p>
+                        </div>
+                    </div>
+                    <div class="test-option-description">
+                        Comprehensive ACT preparation with real questions from past tests and targeted skill building.
+                    </div>
+                    <ul class="test-option-features">
+                        <li><i class="fas fa-check"></i> Real ACT questions</li>
+                        <li><i class="fas fa-check"></i> All four sections</li>
+                        <li><i class="fas fa-check"></i> Timing practice</li>
+                        <li><i class="fas fa-check"></i> Science reasoning focus</li>
+                    </ul>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start ACT Practice
+                    </button>
+                </div>
+
+                <!-- PSAT Practice -->
+                <div class="test-option" onclick="selectTest('psat')">
+                    <div class="test-option-header">
+                        <div class="test-option-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <div class="test-option-info">
+                            <h3>PSAT Practice</h3>
+                            <p>National Merit Prep</p>
+                        </div>
+                    </div>
+                    <div class="test-option-description">
+                        Prepare for the PSAT/NMSQT with targeted practice for National Merit qualification.
+                    </div>
+                    <ul class="test-option-features">
+                        <li><i class="fas fa-check"></i> National Merit focused</li>
+                        <li><i class="fas fa-check"></i> Scholarship preparation</li>
+                        <li><i class="fas fa-check"></i> Grade-appropriate content</li>
+                        <li><i class="fas fa-check"></i> Progress tracking</li>
+                    </ul>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start PSAT Practice
+                    </button>
+                </div>
+
+                <!-- Full Practice Tests -->
+                <div class="test-option" onclick="startFullTest()">
+                    <div class="test-option-header">
+                        <div class="test-option-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="test-option-info">
+                            <h3>Full Practice Tests</h3>
+                            <p>Timed, realistic testing</p>
+                        </div>
+                    </div>
+                    <div class="test-option-description">
+                        Take complete, timed practice tests that simulate the real testing experience.
+                    </div>
+                    <ul class="test-option-features">
+                        <li><i class="fas fa-check"></i> Full-length tests</li>
+                        <li><i class="fas fa-check"></i> Real timing conditions</li>
+                        <li><i class="fas fa-check"></i> Detailed score reports</li>
+                        <li><i class="fas fa-check"></i> Performance analytics</li>
+                    </ul>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-stopwatch"></i> Take Full Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Study Plan -->
+        <div class="study-plan">
+            <div class="study-plan-header">
+                <h2 class="section-title">🤖 Your AI-Powered Study Plan</h2>
+                <button class="btn btn-secondary" onclick="updateStudyPlan()">
+                    <i class="fas fa-refresh"></i> Update Plan
+                </button>
+            </div>
+            
+            <div class="study-recommendations" id="studyRecommendations">
+                <div class="recommendation-card">
+                    <div class="recommendation-title">
+                        <i class="fas fa-bullseye"></i>
+                        Focus on Algebra
+                    </div>
+                    <div class="recommendation-description">
+                        Your diagnostic shows algebra as a key improvement area. Complete 15 practice problems daily for 2 weeks.
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="recommendation-title">
+                        <i class="fas fa-book-open"></i>
+                        Reading Comprehension
+                    </div>
+                    <div class="recommendation-description">
+                        Practice passage-based questions 20 minutes daily. Focus on main idea and inference questions.
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="recommendation-title">
+                        <i class="fas fa-chart-line"></i>
+                        Progress Tracking
+                    </div>
+                    <div class="recommendation-description">
+                        Take practice tests weekly to track improvement. Current trajectory: +120 SAT points in 3 months.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Selection Modal -->
+    <div id="testModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Select Test Section</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userData = null;
+        let testPrepData = null;
+
+        // Initialize
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadUserData();
+                await loadTestPrepData();
+                updateDashboard();
+            } else {
+                // Allow guest access for demo
+                initializeGuestMode();
+            }
+        });
+
+        async function loadUserData() {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        async function loadTestPrepData() {
+            try {
+                const testPrepDoc = await getDoc(doc(db, 'testprep', currentUser.uid));
+                if (testPrepDoc.exists()) {
+                    testPrepData = testPrepDoc.data();
+                } else {
+                    // Initialize default test prep data
+                    testPrepData = {
+                        scores: { sat: 1200, act: 26, psat: 1100 },
+                        targets: { sat: 1400, act: 30, psat: 1300 },
+                        questionsCompleted: 0,
+                        studyStreak: 0,
+                        weakAreas: [],
+                        diagnosticCompleted: false,
+                        lastStudyDate: null
+                    };
+                    
+                    await setDoc(doc(db, 'testprep', currentUser.uid), testPrepData);
+                }
+            } catch (error) {
+                console.error('Error loading test prep data:', error);
+                testPrepData = {
+                    scores: { sat: 1200, act: 26, psat: 1100 },
+                    targets: { sat: 1400, act: 30, psat: 1300 },
+                    questionsCompleted: 0,
+                    studyStreak: 0,
+                    weakAreas: [],
+                    diagnosticCompleted: false
+                };
+            }
+        }
+
+        function initializeGuestMode() {
+            // Demo data for guests
+            testPrepData = {
+                scores: { sat: 1200, act: 26, psat: 1100 },
+                targets: { sat: 1400, act: 30, psat: 1300 },
+                questionsCompleted: 47,
+                studyStreak: 7,
+                weakAreas: ['algebra', 'reading-comprehension'],
+                diagnosticCompleted: false
+            };
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            if (!testPrepData) return;
+
+            // Update score displays
+            document.getElementById('satScore').textContent = testPrepData.scores.sat;
+            document.getElementById('actScore').textContent = testPrepData.scores.act;
+            document.getElementById('satTarget').textContent = testPrepData.targets.sat;
+            document.getElementById('actTarget').textContent = testPrepData.targets.act;
+            document.getElementById('studyStreak').textContent = testPrepData.studyStreak;
+
+            // Update progress bars
+            const satProgress = (testPrepData.scores.sat / testPrepData.targets.sat) * 100;
+            const actProgress = (testPrepData.scores.act / testPrepData.targets.act) * 100;
+            
+            document.getElementById('satProgress').style.width = `${Math.min(satProgress, 100)}%`;
+            document.getElementById('actProgress').style.width = `${Math.min(actProgress, 100)}%`;
+        }
+
+        // Test selection functions
+        window.selectTest = function(testType) {
+            const sections = {
+                'sat': [
+                    { id: 'sat-math', name: 'SAT Math', icon: 'calculator', description: 'Algebra, Geometry, Trigonometry' },
+                    { id: 'sat-reading', name: 'SAT Reading & Writing', icon: 'book', description: 'Reading Comprehension, Grammar' }
+                ],
+                'act': [
+                    { id: 'act-math', name: 'ACT Math', icon: 'calculator', description: 'Pre-Algebra to Trigonometry' },
+                    { id: 'act-english', name: 'ACT English', icon: 'pen', description: 'Grammar, Punctuation, Style' },
+                    { id: 'act-reading', name: 'ACT Reading', icon: 'book-open', description: 'Reading Comprehension' },
+                    { id: 'act-science', name: 'ACT Science', icon: 'flask', description: 'Data Interpretation, Scientific Reasoning' }
+                ],
+                'psat': [
+                    { id: 'psat-math', name: 'PSAT Math', icon: 'calculator', description: 'National Merit Focused' },
+                    { id: 'psat-reading', name: 'PSAT Reading & Writing', icon: 'book', description: 'College Readiness' }
+                ]
+            };
+
+            showTestSectionModal(testType, sections[testType]);
+        };
+
+        function showTestSectionModal(testType, sections) {
+            const modal = document.getElementById('testModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+
+            title.textContent = `Select ${testType.toUpperCase()} Section`;
+            
+            body.innerHTML = sections.map(section => `
+                <div class="section-option" onclick="startPractice('${section.id}')">
+                    <div class="section-icon">
+                        <i class="fas fa-${section.icon}"></i>
+                    </div>
+                    <div class="section-info">
+                        <h4>${section.name}</h4>
+                        <p>${section.description}</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                </div>
+            `).join('');
+
+            modal.style.display = 'flex';
+        }
+
+        window.startPractice = function(subject) {
+            closeModal();
+            window.location.href = `testprep-practice.html?subject=${subject}&sessionType=practice`;
+        };
+
+        window.startDiagnostic = function() {
+            window.location.href = 'testprep-practice.html?sessionType=diagnostic';
+        };
+
+        window.startFullTest = function() {
+            window.location.href = 'testprep-practice.html?sessionType=full-test';
+        };
+
+        window.closeModal = function() {
+            document.getElementById('testModal').style.display = 'none';
+        };
+
+        window.updateStudyPlan = async function() {
+            // Call AI to generate updated study recommendations
+            try {
+                const response = await fetch('/api/testprep-generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subject: 'study-plan',
+                        userLevel: calculateUserLevel(),
+                        weakAreas: testPrepData.weakAreas,
+                        currentScores: testPrepData.scores
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStudyRecommendations(data.insights);
+                }
+            } catch (error) {
+                console.error('Error updating study plan:', error);
+            }
+        };
+
+        function calculateUserLevel() {
+            const avgSAT = testPrepData.scores.sat;
+            if (avgSAT < 1000) return 'beginner';
+            if (avgSAT < 1300) return 'intermediate';
+            return 'advanced';
+        }
+
+        function updateStudyRecommendations(insights) {
+            const container = document.getElementById('studyRecommendations');
+            if (insights && insights.studyPlan) {
+                container.innerHTML = insights.studyPlan.map((plan, index) => `
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">
+                            <i class="fas fa-${getRecommendationIcon(index)}"></i>
+                            ${plan.title || `Recommendation ${index + 1}`}
+                        </div>
+                        <div class="recommendation-description">
+                            ${plan.description || plan}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getRecommendationIcon(index) {
+            const icons = ['bullseye', 'book-open', 'chart-line', 'clock', 'trophy', 'brain'];
+            return icons[index % icons.length];
+        }
+
+        window.toggleTheme = function() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const themeToggle = document.querySelector('.theme-toggle i');
+            themeToggle.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        };
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle i').className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    </script>
+
+    <style>
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .section-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border: 2px solid rgba(160, 123, 204, 0.1);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .section-option:hover {
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .section-info {
+            flex: 1;
+        }
+
+        .section-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-info p {
+            color: var(--text-secondary);
+        }
+    </style>
+</body>
+</html>
