@@ -2206,17 +2206,43 @@
             }
         };
 
-        // Auth state management
+        // Auth state management with auto-loading and intelligent defaults
         onAuthStateChanged(auth, async (user) => {
             console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
             
             if (user) {
                 document.body.classList.add("logged-in");
                 window.currentUser = user;
-                await loadUserData(user);
-                await loadNavbarUserData(user.uid);
-                await initializeAI();
-                await initializeDashboard();
+                
+                // Show loading overlay
+                showGlobalLoading();
+                
+                try {
+                    // Load all data in parallel for better performance
+                    await Promise.all([
+                        loadUserData(user),
+                        loadNavbarUserData(user.uid),
+                        loadApplicationData(),
+                        loadTestPrepData(),
+                        loadTimelinePreferences()
+                    ]);
+                    
+                    // Initialize AI systems
+                    await initializeAI();
+                    
+                    // Initialize dashboard with loaded data
+                    await initializeDashboard();
+                    
+                    // Auto-populate timeline with smart defaults
+                    await autoInitializeTimeline();
+                    
+                    console.log('✅ Dashboard fully loaded and initialized');
+                } catch (error) {
+                    console.error('❌ Error during dashboard initialization:', error);
+                    showDashboardError(error.message);
+                } finally {
+                    hideGlobalLoading();
+                }
             } else {
                 document.body.classList.remove("logged-in");
                 window.location.href = 'login.html';
@@ -2835,166 +2861,659 @@
                 }));
         }
 
-
-
-        // Global functions
-        window.toggleTask = function(checkbox) {
-            const taskItem = checkbox.closest('.task-item');
-            const taskTitle = taskItem.querySelector('.task-title');
-            
-            if (checkbox.checked) {
-                taskItem.classList.add('completed');
-                taskTitle.style.textDecoration = 'line-through';
-                taskTitle.style.opacity = '0.6';
-            } else {
-                taskItem.classList.remove('completed');
-                taskTitle.style.textDecoration = 'none';
-                taskTitle.style.opacity = '1';
-            }
-        };
-
-        window.dismissAlert = function() {
-            const alertBanner = document.getElementById('alertBanner');
-            if (alertBanner) {
-                alertBanner.classList.remove('show');
-            }
-        };
-
-        // Navigation functions
-        window.showApplicationTracker = function() {
-            window.location.href = 'myapp.html';
-        };
-
-        window.showEssayTracker = function() {
-            window.location.href = 'essaycoach.html';
-        };
-
-        window.showScholarshipTracker = function() {
-            window.location.href = 'scholarship.html';
-        };
-
-        window.showProgressAnalytics = function() {
-            console.log('Progress analytics clicked');
-        };
-
-        // Utility function
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        // Initialize navbar on load
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavbar);
-        } else {
-            initNavbar();
-        }
-
-        // Load test prep data from Firestore
-        async function loadTestPrepData() {
+        // Load timeline preferences from user data
+        async function loadTimelinePreferences() {
             try {
-                const userId = window.currentUser.uid;
-                const testPrepDoc = await getDoc(doc(db, 'testprep', userId));
+                const userId = window.currentUser?.uid;
+                if (!userId) return;
                 
-                if (testPrepDoc.exists()) {
-                    window.testPrepData = testPrepDoc.data();
-                    console.log('📊 Test prep data loaded:', window.testPrepData);
+                // Check if user has saved timeline preferences
+                const prefDoc = await getDoc(doc(db, 'timelinePreferences', userId));
+                
+                if (prefDoc.exists()) {
+                    const prefs = prefDoc.data();
+                    window.timelinePrefs = prefs;
+                    
+                    // Auto-populate dropdowns if preferences exist
+                    if (prefs.appType) {
+                        const appTypeSelect = document.getElementById('dash-student-type');
+                        if (appTypeSelect) appTypeSelect.value = prefs.appType;
+                    }
+                    if (prefs.gradYear) {
+                        const gradYearSelect = document.getElementById('dash-graduation-year');
+                        if (gradYearSelect) gradYearSelect.value = prefs.gradYear;
+                    }
+                    
+                    console.log('📋 Timeline preferences loaded:', prefs);
                 } else {
-                    // Initialize test prep data
-                    window.testPrepData = {
-                        questionsCompleted: 0,
-                        subjectProgress: {},
-                        bestScores: {
-                            sat: null,
-                            act: null,
-                            psat: null
-                        },
-                        weakAreas: [],
-                        createdAt: new Date().toISOString()
+                    // Use questionnaire data as fallback
+                    const questionnaire = window.userData?.questionnaire;
+                    if (questionnaire?.graduationYear) {
+                        const gradYearSelect = document.getElementById('dash-graduation-year');
+                        if (gradYearSelect) gradYearSelect.value = questionnaire.graduationYear;
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error loading timeline preferences:', error);
+            }
+        }
+        
+        // Auto-initialize timeline with smart defaults
+        async function autoInitializeTimeline() {
+            try {
+                const appTypeSelect = document.getElementById('dash-student-type');
+                const gradYearSelect = document.getElementById('dash-graduation-year');
+                
+                // Use saved preferences or questionnaire data
+                let appType = appTypeSelect?.value;
+                let gradYear = gradYearSelect?.value;
+                
+                // Fallback to questionnaire data if available
+                if (!appType || !gradYear) {
+                    const questionnaire = window.userData?.questionnaire;
+                    
+                    if (!gradYear && questionnaire?.graduationYear) {
+                        gradYear = questionnaire.graduationYear;
+                        if (gradYearSelect) gradYearSelect.value = gradYear;
+                    }
+                    
+                    // Default to Regular Decision if not specified
+                    if (!appType) {
+                        appType = 'RD';
+                        if (appTypeSelect) appTypeSelect.value = appType;
+                    }
+                }
+                
+                // Auto-generate timeline if we have the required data
+                if (appType && gradYear) {
+                    console.log(`🎯 Auto-initializing timeline: ${appType}, ${gradYear}`);
+                    await renderPersonalizedTimeline(appType, gradYear);
+                    
+                    // Save preferences
+                    await saveTimelinePreferences(appType, gradYear);
+                }
+            } catch (error) {
+                console.error('❌ Error auto-initializing timeline:', error);
+            }
+        }
+        
+        // Save timeline preferences for next visit
+        async function saveTimelinePreferences(appType, gradYear) {
+            try {
+                const userId = window.currentUser?.uid;
+                if (!userId) return;
+                
+                await setDoc(doc(db, 'timelinePreferences', userId), {
+                    appType: appType,
+                    gradYear: gradYear,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                
+                console.log('💾 Timeline preferences saved');
+            } catch (error) {
+                console.error('❌ Error saving timeline preferences:', error);
+            }
+        }
+        
+        // Global loading overlay
+        function showGlobalLoading() {
+            let overlay = document.getElementById('globalLoadingOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'globalLoadingOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(10px);
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                    gap: 1rem;
+                `;
+                overlay.innerHTML = `
+                    <div style="width: 60px; height: 60px; border: 4px solid rgba(160, 123, 204, 0.3); border-top-color: #a07bcc; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <div style="color: white; font-size: 1.2rem; font-weight: 600;">Loading Your Dashboard...</div>
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Preparing personalized insights</div>
+                `;
+                document.body.appendChild(overlay);
+            }
+            overlay.style.display = 'flex';
+        }
+        
+        function hideGlobalLoading() {
+            const overlay = document.getElementById('globalLoadingOverlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    overlay.style.opacity = '1';
+                }, 300);
+            }
+        }
+        
+        // Dashboard error handler
+        function showDashboardError(message = 'Failed to load dashboard data') {
+            const container = document.querySelector('.dashboard-container');
+            if (container) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    color: white;
+                    padding: 2rem;
+                    border-radius: 16px;
+                    text-align: center;
+                    margin: 2rem 0;
+                `;
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h2 style="margin-bottom: 1rem;">Oops! Something went wrong</h2>
+                    <p style="margin-bottom: 1.5rem; opacity: 0.9;">${message}</p>
+                    <button class="btn-primary" onclick="location.reload()">
+                        <i class="fas fa-sync"></i> Reload Dashboard
+                    </button>
+                `;
+                container.insertBefore(errorDiv, container.firstChild);
+            }
+        }
+        
+        // Show Application Tracker Modal
+        window.showApplicationTracker = function() {
+            const modal = createModal('Application Tracker', generateApplicationTrackerContent());
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('show'), 10);
+        };
+        
+        // Generate application tracker content
+        function generateApplicationTrackerContent() {
+            const applications = window.applicationData || [];
+            
+            if (applications.length === 0) {
+                return `
+                    <div style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-graduation-cap" style="font-size: 4rem; color: var(--accent-color); opacity: 0.3; margin-bottom: 1rem;"></i>
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">No Applications Yet</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start your college application journey today!</p>
+                        <button class="btn-primary" onclick="window.location.href='myapp.html'">
+                            <i class="fas fa-plus"></i> Add Your First Application
+                        </button>
+                    </div>
+                `;
+            }
+            
+            const statusCounts = {
+                'not-started': applications.filter(a => a.status === 'not-started').length,
+                'in-progress': applications.filter(a => a.status === 'in-progress').length,
+                'submitted': applications.filter(a => a.status === 'submitted').length,
+                'completed': applications.filter(a => a.status === 'completed').length
+            };
+            
+            return `
+                <div style="padding: 1rem;">
+                    <!-- Status Summary -->
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--text-secondary);">${statusCounts['not-started']}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Not Started</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--warning-color);">${statusCounts['in-progress']}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">In Progress</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--info-color);">${statusCounts['submitted']}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Submitted</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--success-color);">${statusCounts['completed']}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Completed</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Application List -->
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${applications.map(app => `
+                            <div style="
+                                padding: 1.5rem;
+                                margin-bottom: 1rem;
+                                background: var(--secondary-bg);
+                                border-radius: 12px;
+                                border-left: 4px solid ${getStatusColor(app.status)};
+                                transition: all 0.3s ease;
+                            " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                                    <h4 style="margin: 0; color: var(--text-primary);">${app.schoolName}</h4>
+                                    <span style="
+                                        background: ${getStatusColor(app.status)}20;
+                                        color: ${getStatusColor(app.status)};
+                                        padding: 0.25rem 0.75rem;
+                                        border-radius: 12px;
+                                        font-size: 0.75rem;
+                                        font-weight: 600;
+                                        text-transform: uppercase;
+                                    ">${app.status.replace('-', ' ')}</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                                    <div><i class="fas fa-calendar"></i> ${new Date(app.deadline).toLocaleDateString()}</div>
+                                    <div><i class="fas fa-pen-fancy"></i> ${app.essayCount || 0} Essays</div>
+                                    <div><i class="fas fa-user-friends"></i> ${app.recommendationsCount || 0} Recs</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button class="btn-primary" onclick="window.location.href='myapp.html'" style="width: 100%;">
+                            <i class="fas fa-external-link-alt"></i> Manage All Applications
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show Progress Analytics Modal
+        window.showProgressAnalytics = function() {
+            const modal = createModal('Progress Analytics', generateProgressAnalyticsContent());
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('show'), 10);
+        };
+        
+        // Generate progress analytics content
+        function generateProgressAnalyticsContent() {
+            const applications = window.applicationData || [];
+            const totalApps = applications.length;
+            const overallProgress = calculateOverallProgress();
+            
+            // Calculate detailed metrics
+            const submittedApps = applications.filter(a => a.status === 'submitted' || a.status === 'completed').length;
+            const inProgressApps = applications.filter(a => a.status === 'in-progress').length;
+            const notStartedApps = applications.filter(a => a.status === 'not-started').length;
+            
+            const questionnaire = window.userData?.questionnaire;
+            const hasEssay = questionnaire?.essayText || questionnaire?.essayFileURL;
+            const hasTestScores = questionnaire?.testScores && questionnaire.testScores !== 'Not taken yet';
+            const hasExtracurriculars = questionnaire?.extracurriculars && questionnaire.extracurriculars.length > 0;
+            
+            return `
+                <div style="padding: 1rem;">
+                    <!-- Overall Progress Circle -->
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="position: relative; width: 180px; height: 180px; margin: 0 auto;">
+                            <svg style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                                <circle cx="90" cy="90" r="80" fill="none" stroke="rgba(160, 123, 204, 0.1)" stroke-width="12"></circle>
+                                <circle cx="90" cy="90" r="80" fill="none" stroke="url(#progressGradient)" stroke-width="12" 
+                                        stroke-dasharray="${2 * Math.PI * 80}" 
+                                        stroke-dashoffset="${2 * Math.PI * 80 * (1 - overallProgress / 100)}"
+                                        stroke-linecap="round"
+                                        style="transition: stroke-dashoffset 1s ease;"></circle>
+                                <defs>
+                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#2a357a;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#a07bcc;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div style="font-size: 3rem; font-weight: 900; color: var(--text-primary);">${overallProgress}%</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 600;">Complete</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Application Status Breakdown -->
+                    <div style="background: var(--secondary-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Application Status</h4>
+                        <div style="display: grid; gap: 1rem;">
+                            ${createProgressBar('Submitted', submittedApps, totalApps, '#10b981')}
+                            ${createProgressBar('In Progress', inProgressApps, totalApps, '#f59e0b')}
+                            ${createProgressBar('Not Started', notStartedApps, totalApps, '#6b7280')}
+                        </div>
+                    </div>
+                    
+                    <!-- Component Checklist -->
+                    <div style="background: var(--secondary-bg); border-radius: 12px; padding: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Application Components</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            ${createChecklistItem('Personal Statement', hasEssay)}
+                            ${createChecklistItem('Test Scores', hasTestScores)}
+                            ${createChecklistItem('Extracurriculars', hasExtracurriculars)}
+                            ${createChecklistItem('Recommendations', applications.some(a => a.recommendationsCount >= 2))}
+                            ${createChecklistItem('Application Forms', submittedApps > 0)}
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
+                        <button class="btn-secondary" onclick="window.location.href='profile.html'" style="width: 100%;">
+                            <i class="fas fa-user"></i> Update Profile
+                        </button>
+                        <button class="btn-primary" onclick="window.location.href='myapp.html'" style="width: 100%;">
+                            <i class="fas fa-tasks"></i> View Tasks
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create progress bar helper
+        function createProgressBar(label, count, total, color) {
+            const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+            return `
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);">${label}</span>
+                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">${count}/${total}</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: rgba(160, 123, 204, 0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="height: 100%; background: ${color}; width: ${percentage}%; transition: width 0.5s ease;"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create checklist item helper
+        function createChecklistItem(label, isComplete) {
+            return `
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--primary-bg); border-radius: 8px;">
+                    <div style="
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background: ${isComplete ? 'var(--success-color)' : 'var(--secondary-bg)'};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 0.8rem;
+                    ">
+                        ${isComplete ? '<i class="fas fa-check"></i>' : ''}
+                    </div>
+                    <span style="flex: 1; color: var(--text-primary); font-weight: 500;">${label}</span>
+                    <span style="
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        color: ${isComplete ? 'var(--success-color)' : 'var(--text-secondary)'};
+                    ">${isComplete ? 'Complete' : 'Pending'}</span>
+                </div>
+            `;
+        }
+        
+        // Get status color
+        function getStatusColor(status) {
+            const colors = {
+                'not-started': '#6b7280',
+                'in-progress': '#f59e0b',
+                'submitted': '#3b82f6',
+                'completed': '#10b981'
+            };
+            return colors[status] || '#6b7280';
+        }
+        
+        // Get urgency color
+        function getUrgencyColor(urgency) {
+            const colors = {
+                'overdue': '#ef4444',
+                'urgent': '#f59e0b',
+                'warning': '#eab308',
+                'upcoming': '#3b82f6',
+                'future': '#6b7280',
+                'completed': '#10b981'
+            };
+            return colors[urgency] || '#6b7280';
+        }
+        
+        // Show school details modal
+        window.showSchoolDetails = function(schoolName, school) {
+            const userProfile = window.userData?.questionnaire || {};
+            const userGPA = parseFloat(userProfile.unweightedGPA || 3.5);
+            const userSAT = extractSATScore(userProfile.testScores) || 1200;
+            const matchPercentage = calculateMatchPercentage(userGPA, userSAT, school);
+            
+            const content = `
+                <div style="padding: 1rem;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="
+                            width: 100px;
+                            height: 100px;
+                            margin: 0 auto 1rem;
+                            border-radius: 50%;
+                            background: ${matchPercentage >= 70 ? 'var(--success-color)' : matchPercentage >= 50 ? 'var(--warning-color)' : 'var(--danger-color)'};
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 2rem;
+                            font-weight: 900;
+                        ">${matchPercentage}%</div>
+                        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">${schoolName}</h3>
+                        <p style="color: var(--text-secondary);">${school.location} • ${school.type}</p>
+                    </div>
+                    
+                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
+                        ${createDetailRow('Acceptance Rate', `${school.acceptance_rate}%`, 'percent')}
+                        ${createDetailRow('Average GPA', school.avg_gpa, 'tachometer-alt')}
+                        ${createDetailRow('Average SAT', school.avg_sat, 'graduation-cap')}
+                        ${createDetailRow('Average ACT', school.avg_act, 'calculator')}
+                        ${createDetailRow('Annual Tuition', `$${school.tuition.toLocaleString()}`, 'dollar-sign')}
+                        ${createDetailRow('Application Deadline', new Date(school.deadline).toLocaleDateString(), 'calendar')}
+                        ${createDetailRow('US News Ranking', `#${school.ranking}`, 'trophy')}
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button class="btn-secondary" onclick="window.location.href='discovery.html?school=${encodeURIComponent(schoolName)}'" style="width: 100%;">
+                            <i class="fas fa-search"></i> Explore More
+                        </button>
+                        <button class="btn-primary" onclick="window.location.href='myapp.html?add=${encodeURIComponent(schoolName)}'" style="width: 100%;">
+                            <i class="fas fa-plus"></i> Add Application
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            const modal = createModal(schoolName, content);
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('show'), 10);
+        };
+        
+        // Create detail row helper
+        function createDetailRow(label, value, icon) {
+            return `
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1rem;
+                    background: var(--secondary-bg);
+                    border-radius: 8px;
+                ">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-${icon}" style="color: var(--accent-color);"></i>
+                        <span style="color: var(--text-secondary);">${label}</span>
+                    </div>
+                    <span style="font-weight: 700; color: var(--text-primary);">${value}</span>
+                </div>
+            `;
+        }
+        
+        // Create modal utility
+        function createModal(title, content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                padding: 1rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: var(--primary-bg);
+                    border-radius: 24px;
+                    max-width: 800px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow: hidden;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+                    transform: scale(0.9);
+                    transition: transform 0.3s ease;
+                ">
+                    <!-- Modal Header -->
+                    <div style="
+                        background: var(--gradient);
+                        color: white;
+                        padding: 1.5rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">${title}</h2>
+                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" style="
+                            background: rgba(255, 255, 255, 0.2);
+                            border: none;
+                            color: white;
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 50%;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 1.2rem;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Modal Content -->
+                    <div style="max-height: calc(90vh - 100px); overflow-y: auto;">
+                        ${content}
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+            modal.querySelector('[style*="transform: scale"]').style.transform = 'scale(1)';
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.opacity = '0';
+                    setTimeout(() => modal.remove(), 300);
+                }
+            });
+            
+            // Close on escape key
+            document.addEventListener('keydown', function escapeHandler(e) {
+                if (e.key === 'Escape') {
+                    modal.style.opacity = '0';
+                    setTimeout(() => modal.remove(), 300);
+                    document.removeEventListener('keydown', escapeHandler);
+                }
+            });
+            
+            return modal;
+        }
+        
+        // Open full timeline page
+        window.openFullTimeline = function() {
+            window.location.href = 'adaptive-timeline.html';
+        };
+        
+        // Show school details when card is clicked
+        window.viewSchoolDetails = function(schoolName) {
+            const school = schoolDatabase[schoolName];
+            if (school) {
+                showSchoolDetails(schoolName, school);
+            }
+        };
+        
+        // Enhanced daily tasks generation
+        async function generateDailyTasks() {
+            try {
+                const tasks = generatePersonalizedTasks();
+                const taskList = document.getElementById('taskList');
+                
+                if (!taskList) return;
+                
+                if (tasks.length === 0) {
+                    taskList.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            <i class="fas fa-check-circle" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <h4 style="margin-bottom: 0.5rem;">All Caught Up!</h4>
+                            <p style="font-size: 0.9rem;">You have no pending tasks for today.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                taskList.innerHTML = tasks.map((task, index) => {
+                    const priorityColors = {
+                        'high': 'var(--danger-color)',
+                        'medium': 'var(--warning-color)',
+                        'low': 'var(--success-color)'
                     };
                     
-                    await setDoc(doc(db, 'testprep', userId), window.testPrepData);
-                    console.log('📝 Initialized test prep data');
-                }
+                    return `
+                        <div class="task-item" style="
+                            display: flex;
+                            align-items: center;
+                            gap: 1rem;
+                            padding: 1rem;
+                            background: var(--secondary-bg);
+                            border-radius: 12px;
+                            border-left: 4px solid ${priorityColors[task.priority]};
+                            transition: all 0.3s ease;
+                            ${task.completed ? 'opacity: 0.6;' : ''}
+                        " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                            <input type="checkbox" 
+                                   class="task-checkbox" 
+                                   ${task.completed ? 'checked' : ''} 
+                                   onchange="toggleTask(this)"
+                                   style="width: 20px; height: 20px; accent-color: ${priorityColors[task.priority]}; cursor: pointer;">
+                            <div class="task-content" style="flex: 1;">
+                                <div class="task-title" style="
+                                    font-weight: 600;
+                                    color: var(--text-primary);
+                                    margin-bottom: 0.25rem;
+                                    ${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}
+                                ">${task.title}</div>
+                                <div class="task-due" style="
+                                    font-size: 0.85rem;
+                                    color: var(--text-secondary);
+                                ">${task.due}</div>
+                            </div>
+                            <div class="task-priority ${task.priority}" style="
+                                width: 10px;
+                                height: 10px;
+                                border-radius: 50%;
+                                background: ${priorityColors[task.priority]};
+                            "></div>
+                        </div>
+                    `;
+                }).join('');
                 
-                // Update test prep UI
-                updateTestPrepUI();
-                
+                console.log('✅ Daily tasks generated');
             } catch (error) {
-                console.error('❌ Error loading test prep data:', error);
-                // Initialize with defaults
-                window.testPrepData = {
-                    questionsCompleted: 0,
-                    subjectProgress: {},
-                    bestScores: { sat: null, act: null, psat: null },
-                    weakAreas: []
-                };
-                updateTestPrepUI();
+                console.error('❌ Error generating daily tasks:', error);
             }
         }
-
-        // Update test prep UI elements
-        function updateTestPrepUI() {
-            const testPrepData = window.testPrepData || {};
-            
-            // Update stat card
-            const bestSATScore = testPrepData.bestScores?.sat || 
-                                 (testPrepData.subjectProgress?.satmath?.score || 0) + 
-                                 (testPrepData.subjectProgress?.satreading?.score || 0);
-            const bestACTScore = testPrepData.bestScores?.act || 
-                                testPrepData.subjectProgress?.actmath?.score || 0;
-            
-            // Display best score (prefer SAT, fallback to ACT)
-            if (bestSATScore && bestSATScore > 400) {
-                document.getElementById('testprepScore').textContent = bestSATScore;
-                document.getElementById('testprepTrend').textContent = '+50 pts';
-            } else if (bestACTScore && bestACTScore > 10) {
-                document.getElementById('testprepScore').textContent = bestACTScore;
-                document.getElementById('testprepTrend').textContent = '+3 pts';
-            } else {
-                document.getElementById('testprepScore').textContent = '--';
-                document.getElementById('testprepTrend').textContent = 'Start practicing';
-            }
-            
-            // Update individual test scores in dashboard cards
-            updateTestScoreCard('sat', bestSATScore);
-            updateTestScoreCard('act', bestACTScore);
-        }
-
-        function updateTestScoreCard(testType, score) {
-            const scoreElement = document.getElementById(`${testType}Score`);
-            const progressElement = document.getElementById(`${testType}Progress`);
-            const progressBarElement = document.getElementById(`${testType}ProgressBar`);
-            
-            if (!scoreElement) return;
-            
-            if (score && score > 0) {
-                if (testType === 'sat') {
-                    scoreElement.textContent = score;
-                    // Calculate progress based on target of 1500
-                    const progress = Math.min((score / 1500) * 100, 100);
-                    progressElement.textContent = `${Math.round(progress)}%`;
-                    progressBarElement.style.width = `${progress}%`;
-                } else if (testType === 'act') {
-                    scoreElement.textContent = score;
-                    // Calculate progress based on target of 32
-                    const progress = Math.min((score / 32) * 100, 100);
-                    progressElement.textContent = `${Math.round(progress)}%`;
-                    progressBarElement.style.width = `${progress}%`;
-                }
-            } else {
-                scoreElement.textContent = '--';
-                progressElement.textContent = '0%';
-                progressBarElement.style.width = '0%';
-            }
-        }
-
     </script>
 
     <!-- Theme and UI Enhancement Script -->
@@ -3522,8 +4041,6 @@
             const options = { month: 'short', day: 'numeric', year: 'numeric' };
             return date.toLocaleDateString('en-US', options);
         }
-
-        // ...existing code...
     </script>
 </body>
 </html>
