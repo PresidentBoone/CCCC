@@ -451,7 +451,7 @@
 
         .section-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
@@ -956,7 +956,7 @@
         <div class="cc-nav-right">
             <!-- Theme Toggle -->
             <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
-                ☀️
+                <i class="fas fa-moon"></i>
             </button>
 
             <!-- Profile Dropdown -->
@@ -1332,13 +1332,18 @@ Don't forget to specify your target colleges and essay prompt for more personali
             icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         };
 
-        // Initialize theme
+        // Initialize theme on page load
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        const themeIcon = document.querySelector('.cc-theme-toggle i');
-        if (themeIcon) {
-            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
+        document.body.setAttribute('data-theme', savedTheme);
+        
+        // Update theme icon after DOM is ready
+        setTimeout(() => {
+            const themeIcon = document.querySelector('.cc-theme-toggle i');
+            if (themeIcon) {
+                themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }, 100);
 
         // Word count update
         window.updateWordCount = function() {

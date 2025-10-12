@@ -202,6 +202,7 @@
             font-size: 1.25rem;
             font-weight: 800;
             background: var(--gradient);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -848,11 +849,10 @@
             </div>
         </div>
     </div>
-
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-    <script src="/js/firebase-config.js"></script>
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
         const firebaseConfig = {
