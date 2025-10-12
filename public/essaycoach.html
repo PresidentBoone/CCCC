@@ -1215,12 +1215,15 @@ Don't forget to specify your target colleges and essay prompt for more personali
         </div>
     </div>
 
+    <!-- AI Engine - Load before Firebase module -->
+    <script src="js/ai-engine.js"></script>
+
     <!-- Firebase Scripts -->
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Initialize Firebase
         const firebaseConfig = {
@@ -1236,25 +1239,62 @@ Don't forget to specify your target colleges and essay prompt for more personali
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        // Make Firebase available globally for AI Engine
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        
+        // Expose Firestore functions globally for standalone AI Engine
+        window.getFirestoreDoc = getDoc;
+        window.setFirestoreDoc = setDoc;
+        window.updateFirestoreDoc = updateDoc;
+        window.firestoreDoc = doc;
+        window.firestoreCollection = collection;
+        window.firestoreAddDoc = addDoc;
+        window.firestoreServerTimestamp = serverTimestamp;
+        
+        // For AI Engine compatibility - expose additional names
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+        window.collection = collection;
+        window.serverTimestamp = serverTimestamp;
 
         // Global variables
         let currentUser = null;
         let userProfile = null;
         let currentEssayId = null;
         let chatHistory = [];
+        let aiEngine = null;
 
         // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeAuth();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeAuth();
+            await initializeAIEngine();
             loadUserEssays();
         });
+        
+        // Initialize AI Engine
+        async function initializeAIEngine() {
+            if (currentUser) {
+                try {
+                    aiEngine = new window.AIEngine(currentUser.uid, db);
+                    console.log('✅ AI Engine initialized for Essay Coach');
+                } catch (error) {
+                    console.error('Error initializing AI Engine:', error);
+                }
+            }
+        }
 
         // Auth state management
-        function initializeAuth() {
+        async function initializeAuth() {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
                     await loadUserProfile();
+                    await initializeAIEngine();
                     loadUserEssays();
                 } else {
                     window.location.href = 'login.html';
@@ -1338,23 +1378,50 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
                 analyzeBtn.disabled = true;
 
-                const response = await fetch('/api/essay-analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        essay: essay,
-                        colleges: colleges,
-                        userProfile: userProfile,
-                        prompt: prompt
-                    })
-                });
-
-                const result = await response.json();
+                // Use AI Engine for analysis with user learning
+                let result;
                 
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to analyze essay');
+                if (aiEngine) {
+                    // AI Engine analyzes and learns from user preferences
+                    result = await aiEngine.analyzeEssay(essay, {
+                        colleges: colleges,
+                        prompt: prompt,
+                        userProfile: userProfile
+                    });
+                } else {
+                    // Fallback to API endpoint
+                    const response = await fetch('/api/essay-analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            essay: essay,
+                            colleges: colleges,
+                            userProfile: userProfile,
+                            prompt: prompt
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to analyze essay');
+                    }
+
+                    result = await response.json();
+                }
+                
+                // Save essay to Firebase with analysis
+                if (currentUser) {
+                    const essayRef = await addDoc(collection(db, 'essays'), {
+                        userId: currentUser.uid,
+                        content: essay,
+                        prompt: prompt,
+                        colleges: colleges,
+                        analysis: result,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
+                    currentEssayId = essayRef.id;
                 }
 
                 displayAnalysisResults(result);

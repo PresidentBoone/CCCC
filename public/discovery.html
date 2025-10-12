@@ -1283,10 +1283,14 @@
         </div>
     </div>
 
+    <!-- AI Engine - Load before Firebase module -->
+    <script src="js/ai-engine.js"></script>
+    <script src="js/college-discovery.js"></script>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, setDoc, collection, query, where, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
@@ -1300,6 +1304,33 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        
+        // Expose Firestore functions globally for standalone AI Engine
+        window.getFirestoreDoc = getDoc;
+        window.setFirestoreDoc = setDoc;
+        window.updateFirestoreDoc = updateDoc;
+        window.firestoreDoc = doc;
+        window.firestoreCollection = collection;
+        window.firestoreQuery = query;
+        window.firestoreWhere = where;
+        window.getFirestoreDocs = getDocs;
+        window.firestoreServerTimestamp = serverTimestamp;
+        
+        // For AI Engine compatibility - expose additional names
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+        window.serverTimestamp = serverTimestamp;
 
         const COLLEGE_SCORECARD_API_KEY = 'GUkeMEMkyx7QF0jyPEa2c91azSrb5S0ISElPdau2';
         const API_BASE_URL = 'https://api.data.gov/ed/collegescorecard/v1/schools';
@@ -1314,18 +1345,34 @@
             reach: []
         };
         let currentCollegeChat = null;
+        let aiEngine = null;
+        let collegeDiscovery = null;
 
         // Auth State
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 await loadUserData(user.uid);
+                await initializeAI();
                 initNavbar();
                 loadRecommendations();
             } else {
                 window.location.href = 'login.html';
             }
         });
+        
+        // Initialize AI Engine and College Discovery
+        async function initializeAI() {
+            if (currentUser) {
+                try {
+                    aiEngine = new window.AIEngine(currentUser.uid, db);
+                    collegeDiscovery = new window.CollegeDiscovery(currentUser.uid, db, aiEngine);
+                    console.log('✅ AI systems initialized for College Discovery');
+                } catch (error) {
+                    console.error('Error initializing AI:', error);
+                }
+            }
+        }
 
         async function loadUserData(userId) {
             try {

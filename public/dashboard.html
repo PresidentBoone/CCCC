@@ -1883,6 +1883,15 @@
         </div>
     </footer>
 
+    <!-- AI Engine and Supporting Modules -->
+    <script src="js/ai-engine.js"></script>
+    <script src="js/user-profile-manager.js"></script>
+    <script src="js/testprep-manager.js"></script>
+    <script src="js/college-discovery.js"></script>
+    <script src="js/timeline-generator.js"></script>
+    <script src="js/app-init.js"></script>
+    <script src="js/navbar-init.js"></script>
+
     <!-- Firebase & Enhanced JavaScript Integration -->
     <script type="module">
         // Import Firebase modules
@@ -1911,6 +1920,14 @@
         window.db = db;
         window.currentUser = null;
         window.userData = null;
+        window.aiEngine = null;
+        window.timelineGenerator = null;
+        window.collegeDiscovery = null;
+        
+        // Make Firebase available globally for AI Engine
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
 
         console.log('🔥 Enhanced Firebase Dashboard initialized');
 
@@ -2202,12 +2219,27 @@
                 window.currentUser = user;
                 await loadUserData(user);
                 await loadNavbarUserData(user.uid);
+                await initializeAI();
                 await initializeDashboard();
             } else {
                 document.body.classList.remove("logged-in");
                 window.location.href = 'login.html';
             }
         });
+        
+        // Initialize AI systems
+        async function initializeAI() {
+            if (window.currentUser) {
+                try {
+                    window.aiEngine = new window.AIEngine(window.currentUser.uid, db);
+                    window.timelineGenerator = new window.TimelineGenerator(window.currentUser.uid, db);
+                    window.collegeDiscovery = new window.CollegeDiscovery(window.currentUser.uid, db, window.aiEngine);
+                    console.log('✅ AI systems initialized for dashboard');
+                } catch (error) {
+                    console.error('Error initializing AI systems:', error);
+                }
+            }
+        }
 
         // Load comprehensive user data
         async function loadUserData(user) {
