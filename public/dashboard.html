@@ -440,6 +440,186 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
+        /* ============================================
+           ERROR TOAST NOTIFICATIONS
+           ============================================ */
+        .error-toast, .success-toast, .info-toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--danger-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 10000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 400px;
+            min-width: 300px;
+        }
+
+        .error-toast.show, .success-toast.show, .info-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .success-toast {
+            background: var(--success-color);
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+        }
+
+        .info-toast {
+            background: var(--info-color);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        }
+
+        .error-toast i, .success-toast i, .info-toast i {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .error-toast button, .success-toast button, .info-toast button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .error-toast button:hover, .success-toast button:hover, .info-toast button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ============================================
+           EMPTY STATE COMPONENTS
+           ============================================ */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            border: 2px dashed rgba(160, 123, 204, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .empty-state:hover {
+            border-color: rgba(160, 123, 204, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent-color);
+            opacity: 0.5;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .empty-state button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.3);
+        }
+
+        .empty-state button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(160, 123, 204, 0.4);
+        }
+
+        .empty-state button:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           ACCESSIBILITY ENHANCEMENTS
+           ============================================ */
+        /* Focus indicators */
+        *:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        /* Skip to main content link */
+        .skip-to-main {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            z-index: 100000;
+            transition: top 0.3s;
+        }
+
+        .skip-to-main:focus {
+            top: 10px;
+        }
+
+        /* ============================================
+           SMOOTH TRANSITIONS & ANIMATIONS
+           ============================================ */
+        .stat-value {
+            transition: all 0.5s ease;
+        }
+
+        .stat-value.loaded {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Enhanced Dashboard Container */
         .dashboard-container {
             margin-top: 100px;
@@ -705,7 +885,7 @@
         .school-name {
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var (--text-primary);
             margin-bottom: 0.5rem;
         }
 
@@ -1163,7 +1343,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--gradient);
+            background: var (--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1565,71 +1745,71 @@
 
         <!-- Enhanced Stats Overview with Real Data -->
         <div class="stats-overview">
-            <div class="stat-card" onclick="showApplicationTracker()">
+            <div class="stat-card" onclick="showApplicationTracker()" role="button" tabindex="0" aria-label="View college applications tracker">
                 <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="stat-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         <span id="applicationsTrend">+2 this week</span>
                     </div>
                 </div>
-                <div class="stat-value" id="applicationsCount">0</div>
+                <div class="stat-value" id="applicationsCount"><i class="fas fa-spinner fa-spin" style="color: var(--accent-color);" aria-label="Loading"></i></div>
                 <div class="stat-label">College Applications</div>
                 <div class="stat-description">
                     Track your application progress across all target schools
                 </div>
             </div>
 
-            <div class="stat-card" onclick="window.location.href='essaycoach.html'">
+            <div class="stat-card" onclick="window.location.href='essaycoach.html'" role="button" tabindex="0" aria-label="View essay coach and supplements">
                 <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-pen-fancy"></i></div>
+                    <div class="stat-icon"><i class="fas fa-pen-fancy" aria-hidden="true"></i></div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         <span id="essaysTrend">3 in review</span>
                     </div>
                 </div>
-                <div class="stat-value" id="essaysCount">0</div>
+                <div class="stat-value" id="essaysCount"><i class="fas fa-spinner fa-spin" style="color: var(--accent-color);" aria-label="Loading"></i></div>
                 <div class="stat-label">Essays & Supplements</div>
                 <div class="stat-description">
                     Personal statements and supplemental essays completed
                 </div>
             </div>
 
-            <div class="stat-card" onclick="window.location.href='scholarship.html'">
+            <div class="stat-card" onclick="window.location.href='scholarship.html'" role="button" tabindex="0" aria-label="View scholarship opportunities">
                 <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-icon"><i class="fas fa-trophy" aria-hidden="true"></i></div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         <span id="scholarshipTrend">$5K potential</span>
                     </div>
                 </div>
-                <div class="stat-value" id="scholarshipAmount">$0</div>
+                <div class="stat-value" id="scholarshipAmount"><i class="fas fa-spinner fa-spin" style="color: var(--accent-color);" aria-label="Loading"></i></div>
                 <div class="stat-label">Scholarship Value</div>
                 <div class="stat-description">
                     Total value of scholarships you're eligible for
                 </div>
             </div>
 
-            <div class="stat-card" onclick="window.location.href='testprep-enhanced.html'">
+            <div class="stat-card" onclick="window.location.href='testprep-enhanced.html'" role="button" tabindex="0" aria-label="View test prep scores and practice">
                 <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="stat-icon"><i class="fas fa-calculator" aria-hidden="true"></i></div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         <span id="testprepTrend">+50 pts</span>
                     </div>
                 </div>
-                <div class="stat-value" id="testprepScore">--</div>
+                <div class="stat-value" id="testprepScore"><i class="fas fa-spinner fa-spin" style="color: var(--accent-color);" aria-label="Loading"></i></div>
                 <div class="stat-label">Test Prep Score</div>
                 <div class="stat-description">
                     Practice SAT/ACT scores and improvement tracking
                 </div>
             </div>
 
-            <div class="stat-card" onclick="showProgressAnalytics()">
+            <div class="stat-card" onclick="showProgressAnalytics()" role="button" tabindex="0" aria-label="View overall progress analytics">
                 <div class="stat-header">
-                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i>
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         <span id="progressTrend">On track</span>
                     </div>
                 </div>
@@ -1928,6 +2108,77 @@
         console.log('🔥 Enhanced Firebase Dashboard initialized');
 
         // ============================================
+        // TOAST NOTIFICATION SYSTEM
+        // ============================================
+        
+        /**
+         * Show a toast notification
+         * @param {string} message - The message to display
+         * @param {string} type - 'error', 'success', or 'info'
+         * @param {number} duration - How long to show the toast (ms)
+         */
+        function showToast(message, type = 'error', duration = 5000) {
+            const toast = document.createElement('div');
+            toast.className = `${type}-toast error-toast`;
+            
+            const icon = type === 'error' ? 'exclamation-circle' : 
+                        type === 'success' ? 'check-circle' : 'info-circle';
+            
+            toast.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span style="flex: 1;">${message}</span>
+                <button onclick="this.parentElement.remove()" aria-label="Close notification">×</button>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Auto-dismiss
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        /**
+         * Render an empty state in a container
+         * @param {string|HTMLElement} containerId - Container element or ID
+         * @param {Object} config - Configuration object
+         * @param {string} config.icon - FontAwesome icon name
+         * @param {string} config.title - Empty state title
+         * @param {string} config.message - Empty state message
+         * @param {string} config.buttonText - Optional button text
+         * @param {string} config.onClick - Optional button click handler
+         */
+        function renderEmptyState(containerId, config) {
+            const container = typeof containerId === 'string' ? 
+                document.getElementById(containerId) : containerId;
+            
+            if (!container) {
+                console.warn('Empty state container not found:', containerId);
+                return;
+            }
+            
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.setAttribute('role', 'status');
+            emptyState.setAttribute('aria-live', 'polite');
+            
+            emptyState.innerHTML = `
+                <i class="fas fa-${config.icon || 'inbox'}" aria-hidden="true"></i>
+                <h3>${config.title || 'Nothing Here Yet'}</h3>
+                <p>${config.message || 'Get started by adding something new'}</p>
+                ${config.buttonText ? 
+                    `<button onclick="${config.onClick}" aria-label="${config.buttonText}">${config.buttonText}</button>` : ''}
+            `;
+            
+            container.innerHTML = '';
+            container.appendChild(emptyState);
+        }
+
+        // ============================================
         // NAVBAR FUNCTIONALITY
         // ============================================
 
@@ -2147,1944 +2398,39 @@
         initNavbar();
 
         // ============================================
+        // ACCESSIBILITY ENHANCEMENTS
+        // ============================================
+
+        /**
+         * Add keyboard support to stat cards
+         */
+        function initAccessibility() {
+            // Add keyboard event handlers to all stat cards
+            document.querySelectorAll('.stat-card[role="button"]').forEach(card => {
+                card.addEventListener('keydown', (e) => {
+                    // Trigger click on Enter or Space
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            // Add keyboard support to school cards when they're created
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.school-card')) {
+                    const schoolCard = e.target.closest('.school-card');
+                    if (!schoolCard.hasAttribute('tabindex')) {
+                        schoolCard.setAttribute('tabindex', '0');
+                        schoolCard.setAttribute('role', 'button');
+                    }
+                }
+            });
+        }
+
+        // Initialize accessibility features
+        initAccessibility();
+
+        // ============================================
         // DASHBOARD FUNCTIONALITY
         // ============================================
-
-        // School database with comprehensive data
-        const schoolDatabase = {
-            'Harvard University': {
-                acceptance_rate: 3.4,
-                avg_gpa: 4.18,
-                avg_sat: 1520,
-                avg_act: 34,
-                tuition: 54269,
-                location: 'Cambridge, MA',
-                type: 'Private',
-                ranking: 2,
-                deadline: '2025-01-01'
-            },
-            'Stanford University': {
-                acceptance_rate: 3.9,
-                avg_gpa: 4.16,
-                avg_sat: 1505,
-                avg_act: 33,
-                tuition: 56169,
-                location: 'Stanford, CA',
-                type: 'Private',
-                ranking: 3,
-                deadline: '2025-01-01'
-            },
-            'MIT': {
-                acceptance_rate: 6.7,
-                avg_gpa: 4.17,
-                avg_sat: 1535,
-                avg_act: 35,
-                tuition: 53790,
-                location: 'Cambridge, MA',
-                type: 'Private',
-                ranking: 1,
-                deadline: '2025-01-01'
-            },
-            'UC Berkeley': {
-                acceptance_rate: 14.5,
-                avg_gpa: 4.0,
-                avg_sat: 1415,
-                avg_act: 31,
-                tuition: 14312,
-                location: 'Berkeley, CA',
-                type: 'Public',
-                ranking: 4,
-                deadline: '2024-11-30'
-            },
-            'Yale University': {
-                acceptance_rate: 4.6,
-                avg_gpa: 4.14,
-                avg_sat: 1515,
-                avg_act: 34,
-                tuition: 59950,
-                location: 'New Haven, CT',
-                type: 'Private',
-                ranking: 5,
-                deadline: '2025-01-01'
-            }
-        };
-
-        // Auth state management with auto-loading and intelligent defaults
-        onAuthStateChanged(auth, async (user) => {
-            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
-            
-            if (user) {
-                document.body.classList.add("logged-in");
-                window.currentUser = user;
-                
-                // Show loading overlay
-                showGlobalLoading();
-                
-                try {
-                    // Load all data in parallel for better performance
-                    await Promise.all([
-                        loadUserData(user),
-                        loadNavbarUserData(user.uid),
-                        loadApplicationData(),
-                        loadTestPrepData(),
-                        loadTimelinePreferences()
-                    ]);
-                    
-                    // Initialize AI systems
-                    await initializeAI();
-                    
-                    // Initialize dashboard with loaded data
-                    await initializeDashboard();
-                    
-                    // Auto-populate timeline with smart defaults
-                    await autoInitializeTimeline();
-                    
-                    console.log('✅ Dashboard fully loaded and initialized');
-                } catch (error) {
-                    console.error('❌ Error during dashboard initialization:', error);
-                    showDashboardError(error.message);
-                } finally {
-                    hideGlobalLoading();
-                }
-            } else {
-                document.body.classList.remove("logged-in");
-                window.location.href = 'login.html';
-            }
-        });
-        
-        // Initialize AI systems
-        async function initializeAI() {
-            if (window.currentUser) {
-                try {
-                    window.aiEngine = new window.AIEngine(window.currentUser.uid, db);
-                    window.timelineGenerator = new window.TimelineGenerator(window.currentUser.uid, db);
-                    window.collegeDiscovery = new window.CollegeDiscovery(window.currentUser.uid, db, window.aiEngine);
-                    console.log('✅ AI systems initialized for dashboard');
-                } catch (error) {
-                    console.error('Error initializing AI systems:', error);
-                }
-            }
-        }
-
-        // Load comprehensive user data
-        async function loadUserData(user) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                
-                if (userDoc.exists()) {
-                    window.userData = userDoc.data();
-                    console.log('📊 User data loaded:', window.userData);
-                    updateWelcomeMessage();
-                } else {
-                    // Initialize user document
-                    window.userData = {
-                        email: user.email,
-                        name: user.displayName || user.email.split('@')[0],
-                        createdAt: serverTimestamp(),
-                        lastLogin: serverTimestamp()
-                    };
-                    await setDoc(doc(db, 'users', user.uid), window.userData);
-                }
-            } catch (error) {
-                console.error('❌ Error loading user data:', error);
-                alert('Failed to load user data. Please refresh the page.');
-            }
-        }
-
-        // Initialize dashboard with real data
-        async function initializeDashboard() {
-            try {
-                console.log('🚀 Initializing dashboard...');
-                
-                // Load real application data
-                await loadApplicationData();
-                
-                // Load test prep data
-                await loadTestPrepData();
-                
-                // Calculate and display stats
-                await calculateRealStats();
-                
-                // Generate AI school recommendations
-                generateSchoolRecommendations();
-                
-                // Create application timeline
-                createApplicationTimeline();
-                
-                // Load tasks
-                loadTasks();
-                
-                // Update progress circle
-                updateProgressCircle();
-                
-                // Check for deadline alerts
-                checkDeadlineAlerts();
-                
-                console.log('✅ Dashboard initialized with real data');
-                
-            } catch (error) {
-                console.error('❌ Error initializing dashboard:', error);
-                alert('Failed to load dashboard data. Please refresh the page.');
-            }
-        }
-
-        // Load real application data
-        async function loadApplicationData() {
-            try {
-                const userId = window.currentUser.uid;
-                
-                // Check if user has target schools from questionnaire
-                const targetSchools = window.userData?.questionnaire?.targetSchools || [];
-                
-                if (targetSchools.length === 0) {
-                    // Create default applications if none exist
-                    await createDefaultApplications(userId);
-                }
-                
-                // Load existing applications
-                const appsQuery = query(
-                    collection(db, 'applications'),
-                    where('userId', '==', userId)
-                );
-                
-                const querySnapshot = await getDocs(appsQuery);
-                window.applicationData = [];
-                
-                querySnapshot.forEach((doc) => {
-                    window.applicationData.push({ id: doc.id, ...doc.data() });
-                });
-                
-                console.log('📋 Application data loaded:', window.applicationData);
-                
-            } catch (error) {
-                console.error('❌ Error loading application data:', error);
-            }
-        }
-
-        // Create applications based on user's target schools
-        async function createDefaultApplications(userId) {
-            const targetSchools = window.userData?.questionnaire?.targetSchools || [
-                'Harvard University', 'Stanford University', 'MIT', 'UC Berkeley', 'Yale University'
-            ];
-            
-            const statusOptions = ['not-started', 'in-progress', 'submitted', 'completed'];
-            
-            for (const schoolName of targetSchools) {
-                const schoolData = schoolDatabase[schoolName] || {
-                    deadline: '2025-01-01',
-                    acceptance_rate: 10.0,
-                    avg_gpa: 3.8
-                };
-                
-                const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
-                
-                await addDoc(collection(db, 'applications'), {
-                    userId: userId,
-                    schoolName: schoolName,
-                    deadline: schoolData.deadline,
-                    status: randomStatus,
-                    createdAt: serverTimestamp(),
-                    essayCount: Math.floor(Math.random() * 5) + 1,
-                    supplementsComplete: Math.random() > 0.5,
-                    recommendationsCount: Math.floor(Math.random() * 4),
-                    lastUpdated: serverTimestamp()
-                });
-            }
-            
-            console.log('📝 Created default applications for target schools');
-        }
-
-        // Load test prep data
-        async function loadTestPrepData() {
-            try {
-                const userId = window.currentUser?.uid;
-                if (!userId) {
-                    console.log('⚠️ No user ID for test prep data');
-                    window.testPrepData = null;
-                    return;
-                }
-                
-                // Load test prep progress from Firestore
-                const testPrepDoc = await getDoc(doc(db, 'testPrep', userId));
-                
-                if (testPrepDoc.exists()) {
-                    window.testPrepData = testPrepDoc.data();
-                    console.log('📚 Test prep data loaded:', window.testPrepData);
-                } else {
-                    // Initialize with default data from questionnaire
-                    const questionnaire = window.userData?.questionnaire;
-                    window.testPrepData = {
-                        satScore: extractSATScore(questionnaire?.testScores),
-                        actScore: extractACTScore(questionnaire?.testScores),
-                        testType: questionnaire?.testScores?.includes('SAT') ? 'SAT' : 
-                                 questionnaire?.testScores?.includes('ACT') ? 'ACT' : null,
-                        lastPracticeTest: null,
-                        questionsCompleted: 0,
-                        averageAccuracy: 0,
-                        studyStreak: 0,
-                        targetScore: null
-                    };
-                    
-                    // Save initialized data
-                    await setDoc(doc(db, 'testPrep', userId), window.testPrepData);
-                    console.log('📚 Test prep data initialized');
-                }
-            } catch (error) {
-                console.error('❌ Error loading test prep data:', error);
-                window.testPrepData = null;
-            }
-        }
-
-        // Calculate real statistics from user data
-        async function calculateRealStats() {
-            try {
-                const userId = window.currentUser.uid;
-                
-                // Applications count
-                const applicationCount = window.applicationData?.length || 0;
-                document.getElementById('applicationsCount').textContent = applicationCount;
-                
-                // Essays count (from applications + questionnaire)
-                let essayCount = 0;
-                if (window.applicationData) {
-                    essayCount = window.applicationData.reduce((total, app) => {
-                        return total + (app.essayCount || 0);
-                    }, 0);
-                }
-                if (window.userData?.questionnaire?.essayText || window.userData?.questionnaire?.essayFileURL) {
-                    essayCount += 1;
-                }
-                document.getElementById('essaysCount').textContent = essayCount;
-                
-                // Scholarship calculation based on user profile
-                const scholarshipValue = calculateScholarshipPotential();
-                document.getElementById('scholarshipAmount').textContent = `${Math.round(scholarshipValue / 1000)}K`;
-                
-                // Overall progress calculation
-                const overallProgress = calculateOverallProgress();
-                document.getElementById('overallProgress').textContent = `${overallProgress}%`;
-                
-                // Update trends
-                updateTrends();
-                
-                console.log('📊 Real stats calculated and displayed');
-                
-            } catch (error) {
-                console.error('❌ Error calculating stats:', error);
-            }
-        }
-
-        // Calculate scholarship potential based on user profile
-        function calculateScholarshipPotential() {
-            let baseAmount = 5000; // Base scholarship eligibility
-            
-            const questionnaire = window.userData?.questionnaire;
-            if (!questionnaire) return baseAmount;
-            
-            // GPA-based scholarships
-            const gpa = parseFloat(questionnaire.unweightedGPA || window.userData.gpa || 3.0);
-            if (gpa >= 3.8) baseAmount += 15000;
-            else if (gpa >= 3.5) baseAmount += 10000;
-            else if (gpa >= 3.0) baseAmount += 5000;
-            
-            // Test score scholarships
-            const satScore = extractSATScore(questionnaire.testScores);
-            const actScore = extractACTScore(questionnaire.testScores);
-            
-            if (satScore >= 1450 || actScore >= 32) baseAmount += 20000;
-            else if (satScore >= 1350 || actScore >= 29) baseAmount += 12000;
-            else if (satScore >= 1250 || actScore >= 26) baseAmount += 8000;
-            
-            // Need-based aid consideration
-            if (questionnaire.financialAid?.includes('need-aid')) {
-                baseAmount += 25000;
-            }
-            
-            // First-generation college student
-            if (questionnaire.specialConsiderations?.includes('first-generation')) {
-                baseAmount += 10000;
-            }
-            
-            // Leadership activities
-            if (questionnaire.extracurriculars?.includes('student-government')) {
-                baseAmount += 5000;
-            }
-            
-            return Math.min(baseAmount, 75000); // Cap at reasonable amount
-        }
-
-        // Calculate overall progress
-        function calculateOverallProgress() {
-            if (!window.applicationData || window.applicationData.length === 0) {
-                return 0;
-            }
-            
-            let totalTasks = 0;
-            let completedTasks = 0;
-            
-            window.applicationData.forEach(app => {
-                // Each application has multiple components
-                totalTasks += 5; // Application, essay, supplements, recommendations, interviews
-                
-                if (app.status === 'submitted' || app.status === 'completed') {
-                    completedTasks += 5;
-                } else if (app.status === 'in-progress') {
-                    completedTasks += 2;
-                } else if (app.status === 'not-started') {
-                    completedTasks += 0;
-                }
-            });
-            
-            // Add questionnaire completion
-            totalTasks += 1;
-            if (window.userData?.questionnaire) {
-                completedTasks += 1;
-            }
-            
-            return Math.round((completedTasks / totalTasks) * 100);
-        }
-
-        // Generate AI-powered school recommendations
-        function generateSchoolRecommendations() {
-            const schoolGrid = document.getElementById('schoolGrid');
-            schoolGrid.innerHTML = '';
-            
-            const userProfile = window.userData?.questionnaire || {};
-            const userGPA = parseFloat(userProfile.unweightedGPA || 3.5);
-            const userSAT = extractSATScore(userProfile.testScores) || 1200;
-            
-            // Get user's target schools or use defaults
-            const targetSchools = userProfile.targetSchools || Object.keys(schoolDatabase).slice(0, 5);
-            
-            targetSchools.forEach(schoolName => {
-                const school = schoolDatabase[schoolName];
-                if (!school) return;
-                
-                // Calculate match percentage based on user profile
-                const matchPercentage = calculateMatchPercentage(userGPA, userSAT, school);
-                
-                const schoolCard = createSchoolCard(schoolName, school, matchPercentage);
-                schoolGrid.appendChild(schoolCard);
-            });
-        }
-
-        // Calculate how well user matches with school
-        function calculateMatchPercentage(userGPA, userSAT, school) {
-            let score = 0;
-            
-            // GPA comparison (40% weight)
-            const gpaRatio = userGPA / school.avg_gpa;
-            score += Math.min(gpaRatio * 40, 40);
-            
-            // SAT comparison (35% weight)
-            const satRatio = userSAT / school.avg_sat;
-            score += Math.min(satRatio * 35, 35);
-            
-            // Acceptance rate bonus (25% weight)
-            if (school.acceptance_rate > 10) score += 25;
-            else if (school.acceptance_rate > 5) score += 15;
-            else score += 10;
-            
-            return Math.min(Math.round(score), 95); // Cap at 95%
-        }
-
-        // Create school card element
-        function createSchoolCard(schoolName, school, matchPercentage) {
-            const card = document.createElement('div');
-            card.className = 'school-card';
-            
-            // Determine match color
-            let matchColor = '#ef4444'; // Red
-            if (matchPercentage >= 70) matchColor = '#10b981'; // Green
-            else if (matchPercentage >= 50) matchColor = '#f59e0b'; // Yellow
-            
-            card.innerHTML = `
-                <div class="match-percentage" style="background-color: ${matchColor}">
-                    ${matchPercentage}%
-                </div>
-                <h3 class="school-name">${schoolName}</h3>
-                <div class="school-details">
-                    <div class="school-detail">
-                        <span class="detail-label">Acceptance Rate</span>
-                        <span class="detail-value">${school.acceptance_rate}%</span>
-                    </div>
-                    <div class="school-detail">
-                        <span class="detail-label">Avg GPA</span>
-                        <span class="detail-value">${school.avg_gpa}</span>
-                    </div>
-                    <div class="school-detail">
-                        <span class="detail-label">Avg SAT</span>
-                        <span class="detail-value">${school.avg_sat}</span>
-                    </div>
-                    <div class="school-detail">
-                        <span class="detail-label">Deadline</span>
-                        <span class="detail-value">${new Date(school.deadline).toLocaleDateString()}</span>
-                    </div>
-                </div>
-            `;
-            
-            card.addEventListener('click', () => showSchoolDetails(schoolName, school));
-            return card;
-        }
-
-        // Create application timeline
-        function createApplicationTimeline() {
-            const timeline = document.getElementById('applicationTimeline');
-            timeline.innerHTML = '';
-            
-            const timelineEvents = [
-                {
-                    date: 'Nov 2024',
-                    title: 'Early Decision Deadlines',
-                    description: 'Submit early decision applications for top choice schools',
-                    icon: 'fas fa-clock',
-                    status: 'completed'
-                },
-                {
-                    date: 'Dec 2024',
-                    title: 'Regular Decision Applications',
-                    description: 'Complete and submit regular decision applications',
-                    icon: 'fas fa-edit',
-                    status: 'in-progress'
-                },
-                {
-                    date: 'Jan 2025',
-                    title: 'Final Application Deadline',
-                    description: 'Last chance for regular decision submissions',
-                    icon: 'fas fa-flag-checkered',
-                    status: 'upcoming'
-                },
-                {
-                    date: 'Mar 2025',
-                    title: 'Decision Notifications',
-                    description: 'Receive admission decisions from colleges',
-                    icon: 'fas fa-envelope',
-                    status: 'upcoming'
-                },
-                {
-                    date: 'May 2025',
-                    title: 'Decision Deadline',
-                    description: 'Submit enrollment deposit to chosen school',
-                    icon: 'fas fa-graduation-cap',
-                    status: 'upcoming'
-                }
-            ];
-            
-            timelineEvents.forEach((event, index) => {
-                const timelineItem = createTimelineItem(event, index);
-                timeline.appendChild(timelineItem);
-            });
-        }
-
-        // Create individual timeline item
-        function createTimelineItem(event, index) {
-            const item = document.createElement('div');
-            item.className = 'timeline-item';
-            
-            const statusClass = event.status === 'completed' ? 'success' : 
-                               event.status === 'in-progress' ? 'warning' : 'info';
-            
-            item.innerHTML = `
-                <div class="timeline-content">
-                    <div class="timeline-date">${event.date}</div>
-                    <div class="timeline-title">${event.title}</div>
-                    <div class="timeline-description">${event.description}</div>
-                </div>
-                <div class="timeline-icon" style="background: var(--${statusClass === 'success' ? 'success' : statusClass === 'warning' ? 'warning' : 'info'}-color)">
-                    <i class="${event.icon}"></i>
-                </div>
-            `;
-            
-            return item;
-        }
-
-        // Load and display tasks
-        function loadTasks() {
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '';
-            
-            const tasks = generatePersonalizedTasks();
-            
-            tasks.forEach(task => {
-                const taskItem = createTaskItem(task);
-                taskList.appendChild(taskItem);
-            });
-        }
-
-        // Generate personalized tasks based on user data
-        function generatePersonalizedTasks() {
-            const tasks = [];
-            const questionnaire = window.userData?.questionnaire || {};
-            const applications = window.applicationData || [];
-            
-            // Task priority based on deadlines and completion status
-            if (applications.some(app => app.status === 'not-started')) {
-                tasks.push({
-                    title: 'Complete college applications',
-                    due: 'Due in 15 days',
-                    priority: 'high',
-                    completed: false
-                });
-            }
-            
-            if (!questionnaire.essayText && !questionnaire.essayFileURL) {
-                tasks.push({
-                    title: 'Write personal statement',
-                    due: 'Due in 10 days',
-                    priority: 'high',
-                    completed: false
-                });
-            }
-            
-            if (!questionnaire.resumeStarted || questionnaire.resumeStarted === 'no') {
-                tasks.push({
-                    title: 'Update resume for applications',
-                    due: 'Due in 7 days',
-                    priority: 'medium',
-                    completed: false
-                });
-            }
-            
-            tasks.push({
-                title: 'Request recommendation letters',
-                due: 'Due in 20 days',
-                priority: 'medium',
-                completed: Math.random() > 0.5
-            });
-            
-            if (questionnaire.financialAid?.includes('need-aid')) {
-                tasks.push({
-                    title: 'Complete FAFSA application',
-                    due: 'Due in 30 days',
-                    priority: 'high',
-                    completed: false
-                });
-            }
-            
-            tasks.push({
-                title: 'Schedule college interviews',
-                due: 'Due in 25 days',
-                priority: 'low',
-                completed: Math.random() > 0.7
-            });
-            
-            return tasks.slice(0, 5); // Show top 5 tasks
-        }
-
-        // Create task item element
-        function createTaskItem(task) {
-            const item = document.createElement('div');
-            item.className = 'task-item';
-            if (task.completed) item.classList.add('completed');
-            
-            item.innerHTML = `
-                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
-                       onchange="toggleTask(this)">
-                <div class="task-content">
-                    <div class="task-title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
-                    <div class="task-due">${task.due}</div>
-                </div>
-                <div class="task-priority ${task.priority}"></div>
-            `;
-            
-            return item;
-        }
-
-        // Update progress circle with real data
-        function updateProgressCircle() {
-            const progress = calculateOverallProgress();
-            const circumference = 2 * Math.PI * 60;
-            const offset = circumference - (progress / 100) * circumference;
-            
-            const progressCircle = document.getElementById('progressCircle');
-            const progressText = document.getElementById('progressText');
-            
-            if (progressCircle && progressText) {
-                progressCircle.style.strokeDashoffset = offset;
-                progressText.textContent = `${progress}%`;
-                
-                // Animate the progress circle
-                setTimeout(() => {
-                    progressCircle.style.transition = 'stroke-dashoffset 2s ease-in-out';
-                }, 500);
-            }
-        }
-
-        // Check for upcoming deadlines and show alerts
-        function checkDeadlineAlerts() {
-            if (!window.applicationData) return;
-            
-            const now = new Date();
-            const urgentDeadlines = window.applicationData.filter(app => {
-                const deadline = new Date(app.deadline);
-                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
-                return daysUntil <= 7 && daysUntil > 0 && app.status !== 'submitted';
-            });
-            
-            if (urgentDeadlines.length > 0) {
-                const alertBanner = document.getElementById('alertBanner');
-                const alertText = document.getElementById('alertText');
-                
-                const school = urgentDeadlines[0];
-                const deadline = new Date(school.deadline);
-                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
-                
-                alertText.textContent = `${school.schoolName} application due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}!`;
-                alertBanner.classList.add('show');
-            }
-        }
-
-        // Update welcome message with personalization
-        function updateWelcomeMessage() {
-            const welcomeTitle = document.getElementById('welcomeTitle');
-            const welcomeMessage = document.getElementById('welcomeMessage');
-            const userData = window.userData;
-            
-            if (userData?.name) {
-                welcomeTitle.textContent = `Welcome back, ${userData.name}!`;
-            }
-            
-            const questionnaire = userData?.questionnaire;
-            if (questionnaire?.intendedMajor && questionnaire?.targetSchools?.length > 0) {
-                const major = questionnaire.intendedMajor;
-                const topSchool = questionnaire.targetSchools[0];
-                welcomeMessage.textContent = `Ready to advance your ${major} journey at ${topSchool} and other top schools?`;
-            } else if (questionnaire?.intendedMajor) {
-                welcomeMessage.textContent = `Let's make your ${questionnaire.intendedMajor} dreams a reality with AI-powered guidance`;
-            } else {
-                welcomeMessage.textContent = 'Your personalized college application command center powered by AI';
-            }
-        }
-
-        // Update trend indicators
-        function updateTrends() {
-            const applicationsTrend = document.getElementById('applicationsTrend');
-            const essaysTrend = document.getElementById('essaysTrend');
-            const scholarshipTrend = document.getElementById('scholarshipTrend');
-            const progressTrend = document.getElementById('progressTrend');
-            
-            // Calculate trends based on recent activity
-            const recentApplications = window.applicationData?.filter(app => {
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                return new Date(app.lastUpdated?.toDate?.() || app.createdAt?.toDate?.() || Date.now()) > weekAgo;
-            }).length || 0;
-            
-            applicationsTrend.textContent = `+${recentApplications} this week`;
-            essaysTrend.textContent = 'In review';
-            scholarshipTrend.textContent = 'New matches';
-            progressTrend.textContent = 'On track';
-        }
-
-        // Utility functions for extracting test scores
-        function extractSATScore(testScores) {
-            if (!testScores) return null;
-            const match = testScores.match(/SAT:?\s*(\d+)/i);
-            return match ? parseInt(match[1]) : null;
-        }
-
-        function extractACTScore(testScores) {
-            if (!testScores) return null;
-            const match = testScores.match(/ACT:?\s*(\d+)/i);
-            return match ? parseInt(match[1]) : null;
-        }
-
-        // Get upcoming deadlines
-        function getUpcomingDeadlines() {
-            if (!window.applicationData) return [];
-            
-            const now = new Date();
-            return window.applicationData
-                .filter(app => new Date(app.deadline) > now && app.status !== 'submitted')
-                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-                .slice(0, 3)
-                .map(app => ({
-                    school: app.schoolName,
-                    deadline: app.deadline,
-                    daysUntil: Math.ceil((new Date(app.deadline) - now) / (1000 * 60 * 60 * 24))
-                }));
-        }
-
-        // Load timeline preferences from user data
-        async function loadTimelinePreferences() {
-            try {
-                const userId = window.currentUser?.uid;
-                if (!userId) return;
-                
-                // Check if user has saved timeline preferences
-                const prefDoc = await getDoc(doc(db, 'timelinePreferences', userId));
-                
-                if (prefDoc.exists()) {
-                    const prefs = prefDoc.data();
-                    window.timelinePrefs = prefs;
-                    
-                    // Auto-populate dropdowns if preferences exist
-                    if (prefs.appType) {
-                        const appTypeSelect = document.getElementById('dash-student-type');
-                        if (appTypeSelect) appTypeSelect.value = prefs.appType;
-                    }
-                    if (prefs.gradYear) {
-                        const gradYearSelect = document.getElementById('dash-graduation-year');
-                        if (gradYearSelect) gradYearSelect.value = prefs.gradYear;
-                    }
-                    
-                    console.log('📋 Timeline preferences loaded:', prefs);
-                } else {
-                    // Use questionnaire data as fallback
-                    const questionnaire = window.userData?.questionnaire;
-                    if (questionnaire?.graduationYear) {
-                        const gradYearSelect = document.getElementById('dash-graduation-year');
-                        if (gradYearSelect) gradYearSelect.value = questionnaire.graduationYear;
-                    }
-                }
-            } catch (error) {
-                console.error('❌ Error loading timeline preferences:', error);
-            }
-        }
-        
-        // Auto-initialize timeline with smart defaults
-        async function autoInitializeTimeline() {
-            try {
-                const appTypeSelect = document.getElementById('dash-student-type');
-                const gradYearSelect = document.getElementById('dash-graduation-year');
-                
-                // Use saved preferences or questionnaire data
-                let appType = appTypeSelect?.value;
-                let gradYear = gradYearSelect?.value;
-                
-                // Fallback to questionnaire data if available
-                if (!appType || !gradYear) {
-                    const questionnaire = window.userData?.questionnaire;
-                    
-                    if (!gradYear && questionnaire?.graduationYear) {
-                        gradYear = questionnaire.graduationYear;
-                        if (gradYearSelect) gradYearSelect.value = gradYear;
-                    }
-                    
-                    // Default to Regular Decision if not specified
-                    if (!appType) {
-                        appType = 'RD';
-                        if (appTypeSelect) appTypeSelect.value = appType;
-                    }
-                }
-                
-                // Auto-generate timeline if we have the required data
-                if (appType && gradYear) {
-                    console.log(`🎯 Auto-initializing timeline: ${appType}, ${gradYear}`);
-                    await renderPersonalizedTimeline(appType, gradYear);
-                    
-                    // Save preferences
-                    await saveTimelinePreferences(appType, gradYear);
-                }
-            } catch (error) {
-                console.error('❌ Error auto-initializing timeline:', error);
-            }
-        }
-        
-        // Save timeline preferences for next visit
-        async function saveTimelinePreferences(appType, gradYear) {
-            try {
-                const userId = window.currentUser?.uid;
-                if (!userId) return;
-                
-                await setDoc(doc(db, 'timelinePreferences', userId), {
-                    appType: appType,
-                    gradYear: gradYear,
-                    updatedAt: serverTimestamp()
-                }, { merge: true });
-                
-                console.log('💾 Timeline preferences saved');
-            } catch (error) {
-                console.error('❌ Error saving timeline preferences:', error);
-            }
-        }
-        
-        // Global loading overlay
-        function showGlobalLoading() {
-            let overlay = document.getElementById('globalLoadingOverlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'globalLoadingOverlay';
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.7);
-                    backdrop-filter: blur(10px);
-                    z-index: 9999;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    flex-direction: column;
-                    gap: 1rem;
-                `;
-                overlay.innerHTML = `
-                    <div style="width: 60px; height: 60px; border: 4px solid rgba(160, 123, 204, 0.3); border-top-color: #a07bcc; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                    <div style="color: white; font-size: 1.2rem; font-weight: 600;">Loading Your Dashboard...</div>
-                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Preparing personalized insights</div>
-                `;
-                document.body.appendChild(overlay);
-            }
-            overlay.style.display = 'flex';
-        }
-        
-        function hideGlobalLoading() {
-            const overlay = document.getElementById('globalLoadingOverlay');
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    overlay.style.opacity = '1';
-                }, 300);
-            }
-        }
-        
-        // Dashboard error handler
-        function showDashboardError(message = 'Failed to load dashboard data') {
-            const container = document.querySelector('.dashboard-container');
-            if (container) {
-                const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = `
-                    background: linear-gradient(135deg, #ef4444, #dc2626);
-                    color: white;
-                    padding: 2rem;
-                    border-radius: 16px;
-                    text-align: center;
-                    margin: 2rem 0;
-                `;
-                errorDiv.innerHTML = `
-                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                    <h2 style="margin-bottom: 1rem;">Oops! Something went wrong</h2>
-                    <p style="margin-bottom: 1.5rem; opacity: 0.9;">${message}</p>
-                    <button class="btn-primary" onclick="location.reload()">
-                        <i class="fas fa-sync"></i> Reload Dashboard
-                    </button>
-                `;
-                container.insertBefore(errorDiv, container.firstChild);
-            }
-        }
-        
-        // Show Application Tracker Modal
-        window.showApplicationTracker = function() {
-            const modal = createModal('Application Tracker', generateApplicationTrackerContent());
-            document.body.appendChild(modal);
-            setTimeout(() => modal.classList.add('show'), 10);
-        };
-        
-        // Generate application tracker content
-        function generateApplicationTrackerContent() {
-            const applications = window.applicationData || [];
-            
-            if (applications.length === 0) {
-                return `
-                    <div style="text-align: center; padding: 3rem;">
-                        <i class="fas fa-graduation-cap" style="font-size: 4rem; color: var(--accent-color); opacity: 0.3; margin-bottom: 1rem;"></i>
-                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">No Applications Yet</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start your college application journey today!</p>
-                        <button class="btn-primary" onclick="window.location.href='myapp.html'">
-                            <i class="fas fa-plus"></i> Add Your First Application
-                        </button>
-                    </div>
-                `;
-            }
-            
-            const statusCounts = {
-                'not-started': applications.filter(a => a.status === 'not-started').length,
-                'in-progress': applications.filter(a => a.status === 'in-progress').length,
-                'submitted': applications.filter(a => a.status === 'submitted').length,
-                'completed': applications.filter(a => a.status === 'completed').length
-            };
-            
-            return `
-                <div style="padding: 1rem;">
-                    <!-- Status Summary -->
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
-                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
-                            <div style="font-size: 2rem; font-weight: 800; color: var(--text-secondary);">${statusCounts['not-started']}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Not Started</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
-                            <div style="font-size: 2rem; font-weight: 800; color: var(--warning-color);">${statusCounts['in-progress']}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary);">In Progress</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
-                            <div style="font-size: 2rem; font-weight: 800; color: var(--info-color);">${statusCounts['submitted']}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Submitted</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 12px;">
-                            <div style="font-size: 2rem; font-weight: 800; color: var(--success-color);">${statusCounts['completed']}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-secondary);">Completed</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Application List -->
-                    <div style="max-height: 400px; overflow-y: auto;">
-                        ${applications.map(app => `
-                            <div style="
-                                padding: 1.5rem;
-                                margin-bottom: 1rem;
-                                background: var(--secondary-bg);
-                                border-radius: 12px;
-                                border-left: 4px solid ${getStatusColor(app.status)};
-                                transition: all 0.3s ease;
-                            " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
-                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
-                                    <h4 style="margin: 0; color: var(--text-primary);">${app.schoolName}</h4>
-                                    <span style="
-                                        background: ${getStatusColor(app.status)}20;
-                                        color: ${getStatusColor(app.status)};
-                                        padding: 0.25rem 0.75rem;
-                                        border-radius: 12px;
-                                        font-size: 0.75rem;
-                                        font-weight: 600;
-                                        text-transform: uppercase;
-                                    ">${app.status.replace('-', ' ')}</span>
-                                </div>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
-                                    <div><i class="fas fa-calendar"></i> ${new Date(app.deadline).toLocaleDateString()}</div>
-                                    <div><i class="fas fa-pen-fancy"></i> ${app.essayCount || 0} Essays</div>
-                                    <div><i class="fas fa-user-friends"></i> ${app.recommendationsCount || 0} Recs</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    
-                    <!-- Action Button -->
-                    <div style="margin-top: 2rem; text-align: center;">
-                        <button class="btn-primary" onclick="window.location.href='myapp.html'" style="width: 100%;">
-                            <i class="fas fa-external-link-alt"></i> Manage All Applications
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Show Progress Analytics Modal
-        window.showProgressAnalytics = function() {
-            const modal = createModal('Progress Analytics', generateProgressAnalyticsContent());
-            document.body.appendChild(modal);
-            setTimeout(() => modal.classList.add('show'), 10);
-        };
-        
-        // Generate progress analytics content
-        function generateProgressAnalyticsContent() {
-            const applications = window.applicationData || [];
-            const totalApps = applications.length;
-            const overallProgress = calculateOverallProgress();
-            
-            // Calculate detailed metrics
-            const submittedApps = applications.filter(a => a.status === 'submitted' || a.status === 'completed').length;
-            const inProgressApps = applications.filter(a => a.status === 'in-progress').length;
-            const notStartedApps = applications.filter(a => a.status === 'not-started').length;
-            
-            const questionnaire = window.userData?.questionnaire;
-            const hasEssay = questionnaire?.essayText || questionnaire?.essayFileURL;
-            const hasTestScores = questionnaire?.testScores && questionnaire.testScores !== 'Not taken yet';
-            const hasExtracurriculars = questionnaire?.extracurriculars && questionnaire.extracurriculars.length > 0;
-            
-            return `
-                <div style="padding: 1rem;">
-                    <!-- Overall Progress Circle -->
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div style="position: relative; width: 180px; height: 180px; margin: 0 auto;">
-                            <svg style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                                <circle cx="90" cy="90" r="80" fill="none" stroke="rgba(160, 123, 204, 0.1)" stroke-width="12"></circle>
-                                <circle cx="90" cy="90" r="80" fill="none" stroke="url(#progressGradient)" stroke-width="12" 
-                                        stroke-dasharray="${2 * Math.PI * 80}" 
-                                        stroke-dashoffset="${2 * Math.PI * 80 * (1 - overallProgress / 100)}"
-                                        stroke-linecap="round"
-                                        style="transition: stroke-dashoffset 1s ease;"></circle>
-                                <defs>
-                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#2a357a;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#a07bcc;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                                <div style="font-size: 3rem; font-weight: 900; color: var(--text-primary);">${overallProgress}%</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 600;">Complete</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Application Status Breakdown -->
-                    <div style="background: var(--secondary-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
-                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Application Status</h4>
-                        <div style="display: grid; gap: 1rem;">
-                            ${createProgressBar('Submitted', submittedApps, totalApps, '#10b981')}
-                            ${createProgressBar('In Progress', inProgressApps, totalApps, '#f59e0b')}
-                            ${createProgressBar('Not Started', notStartedApps, totalApps, '#6b7280')}
-                        </div>
-                    </div>
-                    
-                    <!-- Component Checklist -->
-                    <div style="background: var(--secondary-bg); border-radius: 12px; padding: 1.5rem;">
-                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Application Components</h4>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            ${createChecklistItem('Personal Statement', hasEssay)}
-                            ${createChecklistItem('Test Scores', hasTestScores)}
-                            ${createChecklistItem('Extracurriculars', hasExtracurriculars)}
-                            ${createChecklistItem('Recommendations', applications.some(a => a.recommendationsCount >= 2))}
-                            ${createChecklistItem('Application Forms', submittedApps > 0)}
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
-                        <button class="btn-secondary" onclick="window.location.href='profile.html'" style="width: 100%;">
-                            <i class="fas fa-user"></i> Update Profile
-                        </button>
-                        <button class="btn-primary" onclick="window.location.href='myapp.html'" style="width: 100%;">
-                            <i class="fas fa-tasks"></i> View Tasks
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Create progress bar helper
-        function createProgressBar(label, count, total, color) {
-            const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-            return `
-                <div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.9rem; color: var(--text-secondary);">${label}</span>
-                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">${count}/${total}</span>
-                    </div>
-                    <div style="width: 100%; height: 8px; background: rgba(160, 123, 204, 0.1); border-radius: 4px; overflow: hidden;">
-                        <div style="height: 100%; background: ${color}; width: ${percentage}%; transition: width 0.5s ease;"></div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Create checklist item helper
-        function createChecklistItem(label, isComplete) {
-            return `
-                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--primary-bg); border-radius: 8px;">
-                    <div style="
-                        width: 24px;
-                        height: 24px;
-                        border-radius: 50%;
-                        background: ${isComplete ? 'var(--success-color)' : 'var(--secondary-bg)'};
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: white;
-                        font-size: 0.8rem;
-                    ">
-                        ${isComplete ? '<i class="fas fa-check"></i>' : ''}
-                    </div>
-                    <span style="flex: 1; color: var(--text-primary); font-weight: 500;">${label}</span>
-                    <span style="
-                        font-size: 0.75rem;
-                        font-weight: 600;
-                        color: ${isComplete ? 'var(--success-color)' : 'var(--text-secondary)'};
-                    ">${isComplete ? 'Complete' : 'Pending'}</span>
-                </div>
-            `;
-        }
-        
-        // Get status color
-        function getStatusColor(status) {
-            const colors = {
-                'not-started': '#6b7280',
-                'in-progress': '#f59e0b',
-                'submitted': '#3b82f6',
-                'completed': '#10b981'
-            };
-            return colors[status] || '#6b7280';
-        }
-        
-        // Get urgency color
-        function getUrgencyColor(urgency) {
-            const colors = {
-                'overdue': '#ef4444',
-                'urgent': '#f59e0b',
-                'warning': '#eab308',
-                'upcoming': '#3b82f6',
-                'future': '#6b7280',
-                'completed': '#10b981'
-            };
-            return colors[urgency] || '#6b7280';
-        }
-        
-        // Show school details modal
-        window.showSchoolDetails = function(schoolName, school) {
-            const userProfile = window.userData?.questionnaire || {};
-            const userGPA = parseFloat(userProfile.unweightedGPA || 3.5);
-            const userSAT = extractSATScore(userProfile.testScores) || 1200;
-            const matchPercentage = calculateMatchPercentage(userGPA, userSAT, school);
-            
-            const content = `
-                <div style="padding: 1rem;">
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div style="
-                            width: 100px;
-                            height: 100px;
-                            margin: 0 auto 1rem;
-                            border-radius: 50%;
-                            background: ${matchPercentage >= 70 ? 'var(--success-color)' : matchPercentage >= 50 ? 'var(--warning-color)' : 'var(--danger-color)'};
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-size: 2rem;
-                            font-weight: 900;
-                        ">${matchPercentage}%</div>
-                        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">${schoolName}</h3>
-                        <p style="color: var(--text-secondary);">${school.location} • ${school.type}</p>
-                    </div>
-                    
-                    <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
-                        ${createDetailRow('Acceptance Rate', `${school.acceptance_rate}%`, 'percent')}
-                        ${createDetailRow('Average GPA', school.avg_gpa, 'tachometer-alt')}
-                        ${createDetailRow('Average SAT', school.avg_sat, 'graduation-cap')}
-                        ${createDetailRow('Average ACT', school.avg_act, 'calculator')}
-                        ${createDetailRow('Annual Tuition', `$${school.tuition.toLocaleString()}`, 'dollar-sign')}
-                        ${createDetailRow('Application Deadline', new Date(school.deadline).toLocaleDateString(), 'calendar')}
-                        ${createDetailRow('US News Ranking', `#${school.ranking}`, 'trophy')}
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <button class="btn-secondary" onclick="window.location.href='discovery.html?school=${encodeURIComponent(schoolName)}'" style="width: 100%;">
-                            <i class="fas fa-search"></i> Explore More
-                        </button>
-                        <button class="btn-primary" onclick="window.location.href='myapp.html?add=${encodeURIComponent(schoolName)}'" style="width: 100%;">
-                            <i class="fas fa-plus"></i> Add Application
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            const modal = createModal(schoolName, content);
-            document.body.appendChild(modal);
-            setTimeout(() => modal.classList.add('show'), 10);
-        };
-        
-        // Create detail row helper
-        function createDetailRow(label, value, icon) {
-            return `
-                <div style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 1rem;
-                    background: var(--secondary-bg);
-                    border-radius: 8px;
-                ">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <i class="fas fa-${icon}" style="color: var(--accent-color);"></i>
-                        <span style="color: var(--text-secondary);">${label}</span>
-                    </div>
-                    <span style="font-weight: 700; color: var(--text-primary);">${value}</span>
-                </div>
-            `;
-        }
-        
-        // Create modal utility
-        function createModal(title, content) {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                backdrop-filter: blur(10px);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                padding: 1rem;
-            `;
-            
-            modal.innerHTML = `
-                <div style="
-                    background: var(--primary-bg);
-                    border-radius: 24px;
-                    max-width: 800px;
-                    width: 100%;
-                    max-height: 90vh;
-                    overflow: hidden;
-                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-                    transform: scale(0.9);
-                    transition: transform 0.3s ease;
-                ">
-                    <!-- Modal Header -->
-                    <div style="
-                        background: var(--gradient);
-                        color: white;
-                        padding: 1.5rem 2rem;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    ">
-                        <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">${title}</h2>
-                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" style="
-                            background: rgba(255, 255, 255, 0.2);
-                            border: none;
-                            color: white;
-                            width: 36px;
-                            height: 36px;
-                            border-radius: 50%;
-                            cursor: pointer;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 1.2rem;
-                            transition: all 0.3s ease;
-                        " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Modal Content -->
-                    <div style="max-height: calc(90vh - 100px); overflow-y: auto;">
-                        ${content}
-                    </div>
-                </div>
-            `;
-            
-            modal.classList.add('show');
-            modal.querySelector('[style*="transform: scale"]').style.transform = 'scale(1)';
-            
-            // Close on background click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.opacity = '0';
-                    setTimeout(() => modal.remove(), 300);
-                }
-            });
-            
-            // Close on escape key
-            document.addEventListener('keydown', function escapeHandler(e) {
-                if (e.key === 'Escape') {
-                    modal.style.opacity = '0';
-                    setTimeout(() => modal.remove(), 300);
-                    document.removeEventListener('keydown', escapeHandler);
-                }
-            });
-            
-            return modal;
-        }
-        
-        // Open full timeline page
-        window.openFullTimeline = function() {
-            window.location.href = 'adaptive-timeline.html';
-        };
-        
-        // Show school details when card is clicked
-        window.viewSchoolDetails = function(schoolName) {
-            const school = schoolDatabase[schoolName];
-            if (school) {
-                showSchoolDetails(schoolName, school);
-            }
-        };
-        
-        // Enhanced daily tasks generation
-        async function generateDailyTasks() {
-            try {
-                const tasks = generatePersonalizedTasks();
-                const taskList = document.getElementById('taskList');
-                
-                if (!taskList) return;
-                
-                if (tasks.length === 0) {
-                    taskList.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                            <h4 style="margin-bottom: 0.5rem;">All Caught Up!</h4>
-                            <p style="font-size: 0.9rem;">You have no pending tasks for today.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                taskList.innerHTML = tasks.map((task, index) => {
-                    const priorityColors = {
-                        'high': 'var(--danger-color)',
-                        'medium': 'var(--warning-color)',
-                        'low': 'var(--success-color)'
-                    };
-                    
-                    return `
-                        <div class="task-item" style="
-                            display: flex;
-                            align-items: center;
-                            gap: 1rem;
-                            padding: 1rem;
-                            background: var(--secondary-bg);
-                            border-radius: 12px;
-                            border-left: 4px solid ${priorityColors[task.priority]};
-                            transition: all 0.3s ease;
-                            ${task.completed ? 'opacity: 0.6;' : ''}
-                        " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
-                            <input type="checkbox" 
-                                   class="task-checkbox" 
-                                   ${task.completed ? 'checked' : ''} 
-                                   onchange="toggleTask(this)"
-                                   style="width: 20px; height: 20px; accent-color: ${priorityColors[task.priority]}; cursor: pointer;">
-                            <div class="task-content" style="flex: 1;">
-                                <div class="task-title" style="
-                                    font-weight: 600;
-                                    color: var(--text-primary);
-                                    margin-bottom: 0.25rem;
-                                    ${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}
-                                ">${task.title}</div>
-                                <div class="task-due" style="
-                                    font-size: 0.85rem;
-                                    color: var(--text-secondary);
-                                ">${task.due}</div>
-                            </div>
-                            <div class="task-priority ${task.priority}" style="
-                                width: 10px;
-                                height: 10px;
-                                border-radius: 50%;
-                                background: ${priorityColors[task.priority]};
-                            "></div>
-                        </div>
-                    `;
-                }).join('');
-                
-                console.log('✅ Daily tasks generated');
-            } catch (error) {
-                console.error('❌ Error generating daily tasks:', error);
-            }
-        }
-    </script>
-
-    <!-- Theme and UI Enhancement Script -->
-    <script>
-        // Enhanced theme management
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎨 Enhanced Dashboard UI loaded');
-            
-            // Initialize animations
-            initializeAnimations();
-            createStarryBackground();
-        });
-
-        // Create enhanced starry background
-        function createStarryBackground() {
-            const starryBg = document.getElementById('starryBg');
-            if (!starryBg) return;
-            
-            const numStars = 200;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 3 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                starryBg.appendChild(star);
-            }
-        }
-
-        // Initialize animations
-        function initializeAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe elements for animation
-            document.querySelectorAll('.stat-card, .school-match-section, .timeline-section, .task-section').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        }
-
-        // Enhanced error handling
-        window.addEventListener('error', function(e) {
-            console.error('Dashboard Error:', e.error);
-        });
-
-        window.addEventListener('unhandledrejection', function(event) {
-            console.error('Unhandled promise rejection:', event.reason);
-        });
-
-        // Performance monitoring
-        window.addEventListener('load', function() {
-            const loadTime = performance.now();
-            console.log(`🚀 Dashboard loaded in ${Math.round(loadTime)}ms`);
-        });
-
-        // ============================================
-        // ADAPTIVE TIMELINE INTEGRATION
-        // ============================================
-
-        // Dashboard Timeline Functions
-        async function generateDashboardTimeline() {
-            const appType = document.getElementById('dash-student-type').value;
-            const gradYear = document.getElementById('dash-graduation-year').value;
-            
-            if (!appType || !gradYear) {
-                alert('Please select both application type and graduation year');
-                return;
-            }
-
-            showTimelineLoading();
-            
-            try {
-                // Generate timeline based on real Firebase data
-                await renderPersonalizedTimeline(appType, gradYear);
-            } catch (error) {
-                console.error('Error generating timeline:', error);
-                showTimelineError();
-            }
-        }
-
-        function showTimelineLoading() {
-            const content = document.getElementById('dashboardTimelineContent');
-            content.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--accent-color);"></i>
-                    <h3>Generating Your Personalized Timeline...</h3>
-                    <p style="color: var(--text-secondary);">Analyzing your applications and creating a tailored roadmap</p>
-                </div>
-            `;
-        }
-
-        function showTimelineError() {
-            const content = document.getElementById('dashboardTimelineContent');
-            content.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px; color: var(--danger-color);">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px;"></i>
-                    <h3>Error Loading Timeline</h3>
-                    <p style="color: var(--text-secondary);">Please try again or contact support if the problem persists.</p>
-                </div>
-            `;
-        }
-
-        // Generate personalized timeline based on real user data
-        async function renderPersonalizedTimeline(appType, gradYear) {
-            const content = document.getElementById('dashboardTimelineContent');
-            
-            // Get user's real applications from Firebase
-            const userApplications = window.applicationData || [];
-            
-            // Generate timeline tasks based on real data
-            const timelineTasks = await generatePersonalizedTimelineTasks(appType, gradYear, userApplications);
-            
-            // Calculate urgency statistics
-            const urgentTasks = timelineTasks.filter(t => t.urgency === 'urgent' || t.urgency === 'overdue').length;
-            const completedTasks = timelineTasks.filter(t => t.completed).length;
-            const totalTasks = timelineTasks.length;
-            const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-            
-            content.innerHTML = `
-                <div class="timeline-summary" style="margin-bottom: 20px; padding: 15px; background: var(--secondary-bg); border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                        <div>
-                            <h4 style="margin-bottom: 5px;">${getApplicationTypeName(appType)} Timeline</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Class of ${gradYear} • ${userApplications.length} Applications</p>
-                        </div>
-                        <div style="display: flex; gap: 20px;">
-                            <div style="text-align: center;">
-                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--danger-color);">${urgentTasks}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Urgent</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--success-color);">${completionRate}%</div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Complete</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Progress Bar -->
-                    <div style="margin-top: 12px;">
-                        <div style="width: 100%; height: 8px; background: rgba(160, 123, 204, 0.2); border-radius: 4px; overflow: hidden;">
-                            <div style="height: 100%; background: var(--accent-color); width: ${completionRate}%; transition: width 0.5s ease;"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="timeline-items" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
-                    ${timelineTasks.length > 0 ? timelineTasks.map((task, index) => createTimelineTaskHTML(task, index)).join('') : `
-                        <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <h3>No Tasks Yet!</h3>
-                            <p>Add applications in the My Applications page to see your personalized timeline.</p>
-                        </div>
-                    `}
-                </div>
-                
-                <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn-secondary" onclick="autoPopulateTimeline('${appType}', '${gradYear}')" style="width: 100%;">
-                        <i class="fas fa-magic"></i> Auto-Generate Tasks
-                    </button>
-                    <button class="btn-primary" onclick="window.location.href='adaptive-timeline.html'" style="width: 100%;">
-                        <i class="fas fa-external-link-alt"></i> Full Timeline
-                    </button>
-                </div>
-            `;
-        }
-
-        // Create HTML for individual timeline task
-        function createTimelineTaskHTML(task, index) {
-            const urgencyColor = getUrgencyColor(task.urgency);
-            const isCompleted = task.completed;
-            
-            return `
-                <div class="timeline-item-dashboard" 
-                     style="
-                        display: flex; 
-                        align-items: center; 
-                        padding: 12px; 
-                        margin-bottom: 10px; 
-                        background: ${isCompleted ? 'var(--secondary-bg)' : 'var(--primary-bg)'}; 
-                        border-radius: 8px; 
-                        border-left: 4px solid ${urgencyColor};
-                        transition: all 0.3s ease;
-                        opacity: ${isCompleted ? '0.7' : '1'};
-                        cursor: pointer;
-                     " 
-                     onmouseover="this.style.transform='translateX(5px)'" 
-                     onmouseout="this.style.transform='translateX(0)'"
-                     onclick="toggleTimelineTask(${index}, '${task.id || ''}')">
-                    
-                    <!-- Checkbox -->
-                    <div style="margin-right: 12px;">
-                        <input type="checkbox" 
-                               ${isCompleted ? 'checked' : ''} 
-                               onclick="event.stopPropagation(); toggleTimelineTask(${index}, '${task.id || ''}')"
-                               style="width: 20px; height: 20px; cursor: pointer;">
-                    </div>
-                    
-                    <!-- Icon -->
-                    <div style="
-                        width: 40px; 
-                        height: 40px; 
-                        border-radius: 50%; 
-                        background: ${urgencyColor}20; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
-                        margin-right: 15px;
-                    ">
-                        <i class="fas fa-${task.icon}" style="color: ${urgencyColor}; ${isCompleted ? 'opacity: 0.5;' : ''}"></i>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div style="flex: 1;">
-                        <div style="font-weight: 600; margin-bottom: 4px; ${isCompleted ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
-                        <div style="font-size: 0.9rem; color: var(--text-secondary);">${task.description}</div>
-                        ${task.school ? `<div style="font-size: 0.85rem; color: var(--accent-color); margin-top: 4px;"><i class="fas fa-university"></i> ${task.school}</div>` : ''}
-                    </div>
-                    
-                    <!-- Deadline -->
-                    <div style="text-align: right; margin-left: 15px;">
-                        <div style="font-size: 0.85rem; color: ${urgencyColor}; font-weight: 600;">
-                            ${task.deadline}
-                        </div>
-                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
-                            ${task.daysUntil !== undefined ? `${task.daysUntil} days` : task.urgency.toUpperCase()}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Generate personalized tasks based on Firebase data
-        async function generatePersonalizedTimelineTasks(appType, gradYear, applications) {
-            const tasks = [];
-            const currentDate = new Date();
-            const userId = window.currentUser?.uid;
-            
-            // Get deadline based on application type
-            const deadlineDate = getDeadlineForAppType(appType, gradYear);
-            
-            // Load existing timeline tasks from Firebase
-            let existingTasks = [];
-            try {
-                if (userId) {
-                    const tasksQuery = query(
-                        collection(db, 'timelineTasks'),
-                        where('userId', '==', userId),
-                        where('appType', '==', appType),
-                        where('gradYear', '==', gradYear)
-                    );
-                    const tasksSnapshot = await getDocs(tasksQuery);
-                    existingTasks = tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                }
-            } catch (error) {
-                console.error('Error loading timeline tasks:', error);
-            }
-            
-            // Generate tasks for each application
-            for (const app of applications) {
-                const appDeadline = new Date(app.deadline);
-                const daysUntil = Math.ceil((appDeadline - currentDate) / (1000 * 60 * 60 * 24));
-                
-                // Main application task
-                const mainTask = existingTasks.find(t => t.type === 'application' && t.schoolName === app.schoolName);
-                tasks.push({
-                    id: mainTask?.id,
-                    title: `Submit Application: ${app.schoolName}`,
-                    description: 'Complete and submit your application',
-                    school: app.schoolName,
-                    deadline: formatTimelineDate(appDeadline),
-                    daysUntil: daysUntil,
-                    urgency: getTaskUrgency(daysUntil, app.status === 'submitted'),
-                    icon: 'file-alt',
-                    completed: app.status === 'submitted' || app.status === 'completed' || mainTask?.completed || false,
-                    type: 'application',
-                    schoolName: app.schoolName
-                });
-                
-                // Essay tasks
-                if (app.essayCount > 0 && app.status !== 'submitted') {
-                    const essayTask = existingTasks.find(t => t.type === 'essay' && t.schoolName === app.schoolName);
-                    tasks.push({
-                        id: essayTask?.id,
-                        title: `Complete Essays for ${app.schoolName}`,
-                        description: `${app.essayCount} essay(s) required`,
-                        school: app.schoolName,
-                        deadline: formatTimelineDate(new Date(appDeadline.getTime() - 7 * 24 * 60 * 60 * 1000)),
-                        daysUntil: daysUntil - 7,
-                        urgency: getTaskUrgency(daysUntil - 7, essayTask?.completed),
-                        icon: 'pen-fancy',
-                        completed: essayTask?.completed || false,
-                        type: 'essay',
-                        schoolName: app.schoolName
-                    });
-                }
-                
-                // Recommendation tasks
-                if (app.recommendationsCount < 2 && app.status !== 'submitted') {
-                    const recTask = existingTasks.find(t => t.type === 'recommendation' && t.schoolName === app.schoolName);
-                    tasks.push({
-                        id: recTask?.id,
-                        title: `Request Recommendations for ${app.schoolName}`,
-                        description: `${2 - (app.recommendationsCount || 0)} more recommendation(s) needed`,
-                        school: app.schoolName,
-                        deadline: formatTimelineDate(new Date(appDeadline.getTime() - 14 * 24 * 60 * 60 * 1000)),
-                        daysUntil: daysUntil - 14,
-                        urgency: getTaskUrgency(daysUntil - 14, recTask?.completed),
-                        icon: 'user-friends',
-                        completed: recTask?.completed || false,
-                        type: 'recommendation',
-                        schoolName: app.schoolName
-                    });
-                }
-            }
-            
-            // Add general tasks based on questionnaire completion
-            const questionnaire = window.userData?.questionnaire;
-            
-            // Common App/Coalition App task
-            if (!questionnaire?.essayText && !questionnaire?.essayFileURL) {
-                const commonAppTask = existingTasks.find(t => t.type === 'commonapp');
-                tasks.push({
-                    id: commonAppTask?.id,
-                    title: 'Complete Personal Statement',
-                    description: 'Write your main college essay (Common App/Coalition)',
-                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 21 * 24 * 60 * 60 * 1000)),
-                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 21,
-                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 21, commonAppTask?.completed),
-                    icon: 'edit',
-                    completed: commonAppTask?.completed || false,
-                    type: 'commonapp'
-                });
-            }
-            
-            // Test scores task
-            if (!questionnaire?.testScores || questionnaire.testScores === 'Not taken yet') {
-                const testTask = existingTasks.find(t => t.type === 'testscores');
-                tasks.push({
-                    id: testTask?.id,
-                    title: 'Send Test Scores',
-                    description: 'Submit SAT/ACT scores to all schools',
-                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 10 * 24 * 60 * 60 * 1000)),
-                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 10,
-                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 10, testTask?.completed),
-                    icon: 'graduation-cap',
-                    completed: testTask?.completed || false,
-                    type: 'testscores'
-                });
-            }
-            
-            // Financial aid tasks
-            if (questionnaire?.financialAid?.includes('need-aid')) {
-                const fafsaTask = existingTasks.find(t => t.type === 'fafsa');
-                tasks.push({
-                    id: fafsaTask?.id,
-                    title: 'Complete FAFSA',
-                    description: 'Submit Free Application for Federal Student Aid',
-                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 5 * 24 * 60 * 60 * 1000)),
-                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5,
-                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5, fafsaTask?.completed),
-                    icon: 'dollar-sign',
-                    completed: fafsaTask?.completed || false,
-                    type: 'fafsa'
-                });
-                
-                const cssTask = existingTasks.find(t => t.type === 'css');
-                tasks.push({
-                    id: cssTask?.id,
-                    title: 'Complete CSS Profile',
-                    description: 'Submit CSS Profile for institutional aid',
-                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 5 * 24 * 60 * 60 * 1000)),
-                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5,
-                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5, cssTask?.completed),
-                    icon: 'file-invoice-dollar',
-                    completed: cssTask?.completed || false,
-                    type: 'css'
-                });
-            }
-            
-            // Sort tasks by urgency and deadline
-            tasks.sort((a, b) => {
-                const urgencyOrder = { 'overdue': 0, 'urgent': 1, 'warning': 2, 'upcoming': 3, 'future': 4 };
-                if (a.completed !== b.completed) return a.completed ? 1 : -1;
-                if (urgencyOrder[a.urgency] !== urgencyOrder[b.urgency]) {
-                    return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
-                }
-                return (a.daysUntil || 999) - (b.daysUntil || 999);
-            });
-            
-            return tasks;
-        }
-
-        // Toggle task completion
-        async function toggleTimelineTask(index, taskId) {
-            try {
-                const userId = window.currentUser?.uid;
-                if (!userId) return;
-                
-                // Get current task state
-                const taskElement = document.querySelectorAll('.timeline-item-dashboard')[index];
-                const checkbox = taskElement.querySelector('input[type="checkbox"]');
-                const isCompleted = !checkbox.checked;
-                
-                // Update checkbox
-                checkbox.checked = isCompleted;
-                
-                // Update in Firebase
-                if (taskId) {
-                    await updateDoc(doc(db, 'timelineTasks', taskId), {
-                        completed: isCompleted,
-                        completedAt: isCompleted ? serverTimestamp() : null
-                    });
-                }
-                
-                // Refresh timeline
-                const appType = document.getElementById('dash-student-type').value;
-                const gradYear = document.getElementById('dash-graduation-year').value;
-                if (appType && gradYear) {
-                    await renderPersonalizedTimeline(appType, gradYear);
-                }
-                
-                console.log(`✅ Task ${isCompleted ? 'completed' : 'uncompleted'}`);
-                
-            } catch (error) {
-                console.error('Error toggling task:', error);
-            }
-        }
-
-        // Auto-populate timeline with smart defaults
-        async function autoPopulateTimeline(appType, gradYear) {
-            try {
-                const userId = window.currentUser?.uid;
-                if (!userId) return;
-                
-                showTimelineLoading();
-                
-                const applications = window.applicationData || [];
-                const tasks = await generatePersonalizedTimelineTasks(appType, gradYear, applications);
-                
-                // Save tasks to Firebase
-                for (const task of tasks) {
-                    if (!task.id) {
-                        await addDoc(collection(db, 'timelineTasks'), {
-                            userId: userId,
-                            appType: appType,
-                            gradYear: gradYear,
-                            title: task.title,
-                            description: task.description,
-                            school: task.school || null,
-                            schoolName: task.schoolName || null,
-                            deadline: task.deadline,
-                            daysUntil: task.daysUntil,
-                            urgency: task.urgency,
-                            icon: task.icon,
-                            completed: false,
-                            type: task.type,
-                            createdAt: serverTimestamp()
-                        });
-                    }
-                }
-                
-                // Refresh timeline
-                await renderPersonalizedTimeline(appType, gradYear);
-                
-                console.log('✅ Timeline auto-populated with personalized tasks');
-                
-            } catch (error) {
-                console.error('Error auto-populating timeline:', error);
-                showTimelineError();
-            }
-        }
-
-        // Helper Functions
-        function getApplicationTypeName(appType) {
-            const names = {
-                'ED': 'Early Decision',
-                'EA': 'Early Action',
-                'RD': 'Regular Decision',
-                'ED2': 'Early Decision II',
-                'REA': 'Restrictive Early Action'
-            };
-            return names[appType] || appType;
-        }
-
-        function getDeadlineForAppType(appType, gradYear) {
-            const year = parseInt(gradYear) - 1;
-            const deadlines = {
-                'ED': new Date(year, 10, 1), // Nov 1
-                'EA': new Date(year, 10, 15), // Nov 15
-                'RD': new Date(year + 1, 0, 1), // Jan 1
-                'ED2': new Date(year + 1, 0, 1), // Jan 1
-                'REA': new Date(year, 10, 1) // Nov 1
-            };
-            return deadlines[appType] || new Date(year + 1, 0, 1);
-        }
-
-        function getTaskUrgency(daysUntil, isCompleted) {
-            if (isCompleted) return 'completed';
-            if (daysUntil < 0) return 'overdue';
-            if (daysUntil <= 7) return 'urgent';
-            if (daysUntil <= 14) return 'warning';
-            if (daysUntil <= 30) return 'upcoming';
-            return 'future';
-        }
-
-        function formatTimelineDate(date) {
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-    </script>
-</body>
-</html>

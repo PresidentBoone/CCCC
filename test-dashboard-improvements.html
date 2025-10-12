@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Improvements Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 2rem;
+        }
+        
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+        }
+        
+        h1, h2 { margin-top: 0; }
+        
+        button {
+            background: linear-gradient(135deg, #a07bcc 0%, #7c5295 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.4);
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .stat-value.loaded {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Toast styles */
+        .error-toast, .success-toast, .info-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10000;
+            min-width: 300px;
+        }
+        
+        .error-toast { background: #dc2626; }
+        .success-toast { background: #10b981; }
+        .info-toast { background: #3b82f6; }
+        
+        .error-toast.show, .success-toast.show, .info-toast.show {
+            transform: translateX(0);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 2px dashed rgba(160, 123, 204, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state:hover {
+            border-color: #a07bcc;
+            background: rgba(160, 123, 204, 0.1);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Dashboard Improvements Testing</h1>
+    
+    <div class="test-section">
+        <h2>1. Loading Spinner Test</h2>
+        <div class="stat-value" id="testStat">
+            <i class="fas fa-spinner fa-spin" style="color: #a07bcc;"></i>
+        </div>
+        <button onclick="loadTestData()">Simulate Data Load</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Toast Notifications Test</h2>
+        <button onclick="showToast('This is an error message!', 'error')">Show Error Toast</button>
+        <button onclick="showToast('Success! Operation completed.', 'success')">Show Success Toast</button>
+        <button onclick="showToast('This is informational.', 'info')">Show Info Toast</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Empty State Test</h2>
+        <div id="emptyContainer"></div>
+        <button onclick="showEmptyState()">Show Empty State</button>
+        <button onclick="hideEmptyState()">Hide Empty State</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Accessibility Test</h2>
+        <p>Try pressing Tab to navigate, then Enter/Space to activate:</p>
+        <button role="button" tabindex="0" aria-label="Test button 1" onclick="alert('Button 1 clicked!')">Test Button 1</button>
+        <button role="button" tabindex="0" aria-label="Test button 2" onclick="alert('Button 2 clicked!')">Test Button 2</button>
+    </div>
+
+    <script>
+        // Toast Notification System
+        function showToast(message, type = 'error', duration = 5000) {
+            const toast = document.createElement('div');
+            toast.className = \`\${type}-toast error-toast\`;
+            
+            const icon = type === 'error' ? 'exclamation-circle' : 
+                        type === 'success' ? 'check-circle' : 'info-circle';
+            
+            toast.innerHTML = \`
+                <i class="fas fa-\${icon}"></i>
+                <span style="flex: 1;">\${message}</span>
+                <button onclick="this.parentElement.remove()" aria-label="Close notification" style="background: transparent; padding: 0.25rem; font-size: 1.5rem;">×</button>
+            \`;
+            
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+        
+        // Empty State Renderer
+        function renderEmptyState(containerId, config) {
+            const container = typeof containerId === 'string' ? 
+                document.getElementById(containerId) : containerId;
+            
+            if (!container) return;
+            
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.setAttribute('role', 'status');
+            emptyState.setAttribute('aria-live', 'polite');
+            
+            emptyState.innerHTML = \`
+                <i class="fas fa-\${config.icon || 'inbox'}" aria-hidden="true"></i>
+                <h3>\${config.title || 'Nothing Here Yet'}</h3>
+                <p>\${config.message || 'Get started by adding something new'}</p>
+                \${config.buttonText ? 
+                    \`<button onclick="\${config.onClick}" aria-label="\${config.buttonText}">\${config.buttonText}</button>\` : ''}
+            \`;
+            
+            container.innerHTML = '';
+            container.appendChild(emptyState);
+        }
+        
+        // Update stat value with animation
+        function updateStatValue(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            element.classList.add('loaded');
+            element.textContent = value;
+        }
+        
+        // Test functions
+        function loadTestData() {
+            setTimeout(() => {
+                updateStatValue('testStat', '42');
+                showToast('Data loaded successfully!', 'success');
+            }, 1000);
+        }
+        
+        function showEmptyState() {
+            renderEmptyState('emptyContainer', {
+                icon: 'inbox',
+                title: 'No Data Available',
+                message: 'This is what users see when there are no items',
+                buttonText: '+ Add Item',
+                onClick: 'alert("Add button clicked!")'
+            });
+        }
+        
+        function hideEmptyState() {
+            document.getElementById('emptyContainer').innerHTML = '';
+        }
+        
+        // Keyboard accessibility
+        document.querySelectorAll('button[role="button"]').forEach(btn => {
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    btn.click();
+                }
+            });
+        });
+        
+        console.log('✅ Dashboard improvements test page loaded!');
+        console.log('Test the following:');
+        console.log('1. Click "Simulate Data Load" to see spinner → number transition');
+        console.log('2. Click toast buttons to see notifications slide in');
+        console.log('3. Click "Show Empty State" to see the empty state component');
+        console.log('4. Use Tab + Enter to test keyboard navigation');
+    </script>
+</body>
+</html>
