@@ -94,21 +94,34 @@ class AIEngine {
     /**
      * Analyze essay with AI
      */
-    async analyzeEssay(essayText, essayType = 'personal') {
+    async analyzeEssay(essayText, options = {}) {
         try {
-            const response = await fetch(`${this.API_ENDPOINT}/essay-analyze.js`, {
+            const { colleges = [], prompt = '', userProfile = null } = options;
+            
+            const response = await fetch(`${this.API_ENDPOINT}/essay-analyze`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     essay: essayText,
-                    type: essayType,
+                    colleges: colleges,
+                    prompt: prompt,
                     userId: this.userId,
-                    userProfile: this.userProfile,
+                    userProfile: userProfile || this.userProfile,
                     learningData: this.learningData
                 })
             });
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to analyze essay');
+            }
+
             const analysis = await response.json();
+            
+            // Validate response structure
+            if (!analysis || typeof analysis !== 'object') {
+                throw new Error('Invalid response from analysis service');
+            }
             
             // Update learning data
             await this.updateEssayLearning(essayText, analysis);

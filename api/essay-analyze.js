@@ -43,6 +43,8 @@ module.exports = {
     // Build personalized system prompt
     let systemPrompt = `You are an expert college admissions essay coach. Your job is to analyze the provided essay and provide detailed feedback.
 
+CRITICAL: You MUST respond with ONLY a valid JSON object. Do not include any text before or after the JSON. Do not wrap it in markdown code blocks.
+
 ANALYSIS REQUIREMENTS:
 1. Identify specific sections that need improvement (red - bad/cliche/harmful)
 2. Identify sections that are okay but could be better (yellow - needs improvement)
@@ -50,24 +52,30 @@ ANALYSIS REQUIREMENTS:
 4. Provide specific feedback for each highlighted section
 5. Give overall essay advice tailored to the target colleges
 
-HIGHLIGHTING FORMAT:
-Return a JSON object with this structure:
+REQUIRED JSON FORMAT (respond with ONLY this, nothing else):
 {
   "highlights": [
     {
-      "text": "exact text to highlight",
-      "type": "red|yellow|green",
+      "text": "exact text to highlight from the essay",
+      "type": "red",
       "feedback": "specific feedback for this section",
-      "startIndex": number,
-      "endIndex": number
+      "startIndex": 0,
+      "endIndex": 10
     }
   ],
-  "overallFeedback": "general essay advice",
+  "overallFeedback": "comprehensive general essay advice",
   "collegeSpecificAdvice": "advice tailored to target colleges",
-  "strengthsToLeanInto": ["strength 1", "strength 2"],
-  "areasToImprove": ["area 1", "area 2"],
-  "nextSteps": ["step 1", "step 2"]
+  "strengthsToLeanInto": ["strength 1", "strength 2", "strength 3"],
+  "areasToImprove": ["area 1", "area 2", "area 3"],
+  "nextSteps": ["actionable step 1", "actionable step 2", "actionable step 3"]
 }
+
+IMPORTANT RULES:
+- For highlights: find exact text in the essay, calculate accurate startIndex and endIndex
+- Use type: "red" for weak/cliche content, "yellow" for okay content, "green" for excellent content
+- All arrays must have at least 1 item
+- All strings must be non-empty
+- Return ONLY the JSON object, no explanatory text
 
 STUDENT CONTEXT:`;
 
@@ -124,12 +132,13 @@ Remember: Never write the essay for them - guide them to improve their own work.
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
+        response_format: { type: "json_object" },
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Please analyze this essay:\n\n${sanitizedEssay}` }
+          { role: 'user', content: `Please analyze this essay and respond with ONLY a valid JSON object:\n\n${sanitizedEssay}` }
         ],
-        max_tokens: 2000,
+        max_tokens: 2500,
         temperature: 0.3
       })
     });
@@ -153,18 +162,62 @@ Remember: Never write the essay for them - guide them to improve their own work.
 
     try {
       // Try to parse the JSON response
-      const analysisResult = JSON.parse(data.choices[0].message.content);
+      let responseContent = data.choices[0].message.content.trim();
+      
+      // Extract JSON if it's wrapped in markdown code blocks
+      const jsonMatch = responseContent.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonMatch) {
+        responseContent = jsonMatch[1].trim();
+      } else {
+        // Try to extract JSON object from text
+        const objectMatch = responseContent.match(/\{[\s\S]*\}/);
+        if (objectMatch) {
+          responseContent = objectMatch[0];
+        }
+      }
+      
+      const analysisResult = JSON.parse(responseContent);
+      
+      // Validate the structure
+      if (!analysisResult.highlights || !Array.isArray(analysisResult.highlights)) {
+        analysisResult.highlights = [];
+      }
+      if (!analysisResult.overallFeedback) {
+        analysisResult.overallFeedback = "Analysis complete. See detailed feedback below.";
+      }
+      if (!analysisResult.collegeSpecificAdvice) {
+        analysisResult.collegeSpecificAdvice = colleges && colleges.length > 0 
+          ? `Consider how your essay aligns with the values of ${colleges.join(', ')}.`
+          : "Add target colleges for specific advice.";
+      }
+      if (!analysisResult.strengthsToLeanInto || !Array.isArray(analysisResult.strengthsToLeanInto)) {
+        analysisResult.strengthsToLeanInto = [];
+      }
+      if (!analysisResult.areasToImprove || !Array.isArray(analysisResult.areasToImprove)) {
+        analysisResult.areasToImprove = [];
+      }
+      if (!analysisResult.nextSteps || !Array.isArray(analysisResult.nextSteps)) {
+        analysisResult.nextSteps = ["Review the feedback", "Revise your essay", "Re-analyze for improvements"];
+      }
+      
       res.status(200).json(analysisResult);
     } catch (parseError) {
-      // If JSON parsing fails, return the raw response
+      // If JSON parsing fails, return the raw response in a structured format
       console.error('Failed to parse AI response as JSON:', parseError);
+      console.error('Raw response:', data.choices[0].message.content);
+      
+      // Try to extract useful information from the raw text
+      const rawContent = data.choices[0].message.content;
+      
       res.status(200).json({
         highlights: [],
-        overallFeedback: data.choices[0].message.content,
-        collegeSpecificAdvice: "Please try analyzing your essay again for detailed highlighting.",
-        strengthsToLeanInto: [],
-        areasToImprove: [],
-        nextSteps: ["Revise based on the feedback above", "Re-analyze for detailed highlighting"]
+        overallFeedback: rawContent,
+        collegeSpecificAdvice: colleges && colleges.length > 0
+          ? `This analysis is for ${colleges.join(', ')}. Please re-analyze for detailed highlighting.`
+          : "Add target colleges for specific advice.",
+        strengthsToLeanInto: ["Review the feedback above for your essay's strengths"],
+        areasToImprove: ["Review the feedback above for areas to improve"],
+        nextSteps: ["Review the feedback carefully", "Make revisions based on suggestions", "Re-analyze for detailed highlighting"]
       });
     }
 

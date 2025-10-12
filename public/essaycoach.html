@@ -1419,6 +1419,21 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     result = await response.json();
                 }
                 
+                // Validate result structure
+                if (!result || typeof result !== 'object') {
+                    throw new Error('Invalid response from analysis service');
+                }
+                
+                // Ensure all required fields exist with defaults
+                result = {
+                    highlights: Array.isArray(result.highlights) ? result.highlights : [],
+                    overallFeedback: result.overallFeedback || 'Analysis complete. See feedback below.',
+                    collegeSpecificAdvice: result.collegeSpecificAdvice || 'Add target colleges for specific advice.',
+                    strengthsToLeanInto: Array.isArray(result.strengthsToLeanInto) ? result.strengthsToLeanInto : [],
+                    areasToImprove: Array.isArray(result.areasToImprove) ? result.areasToImprove : [],
+                    nextSteps: Array.isArray(result.nextSteps) ? result.nextSteps : ['Review feedback', 'Revise essay']
+                };
+                
                 // Save essay to Firebase with analysis
                 if (currentUser) {
                     const essayRef = await addDoc(collection(db, 'essays'), {
