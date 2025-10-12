@@ -46,6 +46,25 @@ service cloud.firestore {
       }
     }
 
+    // Essays collection (top-level)
+    match /essays/{essayId} {
+      // Users can read their own essays
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+
+      // Users can create essays for themselves
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+
+      // Users can update their own essays
+      allow update: if isAuthenticated()
+                    && resource.data.userId == request.auth.uid;
+
+      // Users can delete their own essays
+      allow delete: if isAuthenticated()
+                    && resource.data.userId == request.auth.uid;
+    }
+
     // Applications collection
     match /applications/{applicationId} {
       // Users can read their own applications
@@ -97,6 +116,90 @@ service cloud.firestore {
     match /tasks/{taskId} {
       allow read, write: if isAuthenticated()
                          && resource.data.userId == request.auth.uid;
+    }
+
+    // Test Prep data collection (case-insensitive support)
+    match /testPrep/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    match /testprep/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Timeline tasks collection
+    match /timelineTasks/{taskId} {
+      allow read, update, delete: if isAuthenticated()
+                                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Timeline preferences collection
+    match /timelinePreferences/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Documents collection (for document management page)
+    match /documents/{documentId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
+    }
+
+    // Scholarship Applications collection
+    match /scholarshipApplications/{applicationId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
+    }
+
+    // Chat History collection (for AI chat logs)
+    match /chatHistory/{chatId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
+    }
+
+    // Essay Drafts collection (for essay coach backup)
+    match /essay_drafts/{draftId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
+    }
+
+    // Essay Analyses collection (for essay coach backup)
+    match /essay_analyses/{analysisId} {
+      allow read: if isAuthenticated()
+                  && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated()
+                            && resource.data.userId == request.auth.uid;
     }
 
     // Scholarships collection (read-only for all authenticated users)
