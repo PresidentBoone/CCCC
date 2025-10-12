@@ -3,7 +3,7 @@
 
 echo "🔧 Adding Error Boundary and Error Handler to all HTML files..."
 
-# List of HTML files to update
+# List of HTML files to update (excluding backup and corrupted files)
 HTML_FILES=(
   "public/index.html"
   "public/about.html"
@@ -23,6 +23,7 @@ HTML_FILES=(
 )
 
 SUCCESS_COUNT=0
+FAIL_COUNT=0
 
 for file in "${HTML_FILES[@]}"; do
   if [ -f "$file" ]; then
@@ -32,16 +33,29 @@ for file in "${HTML_FILES[@]}"; do
       continue
     fi
     
-    # Add error handlers before </head> tag
+    # Check if file has a </head> tag
     if grep -q "</head>" "$file"; then
-      perl -i -pe 's|</head>|    <!-- Error Handling System -->\n    <script src="/js/error-boundary.js"></script>\n    <script src="/js/error-handler.js"></script>\n</head>|' "$file"
+      # Add error boundary and error handler scripts before </head>
+      sed -i '' '/<\/head>/i\
+\    <!-- Error Handling System -->\
+\    <script src="/js/error-boundary.js"></script>\
+\    <script src="/js/error-handler.js"></script>
+' "$file"
+      
       echo "✅ Added error handlers to $file"
       SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+      echo "❌ Could not find </head> tag in $file"
+      FAIL_COUNT=$((FAIL_COUNT + 1))
     fi
+  else
+    echo "⚠️  File not found: $file"
+    FAIL_COUNT=$((FAIL_COUNT + 1))
   fi
 done
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ Successfully updated: $SUCCESS_COUNT files"
+echo "❌ Failed: $FAIL_COUNT files"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

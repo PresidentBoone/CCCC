@@ -61,6 +61,171 @@
         /* ============================================
            NAVIGATION BAR STYLES
            ============================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--primary-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        .brand-text h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .brand-text h2 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        .theme-toggle {
+            background: var(--accent-bg);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--primary-bg);
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .dropdown-content a:hover {
+            background: var(--secondary-bg);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.5rem;
+        }
+
+        /* ============================================
+           FOOTER STYLES
+           ============================================ */
+        .footer {
+            background: var(--accent-bg);
+            color: #fff;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        .footer-text {
+            text-align: center;
+            opacity: 0.9;
+        }
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .footer-socials a {
+            display: block;
+            width: 24px;
+            height: 24px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .footer-socials a:hover {
+            opacity: 1;
+        }
+        .footer-socials img {
+            width: 100%;
+            height: 100%;
+            filter: invert(1);
+        }
+
+        /* ============================================
+           ANIMATION STYLES
+           ============================================ */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* --- HERO --- */
         .about-hero {
@@ -659,7 +824,6 @@
     <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-    <script src="/js/firebase-config.js"></script>
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
     const firebaseConfig = {
