@@ -2143,6 +2143,9 @@
             }
         };
 
+        // Initialize navbar immediately
+        initNavbar();
+
         // ============================================
         // DASHBOARD FUNCTIONALITY
         // ============================================
@@ -2389,6 +2392,47 @@
             }
             
             console.log('📝 Created default applications for target schools');
+        }
+
+        // Load test prep data
+        async function loadTestPrepData() {
+            try {
+                const userId = window.currentUser?.uid;
+                if (!userId) {
+                    console.log('⚠️ No user ID for test prep data');
+                    window.testPrepData = null;
+                    return;
+                }
+                
+                // Load test prep progress from Firestore
+                const testPrepDoc = await getDoc(doc(db, 'testPrep', userId));
+                
+                if (testPrepDoc.exists()) {
+                    window.testPrepData = testPrepDoc.data();
+                    console.log('📚 Test prep data loaded:', window.testPrepData);
+                } else {
+                    // Initialize with default data from questionnaire
+                    const questionnaire = window.userData?.questionnaire;
+                    window.testPrepData = {
+                        satScore: extractSATScore(questionnaire?.testScores),
+                        actScore: extractACTScore(questionnaire?.testScores),
+                        testType: questionnaire?.testScores?.includes('SAT') ? 'SAT' : 
+                                 questionnaire?.testScores?.includes('ACT') ? 'ACT' : null,
+                        lastPracticeTest: null,
+                        questionsCompleted: 0,
+                        averageAccuracy: 0,
+                        studyStreak: 0,
+                        targetScore: null
+                    };
+                    
+                    // Save initialized data
+                    await setDoc(doc(db, 'testPrep', userId), window.testPrepData);
+                    console.log('📚 Test prep data initialized');
+                }
+            } catch (error) {
+                console.error('❌ Error loading test prep data:', error);
+                window.testPrepData = null;
+            }
         }
 
         // Calculate real statistics from user data
