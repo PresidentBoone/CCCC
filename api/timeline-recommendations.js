@@ -1,4 +1,6 @@
 // Mock AI responses for timeline recommendations
+const { applyRateLimit } = require('./rate-limiter');
+
 const mockRecommendations = {
   urgentTasks: [
     {
@@ -46,6 +48,10 @@ const mockRecommendations = {
 };
 
 async function handler(req, res) {
+  // Apply rate limiting for AI endpoints
+  const canProceed = await applyRateLimit(req, res, 'ai');
+  if (!canProceed) return;
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

@@ -932,6 +932,9 @@
             color: var(--danger-color);
         }
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body>
     <!-- ============================================
@@ -1223,6 +1226,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Initialize Firebase

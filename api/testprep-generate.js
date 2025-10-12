@@ -1,5 +1,6 @@
 // Enhanced Test Prep Question Generation API
 // Note: This is a mock implementation that works without OpenAI for testing
+const { applyRateLimit } = require('./rate-limiter');
 
 // Real SAT/ACT question databases and templates
 const REAL_QUESTION_TEMPLATES = {
@@ -123,6 +124,10 @@ const DIAGNOSTIC_QUESTIONS = {
 };
 
 async function handler(req, res) {
+  // Apply rate limiting for AI endpoints
+  const canProceed = await applyRateLimit(req, res, 'ai');
+  if (!canProceed) return;
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

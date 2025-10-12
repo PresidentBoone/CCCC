@@ -1404,7 +1404,61 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #8b5fbf;
         }
+
+        /* Button Styles */
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(160, 123, 204, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(160, 123, 204, 0.1);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
@@ -1503,17 +1557,6 @@
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">
-        <!-- Alert Banner -->
-        <div class="alert-banner" id="alertBanner">
-            <div>
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="alertText">Important deadline approaching!</span>
-            </div>
-            <button onclick="dismissAlert()" style="background: none; border: none; color: white; cursor: pointer;">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
         <!-- Welcome Section -->
         <div class="welcome-section">
             <h1 id="welcomeTitle">Welcome to Your Success Hub</h1>
@@ -1810,53 +1853,6 @@
         </div>
     </div>
 
-    <!-- Enhanced AI Chat Widget -->
-    <div class="chat-widget" id="chatWidget">
-        <div class="chat-header">
-            <div class="chat-title">
-                <i class="fas fa-robot"></i>
-                AI College Counselor
-                <div class="online-indicator"></div>
-            </div>
-            <button class="chat-close" onclick="toggleChat()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="chat-message ai">
-                <strong>AI Counselor:</strong> Hello! I'm your personal AI college counselor with access to your profile, target schools, and application progress. How can I help you today?
-            </div>
-        </div>
-
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput" 
-                   placeholder="Ask about deadlines, essays, scholarships..." 
-                   onkeypress="handleChatKeyPress(event)">
-            <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Chat Toggle Button -->
-    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
-        <i class="fas fa-comments"></i>
-    </button>
-
-    <!-- Notification Template -->
-    <div class="notification" id="notification">
-        <div class="notification-content">
-            <div class="notification-icon">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="notification-text">
-                <h4 id="notificationTitle">Notification</h4>
-                <p id="notificationMessage">This is a notification message</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
@@ -1897,6 +1893,7 @@
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
         import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
         // Firebase configuration
@@ -2262,7 +2259,7 @@
                 }
             } catch (error) {
                 console.error('❌ Error loading user data:', error);
-                showNotification('Error', 'Failed to load user data. Please refresh the page.', 'error');
+                alert('Failed to load user data. Please refresh the page.');
             }
         }
 
@@ -2299,7 +2296,7 @@
                 
             } catch (error) {
                 console.error('❌ Error initializing dashboard:', error);
-                showNotification('Error', 'Failed to load dashboard data. Please refresh the page.', 'error');
+                alert('Failed to load dashboard data. Please refresh the page.');
             }
         }
 
@@ -2823,102 +2820,6 @@
             return match ? parseInt(match[1]) : null;
         }
 
-        // Enhanced chat functionality with context
-        window.sendChatMessage = async function() {
-            const input = document.getElementById('chatInput');
-            const sendButton = document.getElementById('chatSend');
-            const message = input.value.trim();
-
-            if (!message) return;
-
-            // Rate limiting
-            const now = Date.now();
-            const lastMessageTime = sessionStorage.getItem('lastChatTime');
-            if (lastMessageTime && (now - parseInt(lastMessageTime)) < 2000) {
-                showNotification('Rate Limit', 'Please wait a moment before sending another message.', 'warning');
-                return;
-            }
-            sessionStorage.setItem('lastChatTime', now.toString());
-
-            // Disable input
-            input.disabled = true;
-            sendButton.disabled = true;
-            sendButton.innerHTML = '<div class="loading"></div>';
-
-            try {
-                addChatMessage(message, 'user');
-                input.value = '';
-                addTypingIndicator();
-
-                // Enhanced context for AI
-                const contextData = {
-                    userProfile: {
-                        name: window.userData?.name,
-                        email: window.currentUser?.email,
-                        gpa: window.userData?.questionnaire?.unweightedGPA || window.userData?.gpa,
-                        testScores: window.userData?.questionnaire?.testScores,
-                        intendedMajor: window.userData?.questionnaire?.intendedMajor,
-                        targetSchools: window.userData?.questionnaire?.targetSchools,
-                        graduationYear: window.userData?.questionnaire?.graduationYear
-                    },
-                    questionnaireData: window.userData?.questionnaire,
-                    applicationData: window.applicationData?.map(app => ({
-                        school: app.schoolName,
-                        status: app.status,
-                        deadline: app.deadline
-                    })) || [],
-                    currentProgress: calculateOverallProgress(),
-                    upcomingDeadlines: getUpcomingDeadlines()
-                };
-
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        userProfile: contextData.userProfile,
-                        questionnaireData: contextData.questionnaireData
-                    })
-                });
-
-                removeTypingIndicator();
-
-                let aiResponse;
-                if (response.ok) {
-                    const data = await response.json();
-                    aiResponse = data.response || 'I apologize, but I received an empty response. Please try asking your question again.';
-                } else {
-                    aiResponse = getErrorMessage(response.status);
-                }
-
-                addChatMessage(aiResponse, 'ai');
-
-                // Save enhanced chat to Firebase
-                if (window.currentUser) {
-                    await saveChatToFirebase(message, aiResponse, contextData);
-                }
-
-            } catch (error) {
-                console.error('❌ Error in chat:', error);
-                removeTypingIndicator();
-                
-                const errorMessage = error.name === 'TypeError' && error.message.includes('fetch') 
-                    ? 'Please check your internet connection and try again.'
-                    : 'I\'m having trouble connecting right now. Please try again in a moment.';
-                
-                addChatMessage(errorMessage, 'ai');
-                showNotification('Connection Error', 'Unable to send message. Please try again.', 'error');
-                
-            } finally {
-                input.disabled = false;
-                sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
-            }
-        };
-
         // Get upcoming deadlines
         function getUpcomingDeadlines() {
             if (!window.applicationData) return [];
@@ -2935,41 +2836,7 @@
                 }));
         }
 
-        // Enhanced notification system
-        function showNotification(title, message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const titleEl = document.getElementById('notificationTitle');
-            const messageEl = document.getElementById('notificationMessage');
-            const iconEl = notification.querySelector('.notification-icon i');
-            
-            titleEl.textContent = title;
-            messageEl.textContent = message;
-            
-            // Update icon based on type
-            const icons = {
-                success: 'fas fa-check-circle',
-                error: 'fas fa-exclamation-circle',
-                warning: 'fas fa-exclamation-triangle',
-                info: 'fas fa-info-circle'
-            };
-            
-            iconEl.className = icons[type] || icons.info;
-            
-            // Update border color
-            const colors = {
-                success: 'var(--success-color)',
-                error: 'var(--danger-color)',
-                warning: 'var(--warning-color)',
-                info: 'var(--info-color)'
-            };
-            
-            notification.style.borderLeftColor = colors[type] || colors.info;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
+
 
         // Global functions
         window.toggleTask = function(checkbox) {
@@ -2980,7 +2847,6 @@
                 taskItem.classList.add('completed');
                 taskTitle.style.textDecoration = 'line-through';
                 taskTitle.style.opacity = '0.6';
-                showNotification('Task Completed!', 'Great progress on your college journey!', 'success');
             } else {
                 taskItem.classList.remove('completed');
                 taskTitle.style.textDecoration = 'none';
@@ -2989,135 +2855,27 @@
         };
 
         window.dismissAlert = function() {
-            document.getElementById('alertBanner').classList.remove('show');
-        };
-
-        window.showSchoolDetails = function(schoolName, school) {
-            const details = `
-                School: ${schoolName}
-                Location: ${school.location}
-                Acceptance Rate: ${school.acceptance_rate}%
-                Average GPA: ${school.avg_gpa}
-                Average SAT: ${school.avg_sat}
-                Tuition: ${school.tuition.toLocaleString()}
-                Ranking: #${school.ranking}
-                Deadline: ${new Date(school.deadline).toLocaleDateString()}
-            `;
-            showNotification(schoolName, details, 'info');
+            const alertBanner = document.getElementById('alertBanner');
+            if (alertBanner) {
+                alertBanner.classList.remove('show');
+            }
         };
 
         // Navigation functions
         window.showApplicationTracker = function() {
-            showNotification('Application Tracker', `You have ${window.applicationData?.length || 0} applications in progress`, 'info');
+            window.location.href = 'myapp.html';
         };
 
         window.showEssayTracker = function() {
-            const essayCount = document.getElementById('essaysCount').textContent;
-            showNotification('Essay Tracker', `You have completed ${essayCount} essays and supplements`, 'info');
+            window.location.href = 'essaycoach.html';
         };
 
         window.showScholarshipTracker = function() {
-            const scholarshipAmount = document.getElementById('scholarshipAmount').textContent;
-            showNotification('Scholarship Tracker', `You're eligible for ${scholarshipAmount} in scholarship opportunities`, 'info');
+            window.location.href = 'scholarship.html';
         };
 
         window.showProgressAnalytics = function() {
-            const progress = document.getElementById('overallProgress').textContent;
-            showNotification('Progress Analytics', `You're ${progress} complete with your college applications`, 'info');
-        };
-
-        // Chat utility functions
-        function addChatMessage(message, sender) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${sender}`;
-            
-            const prefix = sender === 'user' ? 'You:' : 'AI Counselor:';
-            messageDiv.innerHTML = `<strong>${prefix}</strong> ${escapeHtml(message)}`;
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function addTypingIndicator() {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'chat-message ai typing-indicator';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <strong>AI Counselor:</strong> 
-                <div class="loading"></div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        async function saveChatToFirebase(userMessage, aiResponse, contextData) {
-            try {
-                const userId = window.currentUser.uid;
-                const chatData = {
-                    userId: userId,
-                    userMessage: userMessage,
-                    aiResponse: aiResponse,
-                    timestamp: serverTimestamp(),
-                    context: contextData,
-                    sessionId: getSessionId()
-                };
-
-                await addDoc(collection(db, 'chatHistory'), chatData);
-                console.log('💾 Enhanced chat data saved');
-                
-            } catch (error) {
-                console.error('❌ Error saving chat:', error);
-            }
-        }
-
-        function getSessionId() {
-            let sessionId = sessionStorage.getItem('chatSessionId');
-            if (!sessionId) {
-                sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                sessionStorage.setItem('chatSessionId', sessionId);
-            }
-            return sessionId;
-        }
-
-        function getErrorMessage(statusCode) {
-            const messages = {
-                400: 'I had trouble understanding your message. Could you please rephrase it?',
-                401: 'There seems to be an authentication issue. Please try refreshing the page.',
-                429: 'I\'m experiencing high demand. Please wait a moment before trying again.',
-                500: 'I\'m temporarily having technical difficulties. Please try again in a few minutes.'
-            };
-            return messages[statusCode] || 'I\'m having trouble connecting right now. Please try again.';
-        }
-
-        window.handleChatKeyPress = function(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                window.sendChatMessage();
-            }
-        };
-
-        // Chat toggle
-        window.toggleChat = function() {
-            const chatWidget = document.getElementById('chatWidget');
-            const chatToggle = document.getElementById('chatToggle');
-
-            if (chatWidget.classList.contains('open')) {
-                chatWidget.classList.remove('open');
-                chatToggle.classList.remove('hidden');
-            } else {
-                chatWidget.classList.add('open');
-                chatToggle.classList.add('hidden');
-                document.getElementById('chatInput').focus();
-            }
+            console.log('Progress analytics clicked');
         };
 
         // Utility function
@@ -3316,21 +3074,24 @@
         // ============================================
 
         // Dashboard Timeline Functions
-        function generateDashboardTimeline() {
+        async function generateDashboardTimeline() {
             const appType = document.getElementById('dash-student-type').value;
             const gradYear = document.getElementById('dash-graduation-year').value;
             
             if (!appType || !gradYear) {
-                showNotification('Please select both application type and graduation year', 'warning');
+                alert('Please select both application type and graduation year');
                 return;
             }
 
             showTimelineLoading();
             
-            // Simulate API call delay
-            setTimeout(() => {
-                renderDashboardTimeline(appType, gradYear);
-            }, 1000);
+            try {
+                // Generate timeline based on real Firebase data
+                await renderPersonalizedTimeline(appType, gradYear);
+            } catch (error) {
+                console.error('Error generating timeline:', error);
+                showTimelineError();
+            }
         }
 
         function showTimelineLoading() {
@@ -3338,204 +3099,432 @@
             content.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px;">
                     <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--accent-color);"></i>
-                    <h3>Generating Your Timeline...</h3>
-                    <p style="color: var(--text-secondary);">Creating your personalized application roadmap</p>
+                    <h3>Generating Your Personalized Timeline...</h3>
+                    <p style="color: var(--text-secondary);">Analyzing your applications and creating a tailored roadmap</p>
                 </div>
             `;
         }
 
-        function renderDashboardTimeline(appType, gradYear) {
+        function showTimelineError() {
             const content = document.getElementById('dashboardTimelineContent');
-            const currentDate = new Date();
-            const year = parseInt(gradYear) - 1; // Application year
+            content.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--danger-color);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                    <h3>Error Loading Timeline</h3>
+                    <p style="color: var(--text-secondary);">Please try again or contact support if the problem persists.</p>
+                </div>
+            `;
+        }
 
-            // Sample timeline data based on application type
-            const timeline = generateSampleTimeline(appType, year);
+        // Generate personalized timeline based on real user data
+        async function renderPersonalizedTimeline(appType, gradYear) {
+            const content = document.getElementById('dashboardTimelineContent');
+            
+            // Get user's real applications from Firebase
+            const userApplications = window.applicationData || [];
+            
+            // Generate timeline tasks based on real data
+            const timelineTasks = await generatePersonalizedTimelineTasks(appType, gradYear, userApplications);
+            
+            // Calculate urgency statistics
+            const urgentTasks = timelineTasks.filter(t => t.urgency === 'urgent' || t.urgency === 'overdue').length;
+            const completedTasks = timelineTasks.filter(t => t.completed).length;
+            const totalTasks = timelineTasks.length;
+            const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
             
             content.innerHTML = `
                 <div class="timeline-summary" style="margin-bottom: 20px; padding: 15px; background: var(--secondary-bg); border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <div>
-                            <h4 style="margin-bottom: 5px;">${appType === 'ED' ? 'Early Decision' : appType === 'EA' ? 'Early Action' : 'Regular Decision'} Timeline</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Class of ${gradYear}</p>
+                            <h4 style="margin-bottom: 5px;">${getApplicationTypeName(appType)} Timeline</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Class of ${gradYear} • ${userApplications.length} Applications</p>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--accent-color);">${timeline.urgentTasks}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Urgent Tasks</div>
+                        <div style="display: flex; gap: 20px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--danger-color);">${urgentTasks}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Urgent</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--success-color);">${completionRate}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Complete</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div style="margin-top: 12px;">
+                        <div style="width: 100%; height: 8px; background: rgba(160, 123, 204, 0.2); border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--accent-color); width: ${completionRate}%; transition: width 0.5s ease;"></div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="timeline-items" style="max-height: 400px; overflow-y: auto;">
-                    ${timeline.items.map(item => `
-                        <div class="timeline-item-dashboard" style="
-                            display: flex; 
-                            align-items: center; 
-                            padding: 12px; 
-                            margin-bottom: 10px; 
-                            background: var(--primary-bg); 
-                            border-radius: 8px; 
-                            border-left: 4px solid ${getUrgencyColor(item.urgency)};
-                            transition: all 0.3s ease;
-                        " onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
-                            <div style="
-                                width: 40px; 
-                                height: 40px; 
-                                border-radius: 50%; 
-                                background: ${getUrgencyColor(item.urgency)}20; 
-                                display: flex; 
-                                align-items: center; 
-                                justify-content: center; 
-                                margin-right: 15px;
-                            ">
-                                <i class="fas fa-${item.icon}" style="color: ${getUrgencyColor(item.urgency)};"></i>
-                            </div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 4px;">${item.title}</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">${item.description}</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 0.8rem; color: ${getUrgencyColor(item.urgency)}; font-weight: 600;">
-                                    ${item.deadline}
-                                </div>
-                                <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px;">
-                                    ${item.urgency.toUpperCase()}
-                                </div>
-                            </div>
+                <div class="timeline-items" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                    ${timelineTasks.length > 0 ? timelineTasks.map((task, index) => createTimelineTaskHTML(task, index)).join('') : `
+                        <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                            <h3>No Tasks Yet!</h3>
+                            <p>Add applications in the My Applications page to see your personalized timeline.</p>
                         </div>
-                    `).join('')}
+                    `}
                 </div>
                 
-                <div style="margin-top: 20px; text-align: center;">
-                    <button class="btn-primary" onclick="openFullTimeline()" style="width: 100%;">
-                        <i class="fas fa-external-link-alt"></i> Open Full Timeline Manager
+                <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-secondary" onclick="autoPopulateTimeline('${appType}', '${gradYear}')" style="width: 100%;">
+                        <i class="fas fa-magic"></i> Auto-Generate Tasks
+                    </button>
+                    <button class="btn-primary" onclick="window.location.href='adaptive-timeline.html'" style="width: 100%;">
+                        <i class="fas fa-external-link-alt"></i> Full Timeline
                     </button>
                 </div>
             `;
         }
 
-        function generateSampleTimeline(appType, year) {
-            const items = [];
-            let urgentTasks = 0;
-
-            // Generate different timelines based on application type
-            if (appType === 'ED') {
-                items.push(
-                    { 
-                        title: 'Early Decision Application Due', 
-                        description: 'Submit your binding early decision application',
-                        deadline: 'Nov 1', 
-                        urgency: 'urgent', 
-                        icon: 'file-alt' 
-                    },
-                    { 
-                        title: 'Complete Common Application', 
-                        description: 'Finish personal statement and activity list',
-                        deadline: 'Oct 25', 
-                        urgency: 'urgent', 
-                        icon: 'edit' 
-                    },
-                    { 
-                        title: 'Request Recommendation Letters', 
-                        description: 'Ask teachers and counselors for recommendations',
-                        deadline: 'Oct 15', 
-                        urgency: 'overdue', 
-                        icon: 'user-friends' 
-                    }
-                );
-                urgentTasks = 3;
-            } else if (appType === 'EA') {
-                items.push(
-                    { 
-                        title: 'Early Action Applications Due', 
-                        description: 'Submit your non-binding early applications',
-                        deadline: 'Nov 15', 
-                        urgency: 'warning', 
-                        icon: 'file-alt' 
-                    },
-                    { 
-                        title: 'Finalize Essay Drafts', 
-                        description: 'Complete supplemental essays for EA schools',
-                        deadline: 'Nov 1', 
-                        urgency: 'urgent', 
-                        icon: 'pen' 
-                    },
-                    { 
-                        title: 'Send Test Scores', 
-                        description: 'Ensure SAT/ACT scores are sent to all schools',
-                        deadline: 'Oct 30', 
-                        urgency: 'urgent', 
-                        icon: 'graduation-cap' 
-                    }
-                );
-                urgentTasks = 2;
-            } else {
-                items.push(
-                    { 
-                        title: 'Regular Decision Applications Due', 
-                        description: 'Submit all regular decision applications',
-                        deadline: 'Jan 1', 
-                        urgency: 'upcoming', 
-                        icon: 'file-alt' 
-                    },
-                    { 
-                        title: 'Complete FAFSA', 
-                        description: 'Submit financial aid application',
-                        deadline: 'Dec 15', 
-                        urgency: 'warning', 
-                        icon: 'dollar-sign' 
-                    },
-                    { 
-                        title: 'Scholarship Applications', 
-                        description: 'Apply for merit-based scholarships',
-                        deadline: 'Dec 1', 
-                        urgency: 'warning', 
-                        icon: 'award' 
-                    }
-                );
-                urgentTasks = 1;
-            }
-
-            return { items, urgentTasks };
-        }
-
-        function getUrgencyColor(urgency) {
-            switch(urgency) {
-                case 'overdue': return '#ef4444';
-                case 'urgent': return '#f59e0b';
-                case 'warning': return '#f59e0b';
-                case 'upcoming': return '#3b82f6';
-                case 'future': return '#10b981';
-                default: return '#6b7280';
-            }
-        }
-
-        function openFullTimeline() {
-            window.open('/timeline', '_blank');
-        }
-
-        // Initialize dashboard timeline on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-load timeline if preferences are saved
-            const savedAppType = localStorage.getItem('userAppType');
-            const savedGradYear = localStorage.getItem('userGradYear');
+        // Create HTML for individual timeline task
+        function createTimelineTaskHTML(task, index) {
+            const urgencyColor = getUrgencyColor(task.urgency);
+            const isCompleted = task.completed;
             
-            if (savedAppType && savedGradYear) {
-                document.getElementById('dash-student-type').value = savedAppType;
-                document.getElementById('dash-graduation-year').value = savedGradYear;
-                generateDashboardTimeline();
-            }
-        });
+            return `
+                <div class="timeline-item-dashboard" 
+                     style="
+                        display: flex; 
+                        align-items: center; 
+                        padding: 12px; 
+                        margin-bottom: 10px; 
+                        background: ${isCompleted ? 'var(--secondary-bg)' : 'var(--primary-bg)'}; 
+                        border-radius: 8px; 
+                        border-left: 4px solid ${urgencyColor};
+                        transition: all 0.3s ease;
+                        opacity: ${isCompleted ? '0.7' : '1'};
+                        cursor: pointer;
+                     " 
+                     onmouseover="this.style.transform='translateX(5px)'" 
+                     onmouseout="this.style.transform='translateX(0)'"
+                     onclick="toggleTimelineTask(${index}, '${task.id || ''}')">
+                    
+                    <!-- Checkbox -->
+                    <div style="margin-right: 12px;">
+                        <input type="checkbox" 
+                               ${isCompleted ? 'checked' : ''} 
+                               onclick="event.stopPropagation(); toggleTimelineTask(${index}, '${task.id || ''}')"
+                               style="width: 20px; height: 20px; cursor: pointer;">
+                    </div>
+                    
+                    <!-- Icon -->
+                    <div style="
+                        width: 40px; 
+                        height: 40px; 
+                        border-radius: 50%; 
+                        background: ${urgencyColor}20; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        margin-right: 15px;
+                    ">
+                        <i class="fas fa-${task.icon}" style="color: ${urgencyColor}; ${isCompleted ? 'opacity: 0.5;' : ''}"></i>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 4px; ${isCompleted ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">${task.description}</div>
+                        ${task.school ? `<div style="font-size: 0.85rem; color: var(--accent-color); margin-top: 4px;"><i class="fas fa-university"></i> ${task.school}</div>` : ''}
+                    </div>
+                    
+                    <!-- Deadline -->
+                    <div style="text-align: right; margin-left: 15px;">
+                        <div style="font-size: 0.85rem; color: ${urgencyColor}; font-weight: 600;">
+                            ${task.deadline}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                            ${task.daysUntil !== undefined ? `${task.daysUntil} days` : task.urgency.toUpperCase()}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-        // Save preferences when changed
-        document.addEventListener('change', function(e) {
-            if (e.target.id === 'dash-student-type') {
-                localStorage.setItem('userAppType', e.target.value);
+        // Generate personalized tasks based on Firebase data
+        async function generatePersonalizedTimelineTasks(appType, gradYear, applications) {
+            const tasks = [];
+            const currentDate = new Date();
+            const userId = window.currentUser?.uid;
+            
+            // Get deadline based on application type
+            const deadlineDate = getDeadlineForAppType(appType, gradYear);
+            
+            // Load existing timeline tasks from Firebase
+            let existingTasks = [];
+            try {
+                if (userId) {
+                    const tasksQuery = query(
+                        collection(db, 'timelineTasks'),
+                        where('userId', '==', userId),
+                        where('appType', '==', appType),
+                        where('gradYear', '==', gradYear)
+                    );
+                    const tasksSnapshot = await getDocs(tasksQuery);
+                    existingTasks = tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }
+            } catch (error) {
+                console.error('Error loading timeline tasks:', error);
             }
-            if (e.target.id === 'dash-graduation-year') {
-                localStorage.setItem('userGradYear', e.target.value);
+            
+            // Generate tasks for each application
+            for (const app of applications) {
+                const appDeadline = new Date(app.deadline);
+                const daysUntil = Math.ceil((appDeadline - currentDate) / (1000 * 60 * 60 * 24));
+                
+                // Main application task
+                const mainTask = existingTasks.find(t => t.type === 'application' && t.schoolName === app.schoolName);
+                tasks.push({
+                    id: mainTask?.id,
+                    title: `Submit Application: ${app.schoolName}`,
+                    description: 'Complete and submit your application',
+                    school: app.schoolName,
+                    deadline: formatTimelineDate(appDeadline),
+                    daysUntil: daysUntil,
+                    urgency: getTaskUrgency(daysUntil, app.status === 'submitted'),
+                    icon: 'file-alt',
+                    completed: app.status === 'submitted' || app.status === 'completed' || mainTask?.completed || false,
+                    type: 'application',
+                    schoolName: app.schoolName
+                });
+                
+                // Essay tasks
+                if (app.essayCount > 0 && app.status !== 'submitted') {
+                    const essayTask = existingTasks.find(t => t.type === 'essay' && t.schoolName === app.schoolName);
+                    tasks.push({
+                        id: essayTask?.id,
+                        title: `Complete Essays for ${app.schoolName}`,
+                        description: `${app.essayCount} essay(s) required`,
+                        school: app.schoolName,
+                        deadline: formatTimelineDate(new Date(appDeadline.getTime() - 7 * 24 * 60 * 60 * 1000)),
+                        daysUntil: daysUntil - 7,
+                        urgency: getTaskUrgency(daysUntil - 7, essayTask?.completed),
+                        icon: 'pen-fancy',
+                        completed: essayTask?.completed || false,
+                        type: 'essay',
+                        schoolName: app.schoolName
+                    });
+                }
+                
+                // Recommendation tasks
+                if (app.recommendationsCount < 2 && app.status !== 'submitted') {
+                    const recTask = existingTasks.find(t => t.type === 'recommendation' && t.schoolName === app.schoolName);
+                    tasks.push({
+                        id: recTask?.id,
+                        title: `Request Recommendations for ${app.schoolName}`,
+                        description: `${2 - (app.recommendationsCount || 0)} more recommendation(s) needed`,
+                        school: app.schoolName,
+                        deadline: formatTimelineDate(new Date(appDeadline.getTime() - 14 * 24 * 60 * 60 * 1000)),
+                        daysUntil: daysUntil - 14,
+                        urgency: getTaskUrgency(daysUntil - 14, recTask?.completed),
+                        icon: 'user-friends',
+                        completed: recTask?.completed || false,
+                        type: 'recommendation',
+                        schoolName: app.schoolName
+                    });
+                }
             }
-        });
+            
+            // Add general tasks based on questionnaire completion
+            const questionnaire = window.userData?.questionnaire;
+            
+            // Common App/Coalition App task
+            if (!questionnaire?.essayText && !questionnaire?.essayFileURL) {
+                const commonAppTask = existingTasks.find(t => t.type === 'commonapp');
+                tasks.push({
+                    id: commonAppTask?.id,
+                    title: 'Complete Personal Statement',
+                    description: 'Write your main college essay (Common App/Coalition)',
+                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 21 * 24 * 60 * 60 * 1000)),
+                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 21,
+                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 21, commonAppTask?.completed),
+                    icon: 'edit',
+                    completed: commonAppTask?.completed || false,
+                    type: 'commonapp'
+                });
+            }
+            
+            // Test scores task
+            if (!questionnaire?.testScores || questionnaire.testScores === 'Not taken yet') {
+                const testTask = existingTasks.find(t => t.type === 'testscores');
+                tasks.push({
+                    id: testTask?.id,
+                    title: 'Send Test Scores',
+                    description: 'Submit SAT/ACT scores to all schools',
+                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 10 * 24 * 60 * 60 * 1000)),
+                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 10,
+                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 10, testTask?.completed),
+                    icon: 'graduation-cap',
+                    completed: testTask?.completed || false,
+                    type: 'testscores'
+                });
+            }
+            
+            // Financial aid tasks
+            if (questionnaire?.financialAid?.includes('need-aid')) {
+                const fafsaTask = existingTasks.find(t => t.type === 'fafsa');
+                tasks.push({
+                    id: fafsaTask?.id,
+                    title: 'Complete FAFSA',
+                    description: 'Submit Free Application for Federal Student Aid',
+                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 5 * 24 * 60 * 60 * 1000)),
+                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5,
+                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5, fafsaTask?.completed),
+                    icon: 'dollar-sign',
+                    completed: fafsaTask?.completed || false,
+                    type: 'fafsa'
+                });
+                
+                const cssTask = existingTasks.find(t => t.type === 'css');
+                tasks.push({
+                    id: cssTask?.id,
+                    title: 'Complete CSS Profile',
+                    description: 'Submit CSS Profile for institutional aid',
+                    deadline: formatTimelineDate(new Date(deadlineDate.getTime() - 5 * 24 * 60 * 60 * 1000)),
+                    daysUntil: Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5,
+                    urgency: getTaskUrgency(Math.ceil((deadlineDate - currentDate) / (1000 * 60 * 60 * 24)) - 5, cssTask?.completed),
+                    icon: 'file-invoice-dollar',
+                    completed: cssTask?.completed || false,
+                    type: 'css'
+                });
+            }
+            
+            // Sort tasks by urgency and deadline
+            tasks.sort((a, b) => {
+                const urgencyOrder = { 'overdue': 0, 'urgent': 1, 'warning': 2, 'upcoming': 3, 'future': 4 };
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (urgencyOrder[a.urgency] !== urgencyOrder[b.urgency]) {
+                    return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
+                }
+                return (a.daysUntil || 999) - (b.daysUntil || 999);
+            });
+            
+            return tasks;
+        }
+
+        // Toggle task completion
+        async function toggleTimelineTask(index, taskId) {
+            try {
+                const userId = window.currentUser?.uid;
+                if (!userId) return;
+                
+                // Get current task state
+                const taskElement = document.querySelectorAll('.timeline-item-dashboard')[index];
+                const checkbox = taskElement.querySelector('input[type="checkbox"]');
+                const isCompleted = !checkbox.checked;
+                
+                // Update checkbox
+                checkbox.checked = isCompleted;
+                
+                // Update in Firebase
+                if (taskId) {
+                    await updateDoc(doc(db, 'timelineTasks', taskId), {
+                        completed: isCompleted,
+                        completedAt: isCompleted ? serverTimestamp() : null
+                    });
+                }
+                
+                // Refresh timeline
+                const appType = document.getElementById('dash-student-type').value;
+                const gradYear = document.getElementById('dash-graduation-year').value;
+                if (appType && gradYear) {
+                    await renderPersonalizedTimeline(appType, gradYear);
+                }
+                
+                console.log(`✅ Task ${isCompleted ? 'completed' : 'uncompleted'}`);
+                
+            } catch (error) {
+                console.error('Error toggling task:', error);
+            }
+        }
+
+        // Auto-populate timeline with smart defaults
+        async function autoPopulateTimeline(appType, gradYear) {
+            try {
+                const userId = window.currentUser?.uid;
+                if (!userId) return;
+                
+                showTimelineLoading();
+                
+                const applications = window.applicationData || [];
+                const tasks = await generatePersonalizedTimelineTasks(appType, gradYear, applications);
+                
+                // Save tasks to Firebase
+                for (const task of tasks) {
+                    if (!task.id) {
+                        await addDoc(collection(db, 'timelineTasks'), {
+                            userId: userId,
+                            appType: appType,
+                            gradYear: gradYear,
+                            title: task.title,
+                            description: task.description,
+                            school: task.school || null,
+                            schoolName: task.schoolName || null,
+                            deadline: task.deadline,
+                            daysUntil: task.daysUntil,
+                            urgency: task.urgency,
+                            icon: task.icon,
+                            completed: false,
+                            type: task.type,
+                            createdAt: serverTimestamp()
+                        });
+                    }
+                }
+                
+                // Refresh timeline
+                await renderPersonalizedTimeline(appType, gradYear);
+                
+                console.log('✅ Timeline auto-populated with personalized tasks');
+                
+            } catch (error) {
+                console.error('Error auto-populating timeline:', error);
+                showTimelineError();
+            }
+        }
+
+        // Helper Functions
+        function getApplicationTypeName(appType) {
+            const names = {
+                'ED': 'Early Decision',
+                'EA': 'Early Action',
+                'RD': 'Regular Decision',
+                'ED2': 'Early Decision II',
+                'REA': 'Restrictive Early Action'
+            };
+            return names[appType] || appType;
+        }
+
+        function getDeadlineForAppType(appType, gradYear) {
+            const year = parseInt(gradYear) - 1;
+            const deadlines = {
+                'ED': new Date(year, 10, 1), // Nov 1
+                'EA': new Date(year, 10, 15), // Nov 15
+                'RD': new Date(year + 1, 0, 1), // Jan 1
+                'ED2': new Date(year + 1, 0, 1), // Jan 1
+                'REA': new Date(year, 10, 1) // Nov 1
+            };
+            return deadlines[appType] || new Date(year + 1, 0, 1);
+        }
+
+        function getTaskUrgency(daysUntil, isCompleted) {
+            if (isCompleted) return 'completed';
+            if (daysUntil < 0) return 'overdue';
+            if (daysUntil <= 7) return 'urgent';
+            if (daysUntil <= 14) return 'warning';
+            if (daysUntil <= 30) return 'upcoming';
+            return 'future';
+        }
+
+        function formatTimelineDate(date) {
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // ...existing code...
     </script>
 </body>
 </html>

@@ -438,6 +438,9 @@
             }
         }
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body data-theme="dark">
     <div class="practice-container">
@@ -559,6 +562,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
         import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
         const firebaseConfig = {

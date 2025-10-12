@@ -1,6 +1,8 @@
 // Essay Chat API for College Climb
 // Handles Q&A about essays and writing advice
 
+const { applyRateLimit } = require('./rate-limiter');
+
 module.exports = {
   default: async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,13 +10,19 @@ module.exports = {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+      res.status(200).end();
+      return;
+    }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    // Apply rate limiting (AI endpoints are expensive)
+    const canProceed = await applyRateLimit(req, res, 'ai');
+    if (!canProceed) {
+      return; // Rate limit response already sent
+    }
 
   if (!process.env.OPENAI_API_KEY) {
     console.error('OPENAI_API_KEY not found');

@@ -641,6 +641,9 @@
            SIGNUP PAGE STYLES
            ============================================ */
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
@@ -818,6 +821,7 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
     import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js';
     import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
     import { getFirestore, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
     import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js';
 

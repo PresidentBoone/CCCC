@@ -1,5 +1,6 @@
 // Simple Essay Storage API for testing (uses local storage simulation)
 // In production, this would connect to a real database
+const { applyRateLimit } = require('./rate-limiter');
 
 let essayStorage = new Map(); // Temporary in-memory storage for testing
 
@@ -13,6 +14,10 @@ module.exports = {
       res.status(200).end();
       return;
     }
+
+    // Apply rate limiting for data endpoints
+    const canProceed = await applyRateLimit(req, res, 'data');
+    if (!canProceed) return;
 
     try {
       const { method } = req;

@@ -1656,6 +1656,9 @@
             background: #8b5fbf;
         }
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
@@ -2139,6 +2142,7 @@
             
             try {
                 const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js');
+    <script src="/js/firebase-config.js"></script>
                 await signOut(window.auth);
                 window.location.href = 'login.html';
             } catch (error) {
@@ -2224,6 +2228,7 @@
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
         import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js';
 

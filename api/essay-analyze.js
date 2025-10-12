@@ -1,4 +1,6 @@
 // Essay Analysis API for College Climb
+const { applyRateLimit } = require('./rate-limiter');
+
 module.exports = {
   default: async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,6 +11,10 @@ module.exports = {
     res.status(200).end();
     return;
   }
+
+  // Apply rate limiting for AI endpoints
+  const canProceed = await applyRateLimit(req, res, 'ai');
+  if (!canProceed) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

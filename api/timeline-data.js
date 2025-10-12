@@ -1,5 +1,11 @@
 // API endpoint for timeline data management
+const { applyRateLimit } = require('./rate-limiter');
+
 async function handler(req, res) {
+  // Apply rate limiting for data endpoints
+  const canProceed = await applyRateLimit(req, res, 'data');
+  if (!canProceed) return;
+
   if (req.method === 'GET') {
     return getTimelineData(req, res);
   } else if (req.method === 'POST') {

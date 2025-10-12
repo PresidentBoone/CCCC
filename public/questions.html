@@ -756,6 +756,9 @@
             }
         }
     </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
 </head>
 <body data-theme="dark">
     <div class="starry-bg" id="starryBg"></div>
@@ -1351,6 +1354,7 @@
             onAuthStateChanged,
             signOut
         } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+    <script src="/js/firebase-config.js"></script>
 
         // Firebase configuration
         const firebaseConfig = {

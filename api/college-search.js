@@ -1,4 +1,6 @@
 // College Search API - Uses College Scorecard API
+const { applyRateLimit } = require('./rate-limiter');
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -8,6 +10,10 @@ export default async function handler(req, res) {
     res.status(200).end();
     return;
   }
+
+  // Apply rate limiting for data endpoints
+  const canProceed = await applyRateLimit(req, res, 'data');
+  if (!canProceed) return;
 
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

@@ -3,6 +3,12 @@
  * This file initializes all AI systems and manages global state
  */
 
+// Import error handler if available
+const errorHandler = window.errorHandler || {
+    handle: (error, context) => console.error(context, error),
+    showToast: (message, type) => console.log(`${type}: ${message}`)
+};
+
 // Global application state
 window.CollegeClimb = {
     initialized: false,
@@ -70,7 +76,12 @@ async function initializeCollegeClimb(auth, db, user) {
 
         return window.CollegeClimb;
     } catch (error) {
-        console.error('❌ Failed to initialize College Climb:', error);
+        errorHandler.handle(error, {
+            context: 'initializeCollegeClimb',
+            message: 'Failed to initialize College Climb Platform',
+            user: user?.uid,
+            showToUser: true
+        });
         throw error;
     }
 }
@@ -105,7 +116,11 @@ async function getDashboardData() {
             }
         };
     } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        errorHandler.handle(error, {
+            context: 'getDashboardData',
+            message: 'Failed to load dashboard data',
+            showToUser: true
+        });
         throw error;
     }
 }
@@ -173,7 +188,12 @@ async function analyzeEssay(essayText, essayType, colleges = [], prompt = '') {
         
         return analysis;
     } catch (error) {
-        console.error('Essay analysis error:', error);
+        errorHandler.handle(error, {
+            context: 'analyzeEssay',
+            message: 'Failed to analyze essay. Please try again.',
+            showToUser: true,
+            metadata: { essayType, colleges: colleges.length }
+        });
         throw error;
     }
 }
