@@ -956,7 +956,7 @@
         <div class="cc-nav-right">
             <!-- Theme Toggle -->
             <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
-                <i class="fas fa-moon"></i>
+                ☀️
             </button>
 
             <!-- Profile Dropdown -->
@@ -1298,6 +1298,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     currentUser = user;
                     await loadUserProfile();
                     await initializeAIEngine();
+                    await updateNavbarWithUserData(user); // Update navbar with user data
                     loadUserEssays();
                 } else {
                     window.location.href = 'login.html';
@@ -1773,8 +1774,6 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // UNIVERSAL NAVBAR FUNCTIONALITY
         // ============================================
 
-        let currentUserData = null;
-
         // Theme Management
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1841,6 +1840,59 @@ Don't forget to specify your target colleges and essay prompt for more personali
             }
         }
 
+        // Update navbar with user data
+        async function updateNavbarWithUserData(user) {
+            try {
+                // Hide loading, show profile
+                const profileLoading = document.getElementById('ccProfileLoading');
+                const profileContent = document.getElementById('ccProfileContent');
+                
+                if (profileLoading) profileLoading.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'block';
+
+                // Get user data from Firestore
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : {};
+
+                // Update avatar
+                const avatar = document.getElementById('ccUserAvatar');
+                if (avatar) {
+                    avatar.src = userData.profilePhotoURL || user.photoURL || 'images/default-avatar.png';
+                }
+
+                // Update dropdown header
+                const dropdownName = document.getElementById('ccDropdownName');
+                const dropdownEmail = document.getElementById('ccDropdownEmail');
+                
+                if (dropdownName) {
+                    dropdownName.textContent = userData.name || user.displayName || 'Student';
+                }
+                if (dropdownEmail) {
+                    dropdownEmail.textContent = user.email || '';
+                }
+
+                console.log('✅ Navbar updated with user data');
+            } catch (error) {
+                console.error('Error updating navbar:', error);
+                // Show default state on error
+                const profileLoading = document.getElementById('ccProfileLoading');
+                const profileContent = document.getElementById('ccProfileContent');
+                if (profileLoading) profileLoading.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'block';
+            }
+        }
+
+        // Logout handler
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showMessage('error', 'Failed to logout. Please try again.');
+            }
+        }
+
         // Initialize Navbar
         function initNavbar() {
             console.log('🎯 Initializing Essay Coach Navbar...');
@@ -1862,6 +1914,15 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 });
             }
 
+            // Logout button
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleLogout();
+                });
+            }
+
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 const dropdown = document.getElementById('ccProfileDropdown');
@@ -1877,6 +1938,11 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 }
             });
             
+            // Update navbar when user is authenticated
+            if (currentUser) {
+                updateNavbarWithUserData(currentUser);
+            }
+            
             console.log('✅ Essay Coach Navbar initialized successfully!');
         }
 
@@ -1890,111 +1956,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
         let currentEssay = '';
         let analysisResults = null;
         
-        // Essay Analysis Function
-        async function analyzeEssay() {
-            const essayText = document.getElementById('essay-content')?.value || 
-                            document.querySelector('.essay-textarea')?.value || 
-                            document.querySelector('textarea')?.value;
-            
-            if (!essayText || essayText.trim().length < 10) {
-                showNotification('Please enter at least 10 characters to analyze your essay.', 'warning');
-                return;
-            }
-            
-            currentEssay = essayText;
-            
-            // Show loading state
-            const analyzeBtn = document.querySelector('.analyze-btn, #analyzeBtn, [onclick*="analyze"]');
-            if (analyzeBtn) {
-                const originalText = analyzeBtn.innerHTML;
-                analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-                analyzeBtn.disabled = true;
-            }
-            
-            try {
-                const response = await fetch('/api/essay-analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        essay: essayText,
-                        targetSchools: [], // Add target schools if available
-                        promptType: 'personal-statement'
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                analysisResults = await response.json();
-                displayAnalysisResults(analysisResults);
-                
-                // Show success notification
-                showNotification('Essay analysis completed! Check the results below.', 'success');
-                
-            } catch (error) {
-                console.error('Essay analysis error:', error);
-                showNotification('Failed to analyze essay. Please try again.', 'error');
-            } finally {
-                // Restore button state
-                if (analyzeBtn) {
-                    analyzeBtn.innerHTML = '<i class="fas fa-brain"></i> Analyze Essay';
-                    analyzeBtn.disabled = false;
-                }
-            }
-        }
-        
-        // Display Analysis Results
-        function displayAnalysisResults(results) {
-            // Display overall feedback
-            const feedbackContainer = document.querySelector('.feedback-container, #analysis-results, .analysis-section');
-            if (feedbackContainer) {
-                feedbackContainer.innerHTML = `
-                    <div class="analysis-card">
-                        <h3><i class="fas fa-lightbulb"></i> Overall Feedback</h3>
-                        <p>${results.overallFeedback}</p>
-                    </div>
-                    
-                    ${results.collegeSpecificAdvice ? `
-                    <div class="analysis-card">
-                        <h3><i class="fas fa-university"></i> College-Specific Advice</h3>
-                        <p>${results.collegeSpecificAdvice}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div class="analysis-card">
-                        <h3><i class="fas fa-check-circle"></i> Strengths to Lean Into</h3>
-                        <ul>
-                            ${results.strengthsToLeanInto.map(strength => `<li>${strength}</li>`).join('')}
-                        </ul>
-                    </div>
-                    
-                    <div class="analysis-card">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Areas to Improve</h3>
-                        <ul>
-                            ${results.areasToImprove.map(area => `<li>${area}</li>`).join('')}
-                        </ul>
-                    </div>
-                    
-                    <div class="analysis-card">
-                        <h3><i class="fas fa-arrow-right"></i> Next Steps</h3>
-                        <ol>
-                            ${results.nextSteps.map(step => `<li>${step}</li>`).join('')}
-                        </ol>
-                    </div>
-                `;
-                
-                feedbackContainer.style.display = 'block';
-                feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-            
-            // Highlight text in essay
-            if (results.highlights && results.highlights.length > 0) {
-                highlightEssayText(results.highlights);
-            }
-        }
+        // Duplicate displayAnalysisResults removed - using the one from earlier in the file
         
         // Highlight text in essay
         function highlightEssayText(highlights) {
@@ -2046,53 +2008,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
             document.body.appendChild(modal);
         }
         
-        // Essay Chat Function
-        async function sendChatMessage() {
-            const chatInput = document.getElementById('chat-input') || 
-                            document.querySelector('.chat-input') || 
-                            document.querySelector('#chatInput');
-            
-            const message = chatInput?.value?.trim();
-            if (!message) return;
-            
-            // Add user message to chat
-            addMessageToChat(message, 'user');
-            chatInput.value = '';
-            
-            // Show typing indicator
-            addTypingIndicator();
-            
-            try {
-                const response = await fetch('/api/essay-chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        essayContent: currentEssay,
-                        chatHistory: getChatHistory()
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                // Remove typing indicator
-                removeTypingIndicator();
-                
-                // Add AI response to chat
-                addMessageToChat(result.response, 'ai');
-                
-            } catch (error) {
-                console.error('Chat error:', error);
-                removeTypingIndicator();
-                addMessageToChat('Sorry, I encountered an error. Please try again.', 'ai error');
-            }
-        }
+        // Duplicate sendChatMessage removed - using the one from earlier in the file
         
         // Chat Helper Functions
         function addMessageToChat(message, sender) {
