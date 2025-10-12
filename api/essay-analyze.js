@@ -49,8 +49,10 @@ ANALYSIS REQUIREMENTS:
 1. Identify specific sections that need improvement (red - bad/cliche/harmful)
 2. Identify sections that are okay but could be better (yellow - needs improvement)
 3. Identify excellent sections (green - great, lean into this)
-4. Provide specific feedback for each highlighted section
-5. Give overall essay advice tailored to the target colleges
+4. Provide DETAILED feedback for each highlighted section explaining WHY it's highlighted and HOW to improve
+5. Categorize issues (cliché, weak verb, vague, show-don't-tell, etc.)
+6. Provide specific examples and alternatives
+7. Give overall essay advice tailored to the target colleges
 
 REQUIRED JSON FORMAT (respond with ONLY this, nothing else):
 {
@@ -58,7 +60,10 @@ REQUIRED JSON FORMAT (respond with ONLY this, nothing else):
     {
       "text": "exact text to highlight from the essay",
       "type": "red",
-      "feedback": "specific feedback for this section",
+      "category": "cliche" or "weak_verb" or "vague" or "show_dont_tell" or "grammar" or "unclear" or "strength",
+      "why": "detailed explanation of WHY this is highlighted - be specific about the problem",
+      "how": "detailed explanation of HOW to improve - give actionable steps and examples",
+      "suggestion": "specific alternative phrasing or approach (if applicable)",
       "startIndex": 0,
       "endIndex": 10
     }
@@ -113,17 +118,38 @@ STUDENT CONTEXT:`;
     systemPrompt += `
 
 FEEDBACK GUIDELINES:
-- Be specific and actionable, not generic
+- Be HIGHLY SPECIFIC and actionable, not generic
 - Reference the student's interests and goals when relevant
-- For red highlights: Point out clichés, weak language, unclear statements, or content that doesn't add value
-- For yellow highlights: Identify areas that work but could be stronger, more specific, or better connected
-- For green highlights: Celebrate unique insights, strong storytelling, clear personal voice, or compelling details
+- For red highlights: 
+  * CATEGORY: Identify if it's a cliché, weak verb, vague statement, unclear idea, etc.
+  * WHY: Explain exactly what's wrong and why it weakens the essay
+  * HOW: Give 2-3 specific ways to improve it
+  * SUGGESTION: Provide a concrete alternative example
+- For yellow highlights:
+  * CATEGORY: Identify the type of improvement needed
+  * WHY: Explain what's missing or could be stronger
+  * HOW: Suggest specific ways to elevate this section
+  * SUGGESTION: Show what a better version might look like
+- For green highlights:
+  * CATEGORY: "strength"
+  * WHY: Explain what makes this excellent (unique voice, specific details, strong storytelling, etc.)
+  * HOW: Encourage expanding or connecting this strength to other parts
+  * SUGGESTION: Ways to leverage this strength elsewhere
 - Keep feedback encouraging but honest
-- Suggest specific improvements, not just "make it better"
+- Suggest specific improvements with examples, not just "make it better"
 - Consider the target colleges in your advice
 - Focus on helping the student tell THEIR unique story
+- ALWAYS provide category, why, how, and suggestion for each highlight
 
-Remember: Never write the essay for them - guide them to improve their own work.`;
+HIGHLIGHT SELECTION CRITERIA:
+- Choose MEANINGFUL sections, not random phrases
+- Prioritize content issues over minor grammar (unless grammar affects clarity)
+- Focus on: clichés, vague language, weak storytelling, missed opportunities, and exceptional strengths
+- Each highlight should have a CLEAR reason for being selected
+- Aim for 5-10 highlights per essay (more for longer essays)
+- Balance red/yellow/green to give both critique and encouragement
+
+Remember: Never write the essay for them - guide them to improve their own work with specific, actionable advice.`;
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

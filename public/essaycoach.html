@@ -848,6 +848,163 @@
             border-bottom: none;
         }
 
+        /* Detailed Highlights Feedback Cards */
+        .highlights-feedback-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .highlight-feedback-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .highlight-feedback-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .highlight-feedback-card.highlight-red {
+            border-left-color: #dc3545;
+            background: linear-gradient(to right, rgba(220, 53, 69, 0.05), var(--card-bg));
+        }
+
+        .highlight-feedback-card.highlight-yellow {
+            border-left-color: #ffc107;
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.05), var(--card-bg));
+        }
+
+        .highlight-feedback-card.highlight-green {
+            border-left-color: #28a745;
+            background: linear-gradient(to right, rgba(40, 167, 69, 0.05), var(--card-bg));
+        }
+
+        .feedback-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .feedback-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .feedback-card-title i {
+            font-size: 1.2rem;
+        }
+
+        .highlight-red .feedback-card-title i {
+            color: #dc3545;
+        }
+
+        .highlight-yellow .feedback-card-title i {
+            color: #ffc107;
+        }
+
+        .highlight-green .feedback-card-title i {
+            color: #28a745;
+        }
+
+        .feedback-number {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .feedback-category {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .feedback-type-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .feedback-type-badge.red {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+        }
+
+        .feedback-type-badge.yellow {
+            background: rgba(255, 193, 7, 0.15);
+            color: #d39e00;
+        }
+
+        .feedback-type-badge.green {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .feedback-card-text {
+            background: rgba(160, 123, 204, 0.08);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .feedback-card-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(160, 123, 204, 0.03);
+            border-radius: 8px;
+        }
+
+        .feedback-card-section.suggestion {
+            background: linear-gradient(135deg, rgba(160, 123, 204, 0.1), rgba(160, 123, 204, 0.05));
+            border: 1px solid rgba(160, 123, 204, 0.2);
+        }
+
+        .feedback-label {
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .feedback-label i {
+            font-size: 1rem;
+        }
+
+        .feedback-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .no-highlights {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
         /* Loading States */
         .loading {
             display: flex;
@@ -869,6 +1026,11 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        @keyframes flash {
+            0%, 100% { background: var(--card-bg); }
+            50% { background: rgba(160, 123, 204, 0.2); }
         }
 
         /* Responsive */
@@ -1108,6 +1270,14 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
                 <!-- Analysis Results -->
                 <div id="analysisResults" class="analysis-results" style="display: none;">
+                    <!-- Detailed Highlights Feedback -->
+                    <div class="feedback-section">
+                        <h3 class="feedback-title">
+                            <i class="fas fa-highlighter"></i> Detailed Feedback on Highlights
+                        </h3>
+                        <div id="highlightsFeedback" class="highlights-feedback-container"></div>
+                    </div>
+
                     <div class="feedback-section">
                         <h3 class="feedback-title">
                             <i class="fas fa-lightbulb"></i> Overall Feedback
@@ -1467,6 +1637,69 @@ Don't forget to specify your target colleges and essay prompt for more personali
         function displayAnalysisResults(result) {
             const resultsDiv = document.getElementById('analysisResults');
             
+            // Display detailed highlights feedback
+            const highlightsFeedback = document.getElementById('highlightsFeedback');
+            highlightsFeedback.innerHTML = '';
+            
+            if (result.highlights && result.highlights.length > 0) {
+                result.highlights.forEach((highlight, index) => {
+                    const feedbackCard = document.createElement('div');
+                    feedbackCard.className = `highlight-feedback-card highlight-${highlight.type}`;
+                    
+                    // Get category display name
+                    const categoryNames = {
+                        'cliche': 'Cliché',
+                        'weak_verb': 'Weak Verb',
+                        'vague': 'Vague Statement',
+                        'show_dont_tell': 'Show, Don\'t Tell',
+                        'grammar': 'Grammar',
+                        'unclear': 'Unclear',
+                        'strength': 'Strength'
+                    };
+                    const categoryDisplay = categoryNames[highlight.category] || highlight.category || 'Feedback';
+                    
+                    // Get icon based on type
+                    const icons = {
+                        'red': 'fas fa-exclamation-triangle',
+                        'yellow': 'fas fa-exclamation-circle',
+                        'green': 'fas fa-check-circle'
+                    };
+                    const icon = icons[highlight.type] || 'fas fa-info-circle';
+                    
+                    feedbackCard.innerHTML = `
+                        <div class="feedback-card-header">
+                            <div class="feedback-card-title">
+                                <i class="${icon}"></i>
+                                <span class="feedback-number">#${index + 1}</span>
+                                <span class="feedback-category">${categoryDisplay}</span>
+                            </div>
+                            <span class="feedback-type-badge ${highlight.type}">${highlight.type.toUpperCase()}</span>
+                        </div>
+                        <div class="feedback-card-text">
+                            <strong>Highlighted text:</strong> "${highlight.text}"
+                        </div>
+                        <div class="feedback-card-section">
+                            <div class="feedback-label"><i class="fas fa-question-circle"></i> Why this is highlighted:</div>
+                            <div class="feedback-text">${highlight.why || highlight.feedback || 'See overall feedback for details.'}</div>
+                        </div>
+                        <div class="feedback-card-section">
+                            <div class="feedback-label"><i class="fas fa-wrench"></i> How to improve:</div>
+                            <div class="feedback-text">${highlight.how || 'Consider revising this section based on the why explanation above.'}</div>
+                        </div>
+                        ${highlight.suggestion ? `
+                        <div class="feedback-card-section suggestion">
+                            <div class="feedback-label"><i class="fas fa-lightbulb"></i> Suggestion:</div>
+                            <div class="feedback-text">${highlight.suggestion}</div>
+                        </div>
+                        ` : ''}
+                    `;
+                    
+                    highlightsFeedback.appendChild(feedbackCard);
+                });
+            } else {
+                highlightsFeedback.innerHTML = '<p class="no-highlights">No specific highlights. See overall feedback below.</p>';
+            }
+            
             document.getElementById('overallFeedback').textContent = result.overallFeedback || 'No overall feedback available.';
             document.getElementById('collegeAdvice').textContent = result.collegeSpecificAdvice || 'Add target colleges for specific advice.';
             
@@ -1498,6 +1731,9 @@ Don't forget to specify your target colleges and essay prompt for more personali
             });
             
             resultsDiv.style.display = 'block';
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         // Apply highlights to text
@@ -1508,12 +1744,25 @@ Don't forget to specify your target colleges and essay prompt for more personali
             // Sort highlights by start index in reverse order to maintain indices
             highlights.sort((a, b) => b.startIndex - a.startIndex);
             
-            highlights.forEach(highlight => {
+            highlights.forEach((highlight, index) => {
                 const beforeText = text.substring(0, highlight.startIndex);
                 const highlightText = text.substring(highlight.startIndex, highlight.endIndex);
                 const afterText = text.substring(highlight.endIndex);
                 
-                const wrappedText = `<span class="highlight-${highlight.type}" title="${highlight.feedback}">${highlightText}</span>`;
+                // Make highlights clickable with data attribute to link to feedback card
+                const categoryNames = {
+                    'cliche': 'Cliché',
+                    'weak_verb': 'Weak Verb',
+                    'vague': 'Vague',
+                    'show_dont_tell': 'Show, Don\'t Tell',
+                    'grammar': 'Grammar',
+                    'unclear': 'Unclear',
+                    'strength': 'Strength'
+                };
+                const categoryDisplay = categoryNames[highlight.category] || highlight.category || 'Feedback';
+                const tooltipText = `${categoryDisplay} - Click for details`;
+                
+                const wrappedText = `<span class="highlight-${highlight.type}" data-highlight-index="${index}" title="${tooltipText}" style="cursor: pointer;">${highlightText}</span>`;
                 text = beforeText + wrappedText + afterText;
             });
             
@@ -1528,8 +1777,34 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 updateWordCount();
             });
             
+            // Add click listener for highlights
+            editorDiv.addEventListener('click', function(e) {
+                if (e.target.classList.contains('highlight-red') || 
+                    e.target.classList.contains('highlight-yellow') || 
+                    e.target.classList.contains('highlight-green')) {
+                    const highlightIndex = e.target.getAttribute('data-highlight-index');
+                    if (highlightIndex !== null) {
+                        scrollToFeedbackCard(parseInt(highlightIndex));
+                    }
+                }
+            });
+            
             textarea.style.display = 'none';
             textarea.parentNode.insertBefore(editorDiv, textarea.nextSibling);
+        }
+
+        // Scroll to feedback card when highlight is clicked
+        function scrollToFeedbackCard(index) {
+            const feedbackCards = document.querySelectorAll('.highlight-feedback-card');
+            if (feedbackCards[index]) {
+                feedbackCards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Add flash animation
+                feedbackCards[index].style.animation = 'flash 1s ease-in-out';
+                setTimeout(() => {
+                    feedbackCards[index].style.animation = '';
+                }, 1000);
+            }
         }
 
         // Save essay
