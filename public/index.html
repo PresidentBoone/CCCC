@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Transform your college application journey with AI-powered essay coaching, personalized college matching, adaptive test prep, and smart timeline management.">
+    <meta name="keywords" content="college application, AI essay coach, college admissions, test prep, SAT, ACT, college search, scholarship finder">
+    <meta name="author" content="College Climb">
+    <meta name="theme-color" content="#2563eb">
+    
     <title>College Climb - AI-Powered College Admissions</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/whiteclearcc.png">
+    <link rel="apple-touch-icon" href="/images/whiteclearcc.png">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- 🎯 BILLION-DOLLAR FIX: Unified Authentication System -->
+    <!-- 🎯 BILLION-DOLLAR PLATFORM: Core Infrastructure -->
     <script src="/js/unified-auth.js"></script>
+    <script src="/js/performance-optimizer.js"></script>
+    <script src="/js/seo-manager.js"></script>
+    <script src="/js/analytics-tracker.js"></script>
+    <script src="/js/error-monitor.js"></script>
+    <script src="/js/ab-testing.js"></script>
+    <script src="/js/pwa-installer.js"></script>
+    <script src="/js/personalization-engine.js"></script>
+    <script src="/js/milestone-celebration.js"></script>
     <script type="module" src="/index.js"></script>
     <style>
         :root {
@@ -1681,7 +1703,8 @@
         }
     </style>
 
-    <script type="module">
+    <script src="/js/personalization-engine.js"></script>
+  <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
   import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
@@ -1701,6 +1724,7 @@
   const db = getFirestore(app);
 
   let currentUserData = null;
+  let personalizationEngine = null;
 
   function updateNavbarLogo(theme) {
     const logoImg = document.getElementById('navbarLogo');
@@ -1770,10 +1794,74 @@ async function loadUserData(userId) {
     try {
         const userDoc = await getDoc(doc(db, 'users', userId));
         currentUserData = userDoc.exists() ? userDoc.data() : {};
+        
+        // Initialize personalization engine
+        if (window.PersonalizationEngine) {
+            personalizationEngine = new window.PersonalizationEngine();
+            await personalizationEngine.initialize(userId, currentUserData);
+            
+            // Personalize homepage based on user state
+            personalizeHomepage();
+        }
     } catch (e) {
         currentUserData = {};
     }
     updateAuthUI(auth.currentUser);
+}
+
+/**
+ * Personalize homepage for logged-in users
+ */
+function personalizeHomepage() {
+    if (!personalizationEngine) return;
+    
+    const welcomeMessage = personalizationEngine.getWelcomeMessage();
+    const nextAction = personalizationEngine.getNextAction();
+    
+    // Update hero title
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle && currentUserData.name) {
+        const firstName = currentUserData.name.split(' ')[0];
+        heroTitle.textContent = `Welcome Back, ${firstName}!`;
+    }
+    
+    // Update hero description with personalized message
+    const heroDescription = document.querySelector('.hero-description');
+    if (heroDescription) {
+        const stage = personalizationEngine.userStage;
+        const messages = {
+            new: 'Let\'s complete your profile and find your perfect colleges',
+            exploring: 'Ready to discover colleges that match your dreams?',
+            preparing: 'Continue building your strongest application',
+            applying: 'Stay on track with your deadlines and submissions',
+            deciding: 'Track your acceptances and make your final choice'
+        };
+        heroDescription.textContent = messages[stage] || heroDescription.textContent;
+    }
+    
+    // Update CTA button
+    const ctaButton = document.querySelector('.hero-cta-button');
+    if (ctaButton && nextAction) {
+        ctaButton.textContent = nextAction.action;
+        ctaButton.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = nextAction.link;
+        };
+    }
+    
+    // Show personalized insights in stats section
+    const statsItems = document.querySelectorAll('.stat-item .stat-label');
+    if (statsItems.length >= 3) {
+        if (currentUserData.essayCount) {
+            statsItems[0].textContent = `${currentUserData.essayCount} Essays Written`;
+        }
+        if (currentUserData.applicationCount) {
+            statsItems[1].textContent = `${currentUserData.applicationCount} Applications`;
+        }
+        if (currentUserData.scholarshipMatches) {
+            statsItems[2].textContent = `${currentUserData.scholarshipMatches} Scholarship Matches`;
+        }
+    }
 }
 
 // Auth state
