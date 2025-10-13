@@ -1,19 +1,30 @@
-# Ignore old API files (consolidated into api/index.js)
+# ===================================================================
+# .vercelignore - CRITICAL FOR STAYING UNDER 12 SERVERLESS FUNCTIONS
+# ===================================================================
+# Only api/index.js should be deployed as a serverless function
+# All handlers/ are internal Node.js modules (not separate functions)
+
+# Ignore ALL duplicate API files at root level
 api/chat.js
 api/chat-CONSOLIDATED.js
+api/college-search.js
+api/essay-analyze.js
 api/essay-chat.js
 api/essay-storage.js
 api/essay-storage-CONSOLIDATED.js
-api/timeline-data.js
-api/timeline-recommendations.js
+api/scrape-scholarships.js
+api/testprep-generate.js
 api/timeline.js
 api/timeline-CONSOLIDATED.js
+api/timeline-data.js
+api/timeline-recommendations.js
 api/firebase-config.js
 api/rate-limiter.js
 
-# Keep only the consolidated handler
+# Keep only the unified entry point and handlers
 !api/index.js
 !api/handlers/
+!api/handlers/*.js
 
 # Ignore documentation and test files
 *.md
