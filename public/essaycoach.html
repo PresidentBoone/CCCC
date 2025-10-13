@@ -6,6 +6,12 @@
     <title>AI Essay Coach - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- ⭐ CRITICAL UTILITIES - Week 1 Fixes -->
+    <script type="module" src="/js/auth-guard.js"></script>
+    <script type="module" src="/js/auto-save.js"></script>
+    <script type="module" src="/js/loading-state.js"></script>
+    
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -1257,6 +1263,8 @@
             <div class="essay-editor-section">
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-edit"></i> Essay Editor</h2>
+                    <!-- ⭐ Auto-Save Status Indicator -->
+                    <div id="saveStatus" style="margin-left: auto; font-size: 0.9rem;"></div>
                 </div>
 
                 <!-- Essay Controls -->
