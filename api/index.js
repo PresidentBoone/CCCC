@@ -28,9 +28,9 @@ module.exports = async (req, res) => {
         
         // Route to appropriate handler based on path
         if (path === '/api' || path === '/api/') {
-            return res.status(200).json({ 
-                status: 'ok', 
-                message: 'College Climb API v2.0',
+            return res.status(200).json({
+                status: 'ok',
+                message: 'College Climb API v2.0 - Billion Dollar Edition',
                 endpoints: [
                     '/api/chat',
                     '/api/essay-analyze',
@@ -38,7 +38,8 @@ module.exports = async (req, res) => {
                     '/api/college-search',
                     '/api/testprep-generate',
                     '/api/timeline',
-                    '/api/scrape-scholarships'
+                    '/api/scrape-scholarships',
+                    '/api/intelligence'
                 ]
             });
         }
@@ -77,7 +78,12 @@ module.exports = async (req, res) => {
             const scholarshipsHandler = require('./handlers/scrape-scholarships');
             return scholarshipsHandler(req, res);
         }
-        
+
+        if (path.startsWith('/api/intelligence')) {
+            const intelligenceHandler = require('./handlers/intelligence');
+            return intelligenceHandler(req, res);
+        }
+
         // 404 for unknown routes
         return res.status(404).json({ 
             error: 'Not Found',

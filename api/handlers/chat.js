@@ -274,9 +274,9 @@ GUIDELINES:
 // MAIN HANDLER - Routes based on chat type
 // ============================================
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   console.log('=== CONSOLIDATED CHAT API CALLED ===');
-  
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -339,10 +339,10 @@ export default async function handler(req, res) {
     let maxTokens = 500;
 
     if (isEssayChat) {
-      // ESSAY CHAT MODE - Use GPT-4 for better essay coaching
-      console.log('📝 Using ESSAY CHAT mode (GPT-4)');
+      // ESSAY CHAT MODE - Use GPT-4o-mini for cost-effective essay coaching
+      console.log('📝 Using ESSAY CHAT mode (GPT-4o-mini)');
       systemPrompt = generateEssayChatPrompt(userProfile, essay, colleges, prompt);
-      model = 'gpt-4';
+      model = 'gpt-4o-mini';
       maxTokens = 800;
     } else {
       // GENERAL COUNSELING MODE - Use GPT-3.5 for efficiency
