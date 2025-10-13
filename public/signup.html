@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 🎯 BILLION-DOLLAR FIX: Unified Authentication System -->
+    <script src="/js/unified-auth.js"></script>
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -816,93 +819,42 @@
         });
     </script>
 
-<script type="module">
-    // Import Firebase modules
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-    import { getFirestore, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
-    import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js';
-
-    // Your Firebase config
-    const firebaseConfig = {
-        apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-        authDomain: "collegeclimb-ai.firebaseapp.com",
-        projectId: "collegeclimb-ai",
-        storageBucket: "collegeclimb-ai.firebasestorage.app",
-        messagingSenderId: "187139654658",
-        appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-        measurementId: "G-E0B2RQM9XS"
-    };
-
-    // Initialize Firebase services
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const realtimeDb = getDatabase(app);
-
-    // Enhanced saveUserData function that saves to both Firestore and Realtime Database
-    async function saveUserData(user) {
-        try {
-            // Save to Firestore (your existing method)
-            await setDoc(doc(db, 'users', user.uid), {
-                email: user.email,
-                name: user.displayName || '',
-                createdAt: new Date(),
-                lastLogin: new Date(),
-                accountType: 'student',
-                profileComplete: false
-            });
-
-            // Also save to Realtime Database for real-time features
-            await set(ref(realtimeDb, "users/" + user.uid), {
-                email: user.email,
-                displayName: user.displayName || '',
-                createdAt: Date.now(),
-                lastLogin: Date.now(),
-                online: true
-            });
-
-            console.log("✅ User data saved to both databases");
-        } catch (error) {
-            console.error("❌ Error saving user data:", error);
-            throw error;
-        }
+<script>
+    // 🎯 BILLION-DOLLAR FIX: Use Unified Auth Manager
+    // The unified-auth.js handles all auth state management automatically
+    
+    // Prevent auto-redirect from signup page (override unified auth for signup flow)
+    if (window.authManager) {
+        window.authManager.onAuthSuccess(() => {
+            // Don't auto-redirect, let signup handlers control navigation
+            console.log('Signup page: User authenticated, waiting for explicit redirect');
+        });
     }
-
-    // Google Sign-Up function - FIXED to redirect to questions.html
-    window.signUpWithGoogle = function() {
-        const provider = new GoogleAuthProvider();
-
-        signInWithPopup(auth, provider)
-            .then(async (result) => {
-                const user = result.user;
-                console.log("Google Sign-Up successful for:", user.email);
-                
-                // Save user data to both databases
-                await saveUserData(user);
-                
-                // Redirect to questions page
-                window.location.href = "questions.html";
-            })
-            .catch((error) => {
-                console.error("Google Sign-Up error:", error);
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert("Please configure your domain in Firebase Console");
-                } else {
-                    alert("Google Sign-Up failed: " + error.message);
-                }
-            });
-    };
 
     window.validateEmail = function(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    // Email signup form handler - FIXED to redirect to questions.html
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
+    // Google Sign-Up function
+    window.signUpWithGoogle = async function() {
+        try {
+            await window.authManager.signInWithGoogle();
+            console.log("Google Sign-Up successful");
+            // Redirect to questions page after successful signup
+            window.location.href = "questions.html";
+        } catch (error) {
+            console.error("Google Sign-Up error:", error);
+            if (error.code === 'auth/unauthorized-domain') {
+                alert("Please configure your domain in Firebase Console");
+            } else {
+                alert("Google Sign-Up failed: " + error.message);
+            }
+        }
+    };
+
+    // Email signup form handler
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const contact = document.getElementById('contact').value.trim();
@@ -928,72 +880,23 @@
         button.textContent = 'Creating Account...';
         button.disabled = true;
 
-        createUserWithEmailAndPassword(auth, contact, password)
-            .then(async (userCredential) => {
-                const user = userCredential.user;
-                
-                // Save user data to both databases
-                await saveUserData(user);
-                
-                button.textContent = '✓ Success! Redirecting...';
-                button.style.background = '#4caf50';
-                console.log("Account created successfully for:", user.email);
-                
-                setTimeout(() => {
-                    window.location.href = "questions.html";
-                }, 1500);
-            })
-            .catch((error) => {
-                console.error("Signup error:", error);
-                alert("Error creating account: " + error.message);
-                button.textContent = 'Create Account';
-                button.disabled = false;
-            });
-    });
-
-    // Auth state management - NO AUTO-REDIRECT from signup page
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
-            console.log("User authenticated:", user.email);
-            document.body.classList.add("logged-in");
+        try {
+            await window.authManager.signUpWithEmail(contact, password);
             
-            // Don't auto-redirect from signup page - let the signup handlers control navigation
-            console.log("User is on signup page - not auto-redirecting");
-        } else {
-            sessionStorage.removeItem("user");
-            document.body.classList.remove("logged-in");
+            button.textContent = '✓ Success! Redirecting...';
+            button.style.background = '#4caf50';
+            console.log("Account created successfully for:", contact);
+            
+            setTimeout(() => {
+                window.location.href = "questions.html";
+            }, 1500);
+        } catch (error) {
+            console.error("Signup error:", error);
+            alert("Error creating account: " + error.message);
+            button.textContent = 'Create Account';
+            button.disabled = false;
         }
-        
-        updateAuthUI(user);
     });
-
-    // Update auth UI without auto-redirecting
-    function updateAuthUI(user) {
-        const authToggle = document.getElementById('authToggle');
-        const notLoggedIn = document.getElementById('notLoggedIn');
-        const loggedIn = document.getElementById('loggedIn');
-        
-        if (user) {
-            if (authToggle) authToggle.textContent = user.email.split('@')[0];
-            if (notLoggedIn) notLoggedIn.style.display = 'none';
-            if (loggedIn) loggedIn.style.display = 'block';
-        } else {
-            if (authToggle) authToggle.textContent = 'Login/Sign Up';
-            if (notLoggedIn) notLoggedIn.style.display = 'block';
-            if (loggedIn) loggedIn.style.display = 'none';
-        }
-    }
-
-    // Logout functionality
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        });
-    }
 </script>
 
 </body>

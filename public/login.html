@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 🎯 BILLION-DOLLAR FIX: Unified Authentication System -->
+    <script src="/js/unified-auth.js"></script>
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -712,71 +715,9 @@
         </div>
     </div>
 
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
-
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-    authDomain: "collegeclimb-ai.firebaseapp.com",
-    projectId: "collegeclimb-ai",
-    storageBucket: "collegeclimb-ai.firebasestorage.app",
-    messagingSenderId: "187139654658",
-    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-    measurementId: "G-E0B2RQM9XS"
-  };
-
-  // Initialize services
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // Track login state
-  onAuthStateChanged(auth, (user) => {
-    updateAuthUI(user); // Add this line
-    
-    if (user) {
-        sessionStorage.setItem("user", JSON.stringify(user));
-        console.log("Logged in as:", user.email);
-        document.body.classList.add("logged-in");
-        // Redirect to dashboard if already logged in
-        window.location.href = 'dashboard.html';
-    } else {
-        sessionStorage.removeItem("user");
-        document.body.classList.remove("logged-in");
-    }
-  });
-
-  // Add this function to update the auth dropdown UI
-function updateAuthUI(user) {
-    const authToggle = document.getElementById('authToggle');
-    const notLoggedIn = document.getElementById('notLoggedIn');
-    const loggedIn = document.getElementById('loggedIn');
-    
-    if (user) {
-        // User is logged in - redirect to dashboard
-        window.location.href = 'dashboard.html';
-    } else {
-        // User is not logged in
-        if (authToggle) authToggle.textContent = 'Login/Sign Up';
-        if (notLoggedIn) notLoggedIn.style.display = 'block';
-        if (loggedIn) loggedIn.style.display = 'none';
-    }
-}
-
-// Optional logout logic if you want it everywhere
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "/login.html";
-      });
-    });
-  }
+    <script>
+        // 🎯 BILLION-DOLLAR FIX: Use Unified Auth Manager
+        // The unified-auth.js handles all auth state management automatically
 
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
@@ -858,41 +799,33 @@ function updateAuthUI(user) {
         }
 
         // Google Login Function
-        window.loginWithGoogle = function() {
-            const provider = new GoogleAuthProvider();
+        window.loginWithGoogle = async function() {
             const button = document.getElementById('googleBtn');
             const originalText = button.innerHTML;
             
             button.innerHTML = 'Connecting...';
             button.disabled = true;
 
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("Google Login successful for:", user.email);
-                    showSuccess(`Welcome back, ${user.displayName || user.email}!`);
-                    setTimeout(() => {
-                        window.location.href = "dashboard.html";
-                    }, 1500);
-                })
-                .catch((error) => {
-                    console.error("Google Login error:", error);
-                    if (error.code === 'auth/unauthorized-domain') {
-                        showError("Domain not authorized. Please contact support.");
-                    } else if (error.code === 'auth/popup-blocked') {
-                        showError("Popup blocked. Please allow popups for this site.");
-                    } else {
-                        showError("Google Login failed. Please try again.");
-                    }
-                })
-                .finally(() => {
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                });
+            try {
+                await window.authManager.signInWithGoogle();
+                showSuccess('Welcome back!');
+                // Unified auth will handle redirect automatically
+            } catch (error) {
+                console.error("Google Login error:", error);
+                if (error.code === 'auth/unauthorized-domain') {
+                    showError("Domain not authorized. Please contact support.");
+                } else if (error.code === 'auth/popup-blocked') {
+                    showError("Popup blocked. Please allow popups for this site.");
+                } else {
+                    showError("Google Login failed. Please try again.");
+                }
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
         };
 
         // Email/Password Login
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value.trim();
@@ -908,45 +841,38 @@ function updateAuthUI(user) {
             button.textContent = 'Logging in...';
             button.disabled = true;
             
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log("Login successful for:", user.email);
-                    showSuccess(`Welcome back, ${user.email}!`);
-                    setTimeout(() => {
-                        window.location.href = "dashboard.html";
-                    }, 1500);
-                })
-                .catch((error) => {
-                    console.error("Login error:", error);
-                    let errorMessage = "Login failed. Please try again.";
-                    
-                    switch (error.code) {
-                        case 'auth/invalid-credential':
-                            errorMessage = "Invalid email or password.";
-                            break;
-                        case 'auth/user-disabled':
-                            errorMessage = "This account has been disabled.";
-                            break;
-                        case 'auth/invalid-email':
-                            errorMessage = "Invalid email address.";
-                            break;
-                        case 'auth/too-many-requests':
-                            errorMessage = "Too many failed attempts. Please try again later.";
-                            break;
-                        case 'auth/network-request-failed':
-                            errorMessage = "Network error. Please check your connection.";
-                            break;
-                        default:
-                            errorMessage = error.message || "Login failed. Please try again.";
-                    }
-                    
-                    showError(errorMessage);
-                })
-                .finally(() => {
-                    button.textContent = originalText;
-                    button.disabled = false;
-                });
+            try {
+                await window.authManager.signInWithEmail(email, password);
+                showSuccess(`Welcome back, ${email}!`);
+                // Unified auth will handle redirect automatically
+            } catch (error) {
+                console.error("Login error:", error);
+                let errorMessage = "Login failed. Please try again.";
+                
+                switch (error.code) {
+                    case 'auth/invalid-credential':
+                        errorMessage = "Invalid email or password.";
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = "This account has been disabled.";
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = "Invalid email address.";
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = "Too many failed attempts. Please try again later.";
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = "Network error. Please check your connection.";
+                        break;
+                    default:
+                        errorMessage = error.message || "Login failed. Please try again.";
+                }
+                
+                showError(errorMessage);
+                button.textContent = originalText;
+                button.disabled = false;
+            }
         });
 
         // Mobile menu toggle
