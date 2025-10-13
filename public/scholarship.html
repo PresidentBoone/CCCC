@@ -6,6 +6,7 @@
     <title>Scholarship Finder - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/scholarship-features.css">
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -478,7 +479,7 @@
         }
 
         .hidden-gem-badge {
-            background: var(--warning-color);
+            background: var (--warning-color);
         }
 
         .scholarship-header-info {
@@ -914,6 +915,259 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
+        /* Scholarship Scraper Styles */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--secondary-bg);
+            border-radius: 16px;
+        }
+
+        .error-state i {
+            font-size: 3rem;
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+
+        .days-until {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .days-until.urgent {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .days-until.soon {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .urgent-badge {
+            background: var(--danger-color) !important;
+            color: white !important;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Pagination */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--accent-color);
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-ellipsis {
+            padding: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Scholarship Modal */
+        .scholarship-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--primary-bg);
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--danger-color);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-organization {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-amount {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+
+        .renewability-tag {
+            display: inline-block;
+            background: var(--success-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-section li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .modal-section li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: 900;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Category Color Badges */
+        .scholarship-badge.blue { background: #3b82f6; }
+        .scholarship-badge.green { background: #10b981; }
+        .scholarship-badge.purple { background: #a07bcc; }
+        .scholarship-badge.orange { background: #f59e0b; }
+        .scholarship-badge.teal { background: #14b8a6; }
+        .scholarship-badge.red { background: #ef4444; }
+        .scholarship-badge.gold { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
 
         /* Responsive */
         @media (max-width: 1200px) {
@@ -1449,7 +1703,6 @@
         window.currentUser = null;
         window.userData = null;
         window.allScholarships = [];
-        window.filteredScholarships = [];
         window.scholarshipApplications = [];
 
         console.log('🎓 Scholarship Finder Initialized');
@@ -2475,6 +2728,153 @@
             }
         }
         createStarryBackground();
+    </script>
+
+    <!-- Scholarship Features -->
+    <script src="/js/scholarship-tracker.js"></script>
+    <script src="/js/scholarship-match-score.js"></script>
+    <script src="/js/scholarship-notifications.js"></script>
+    <script src="/js/scholarship-scraper.js"></script>
+    <script>
+        /**
+         * Integrate live scholarship scraping
+         */
+        async function showLiveScholarshipsTab() {
+            const content = document.getElementById('tabContent');
+
+            // Show loading state
+            content.innerHTML = `
+                <div class="scholarship-results">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="margin: 0; color: var(--text-primary);">
+                                <i class="fas fa-globe"></i> Live Scholarship Database
+                            </h2>
+                            <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                                Real-time scholarships from multiple sources
+                            </p>
+                        </div>
+                        <button onclick="scholarshipScraper.fetchScholarships(true)" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+
+                    <!-- Filters -->
+                    <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">
+                                    Search
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="searchInput" 
+                                    placeholder="Search scholarships..."
+                                    style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--accent-color); background: var(--primary-bg); color: var(--text-primary);"
+                                    oninput="debounceSearch(this.value)"
+                                >
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">
+                                    Category
+                                </label>
+                                <select 
+                                    id="categoryFilter"
+                                    style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--accent-color); background: var(--primary-bg); color: var(--text-primary);"
+                                    onchange="scholarshipScraper.applyFilters({ category: this.value })">
+                                    <option value="all">All Categories</option>
+                                    <option value="academic">Academic Merit</option>
+                                    <option value="need">Need-Based</option>
+                                    <option value="leadership">Leadership</option>
+                                    <option value="diversity">Diversity</option>
+                                    <option value="career">Career-Specific</option>
+                                    <option value="military">Military</option>
+                                    <option value="full">Full Ride</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">
+                                    Min Amount
+                                </label>
+                                <select 
+                                    style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--accent-color); background: var(--primary-bg); color: var(--text-primary);"
+                                    onchange="scholarshipScraper.applyFilters({ minAmount: this.value })">
+                                    <option value="0">Any Amount</option>
+                                    <option value="1000">$1,000+</option>
+                                    <option value="5000">$5,000+</option>
+                                    <option value="10000">$10,000+</option>
+                                    <option value="20000">$20,000+</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">
+                                    Your GPA
+                                </label>
+                                <input 
+                                    type="number" 
+                                    min="0" 
+                                    max="4.0" 
+                                    step="0.1"
+                                    placeholder="e.g., 3.5"
+                                    style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--accent-color); background: var(--primary-bg); color: var(--text-primary);"
+                                    onchange="scholarshipScraper.applyFilters({ gpa: this.value })"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: var(--gradient); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800;" id="totalScholarships">0</div>
+                            <div style="opacity: 0.9;">Available Scholarships</div>
+                        </div>
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--success-color);" id="totalValue">$0</div>
+                            <div style="color: var(--text-secondary);">Total Value</div>
+                        </div>
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);" id="scholarshipSources">-</div>
+                            <div style="color: var(--text-secondary);">Data Sources</div>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div id="scholarshipResults">
+                        <div class="loading-state">
+                            <div class="spinner"></div>
+                            <p>Loading scholarships...</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination"></div>
+
+                    <!-- Last Updated -->
+                    <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem; font-size: 0.9rem;">
+                        Last updated: <span id="lastUpdated">-</span>
+                    </div>
+                </div>
+            `;
+
+            // Trigger initial load
+            await scholarshipScraper.fetchScholarships(true);
+        }
+
+        // Debounce search
+        let searchTimeout;
+        function debounceSearch(value) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                scholarshipScraper.applyFilters({ search: value });
+            }, 500);
+        }
+
+        // Update the default explore tab to show live scholarships
+        const originalShowExploreTab = showExploreTab;
+        window.showExploreTab = function() {
+            showLiveScholarshipsTab();
+        };
     </script>
 </body>
 </html>

@@ -442,6 +442,8 @@
     <!-- Error Handling System -->
     <script src="/js/error-boundary.js"></script>
     <script src="/js/error-handler.js"></script>
+    <!-- Diagnostic Question Bank -->
+    <script src="/js/diagnostic-questions.js"></script>
 </head>
 <body data-theme="dark">
     <div class="practice-container">
@@ -586,14 +588,19 @@
         let currentQuestionIndex = 0;
         let selectedAnswer = null;
         let correctAnswers = 0;
+        let userAnswers = []; // Track all user answers for diagnostic
         let startTime = Date.now();
         let calculator = null;
         let sessionSubject = 'sat-math'; // Default
+        let sessionType = 'practice'; // practice, diagnostic, or full-test
 
-        // Get subject from URL
+        // Get subject and session type from URL
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('subject')) {
             sessionSubject = urlParams.get('subject');
+        }
+        if (urlParams.has('sessionType')) {
+            sessionType = urlParams.get('sessionType');
         }
 
         // Initialize
@@ -662,6 +669,12 @@
                 // Show loading
                 document.getElementById('loadingScreen').style.display = 'flex';
 
+                // Check if this is a diagnostic session
+                if (sessionType === 'diagnostic') {
+                    await generateDiagnosticQuestions();
+                    return;
+                }
+
                 // Determine weak areas from testPrepData
                 const weakAreas = testPrepData.weakAreas || [];
                 const difficulty = calculateDifficulty();
@@ -728,6 +741,341 @@
                 document.getElementById('questionCard').style.display = 'block';
                 displayQuestion();
             }
+        }
+
+        /**
+         * Generate Diagnostic Test Questions
+         * Uses the comprehensive diagnostic question bank
+         */
+        async function generateDiagnosticQuestions() {
+            try {
+                console.log('🧠 Starting Diagnostic Assessment...');
+
+                // Update session title
+                document.getElementById('sessionTitle').textContent = '🧠 Diagnostic Assessment';
+
+                // Check if DiagnosticQuestions is available
+                if (!window.DiagnosticQuestions) {
+                    throw new Error('Diagnostic question bank not loaded');
+                }
+
+                // Get previous performance to determine adaptive questions
+                const previousScore = testPrepData?.diagnosticScore?.percentage || 0;
+                
+                // Generate 40 adaptive questions
+                const diagnosticQuestions = window.DiagnosticQuestions.getAdaptiveQuestions(previousScore, 40);
+                
+                console.log(`📊 Generated ${diagnosticQuestions.length} diagnostic questions (adaptive based on ${previousScore}% previous score)`);
+
+                // Convert to format expected by displayQuestion()
+                currentQuestions = diagnosticQuestions.map(q => ({
+                    prompt: q.question,
+                    options: [q.options.A, q.options.B, q.options.C, q.options.D],
+                    correctAnswer: q.options[q.correct], // Get full answer text
+                    correctLetter: q.correct,
+                    explanation: q.explanation,
+                    difficulty: q.difficulty,
+                    subject: q.section,
+                    category: q.category,
+                    id: q.id,
+                    hasImage: false,
+                    source: 'Diagnostic Bank'
+                }));
+
+                // Add diagnostic-specific metadata
+                currentQuestions.diagnosticMode = true;
+                currentQuestions.startTime = Date.now();
+
+                // Show diagnostic instructions
+                showDiagnosticInstructions();
+
+            } catch (error) {
+                console.error('❌ Error loading diagnostic questions:', error);
+                
+                // Show error and fallback
+                showErrorMessage('Unable to load diagnostic questions. Please try again or contact support.');
+                
+                // Redirect back to test prep after 3 seconds
+                setTimeout(() => {
+                    window.location.href = 'testprep-enhanced.html';
+                }, 3000);
+            }
+        }
+
+        /**
+         * Show diagnostic instructions before starting
+         */
+        function showDiagnosticInstructions() {
+            const instructionsHTML = `
+                <div class="diagnostic-instructions" style="
+                    background: var(--gradient);
+                    color: white;
+                    padding: 2rem;
+                    border-radius: 24px;
+                    margin-bottom: 2rem;
+                    text-align: center;
+                ">
+                    <h2 style="margin-bottom: 1rem;">📋 Diagnostic Assessment Instructions</h2>
+                    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+                        <p style="margin-bottom: 1rem;">This 40-question diagnostic will:</p>
+                        <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                            <li>Identify your strengths and weaknesses</li>
+                            <li>Provide estimated SAT, ACT, and PSAT scores</li>
+                            <li>Create a personalized study plan</li>
+                            <li>Take approximately 45-60 minutes</li>
+                        </ul>
+                        <p style="margin-bottom: 1.5rem;"><strong>Tips for best results:</strong></p>
+                        <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                            <li>Work in a quiet environment</li>
+                            <li>Answer all questions (no penalty for guessing)</li>
+                            <li>Read each question carefully</li>
+                            <li>Use scratch paper if needed</li>
+                        </ul>
+                        <button onclick="startDiagnosticTest()" class="btn btn-primary" style="
+                            width: 100%;
+                            padding: 1rem;
+                            font-size: 1.2rem;
+                            font-weight: 800;
+                            background: white;
+                            color: var(--accent-color);
+                            border: none;
+                            border-radius: 12px;
+                            cursor: pointer;
+                        ">
+                            <i class="fas fa-play"></i> Start Diagnostic (40 Questions)
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Insert before question card
+            const questionCard = document.getElementById('questionCard');
+            questionCard.insertAdjacentHTML('beforebegin', instructionsHTML);
+            
+            // Hide question card initially
+            questionCard.style.display = 'none';
+            
+            // Hide loading
+            document.getElementById('loadingScreen').style.display = 'none';
+        }
+
+        /**
+         * Start the diagnostic test (called from instructions button)
+         */
+        window.startDiagnosticTest = function() {
+            // Remove instructions
+            const instructions = document.querySelector('.diagnostic-instructions');
+            if (instructions) {
+                instructions.remove();
+            }
+
+            // Show question card
+            document.getElementById('questionCard').style.display = 'block';
+            
+            // Start timer
+            startTime = Date.now();
+            
+            // Display first question
+            displayQuestion();
+        };
+
+        /**
+         * Calculate and display diagnostic results
+         */
+        async function showDiagnosticResults() {
+            const totalQuestions = currentQuestions.length;
+            const correctAnswers = userAnswers.filter((answer, index) => 
+                answer === currentQuestions[index].correctAnswer
+            ).length;
+
+            // Calculate section scores
+            const sectionScores = {};
+            const sections = ['English', 'Reading', 'Math_NoCalc', 'Math_Calc', 'Science'];
+            
+            sections.forEach(section => {
+                const sectionQuestions = currentQuestions
+                    .map((q, i) => ({ question: q, index: i }))
+                    .filter(item => item.question.subject === section);
+                
+                if (sectionQuestions.length > 0) {
+                    const sectionCorrect = sectionQuestions.filter(item => 
+                        userAnswers[item.index] === item.question.correctAnswer
+                    ).length;
+                    
+                    sectionScores[section] = {
+                        correct: sectionCorrect,
+                        total: sectionQuestions.length,
+                        percentage: Math.round((sectionCorrect / sectionQuestions.length) * 100)
+                    };
+                }
+            });
+
+            // Calculate estimated test scores
+            const results = {
+                totalQuestions,
+                correctAnswers,
+                sectionScores
+            };
+
+            const estimatedScores = window.DiagnosticQuestions.calculateEstimatedScores(results);
+
+            // Save to Firebase
+            await saveDiagnosticResults(estimatedScores, sectionScores);
+
+            // Display results
+            displayDiagnosticResults(estimatedScores, sectionScores, totalQuestions, correctAnswers);
+        }
+
+        /**
+         * Save diagnostic results to Firebase
+         */
+        async function saveDiagnosticResults(scores, sectionScores) {
+            try {
+                const diagnosticData = {
+                    timestamp: new Date(),
+                    scores: scores,
+                    sectionBreakdown: sectionScores,
+                    questionsCompleted: currentQuestions.length,
+                    timeSpent: Math.round((Date.now() - startTime) / 1000 / 60), // minutes
+                    userId: currentUser.uid
+                };
+
+                // Save to Firestore
+                await setDoc(doc(db, 'diagnosticResults', currentUser.uid), diagnosticData, { merge: true });
+
+                // Update test prep data with new scores
+                await setDoc(doc(db, 'testprep', currentUser.uid), {
+                    lastDiagnostic: diagnosticData,
+                    diagnosticScore: scores,
+                    estimatedSAT: scores.sat,
+                    estimatedACT: scores.act,
+                    estimatedPSAT: scores.psat
+                }, { merge: true });
+
+                console.log('✅ Diagnostic results saved to Firebase');
+            } catch (error) {
+                console.error('❌ Error saving diagnostic results:', error);
+            }
+        }
+
+        /**
+         * Display beautiful diagnostic results
+         */
+        function displayDiagnosticResults(scores, sectionScores, total, correct) {
+            const percentage = Math.round((correct / total) * 100);
+            
+            const resultsHTML = `
+                <div class="diagnostic-results" style="max-width: 800px; margin: 2rem auto;">
+                    <!-- Header -->
+                    <div style="background: var(--gradient); color: white; padding: 3rem; border-radius: 24px 24px 0 0; text-align: center;">
+                        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">🎉 Diagnostic Complete!</h1>
+                        <p style="font-size: 1.2rem; opacity: 0.9;">Here are your estimated test scores:</p>
+                    </div>
+
+                    <!-- Score Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 2rem; background: var(--secondary-bg); border-radius: 0 0 24px 24px;">
+                        <!-- SAT Score -->
+                        <div style="background: var(--primary-bg); padding: 1.5rem; border-radius: 16px; text-align: center; box-shadow: var(--shadow);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Estimated SAT</div>
+                            <div style="font-size: 3rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${scores.sat}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">out of 1600</div>
+                        </div>
+
+                        <!-- ACT Score -->
+                        <div style="background: var(--primary-bg); padding: 1.5rem; border-radius: 16px; text-align: center; box-shadow: var(--shadow);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Estimated ACT</div>
+                            <div style="font-size: 3rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${scores.act}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">out of 36</div>
+                        </div>
+
+                        <!-- PSAT Score -->
+                        <div style="background: var(--primary-bg); padding: 1.5rem; border-radius: 16px; text-align: center; box-shadow: var(--shadow);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Estimated PSAT</div>
+                            <div style="font-size: 3rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${scores.psat}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">out of 1520</div>
+                        </div>
+                    </div>
+
+                    <!-- Overall Performance -->
+                    <div style="background: var(--primary-bg); padding: 2rem; border-radius: 16px; margin-top: 1rem; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 1rem;">📊 Overall Performance</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span>Questions Answered Correctly:</span>
+                            <strong>${correct} / ${total} (${percentage}%)</strong>
+                        </div>
+                        <div style="width: 100%; height: 12px; background: var(--secondary-bg); border-radius: 6px; overflow: hidden;">
+                            <div style="width: ${percentage}%; height: 100%; background: var(--gradient); transition: width 1s ease;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section Breakdown -->
+                    <div style="background: var(--primary-bg); padding: 2rem; border-radius: 16px; margin-top: 1rem; box-shadow: var(--shadow);">
+                        <h3 style="margin-bottom: 1.5rem;">📚 Section Breakdown</h3>
+                        ${Object.entries(sectionScores).map(([section, data]) => `
+                            <div style="margin-bottom: 1rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>${section.replace('_', ' ')}</span>
+                                    <strong>${data.correct}/${data.total} (${data.percentage}%)</strong>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${data.percentage}%; height: 100%; background: ${data.percentage >= 70 ? '#10b981' : data.percentage >= 50 ? '#f59e0b' : '#ef4444'}; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div style="background: var(--gradient); color: white; padding: 2rem; border-radius: 16px; margin-top: 1rem;">
+                        <h3 style="margin-bottom: 1rem;">💡 Recommendations</h3>
+                        <ul style="padding-left: 1.5rem; line-height: 1.8;">
+                            ${generateRecommendations(sectionScores, overallPercentage)}
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button onclick="window.location.href='testprep-enhanced.html'" class="btn btn-primary" style="flex: 1; padding: 1rem; font-size: 1.1rem;">
+                            <i class="fas fa-arrow-left"></i> Back to Test Prep
+                        </button>
+                        <button onclick="window.location.href='dashboard.html'" class="btn btn-secondary" style="flex: 1; padding: 1rem; font-size: 1.1rem;">
+                            <i class="fas fa-home"></i> View Dashboard
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Replace content
+            document.body.innerHTML = resultsHTML;
+        }
+
+        /**
+         * Generate personalized recommendations
+         */
+        function generateRecommendations(sectionScores, overallPercentage) {
+            const recommendations = [];
+
+            // Overall performance
+            if (overallPercentage >= 80) {
+                recommendations.push('<li>Excellent work! Focus on advanced practice to reach your target score.</li>');
+            } else if (overallPercentage >= 60) {
+                recommendations.push('<li>Good foundation! Identify weak areas and practice targeted questions.</li>');
+            } else {
+                recommendations.push('<li>Start with fundamentals and build up gradually with daily practice.</li>');
+            }
+
+            // Section-specific recommendations
+            Object.entries(sectionScores).forEach(([section, data]) => {
+                if (data.percentage < 60) {
+                    recommendations.push(`<li>Focus extra time on ${section.replace('_', ' ')} - consider tutoring or additional resources.</li>`);
+                }
+            });
+
+            // General tips
+            recommendations.push('<li>Take practice tests weekly to track improvement.</li>');
+            recommendations.push('<li>Review explanations for all incorrect answers.</li>');
+            recommendations.push('<li>Set a target test date to stay motivated.</li>');
+
+            return recommendations.join('');
         }
 
         function buildQuestionPrompt(subject, difficulty, weakAreas) {
@@ -1052,6 +1400,9 @@ Generate 10 questions now:`;
             const question = currentQuestions[currentQuestionIndex];
             const isCorrect = selectedAnswer === question.correctAnswer;
 
+            // Track user answer for diagnostic mode
+            userAnswers[currentQuestionIndex] = selectedAnswer;
+
             // Update UI
             const choices = document.querySelectorAll('.answer-choice');
             choices.forEach((choice, index) => {
@@ -1172,6 +1523,13 @@ Generate 10 questions now:`;
         }
 
         function showCompletionScreen() {
+            // Check if this is a diagnostic session
+            if (sessionType === 'diagnostic' && currentQuestions.diagnosticMode) {
+                showDiagnosticResults();
+                return;
+            }
+
+            // Standard completion screen for regular practice
             document.getElementById('questionCard').style.display = 'none';
             document.getElementById('completionScreen').classList.add('show');
 

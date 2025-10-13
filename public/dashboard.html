@@ -1635,6 +1635,120 @@
         .btn-secondary:active {
             transform: translateY(0);
         }
+
+        /* Analytics Modal */
+        .analytics-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Help/Tour Button */
+        .help-tour-button {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.4);
+            z-index: 999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-tour-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(160, 123, 204, 0.6);
+        }
+
+        .help-tour-button:active {
+            transform: scale(0.95);
+        }
+
+        /* AI Chat Toggle Button */
+        .ai-chat-toggle-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            z-index: 998;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ai-chat-toggle-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.6);
+        }
+
+        .ai-chat-toggle-button:active {
+            transform: scale(0.95);
+        }
+
+        .chat-notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 3px solid var(--primary-bg);
+        }
+
+        @media (max-width: 768px) {
+            .help-tour-button {
+                bottom: 80px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .ai-chat-toggle-button {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 1.4rem;
+            }
+        }
     </style>
     <!-- Error Handling System -->
     <script src="/js/error-boundary.js"></script>
@@ -1709,7 +1823,12 @@
                     
                     <a href="scholarship.html" class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">💰</span>
-                        <span>Scholarships</span>
+                        <span>Find Scholarships</span>
+                    </a>
+                    
+                    <a href="my-scholarships.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📚</span>
+                        <span>My Scholarships</span>
                     </a>
                     
                     <a href="document.html" class="cc-dropdown-link">
@@ -1775,7 +1894,7 @@
                 </div>
             </div>
 
-            <div class="stat-card" onclick="window.location.href='scholarship.html'" role="button" tabindex="0" aria-label="View scholarship opportunities">
+            <div class="stat-card" onclick="window.location.href='my-scholarships.html'" role="button" tabindex="0" aria-label="View saved scholarships and tracker">
                 <div class="stat-header">
                     <div class="stat-icon"><i class="fas fa-trophy" aria-hidden="true"></i></div>
                     <div class="stat-trend">
@@ -1786,7 +1905,7 @@
                 <div class="stat-value" id="scholarshipAmount"><i class="fas fa-spinner fa-spin" style="color: var(--accent-color);" aria-label="Loading"></i></div>
                 <div class="stat-label">Scholarship Value</div>
                 <div class="stat-description">
-                    Total value of scholarships you're eligible for
+                    Total potential earnings from saved scholarships
                 </div>
             </div>
 
@@ -2031,7 +2150,22 @@
                 </div>
             </div>
         </div>
+
+        <!-- Social Proof Widgets -->
+        <div id="socialProofContainer"></div>
+        <div id="studentsLikeYouContainer"></div>
     </div>
+
+    <!-- Help/Tour Button -->
+    <button class="help-tour-button" onclick="window.startProductTour()" aria-label="Take a tour">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <!-- AI Chat Toggle Button -->
+    <button class="ai-chat-toggle-button" onclick="window.aiChat?.toggle()" aria-label="Chat with AI">
+        <i class="fas fa-comment"></i>
+        <span class="chat-notification-badge" id="chatNotificationBadge" style="display: none;">1</span>
+    </button>
 
     <!-- Footer -->
     <footer class="footer">
@@ -2059,6 +2193,10 @@
         </div>
     </footer>
 
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/application-tracker.css">
+    <link rel="stylesheet" href="css/scholarship-features.css">
+
     <!-- AI Engine and Supporting Modules -->
     <script src="js/ai-engine.js"></script>
     <script src="js/user-profile-manager.js"></script>
@@ -2067,6 +2205,19 @@
     <script src="js/timeline-generator.js"></script>
     <script src="js/app-init.js"></script>
     <script src="js/navbar-init.js"></script>
+    <script src="js/dashboard-loader.js"></script>
+    <script src="js/application-tracker.js"></script>
+    <script src="js/sample-data-generator.js"></script>
+    <script src="js/onboarding.js"></script>
+    <script src="js/product-tour.js"></script>
+    <script src="js/social-proof.js"></script>
+    <script src="js/ai-chat-assistant.js"></script>
+    <script src="js/smart-alerts.js"></script>
+    <script src="js/gamification.js"></script>
+    <script src="js/share-success.js"></script>
+    <script src="js/scholarship-tracker.js"></script>
+    <script src="js/scholarship-match-score.js"></script>
+    <script src="js/scholarship-notifications.js"></script>
 
     <!-- Firebase & Enhanced JavaScript Integration -->
     <script type="module">
@@ -2114,7 +2265,7 @@
         /**
          * Show a toast notification
          * @param {string} message - The message to display
-         * @param {string} type - 'error', 'success', or 'info'
+         * @param {string> type - 'error', 'success', or 'info'
          * @param {number} duration - How long to show the toast (ms)
          */
         function showToast(message, type = 'error', duration = 5000) {
@@ -2434,3 +2585,495 @@
         // ============================================
         // DASHBOARD FUNCTIONALITY
         // ============================================
+
+        /**
+         * Initialize dashboard with data
+         */
+        async function initDashboard(user) {
+            console.log('📊 Initializing dashboard for user:', user.uid);
+
+            try {
+                // Get user data
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : {};
+
+                // Check if user needs onboarding
+                const needsOnboarding = !userData.onboardingCompleted;
+
+                if (needsOnboarding) {
+                    console.log('🎓 New user detected - starting onboarding');
+                    window.onboarding = new OnboardingFlow(db, user.uid, userData);
+                    window.onboarding.start();
+                } else {
+                    // Check if user has data, if not generate sample data
+                    const sampleDataGen = new SampleDataGenerator(db, user.uid);
+                    const hasData = await sampleDataGen.hasData();
+
+                    if (!hasData) {
+                        console.log('🎨 Generating sample data for existing user');
+                        await sampleDataGen.generateSampleData();
+                        sampleDataGen.showSampleDataBanner();
+                    }
+                }
+
+                // Create application tracker
+                window.applicationTracker = new ApplicationTracker(db, user.uid);
+
+                // Create dashboard loader
+                window.dashboardLoader = new DashboardLoader(auth, db, user);
+
+                // Initialize and load all data
+                await window.dashboardLoader.initialize();
+
+                // Add social proof widgets
+                window.socialProof = new SocialProof(db, user.uid, userData);
+                const socialProofContainer = document.getElementById('socialProofContainer');
+                const studentsLikeYouContainer = document.getElementById('studentsLikeYouContainer');
+
+                if (socialProofContainer) {
+                    socialProofContainer.appendChild(window.socialProof.getSuccessWidget());
+                }
+
+                if (studentsLikeYouContainer) {
+                    studentsLikeYouContainer.appendChild(window.socialProof.getStudentsLikeYouWidget());
+                }
+
+                // Initialize product tour
+                window.productTour = new ProductTour();
+
+                // Only auto-start for users who just completed onboarding
+                if (userData.onboardingCompleted && window.productTour.shouldAutoStart()) {
+                    setTimeout(() => {
+                        window.productTour.start();
+                    }, 2000); // Start after 2 seconds
+                }
+
+                // Initialize AI Chat Assistant
+                window.aiChat = new AIChatAssistant(db, user.uid, userData);
+                window.aiChat.initialize();
+                console.log('✅ AI Chat Assistant initialized');
+
+                // Initialize Smart Alerts
+                window.smartAlerts = new SmartAlerts(db, user.uid, userData);
+                await window.smartAlerts.initialize();
+                console.log('✅ Smart Alerts initialized');
+
+                // Initialize Gamification
+                window.gamification = new Gamification(db, user.uid, userData);
+                await window.gamification.initialize();
+                console.log('✅ Gamification initialized');
+
+                // Initialize Share Success
+                window.shareSuccess = new ShareSuccess(db, user.uid, userData);
+                window.shareSuccess.initialize();
+                console.log('✅ Share Success initialized');
+
+                // Initialize Scholarship Features
+                await scholarshipTracker.initialize(user.uid);
+                await scholarshipMatchScore.initialize(user.uid);
+                await scholarshipNotifications.initialize(user.uid);
+                console.log('✅ Scholarship features initialized');
+
+                // Update scholarship stats on dashboard
+                updateScholarshipStats();
+
+                console.log('✅ Dashboard initialized successfully');
+            } catch (error) {
+                console.error('❌ Dashboard initialization failed:', error);
+                showToast('Failed to load dashboard. Please refresh the page.', 'error');
+            }
+        }
+
+        // ============================================
+        // AUTH STATE LISTENER - Initialize Dashboard
+        // ============================================
+
+        // Listen for auth state and initialize dashboard
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log('✅ User authenticated:', user.email);
+
+                // Load navbar data
+                await loadNavbarUserData(user.uid);
+
+                // Initialize dashboard
+                await initDashboard(user);
+
+                // Set up starry background for dark mode
+                if (document.body.getAttribute('data-theme') === 'dark') {
+                    createStarryBackground();
+                }
+            } else {
+                console.log('❌ No user authenticated, redirecting to login');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+
+        /**
+         * Create starry background for dark mode
+         */
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg || starryBg.children.length > 0) return;
+
+            const starCount = 100;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                starryBg.appendChild(star);
+            }
+        }
+
+        /**
+         * Show application tracker modal
+         */
+        window.showApplicationTracker = async function() {
+            if (window.applicationTracker) {
+                await window.applicationTracker.open();
+            } else {
+                showToast('Loading application tracker...', 'info');
+                setTimeout(() => {
+                    if (window.applicationTracker) {
+                        window.applicationTracker.open();
+                    }
+                }, 500);
+            }
+        };
+
+        /**
+         * Show progress analytics modal
+         */
+        window.showProgressAnalytics = function() {
+            // Create quick analytics view
+            const modal = document.createElement('div');
+            modal.className = 'analytics-modal';
+            modal.innerHTML = `
+                <div class="app-tracker-overlay" onclick="this.parentElement.remove()"></div>
+                <div class="app-tracker-content" style="max-width: 900px;">
+                    <div class="app-tracker-header">
+                        <h2>
+                            <i class="fas fa-chart-line"></i>
+                            Progress Analytics
+                        </h2>
+                        <button class="app-tracker-close" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div style="padding: 2rem;">
+                        <div class="app-tracker-stats">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                    <i class="fas fa-check-double"></i>
+                                </div>
+                                <div class="stat-mini-content">
+                                    <div class="stat-mini-value" id="analyticsCompleted">0</div>
+                                    <div class="stat-mini-label">Tasks Completed</div>
+                                </div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-mini-content">
+                                    <div class="stat-mini-value" id="analyticsPending">0</div>
+                                    <div class="stat-mini-label">Tasks Pending</div>
+                                </div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="stat-mini-content">
+                                    <div class="stat-mini-value" id="analyticsDaysLeft">0</div>
+                                    <div class="stat-mini-label">Days to Next Deadline</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Your Progress Journey</h3>
+                            <div style="background: var(--secondary-bg); border-radius: 16px; padding: 2rem;">
+                                <div class="progress-circle" style="margin: 0 auto;">
+                                    <svg>
+                                        <circle class="progress-circle-bg" cx="70" cy="70" r="60"></circle>
+                                        <circle class="progress-circle-fill" cx="70" cy="70" r="60"
+                                                stroke-dasharray="377" stroke-dashoffset="${document.getElementById('progressCircle')?.style.strokeDashoffset || 377}" id="analyticsProgressCircle"></circle>
+                                    </svg>
+                                    <div class="progress-text">
+                                        <div class="progress-percentage" id="analyticsProgressText">0%</div>
+                                        <div class="progress-label">Complete</div>
+                                    </div>
+                                </div>
+                                <p style="color: var(--text-secondary); margin-top: 1.5rem;">
+                                    Keep up the great work! You're making steady progress toward your goals.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Quick Actions</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                <button class="btn-primary" onclick="window.location.href='essaycoach.html'" style="width: 100%;">
+                                    <i class="fas fa-pen-fancy"></i>
+                                    Start Writing Essays
+                                </button>
+                                <button class="btn-primary" onclick="window.showApplicationTracker(); this.closest('.analytics-modal').remove();" style="width: 100%;">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    Manage Applications
+                                </button>
+                                <button class="btn-primary" onclick="window.location.href='scholarship.html'" style="width: 100%;">
+                                    <i class="fas fa-trophy"></i>
+                                    Find Scholarships
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('show'), 10);
+
+            // Load actual data
+            loadAnalyticsData();
+        };
+
+        /**
+         * Load analytics data
+         */
+        async function loadAnalyticsData() {
+            try {
+                const tasksQuery = query(
+                    collection(db, 'tasks'),
+                    where('userId', '==', auth.currentUser.uid)
+                );
+
+                const snapshot = await getDocs(tasksQuery);
+                const completed = snapshot.docs.filter(doc => doc.data().status === 'completed').length;
+                const pending = snapshot.docs.filter(doc => doc.data().status !== 'completed').length;
+
+                // Find next deadline
+                const appsQuery = query(
+                    collection(db, 'applications'),
+                    where('userId', '==', auth.currentUser.uid),
+                    where('status', '!=', 'submitted'),
+                    orderBy('status'),
+                    orderBy('deadline', 'asc')
+                );
+
+                const appsSnapshot = await getDocs(appsQuery);
+                let daysLeft = 0;
+
+                if (!appsSnapshot.empty) {
+                    const nextApp = appsSnapshot.docs[0].data();
+                    const deadline = new Date(nextApp.deadline);
+                    const today = new Date();
+                    daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                }
+
+                // Update UI
+                const completedEl = document.getElementById('analyticsCompleted');
+                const pendingEl = document.getElementById('analyticsPending');
+                const daysLeftEl = document.getElementById('analyticsDaysLeft');
+                const progressTextEl = document.getElementById('analyticsProgressText');
+                const progressCircleEl = document.getElementById('analyticsProgressCircle');
+
+                if (completedEl) completedEl.textContent = completed;
+                if (pendingEl) pendingEl.textContent = pending;
+                if (daysLeftEl) daysLeftEl.textContent = daysLeft > 0 ? daysLeft : 'N/A';
+
+                const totalTasks = completed + pending;
+                const progress = totalTasks > 0 ? Math.round((completed / totalTasks) * 100) : 0;
+
+                if (progressTextEl) progressTextEl.textContent = `${progress}%`;
+                if (progressCircleEl) {
+                    const circumference = 2 * Math.PI * 60;
+                    const offset = circumference - (progress / 100) * circumference;
+                    progressCircleEl.style.strokeDashoffset = offset;
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        /**
+         * Open full timeline in new page
+         */
+        window.openFullTimeline = function() {
+            window.location.href = 'adaptive-timeline.html';
+        };
+
+        /**
+         * Generate dashboard timeline
+         */
+        window.generateDashboardTimeline = function() {
+            const studentType = document.getElementById('dash-student-type')?.value;
+            const gradYear = document.getElementById('dash-graduation-year')?.value;
+
+            if (!studentType || !gradYear) {
+                showToast('Please select both application type and graduation year', 'error');
+                return;
+            }
+
+            const content = document.getElementById('dashboardTimelineContent');
+            if (!content) return;
+
+            // Generate timeline based on selections
+            const timeline = generateTimelineForDashboard(studentType, gradYear);
+            content.innerHTML = timeline;
+        };
+
+        /**
+         * Generate timeline HTML for dashboard
+         */
+        function generateTimelineForDashboard(type, year) {
+            const timelines = {
+                'ED': [
+                    { date: 'Aug - Sep', title: 'Early Prep', description: 'Finalize college list, begin essays', icon: 'fa-list' },
+                    { date: 'September', title: 'Testing Complete', description: 'Take final SAT/ACT if needed', icon: 'fa-pencil-alt' },
+                    { date: 'October', title: 'Finish Essays', description: 'Complete all supplemental essays', icon: 'fa-pen-fancy' },
+                    { date: 'Nov 1', title: 'ED Deadline', description: 'Submit Early Decision applications', icon: 'fa-paper-plane' },
+                    { date: 'Mid-December', title: 'ED Results', description: 'Receive Early Decision results', icon: 'fa-envelope-open' }
+                ],
+                'EA': [
+                    { date: 'Aug - Sep', title: 'Early Prep', description: 'Finalize college list, begin essays', icon: 'fa-list' },
+                    { date: 'September', title: 'Testing Complete', description: 'Take final SAT/ACT if needed', icon: 'fa-pencil-alt' },
+                    { date: 'October', title: 'Finish Essays', description: 'Complete all supplemental essays', icon: 'fa-pen-fancy' },
+                    { date: 'Nov 1', title: 'EA Deadline', description: 'Submit Early Action applications', icon: 'fa-paper-plane' },
+                    { date: 'Mid-December', title: 'EA Results', description: 'Receive Early Action results', icon: 'fa-envelope-open' }
+                ],
+                'RD': [
+                    { date: 'Aug - Oct', title: 'Prep Phase', description: 'Finalize college list, begin essays', icon: 'fa-list' },
+                    { date: 'November', title: 'Testing & Essays', description: 'Final testing, work on essays', icon: 'fa-pencil-alt' },
+                    { date: 'December', title: 'Finalize Essays', description: 'Complete all supplemental essays', icon: 'fa-pen-fancy' },
+                    { date: 'Jan 1 - 15', title: 'RD Deadline', description: 'Submit Regular Decision applications', icon: 'fa-paper-plane' },
+                    { date: 'March - April', title: 'RD Results', description: 'Receive Regular Decision results', icon: 'fa-envelope-open' },
+                    { date: 'May 1', title: 'Decision Day', description: 'Commit to your college!', icon: 'fa-graduation-cap' }
+                ]
+            };
+
+            const events = timelines[type] || [];
+            let html = '<div class="timeline-compact">';
+
+            events.forEach((event, index) => {
+                html += `
+                    <div class="timeline-item-compact" style="animation-delay: ${index * 0.1}s">
+                        <div class="timeline-icon-compact">
+                            <i class="fas ${event.icon}"></i>
+                        </div>
+                        <div class="timeline-content-compact">
+                            <div class="timeline-date">${event.date}</div>
+                            <div class="timeline-title">${event.title}</div>
+                            <div class="timeline-description">${event.description}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            // Add compact timeline styles
+            html += `
+                <style>
+                    .timeline-compact {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    .timeline-item-compact {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 1rem;
+                        padding: 1rem;
+                        background: var(--secondary-bg);
+                        border-radius: 12px;
+                        border-left: 4px solid var(--accent-color);
+                        transition: all 0.3s ease;
+                        opacity: 0;
+                        animation: slideIn 0.5s forwards;
+                    }
+                    .timeline-item-compact:hover {
+                        transform: translateX(8px);
+                        box-shadow: 0 4px 12px rgba(160, 123, 204, 0.15);
+                    }
+                    .timeline-icon-compact {
+                        width: 40px;
+                        height: 40px;
+                        background: var(--gradient);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        flex-shrink: 0;
+                    }
+                    .timeline-content-compact {
+                        flex: 1;
+                    }
+                    @keyframes slideIn {
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                </style>
+            `;
+
+            return html;
+        }
+
+        /**
+         * Update scholarship statistics on dashboard
+         */
+        async function updateScholarshipStats() {
+            try {
+                if (!window.scholarshipTracker || !window.scholarshipTracker.initialized) {
+                    console.log('Scholarship tracker not ready yet');
+                    return;
+                }
+
+                const stats = window.scholarshipTracker.getStatistics();
+                
+                // Update scholarship amount display
+                const amountEl = document.getElementById('scholarshipAmount');
+                if (amountEl) {
+                    amountEl.textContent = `$${stats.totalPotential.toLocaleString()}`;
+                }
+
+                // Update trend display
+                const trendEl = document.getElementById('scholarshipTrend');
+                if (trendEl && stats.total > 0) {
+                    trendEl.textContent = `${stats.total} saved`;
+                }
+
+                console.log('✅ Scholarship stats updated:', stats);
+            } catch (error) {
+                console.error('Error updating scholarship stats:', error);
+                // Set default values on error
+                const amountEl = document.getElementById('scholarshipAmount');
+                if (amountEl) {
+                    amountEl.textContent = '$0';
+                }
+            }
+        }
+
+        // Listen for scholarship updates
+        window.addEventListener('scholarshipsUpdated', () => {
+            updateScholarshipStats();
+        });
+
+        console.log('🎉 Dashboard script loaded and ready!');
+
+    </script>
+</body>
+</html>

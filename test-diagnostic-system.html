@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic System Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .test-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+        .test-result {
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .pass {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .fail {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .score-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .score-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .score-card h3 {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+        .score-card .score {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        code {
+            background: #2d3748;
+            color: #48bb78;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Diagnostic System Test Suite</h1>
+        
+        <div class="test-section">
+            <h2>1️⃣ Question Bank Load Test</h2>
+            <div id="questionBankTest">Loading...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>2️⃣ Adaptive Algorithm Test</h2>
+            <div id="adaptiveTest">Click "Run All Tests" below</div>
+        </div>
+
+        <div class="test-section">
+            <h2>3️⃣ Score Calculation Test</h2>
+            <div id="scoreTest">Click "Run All Tests" below</div>
+        </div>
+
+        <div class="test-section">
+            <h2>4️⃣ Sample Score Preview</h2>
+            <div id="scorePreview">Click "Run All Tests" below</div>
+        </div>
+
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="window.location.href='testprep-enhanced.html'" style="background: #4299e1; margin-top: 0.5rem;">
+            📋 Go to Test Prep Page
+        </button>
+    </div>
+
+    <script src="/js/diagnostic-questions.js"></script>
+    <script>
+        // Test 1: Question Bank Load
+        function testQuestionBankLoad() {
+            const results = [];
+            const container = document.getElementById('questionBankTest');
+
+            // Check if DiagnosticQuestions exists
+            if (window.DiagnosticQuestions) {
+                results.push({ pass: true, msg: 'window.DiagnosticQuestions loaded successfully' });
+            } else {
+                results.push({ pass: false, msg: 'window.DiagnosticQuestions NOT FOUND' });
+                container.innerHTML = results.map(formatResult).join('');
+                return;
+            }
+
+            const { baselineQuestions, advancedQuestions } = window.DiagnosticQuestions;
+
+            // Check baseline questions
+            if (baselineQuestions && baselineQuestions.length === 80) {
+                results.push({ pass: true, msg: `Baseline questions: ${baselineQuestions.length} / 80 ✓` });
+            } else {
+                results.push({ pass: false, msg: `Baseline questions: ${baselineQuestions?.length || 0} / 80 ✗` });
+            }
+
+            // Check advanced questions
+            if (advancedQuestions && advancedQuestions.length === 80) {
+                results.push({ pass: true, msg: `Advanced questions: ${advancedQuestions.length} / 80 ✓` });
+            } else {
+                results.push({ pass: false, msg: `Advanced questions: ${advancedQuestions?.length || 0} / 80 ✗` });
+            }
+
+            // Check total
+            const total = (baselineQuestions?.length || 0) + (advancedQuestions?.length || 0);
+            if (total === 160) {
+                results.push({ pass: true, msg: `Total questions: ${total} / 160 🎉` });
+            } else {
+                results.push({ pass: false, msg: `Total questions: ${total} / 160 ⚠️` });
+            }
+
+            // Check question structure
+            const sampleQuestion = baselineQuestions[0];
+            const requiredFields = ['id', 'section', 'category', 'difficulty', 'question', 'options', 'correct', 'explanation'];
+            const hasAllFields = requiredFields.every(field => sampleQuestion.hasOwnProperty(field));
+            
+            if (hasAllFields) {
+                results.push({ pass: true, msg: 'Question structure validation passed' });
+            } else {
+                results.push({ pass: false, msg: 'Question structure missing required fields' });
+            }
+
+            container.innerHTML = results.map(formatResult).join('');
+        }
+
+        // Test 2: Adaptive Algorithm
+        function testAdaptiveAlgorithm() {
+            const results = [];
+            const container = document.getElementById('adaptiveTest');
+
+            try {
+                // Test with low performance (should get all baseline)
+                const lowPerformance = window.DiagnosticQuestions.getAdaptiveQuestions(40, 40);
+                if (lowPerformance.length === 40) {
+                    results.push({ pass: true, msg: 'Low performance (40%): Generated 40 questions' });
+                    const hasAdvanced = lowPerformance.some(q => q.difficulty === 5);
+                    if (!hasAdvanced) {
+                        results.push({ pass: true, msg: 'Correctly excluded advanced questions for low performers' });
+                    } else {
+                        results.push({ pass: false, msg: 'Should not include advanced questions for low performers' });
+                    }
+                } else {
+                    results.push({ pass: false, msg: `Low performance: Got ${lowPerformance.length} instead of 40` });
+                }
+
+                // Test with high performance (should get mixed)
+                const highPerformance = window.DiagnosticQuestions.getAdaptiveQuestions(80, 40);
+                if (highPerformance.length === 40) {
+                    results.push({ pass: true, msg: 'High performance (80%): Generated 40 questions' });
+                    const advancedCount = highPerformance.filter(q => q.difficulty === 5).length;
+                    if (advancedCount > 0) {
+                        results.push({ pass: true, msg: `Correctly included ${advancedCount} advanced questions for high performers` });
+                    } else {
+                        results.push({ pass: false, msg: 'Should include advanced questions for high performers' });
+                    }
+                } else {
+                    results.push({ pass: false, msg: `High performance: Got ${highPerformance.length} instead of 40` });
+                }
+
+                // Test uniqueness
+                const questionIds = lowPerformance.map(q => q.id);
+                const uniqueIds = new Set(questionIds);
+                if (questionIds.length === uniqueIds.size) {
+                    results.push({ pass: true, msg: 'All questions are unique (no duplicates)' });
+                } else {
+                    results.push({ pass: false, msg: 'Found duplicate questions!' });
+                }
+
+            } catch (error) {
+                results.push({ pass: false, msg: `Error: ${error.message}` });
+            }
+
+            container.innerHTML = results.map(formatResult).join('');
+        }
+
+        // Test 3: Score Calculation
+        function testScoreCalculation() {
+            const results = [];
+            const container = document.getElementById('scoreTest');
+
+            try {
+                // Test perfect score
+                const perfectResults = {
+                    totalQuestions: 40,
+                    correctAnswers: 40,
+                    sectionScores: {
+                        English: { correct: 10, total: 10, percentage: 100 },
+                        Reading: { correct: 10, total: 10, percentage: 100 },
+                        Math_NoCalc: { correct: 10, total: 10, percentage: 100 },
+                        Math_Calc: { correct: 10, total: 10, percentage: 100 }
+                    }
+                };
+
+                const perfectScores = window.DiagnosticQuestions.calculateEstimatedScores(perfectResults);
+                
+                if (perfectScores.sat === 1600) {
+                    results.push({ pass: true, msg: 'Perfect SAT score calculated correctly: 1600' });
+                } else {
+                    results.push({ pass: false, msg: `Perfect SAT should be 1600, got ${perfectScores.sat}` });
+                }
+
+                if (perfectScores.act === 36) {
+                    results.push({ pass: true, msg: 'Perfect ACT score calculated correctly: 36' });
+                } else {
+                    results.push({ pass: false, msg: `Perfect ACT should be 36, got ${perfectScores.act}` });
+                }
+
+                // Test 50% score
+                const halfResults = {
+                    totalQuestions: 40,
+                    correctAnswers: 20,
+                    sectionScores: {}
+                };
+
+                const halfScores = window.DiagnosticQuestions.calculateEstimatedScores(halfResults);
+                
+                if (halfScores.percentage === 50) {
+                    results.push({ pass: true, msg: '50% accuracy calculated correctly' });
+                } else {
+                    results.push({ pass: false, msg: `Expected 50%, got ${halfScores.percentage}%` });
+                }
+
+                // Score range validation
+                if (halfScores.sat >= 400 && halfScores.sat <= 1600) {
+                    results.push({ pass: true, msg: `SAT score in valid range: ${halfScores.sat}` });
+                } else {
+                    results.push({ pass: false, msg: `SAT score out of range: ${halfScores.sat}` });
+                }
+
+                if (halfScores.act >= 1 && halfScores.act <= 36) {
+                    results.push({ pass: true, msg: `ACT score in valid range: ${halfScores.act}` });
+                } else {
+                    results.push({ pass: false, msg: `ACT score out of range: ${halfScores.act}` });
+                }
+
+            } catch (error) {
+                results.push({ pass: false, msg: `Error: ${error.message}` });
+            }
+
+            container.innerHTML = results.map(formatResult).join('');
+        }
+
+        // Test 4: Score Preview
+        function showScorePreview() {
+            const container = document.getElementById('scorePreview');
+
+            // Calculate sample scores for different performance levels
+            const samples = [
+                { percentage: 50, label: '50% Score' },
+                { percentage: 75, label: '75% Score' },
+                { percentage: 90, label: '90% Score' }
+            ];
+
+            let html = '';
+            samples.forEach(sample => {
+                const results = {
+                    totalQuestions: 40,
+                    correctAnswers: Math.round(40 * sample.percentage / 100),
+                    sectionScores: {}
+                };
+
+                const scores = window.DiagnosticQuestions.calculateEstimatedScores(results);
+
+                html += `
+                    <div class="test-result info">
+                        <strong>${sample.label}:</strong> SAT ${scores.sat} | ACT ${scores.act} | PSAT ${scores.psat}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function formatResult(result) {
+            const className = result.pass ? 'pass' : 'fail';
+            const icon = result.pass ? '✅' : '❌';
+            return `<div class="test-result ${className}">${icon} ${result.msg}</div>`;
+        }
+
+        function runAllTests() {
+            testQuestionBankLoad();
+            setTimeout(() => testAdaptiveAlgorithm(), 100);
+            setTimeout(() => testScoreCalculation(), 200);
+            setTimeout(() => showScorePreview(), 300);
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', () => {
+            testQuestionBankLoad();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Scholarship Tracker | College Climb</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/application-tracker.css">
+    <link rel="stylesheet" href="/css/scholarship-features.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">College Climb</a>
+            <ul class="nav-menu">
+                <li><a href="/dashboard.html">Dashboard</a></li>
+                <li><a href="/scholarship.html">Scholarships</a></li>
+                <li><a href="/my-scholarships.html" class="active">My Scholarships</a></li>
+                <li><a href="/testprep-enhanced.html">Test Prep</a></li>
+                <li><a href="/essay-coach.html">Essay Coach</a></li>
+                <li><a href="/timeline.html">Timeline</a></li>
+            </ul>
+            <div class="nav-user">
+                <span id="userEmail"></span>
+                <button onclick="firebase.auth().signOut()" class="btn-outline">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="padding: 2rem 0;">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>
+                    <i class="fas fa-bookmark"></i> My Scholarship Tracker
+                </h1>
+                <p class="text-muted">Track your saved scholarships and application progress</p>
+            </div>
+            <div class="header-actions">
+                <button onclick="window.location.href='/scholarship.html'" class="btn-secondary">
+                    <i class="fas fa-search"></i> Find More Scholarships
+                </button>
+                <button onclick="showProfileEditor()" class="btn-outline">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="tracker-stats">
+            <div class="tracker-stat-card">
+                <i class="fas fa-bookmark" style="font-size: 2rem; color: #667eea;"></i>
+                <div class="tracker-stat-value" id="savedScholarshipsCount">0</div>
+                <div class="tracker-stat-label">Saved Scholarships</div>
+            </div>
+            
+            <div class="tracker-stat-card earnings">
+                <i class="fas fa-dollar-sign" style="font-size: 2rem; color: #10b981;"></i>
+                <div class="tracker-stat-value" id="totalPotentialEarnings">$0</div>
+                <div class="tracker-stat-label">Potential Earnings</div>
+            </div>
+            
+            <div class="tracker-stat-card">
+                <i class="fas fa-tasks" style="font-size: 2rem; color: #3b82f6;"></i>
+                <div class="tracker-stat-value" id="inProgressCount">0</div>
+                <div class="tracker-stat-label">In Progress</div>
+            </div>
+            
+            <div class="tracker-stat-card awarded">
+                <i class="fas fa-trophy" style="font-size: 2rem; color: #f59e0b;"></i>
+                <div class="tracker-stat-value" id="totalAwarded">$0</div>
+                <div class="tracker-stat-label">Total Awarded</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Deadlines Widget -->
+        <div id="upcomingDeadlines" class="mb-4">
+            <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all" onclick="filterScholarships('all')">
+                All <span class="count" id="countAll">0</span>
+            </button>
+            <button class="filter-tab" data-filter="saved" onclick="filterScholarships('saved')">
+                Saved <span class="count" id="countSaved">0</span>
+            </button>
+            <button class="filter-tab" data-filter="in_progress" onclick="filterScholarships('in_progress')">
+                In Progress <span class="count" id="countInProgress">0</span>
+            </button>
+            <button class="filter-tab" data-filter="submitted" onclick="filterScholarships('submitted')">
+                Submitted <span class="count" id="countSubmitted">0</span>
+            </button>
+            <button class="filter-tab" data-filter="awarded" onclick="filterScholarships('awarded')">
+                Awarded <span class="count" id="countAwarded">0</span>
+            </button>
+        </div>
+
+        <!-- Saved Scholarships List -->
+        <div id="savedScholarshipsList">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Profile Editor Modal -->
+    <div id="profileEditorModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeProfileEditor()"></div>
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" onclick="closeProfileEditor()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2><i class="fas fa-user-edit"></i> Edit Your Profile</h2>
+            <p class="text-muted">Help us match you with the best scholarships</p>
+
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>GPA</label>
+                        <input type="number" step="0.01" min="0" max="4.0" name="gpa" placeholder="3.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>SAT Score</label>
+                        <input type="number" min="400" max="1600" name="satScore" placeholder="1200">
+                    </div>
+
+                    <div class="form-group">
+                        <label>ACT Score</label>
+                        <input type="number" min="1" max="36" name="actScore" placeholder="24">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Grade Level</label>
+                        <select name="gradeLevel">
+                            <option value="">Select...</option>
+                            <option value="freshman">Freshman</option>
+                            <option value="sophomore">Sophomore</option>
+                            <option value="junior">Junior</option>
+                            <option value="senior">Senior</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="state" placeholder="CA">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Citizenship</label>
+                        <select name="citizenship">
+                            <option value="US">U.S. Citizen</option>
+                            <option value="Permanent Resident">Permanent Resident</option>
+                            <option value="DACA">DACA</option>
+                            <option value="International">International</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Intended Major</label>
+                        <input type="text" name="intendedMajor" placeholder="Computer Science">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>
+                            <input type="checkbox" name="financialNeed"> I have demonstrated financial need
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>
+                            <input type="checkbox" name="leadership"> I have leadership experience
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>
+                            <input type="checkbox" name="volunteer"> I have volunteer experience
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>
+                            <input type="checkbox" name="firstGeneration"> I am a first-generation college student
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" onclick="closeProfileEditor()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/js/firebase-config.js"></script>
+
+    <!-- Scholarship Features -->
+    <script src="/js/scholarship-tracker.js"></script>
+    <script src="/js/scholarship-match-score.js"></script>
+    <script src="/js/scholarship-notifications.js"></script>
+
+    <!-- Page Script -->
+    <script>
+        let currentFilter = 'all';
+
+        // Initialize when user is authenticated
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                document.getElementById('userEmail').textContent = user.email;
+                
+                // Wait for all systems to initialize
+                await Promise.all([
+                    scholarshipTracker.initialize(user.uid),
+                    scholarshipMatchScore.initialize(user.uid),
+                    scholarshipNotifications.initialize(user.uid)
+                ]);
+
+                // Load and display scholarships
+                await loadScholarships();
+                
+                // Load profile into form
+                loadProfileIntoForm();
+            } else {
+                window.location.href = '/login.html';
+            }
+        });
+
+        // Load scholarships
+        async function loadScholarships() {
+            const scholarships = await scholarshipTracker.loadSavedScholarships();
+            displayScholarships(scholarships);
+            updateStats();
+            displayUpcomingDeadlines();
+        }
+
+        // Display scholarships
+        function displayScholarships(scholarships) {
+            const container = document.getElementById('savedScholarshipsList');
+            
+            // Filter scholarships
+            let filtered = currentFilter === 'all' 
+                ? scholarships 
+                : scholarships.filter(s => s.status === currentFilter);
+
+            // Update counts
+            updateCounts(scholarships);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bookmark" style="font-size: 4rem; opacity: 0.3;"></i>
+                        <h3>No scholarships found</h3>
+                        <p>Start saving scholarships to track your applications</p>
+                        <a href="/scholarship.html" class="btn-primary">
+                            <i class="fas fa-search"></i> Browse Scholarships
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = filtered.map(saved => createScholarshipItem(saved)).join('');
+            container.innerHTML = html;
+        }
+
+        // Create scholarship item HTML
+        function createScholarshipItem(saved) {
+            const scholarship = saved.scholarshipData;
+            const deadline = new Date(saved.applicationDeadline);
+            const daysUntil = Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24));
+            
+            const completedTasks = saved.checklist.filter(item => item.completed).length;
+            const totalTasks = saved.checklist.length;
+            const progress = Math.round((completedTasks / totalTasks) * 100);
+
+            return `
+                <div class="saved-scholarship-item ${saved.status}">
+                    <div class="scholarship-item-header">
+                        <div>
+                            <h3>${scholarship.title}</h3>
+                            <p class="text-muted">${scholarship.organization}</p>
+                        </div>
+                        <div class="scholarship-item-meta">
+                            <span class="status-badge ${saved.status}">${saved.status.replace('_', ' ')}</span>
+                            <strong>${typeof scholarship.amount === 'number' ? '$' + scholarship.amount.toLocaleString() : scholarship.amount}</strong>
+                        </div>
+                    </div>
+
+                    <div class="scholarship-item-info">
+                        <div>
+                            <i class="fas fa-calendar"></i>
+                            Deadline: ${deadline.toLocaleDateString()} 
+                            <span class="text-${daysUntil <= 7 ? 'danger' : daysUntil <= 30 ? 'warning' : 'muted'}">
+                                (${daysUntil} days)
+                            </span>
+                        </div>
+                        <div>
+                            <i class="fas fa-tasks"></i>
+                            Progress: ${completedTasks}/${totalTasks} tasks (${progress}%)
+                        </div>
+                    </div>
+
+                    <div class="scholarship-checklist">
+                        ${saved.checklist.map((item, index) => `
+                            <div class="checklist-item ${item.completed ? 'completed' : ''}">
+                                <input type="checkbox" 
+                                       ${item.completed ? 'checked' : ''} 
+                                       onchange="updateChecklist('${saved.id}', ${index}, this.checked)">
+                                <span>${item.task}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="scholarship-item-notes">
+                        <label><i class="fas fa-sticky-note"></i> Notes:</label>
+                        <textarea placeholder="Add notes about this scholarship..." 
+                                  onblur="updateNotes('${saved.id}', this.value)">${saved.notes || ''}</textarea>
+                    </div>
+
+                    <div class="scholarship-item-actions">
+                        <select onchange="updateStatus('${saved.id}', this.value)" class="status-select">
+                            <option value="saved" ${saved.status === 'saved' ? 'selected' : ''}>Saved</option>
+                            <option value="in_progress" ${saved.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="submitted" ${saved.status === 'submitted' ? 'selected' : ''}>Submitted</option>
+                            <option value="awarded" ${saved.status === 'awarded' ? 'selected' : ''}>Awarded</option>
+                            <option value="rejected" ${saved.status === 'rejected' ? 'selected' : ''}>Not Awarded</option>
+                        </select>
+                        <button onclick="scholarshipTracker.exportToCalendar('${saved.id}')" class="btn-outline">
+                            <i class="fas fa-calendar-plus"></i> Add to Calendar
+                        </button>
+                        <a href="${scholarship.applicationUrl}" target="_blank" class="btn-secondary">
+                            <i class="fas fa-external-link-alt"></i> Apply
+                        </a>
+                        <button onclick="removeScholarship('${saved.id}')" class="btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update stats
+        function updateStats() {
+            const stats = scholarshipTracker.getStatistics();
+            
+            document.getElementById('savedScholarshipsCount').textContent = stats.total;
+            document.getElementById('totalPotentialEarnings').textContent = `$${stats.totalPotential.toLocaleString()}`;
+            document.getElementById('inProgressCount').textContent = stats.inProgress;
+            document.getElementById('totalAwarded').textContent = `$${stats.totalAwarded.toLocaleString()}`;
+        }
+
+        // Display upcoming deadlines
+        function displayUpcomingDeadlines() {
+            const container = document.getElementById('upcomingDeadlines');
+            container.innerHTML = scholarshipNotifications.getUpcomingDeadlinesDashboard();
+        }
+
+        // Update counts
+        function updateCounts(scholarships) {
+            document.getElementById('countAll').textContent = scholarships.length;
+            document.getElementById('countSaved').textContent = scholarships.filter(s => s.status === 'saved').length;
+            document.getElementById('countInProgress').textContent = scholarships.filter(s => s.status === 'in_progress').length;
+            document.getElementById('countSubmitted').textContent = scholarships.filter(s => s.status === 'submitted').length;
+            document.getElementById('countAwarded').textContent = scholarships.filter(s => s.status === 'awarded').length;
+        }
+
+        // Filter scholarships
+        function filterScholarships(filter) {
+            currentFilter = filter;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.filter === filter);
+            });
+
+            loadScholarships();
+        }
+
+        // Update checklist
+        async function updateChecklist(scholarshipId, itemIndex, completed) {
+            await scholarshipTracker.updateChecklistItem(scholarshipId, itemIndex, completed);
+            await loadScholarships();
+        }
+
+        // Update status
+        async function updateStatus(scholarshipId, newStatus) {
+            await scholarshipTracker.updateStatus(scholarshipId, newStatus);
+            await loadScholarships();
+        }
+
+        // Update notes
+        async function updateNotes(scholarshipId, notes) {
+            await scholarshipTracker.updateNotes(scholarshipId, notes);
+        }
+
+        // Remove scholarship
+        async function removeScholarship(scholarshipId) {
+            if (confirm('Are you sure you want to remove this scholarship?')) {
+                await scholarshipTracker.removeScholarship(scholarshipId);
+                await loadScholarships();
+            }
+        }
+
+        // Profile editor
+        function showProfileEditor() {
+            document.getElementById('profileEditorModal').style.display = 'flex';
+        }
+
+        function closeProfileEditor() {
+            document.getElementById('profileEditorModal').style.display = 'none';
+        }
+
+        function loadProfileIntoForm() {
+            const profile = scholarshipMatchScore.userProfile;
+            if (!profile) return;
+
+            const form = document.getElementById('profileForm');
+            Object.keys(profile).forEach(key => {
+                const input = form.elements[key];
+                if (input) {
+                    if (input.type === 'checkbox') {
+                        input.checked = profile[key];
+                    } else {
+                        input.value = profile[key] || '';
+                    }
+                }
+            });
+        }
+
+        async function saveProfile(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const profileData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (event.target.elements[key].type === 'checkbox') {
+                    profileData[key] = event.target.elements[key].checked;
+                } else if (event.target.elements[key].type === 'number') {
+                    profileData[key] = parseFloat(value) || 0;
+                } else {
+                    profileData[key] = value;
+                }
+            }
+
+            await scholarshipMatchScore.updateProfile(profileData);
+            closeProfileEditor();
+            
+            // Reload to show updated match scores
+            await loadScholarships();
+        }
+
+        // Listen for scholarship updates
+        window.addEventListener('scholarshipsUpdated', () => {
+            loadScholarships();
+        });
+    </script>
+
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .filter-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .filter-tab:hover {
+            color: #667eea;
+        }
+
+        .filter-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .filter-tab .count {
+            display: inline-block;
+            margin-left: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .filter-tab.active .count {
+            background: #667eea;
+            color: white;
+        }
+
+        .scholarship-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .scholarship-item-meta {
+            text-align: right;
+        }
+
+        .scholarship-item-info {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .scholarship-item-notes {
+            margin: 1rem 0;
+        }
+
+        .scholarship-item-notes textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .scholarship-item-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .status-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .text-danger { color: #ef4444; }
+        .text-warning { color: #f59e0b; }
+        .text-muted { color: #6b7280; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #9ca3af;
+        }
+
+        .empty-state h3 {
+            margin: 1rem 0;
+            color: #6b7280;
+        }
+
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+    </style>
+</body>
+</html>
