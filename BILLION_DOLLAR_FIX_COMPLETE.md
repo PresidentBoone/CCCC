@@ -20,17 +20,17 @@
 - [x] Add error handling
 - [x] Update dashboard.html
 
-### Phase 3: Update All Pages 🔄
-- [ ] Update login.html - Use unified auth
-- [ ] Update signup.html - Use unified auth
-- [ ] Update index.html - Check auth status
-- [ ] Update essaycoach.html - Use unified auth
-- [ ] Update adaptive-timeline.html - Use unified auth
-- [ ] Update testprep-enhanced.html - Use unified auth
-- [ ] Update scholarship.html - Use unified auth
-- [ ] Update my-scholarships.html - Use unified auth
-- [ ] Update document.html - Use unified auth
-- [ ] Update profile.html - Use unified auth
+### Phase 3: Update All Pages ✅
+- [x] Update login.html - Use unified auth
+- [x] Update signup.html - Use unified auth
+- [x] Update index.html - Check auth status
+- [x] Update essaycoach.html - Use unified auth
+- [x] Update adaptive-timeline.html - Use unified auth
+- [x] Update testprep-enhanced.html - Use unified auth
+- [x] Update scholarship.html - Use unified auth
+- [x] Update my-scholarships.html - Use unified auth
+- [x] Update document.html - Use unified auth
+- [x] Update profile.html - Use unified auth
 
 ### Phase 4: Clean Up 🔄
 - [ ] Remove old auth-guard.js (no longer needed)

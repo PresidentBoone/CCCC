@@ -121,8 +121,15 @@ class UnifiedAuthManager {
                 }
             });
 
-            // Redirect if on login/signup page
-            if (this.isAuthPage()) {
+            // Check if there's a custom auth success handler (for signup page)
+            if (this.authSuccessCallback) {
+                try {
+                    this.authSuccessCallback(user);
+                } catch (error) {
+                    console.error('Error in auth success callback:', error);
+                }
+            } else if (this.isAuthPage()) {
+                // Redirect if on login/signup page (unless custom handler set)
                 window.location.href = '/dashboard.html';
             }
         } else {
@@ -259,6 +266,99 @@ class UnifiedAuthManager {
             console.error('❌ Sign out error:', error);
             throw error;
         }
+    }
+
+    /**
+     * Sign in with email and password
+     */
+    async signInWithEmail(email, password) {
+        try {
+            const { signInWithEmailAndPassword } = await import(
+                'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'
+            );
+            
+            if (!this.auth) {
+                await this.initialize();
+            }
+            
+            const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+            console.log('✅ Email sign-in successful:', userCredential.user.email);
+            return userCredential.user;
+        } catch (error) {
+            console.error('❌ Email sign-in error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Sign in with Google
+     */
+    async signInWithGoogle() {
+        try {
+            const { GoogleAuthProvider, signInWithPopup } = await import(
+                'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'
+            );
+            
+            if (!this.auth) {
+                await this.initialize();
+            }
+            
+            const provider = new GoogleAuthProvider();
+            const userCredential = await signInWithPopup(this.auth, provider);
+            console.log('✅ Google sign-in successful:', userCredential.user.email);
+            return userCredential.user;
+        } catch (error) {
+            console.error('❌ Google sign-in error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Sign up with email and password
+     */
+    async signUpWithEmail(email, password) {
+        try {
+            const { createUserWithEmailAndPassword } = await import(
+                'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'
+            );
+            const { getFirestore, setDoc, doc } = await import(
+                'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
+            );
+            
+            if (!this.auth) {
+                await this.initialize();
+            }
+            
+            // Create user account
+            const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+            const user = userCredential.user;
+            
+            // Save user data to Firestore
+            const db = getFirestore();
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                name: user.displayName || '',
+                createdAt: new Date(),
+                lastLogin: new Date(),
+                accountType: 'student',
+                profileComplete: false
+            });
+            
+            console.log('✅ Email sign-up successful:', user.email);
+            return user;
+        } catch (error) {
+            console.error('❌ Email sign-up error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Register callback for successful auth (used in signup flow)
+     */
+    onAuthSuccess(callback) {
+        // This is a special handler for signup page
+        // It prevents the auto-redirect so signup can control navigation
+        this.authSuccessCallback = callback;
     }
 
     /**
