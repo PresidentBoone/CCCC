@@ -1093,6 +1093,47 @@
             border: 1px solid var(--danger-color);
             color: var(--danger-color);
         }
+
+        .message.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        /* Typing Indicator */
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
     </style>
     <!-- Error Handling System -->
     <script src="/js/error-boundary.js"></script>
@@ -1206,6 +1247,9 @@
         <div id="errorMessage" class="message error">
             <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
         </div>
+        <div id="infoMessage" class="message info">
+            <i class="fas fa-info-circle"></i> <span id="infoText"></span>
+        </div>
 
         <!-- Main Grid -->
         <div class="essay-main-grid">
@@ -1228,13 +1272,13 @@
                         </button>
                     </div>
                     <div class="control-group">
-                        <button class="btn btn-primary" onclick="analyzeEssay()">
+                        <button class="btn btn-primary" onclick="window.essayManager && window.essayManager.analyzeEssay()">
                             <i class="fas fa-search"></i> Analyze Essay
                         </button>
-                        <button class="btn btn-secondary" onclick="saveEssay()">
+                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.saveEssay()">
                             <i class="fas fa-save"></i> Save
                         </button>
-                        <button class="btn btn-secondary" onclick="createNewVersion()">
+                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.createVersion()">
                             <i class="fas fa-code-branch"></i> New Version
                         </button>
                     </div>
@@ -1391,6 +1435,11 @@ Don't forget to specify your target colleges and essay prompt for more personali
     <!-- AI Engine - Load before Firebase module -->
     <script src="js/ai-engine.js"></script>
 
+    <!-- Essay Management Systems -->
+    <script src="js/essay-manager.js"></script>
+    <script src="js/essay-chat-assistant.js"></script>
+    <script src="js/essay-templates.js"></script>
+
     <!-- Firebase Scripts -->
     <script type="module">
         // Import Firebase modules
@@ -1438,26 +1487,33 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Global variables
         let currentUser = null;
         let userProfile = null;
-        let currentEssayId = null;
-        let chatHistory = [];
-        let aiEngine = null;
+        let essayManager = null;
+        let essayChatAssistant = null;
+        let essayTemplates = null;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', async function() {
             await initializeAuth();
-            await initializeAIEngine();
-            loadUserEssays();
         });
-        
-        // Initialize AI Engine
-        async function initializeAIEngine() {
-            if (currentUser) {
-                try {
-                    aiEngine = new window.AIEngine(currentUser.uid, db);
-                    console.log('✅ AI Engine initialized for Essay Coach');
-                } catch (error) {
-                    console.error('Error initializing AI Engine:', error);
-                }
+
+        // Initialize Essay Coach Systems
+        async function initializeEssaySystems(user, userData) {
+            try {
+                // Initialize Essay Manager
+                window.essayManager = new EssayManager(db, user.uid, userData);
+                await window.essayManager.initialize();
+
+                // Initialize Essay Chat Assistant
+                window.essayChatAssistant = new EssayChatAssistant(db, user.uid, userData);
+                window.essayChatAssistant.initialize();
+
+                // Initialize Essay Templates
+                window.essayTemplates = new EssayTemplates();
+                window.essayTemplates.initialize();
+
+                console.log('✅ All Essay Coach systems initialized');
+            } catch (error) {
+                console.error('Error initializing Essay Coach systems:', error);
             }
         }
 
@@ -1467,9 +1523,10 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 if (user) {
                     currentUser = user;
                     await loadUserProfile();
-                    await initializeAIEngine();
                     await updateNavbarWithUserData(user); // Update navbar with user data
-                    loadUserEssays();
+
+                    // Initialize Essay Coach systems
+                    await initializeEssaySystems(user, userProfile || {});
                 } else {
                     window.location.href = 'login.html';
                 }
