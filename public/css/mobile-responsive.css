@@ -1,0 +1,665 @@
+/* ============================================
+   MOBILE RESPONSIVENESS ENHANCEMENTS
+   Week 3: Fixes for touch targets, chat widget, scrolling, dropdowns
+   ============================================ */
+
+/* ============================================
+   BASE MOBILE IMPROVEMENTS
+   ============================================ */
+
+/* Prevent horizontal scrolling */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Better touch targets - minimum 44px */
+button, 
+a, 
+input, 
+select, 
+textarea,
+.clickable {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75rem;
+}
+
+/* ============================================
+   CHAT WIDGET MOBILE FIX
+   Critical: Prevents covering entire screen
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Chat Widget - Better mobile sizing */
+    .chat-widget {
+        width: 100% !important;
+        height: 70vh !important;
+        max-height: 600px !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        left: 0 !important;
+        border-radius: 24px 24px 0 0 !important;
+        margin: 0 !important;
+    }
+
+    .chat-widget.open {
+        transform: translateY(0) !important;
+    }
+
+    /* Chat messages area - scrollable */
+    .chat-messages {
+        max-height: calc(70vh - 200px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Chat toggle button - better positioning */
+    .chat-toggle,
+    .ai-chat-toggle-button {
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 56px !important;
+        height: 56px !important;
+        z-index: 1000 !important;
+    }
+
+    /* Help/Tour button - adjust position */
+    .help-tour-button {
+        bottom: 90px !important;
+        right: 20px !important;
+        width: 50px !important;
+        height: 50px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-widget {
+        height: 80vh !important;
+        max-height: none !important;
+    }
+
+    .chat-messages {
+        max-height: calc(80vh - 180px) !important;
+    }
+}
+
+/* ============================================
+   DROPDOWN MENUS MOBILE FIX
+   Critical: Prevents cut-off on small screens
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Profile dropdown - better positioning */
+    .cc-dropdown-menu {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 10px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        transform-origin: bottom center !important;
+        z-index: 10000 !important;
+    }
+
+    .cc-dropdown-menu.show {
+        transform: translateY(0) scale(1) !important;
+    }
+
+    /* Remove dropdown arrow on mobile */
+    .cc-dropdown-menu::before {
+        display: none !important;
+    }
+
+    /* Larger touch targets in dropdown */
+    .cc-dropdown-link {
+        padding: 1.2rem 1.5rem !important;
+        font-size: 1.1rem !important;
+        min-height: 60px !important;
+    }
+
+    .cc-dropdown-link-icon {
+        font-size: 1.5rem !important;
+        width: 32px !important;
+    }
+}
+
+/* ============================================
+   HORIZONTAL SCROLLING FIX
+   ============================================ */
+
+/* Prevent grid overflow */
+.stats-overview,
+.dashboard-grid,
+.school-grid,
+.testprep-grid,
+.timeline-section {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    /* Force single column layouts */
+    .stats-overview,
+    .school-grid,
+    .testprep-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Prevent card overflow */
+    .stat-card,
+    .school-card,
+    .testprep-card,
+    .task-section {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Responsive images and content */
+    img, 
+    video, 
+    iframe {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Better table handling */
+    table {
+        display: block !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ============================================
+   TOUCH TARGET IMPROVEMENTS
+   Ensures 44px minimum for all interactive elements
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Navbar elements */
+    .cc-theme-toggle,
+    .cc-user-avatar,
+    .cc-profile-button {
+        min-width: 48px !important;
+        min-height: 48px !important;
+    }
+
+    /* Buttons */
+    button,
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .cc-dropdown-link {
+        min-height: 48px !important;
+        padding: 0.9rem 1.5rem !important;
+    }
+
+    /* Form inputs */
+    input,
+    select,
+    textarea {
+        min-height: 48px !important;
+        padding: 0.9rem 1.2rem !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+
+    /* Checkbox and radio - larger touch area */
+    input[type="checkbox"],
+    input[type="radio"] {
+        min-width: 24px !important;
+        min-height: 24px !important;
+        transform: scale(1.5);
+    }
+
+    /* Links */
+    a {
+        min-height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    /* Task checkboxes */
+    .task-checkbox {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    /* Filter tabs */
+    .filter-tab {
+        min-height: 48px !important;
+        padding: 0.9rem 1.5rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE TYPOGRAPHY
+   Better readability on small screens
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Scale down large headings */
+    h1 {
+        font-size: clamp(1.8rem, 5vw, 2.5rem) !important;
+        line-height: 1.2 !important;
+    }
+
+    h2 {
+        font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
+    }
+
+    h3 {
+        font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
+    }
+
+    /* Body text */
+    body {
+        font-size: 16px !important;
+    }
+
+    p {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Welcome section */
+    .welcome-section h1 {
+        font-size: clamp(2rem, 6vw, 2.8rem) !important;
+    }
+
+    .welcome-section p {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE SPACING
+   Better use of screen space
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Reduce padding */
+    .dashboard-container {
+        padding: 1rem !important;
+        margin-top: 80px !important;
+    }
+
+    .welcome-section {
+        padding: 2rem 1.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .stat-card,
+    .school-card,
+    .timeline-section,
+    .task-section {
+        padding: 1.5rem !important;
+    }
+
+    /* Reduce gaps */
+    .stats-overview {
+        gap: 1rem !important;
+    }
+
+    .dashboard-grid {
+        gap: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Even tighter spacing for very small screens */
+    .dashboard-container {
+        padding: 0.75rem !important;
+        margin-top: 70px !important;
+    }
+
+    .welcome-section {
+        padding: 1.5rem 1rem !important;
+    }
+
+    .stat-card {
+        padding: 1.25rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE NAVBAR IMPROVEMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .cc-navbar {
+        padding: 0.75rem 1rem !important;
+        position: fixed !important;
+        top: 0 !important;
+        width: 100% !important;
+    }
+
+    .cc-logo {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .cc-brand-text h1,
+    .cc-brand-text h2 {
+        font-size: 1.3rem !important;
+    }
+
+    .cc-nav-right {
+        gap: 0.75rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .cc-navbar {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .cc-logo {
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .cc-brand-text h1,
+    .cc-brand-text h2 {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE MODALS AND OVERLAYS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Full-screen modals on mobile */
+    .modal,
+    .analytics-modal {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        max-height: 100vh !important;
+    }
+
+    /* Modal content scrollable */
+    .modal-content {
+        max-height: calc(100vh - 120px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ============================================
+   MOBILE TIMELINE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 30px !important;
+    }
+
+    .timeline-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding-left: 70px !important;
+    }
+
+    .timeline-content {
+        width: 100% !important;
+    }
+
+    .timeline-icon {
+        left: 30px !important;
+        transform: translateX(0) !important;
+    }
+}
+
+/* ============================================
+   MOBILE CARDS AND PANELS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Stat cards */
+    .stat-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+
+    .stat-icon {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.5rem !important;
+    }
+
+    .stat-value {
+        font-size: 2.5rem !important;
+    }
+
+    /* School cards */
+    .match-percentage {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Match header */
+    .match-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE FORMS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Form controls */
+    .control-group,
+    .form-group {
+        width: 100% !important;
+    }
+
+    /* Controls grid */
+    .controls-grid,
+    .timeline-controls .controls-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    /* Better select dropdowns */
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+        padding-right: 3rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE ACCESSIBILITY
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Focus indicators - more visible on mobile */
+    *:focus-visible {
+        outline: 4px solid var(--accent-color) !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Skip to main content */
+    .skip-to-main:focus {
+        top: 15px !important;
+        font-size: 1.1rem !important;
+        padding: 1rem 1.5rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE TOAST NOTIFICATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .error-toast,
+    .success-toast,
+    .info-toast,
+    .notification {
+        left: 10px !important;
+        right: 10px !important;
+        top: 80px !important;
+        max-width: calc(100vw - 20px) !important;
+        min-width: unset !important;
+    }
+}
+
+/* ============================================
+   MOBILE EMPTY STATES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .empty-state {
+        padding: 2.5rem 1.5rem !important;
+    }
+
+    .empty-state i {
+        font-size: 3rem !important;
+    }
+
+    .empty-state h3 {
+        font-size: 1.3rem !important;
+    }
+
+    .empty-state p {
+        font-size: 0.95rem !important;
+    }
+
+    .empty-state button {
+        width: 100% !important;
+        padding: 1.2rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE FOOTER
+   ============================================ */
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 1.5rem !important;
+    }
+
+    .footer-text {
+        font-size: 1rem !important;
+    }
+
+    .footer-socials {
+        justify-content: center !important;
+    }
+}
+
+/* ============================================
+   MOBILE PERFORMANCE
+   Use GPU acceleration for smooth animations
+   ============================================ */
+
+@media (max-width: 768px) {
+    .chat-widget,
+    .cc-dropdown-menu,
+    .modal,
+    .notification {
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+}
+
+/* ============================================
+   LANDSCAPE ORIENTATION
+   ============================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+    /* Reduce navbar height in landscape */
+    .cc-navbar {
+        padding: 0.5rem 1rem !important;
+    }
+
+    .dashboard-container {
+        margin-top: 60px !important;
+    }
+
+    /* Chat widget smaller in landscape */
+    .chat-widget {
+        height: 90vh !important;
+    }
+
+    /* Welcome section more compact */
+    .welcome-section {
+        padding: 1.5rem !important;
+    }
+}
+
+/* ============================================
+   MOBILE SAFARI SPECIFIC FIXES
+   ============================================ */
+
+/* Fix for iOS Safari bottom bar */
+@supports (-webkit-touch-callout: none) {
+    .chat-widget {
+        height: calc(70vh - env(safe-area-inset-bottom)) !important;
+    }
+
+    .cc-dropdown-menu {
+        bottom: env(safe-area-inset-bottom, 10px) !important;
+    }
+
+    /* Prevent zoom on input focus */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES (BONUS)
+   ============================================ */
+
+@media print {
+    /* Hide non-essential elements */
+    .cc-navbar,
+    .chat-widget,
+    .chat-toggle,
+    .help-tour-button,
+    .ai-chat-toggle-button,
+    .footer-socials {
+        display: none !important;
+    }
+
+    /* Optimize for print */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .stat-card,
+    .school-card,
+    .timeline-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}

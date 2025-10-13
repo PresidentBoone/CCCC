@@ -1,0 +1,399 @@
+/**
+ * Form Validator Styles - Week 4 Quality Enhancement
+ * Enhanced form validation styling with accessibility support
+ */
+
+/* ============================================
+   FORM VALIDATION STATES
+   ============================================ */
+
+/* Error State */
+.field-error {
+    border-color: var(--danger-color, #ef4444) !important;
+    background-color: rgba(239, 68, 68, 0.03);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    transition: all 0.2s ease;
+}
+
+.field-error:focus {
+    border-color: var(--danger-color, #ef4444) !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important;
+    outline: none;
+}
+
+/* Success State */
+.field-success {
+    border-color: var(--success-color, #10b981) !important;
+    background-color: rgba(16, 185, 129, 0.03);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    transition: all 0.2s ease;
+}
+
+.field-success:focus {
+    border-color: var(--success-color, #10b981) !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2) !important;
+    outline: none;
+}
+
+/* Error Message */
+.field-error-message {
+    color: var(--danger-color, #ef4444);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    animation: slideDown 0.2s ease;
+    line-height: 1.5;
+}
+
+.field-error-message::before {
+    content: "⚠️";
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Success Message */
+.field-success-message {
+    color: var(--success-color, #10b981);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    animation: slideDown 0.2s ease;
+}
+
+.field-success-message::before {
+    content: "✓";
+    font-size: 1rem;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+/* ============================================
+   FORM GROUP ENHANCEMENTS
+   ============================================ */
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    font-size: 0.95rem;
+}
+
+.form-group label.required::after {
+    content: "*";
+    color: var(--danger-color, #ef4444);
+    margin-left: 0.25rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: var(--primary-bg, white);
+    color: var(--text-primary, #333);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--accent-color, #a07bcc);
+    box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Field Help Text */
+.field-help {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #666);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.field-help::before {
+    content: "ℹ️";
+    flex-shrink: 0;
+}
+
+/* Character Counter */
+.char-counter {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #666);
+    text-align: right;
+    margin-top: 0.5rem;
+}
+
+.char-counter.over-limit {
+    color: var(--danger-color, #ef4444);
+    font-weight: 600;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.field-error.shake {
+    animation: shake 0.5s;
+}
+
+/* ============================================
+   INLINE VALIDATION
+   ============================================ */
+
+.inline-validation {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.validation-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.validation-icon.success {
+    background: var(--success-color, #10b981);
+    color: white;
+}
+
+.validation-icon.error {
+    background: var(--danger-color, #ef4444);
+    color: white;
+}
+
+/* ============================================
+   PASSWORD STRENGTH INDICATOR
+   ============================================ */
+
+.password-strength {
+    margin-top: 0.5rem;
+}
+
+.password-strength-bar {
+    height: 4px;
+    background: var(--border-color, #e5e7eb);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.password-strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.password-strength-fill.weak {
+    width: 33%;
+    background: var(--danger-color, #ef4444);
+}
+
+.password-strength-fill.medium {
+    width: 66%;
+    background: var(--warning-color, #f59e0b);
+}
+
+.password-strength-fill.strong {
+    width: 100%;
+    background: var(--success-color, #10b981);
+}
+
+.password-strength-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.password-strength-text.weak {
+    color: var(--danger-color, #ef4444);
+}
+
+.password-strength-text.medium {
+    color: var(--warning-color, #f59e0b);
+}
+
+.password-strength-text.strong {
+    color: var(--success-color, #10b981);
+}
+
+/* ============================================
+   FORM SUBMIT BUTTON
+   ============================================ */
+
+.submit-btn {
+    background: var(--gradient, linear-gradient(135deg, #2a357a 0%, #a07bcc 100%));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(42, 53, 122, 0.2);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-btn.loading {
+    pointer-events: none;
+}
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================ */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .field-error {
+        border-width: 3px;
+    }
+    
+    .field-success {
+        border-width: 3px;
+    }
+    
+    .field-error-message,
+    .field-success-message {
+        font-weight: 700;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .field-error-message,
+    .field-success-message,
+    .field-error.shake {
+        animation: none;
+    }
+    
+    .field-error,
+    .field-success,
+    .form-group input,
+    .form-group textarea,
+    .form-group select,
+    .submit-btn {
+        transition: none;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+.field-error:focus-visible,
+.field-success:focus-visible,
+.form-group input:focus-visible,
+.form-group textarea:focus-visible,
+.form-group select:focus-visible {
+    outline: 3px solid var(--accent-color, #a07bcc);
+    outline-offset: 2px;
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .form-group select {
+    background: var(--secondary-bg, #161b22);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #f0f6fc);
+}
+
+[data-theme="dark"] .field-error {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+[data-theme="dark"] .field-success {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .submit-btn {
+        padding: 0.875rem 1.5rem;
+    }
+}

@@ -1,0 +1,428 @@
+/* ============================================
+   EMPTY STATES COMPONENT LIBRARY
+   Week 3: Professional empty states for all scenarios
+   ============================================ */
+
+/* ============================================
+   BASE EMPTY STATE STYLING
+   ============================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--secondary-bg);
+    border-radius: 20px;
+    border: 2px dashed rgba(160, 123, 204, 0.3);
+    transition: all 0.3s ease;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.empty-state:hover {
+    border-color: rgba(160, 123, 204, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(160, 123, 204, 0.1);
+}
+
+.empty-state-icon {
+    font-size: 4.5rem;
+    color: var(--accent-color);
+    opacity: 0.6;
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.empty-state-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.empty-state-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.empty-state-action {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(160, 123, 204, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.empty-state-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(160, 123, 204, 0.4);
+}
+
+.empty-state-action:active {
+    transform: translateY(0);
+}
+
+.empty-state-action i {
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   EMPTY STATE VARIANTS
+   ============================================ */
+
+/* Dashboard Stats Empty State */
+.empty-state-stat {
+    padding: 2rem;
+    background: var(--secondary-bg);
+    border-radius: 16px;
+    border: 2px dashed rgba(160, 123, 204, 0.2);
+    text-align: center;
+}
+
+.empty-state-stat-icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    opacity: 0.4;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-state-stat-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.empty-state-stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    opacity: 0.3;
+}
+
+/* Inline Empty State (smaller) */
+.empty-state-inline {
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    border: 1px dashed rgba(160, 123, 204, 0.3);
+    background: var(--secondary-bg);
+    text-align: center;
+}
+
+.empty-state-inline-icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.empty-state-inline-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Grid Empty State */
+.empty-state-grid {
+    grid-column: 1 / -1;
+    padding: 3rem 2rem;
+    background: var(--secondary-bg);
+    border-radius: 16px;
+    border: 2px dashed rgba(160, 123, 204, 0.3);
+    text-align: center;
+}
+
+/* ============================================
+   SPECIFIC EMPTY STATES
+   ============================================ */
+
+/* Dashboard - No Applications */
+.empty-state-no-applications {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(160, 123, 204, 0.05) 100%);
+}
+
+.empty-state-no-applications .empty-state-icon {
+    color: #667eea;
+}
+
+/* Dashboard - No Schools */
+.empty-state-no-schools {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 197, 253, 0.05) 100%);
+}
+
+.empty-state-no-schools .empty-state-icon {
+    color: #3b82f6;
+}
+
+/* Essay Coach - No Essays */
+.empty-state-no-essays {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(251, 207, 232, 0.05) 100%);
+}
+
+.empty-state-no-essays .empty-state-icon {
+    color: #ec4899;
+}
+
+/* Scholarship - No Results */
+.empty-state-no-scholarships {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%);
+}
+
+.empty-state-no-scholarships .empty-state-icon {
+    color: #f59e0b;
+}
+
+/* Timeline - Not Generated */
+.empty-state-no-timeline {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(167, 243, 208, 0.05) 100%);
+}
+
+.empty-state-no-timeline .empty-state-icon {
+    color: #10b981;
+}
+
+/* Test Prep - No Tests */
+.empty-state-no-tests {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(196, 181, 253, 0.05) 100%);
+}
+
+.empty-state-no-tests .empty-state-icon {
+    color: #8b5cf6;
+}
+
+/* Documents - No Documents */
+.empty-state-no-documents {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(252, 165, 165, 0.05) 100%);
+}
+
+.empty-state-no-documents .empty-state-icon {
+    color: #ef4444;
+}
+
+/* ============================================
+   EMPTY STATE WITH STEPS
+   Show users what to do next
+   ============================================ */
+
+.empty-state-with-steps {
+    padding: 3rem 2rem;
+}
+
+.empty-state-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    text-align: left;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--primary-bg);
+    border-radius: 12px;
+    border: 1px solid rgba(160, 123, 204, 0.1);
+    transition: all 0.3s ease;
+}
+
+.empty-state-step:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 15px rgba(160, 123, 204, 0.1);
+    transform: translateX(5px);
+}
+
+.empty-state-step-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.empty-state-step-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-step-content p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ============================================
+   EMPTY STATE WITH ILLUSTRATION
+   ============================================ */
+
+.empty-state-with-image {
+    padding: 3rem 2rem;
+}
+
+.empty-state-illustration {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 0 auto 2rem;
+    opacity: 0.8;
+}
+
+/* ============================================
+   LOADING TO EMPTY STATE TRANSITION
+   ============================================ */
+
+.empty-state-transition {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   DARK MODE ADJUSTMENTS
+   ============================================ */
+
+[data-theme="dark"] .empty-state {
+    background: rgba(22, 27, 34, 0.6);
+    border-color: rgba(187, 134, 252, 0.3);
+}
+
+[data-theme="dark"] .empty-state:hover {
+    border-color: rgba(187, 134, 252, 0.5);
+}
+
+[data-theme="dark"] .empty-state-step {
+    background: rgba(33, 38, 45, 0.8);
+    border-color: rgba(187, 134, 252, 0.15);
+}
+
+[data-theme="dark"] .empty-state-step:hover {
+    border-color: var(--accent-color);
+}
+
+/* ============================================
+   RESPONSIVE EMPTY STATES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .empty-state {
+        padding: 2.5rem 1.5rem;
+        border-radius: 16px;
+    }
+
+    .empty-state-icon {
+        font-size: 3.5rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+    }
+
+    .empty-state-description {
+        font-size: 1rem;
+    }
+
+    .empty-state-action {
+        width: 100%;
+        justify-content: center;
+        padding: 1.2rem;
+    }
+
+    .empty-state-steps {
+        gap: 1rem;
+    }
+
+    .empty-state-step {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .empty-state-step-number {
+        margin: 0 auto 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.3rem;
+    }
+
+    .empty-state-description {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.empty-state[role="status"] {
+    /* Announce to screen readers */
+}
+
+.empty-state-action:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   ANIMATION PREFERENCES
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .empty-state-icon,
+    .empty-state,
+    .empty-state-step {
+        animation: none;
+        transition: none;
+    }
+}

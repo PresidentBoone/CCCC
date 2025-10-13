@@ -6,6 +6,14 @@
     <title>AI-Powered Test Prep - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Week 3: Mobile Responsiveness & Empty States -->
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    <link rel="stylesheet" href="/css/empty-states.css">
+    
+    <!-- Week 4: Enhanced Error Handling -->
+    <link rel="stylesheet" href="/css/enhanced-error-handler.css">
+    
     <style>
         /* ============================================
            UNIVERSAL NAVBAR STYLES
@@ -339,12 +347,12 @@
             color: var(--accent-color);
         }
 
-        .cc-dropdown-link:hover::before {
-            width: 4px;
-        }
-
         [data-theme="dark"] .cc-dropdown-link:hover {
             background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:hover::before {
+            width: 4px;
         }
 
         .cc-dropdown-link:active {
@@ -835,6 +843,8 @@
     
     <!-- Authentication Guard -->
     <script type="module" src="/js/auth-guard.js"></script>
+    <script src="/js/empty-states.js"></script>
+    <script src="/js/enhanced-error-handler.js"></script>
     
     <!-- Loading State Manager -->
     <script src="/js/loading-state.js"></script>
@@ -1018,16 +1028,6 @@
                     <span>+50 this month</span>
                 </div>
             </div>
-
-            <div class="score-card">
-                <div class="score-header">
-                    <div class="score-title">ACT Score</div>
-                    <div class="score-icon"><i class="fas fa-certificate"></i></div>
-                </div>
-                <div class="score-current" id="actScore">26</div>
-                <div class="score-target">Target: <span id="actTarget">30</span></div>
-                <div class="score-progress">
-                    <div class="score-progress-fill" id="actProgress" style="width: 65%;"></div>
                 </div>
                 <div class="score-improvement">
                     <i class="fas fa-arrow-up"></i>
