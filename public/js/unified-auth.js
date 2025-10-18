@@ -13,7 +13,8 @@ class UnifiedAuthManager {
         this.isInitialized = false;
         this.authStateCallbacks = [];
         this.initPromise = null;
-        
+        this.initialAuthCheckComplete = false;  // Track if first auth check is done
+
         // Session persistence configuration
         this.SESSION_KEY = 'cccc_user_session';
         this.SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
@@ -145,9 +146,12 @@ class UnifiedAuthManager {
                 timestamp: Date.now()
             };
             localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
-            
+
+            // Mark initial auth check as complete
+            this.initialAuthCheckComplete = true;
+
             console.log('✅ User signed in:', user.email);
-            
+
             // Execute callbacks
             this.authStateCallbacks.forEach(callback => {
                 try {
@@ -172,14 +176,15 @@ class UnifiedAuthManager {
             // User is signed out
             this.user = null;
             localStorage.removeItem(this.SESSION_KEY);
-            
+
             console.log('ℹ️ User signed out');
-            
-            // Redirect to login if on protected page
-            if (!this.isPublicPage()) {
-                console.log('🔒 Protected page - redirecting to login');
-                window.location.href = '/login';
-            }
+
+            // Mark initial auth check as complete
+            this.initialAuthCheckComplete = true;
+
+            // DON'T redirect immediately - let protect() handle it
+            // This prevents redirecting before Firebase checks persistence
+            // The protect() method will redirect if truly not authenticated
         }
     }
 
@@ -215,23 +220,31 @@ class UnifiedAuthManager {
             await this.initialize();
         }
 
-        // Check session
-        const session = this.getSession();
-        if (!session) {
-            console.log('🔒 No valid session - redirecting to login');
-            window.location.href = '/login';
-            return false;
-        }
+        // CRITICAL: Wait for Firebase auth state to be determined
+        // This prevents redirect before Firebase checks localStorage
+        try {
+            await this.waitForAuth(3000);
+            console.log('✅ Auth state verified - user is logged in');
+            return true;
+        } catch (error) {
+            // No auth state after timeout - check session manually
+            const session = this.getSession();
+            if (!session) {
+                console.log('🔒 No valid session - redirecting to login');
+                window.location.href = '/login';
+                return false;
+            }
 
-        // Check if session is expired
-        if (this.isSessionExpired(session)) {
-            console.log('⏰ Session expired - redirecting to login');
-            this.clearSession();
-            window.location.href = '/login';
-            return false;
-        }
+            // Check if session is expired
+            if (this.isSessionExpired(session)) {
+                console.log('⏰ Session expired - redirecting to login');
+                this.clearSession();
+                window.location.href = '/login';
+                return false;
+            }
 
-        return true;
+            return true;
+        }
     }
 
     /**
@@ -401,8 +414,14 @@ class UnifiedAuthManager {
      * Wait for authentication to be ready
      */
     async waitForAuth(timeout = 5000) {
+        // If already has user, return immediately
         if (this.isInitialized && this.user) {
             return this.user;
+        }
+
+        // If initial check complete and no user, reject immediately
+        if (this.initialAuthCheckComplete && !this.user) {
+            throw new Error('No authenticated user');
         }
 
         return new Promise((resolve, reject) => {
@@ -410,9 +429,28 @@ class UnifiedAuthManager {
                 reject(new Error('Authentication timeout'));
             }, timeout);
 
+            // Wait for initial auth check to complete
+            const checkInterval = setInterval(() => {
+                if (this.initialAuthCheckComplete) {
+                    clearInterval(checkInterval);
+                    clearTimeout(timer);
+                    if (this.user) {
+                        resolve(this.user);
+                    } else {
+                        reject(new Error('No authenticated user'));
+                    }
+                }
+            }, 100);
+
+            // Also listen for auth state changes
             this.onAuthStateChanged((user) => {
                 clearTimeout(timer);
-                resolve(user);
+                clearInterval(checkInterval);
+                if (user) {
+                    resolve(user);
+                } else {
+                    reject(new Error('No authenticated user'));
+                }
             });
         });
     }
