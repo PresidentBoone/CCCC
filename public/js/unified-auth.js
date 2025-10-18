@@ -29,6 +29,45 @@ class UnifiedAuthManager {
     }
 
     /**
+     * Wait for Firebase configuration to be loaded by firebase-env-inject.js
+     */
+    async waitForFirebaseConfig(timeout = 10000) {
+        // If config already loaded, return immediately
+        if (window.FIREBASE_CONFIG) {
+            return window.FIREBASE_CONFIG;
+        }
+
+        console.log('⏳ Waiting for Firebase configuration to load...');
+
+        return new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                reject(new Error('Firebase configuration loading timeout'));
+            }, timeout);
+
+            // Listen for config loaded event
+            const handleConfigLoaded = () => {
+                clearTimeout(timeoutId);
+                window.removeEventListener('firebaseConfigLoaded', handleConfigLoaded);
+                console.log('✅ Firebase configuration ready');
+                resolve(window.FIREBASE_CONFIG);
+            };
+
+            window.addEventListener('firebaseConfigLoaded', handleConfigLoaded);
+
+            // Also check if config appeared (in case event already fired)
+            const checkInterval = setInterval(() => {
+                if (window.FIREBASE_CONFIG) {
+                    clearTimeout(timeoutId);
+                    clearInterval(checkInterval);
+                    window.removeEventListener('firebaseConfigLoaded', handleConfigLoaded);
+                    console.log('✅ Firebase configuration ready');
+                    resolve(window.FIREBASE_CONFIG);
+                }
+            }, 100);
+        });
+    }
+
+    /**
      * Initialize Firebase and Auth - Call this ONCE
      */
     async initialize() {
@@ -49,13 +88,13 @@ class UnifiedAuthManager {
                     'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'
                 );
 
-                // Firebase configuration - use window.FIREBASE_CONFIG from firebase-env-inject.js
-                if (!window.FIREBASE_CONFIG) {
-                    console.error('Firebase configuration not loaded. Ensure firebase-env-inject.js is included.');
-                    return;
-                }
+                // Wait for Firebase configuration to load
+                const firebaseConfig = await this.waitForFirebaseConfig();
 
-                const firebaseConfig = window.FIREBASE_CONFIG;
+                if (!firebaseConfig) {
+                    console.error('Firebase configuration not loaded. Ensure firebase-env-inject.js is included.');
+                    throw new Error('Firebase configuration missing');
+                }
 
                 // Initialize Firebase (check if already initialized)
                 const apps = getApps();
