@@ -1379,7 +1379,7 @@
                 initNavbar();
                 loadRecommendations();
             } else {
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             }
         });
         
@@ -1438,7 +1438,7 @@
             document.getElementById('ccLogoutBtn').addEventListener('click', async (e) => {
                 e.preventDefault();
                 await signOut(auth);
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             });
 
             if (userData?.profilePhotoURL) {

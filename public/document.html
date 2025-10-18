@@ -2127,7 +2127,7 @@
                     !window.location.pathname.includes('index.html') &&
                     !window.location.pathname.includes('about.html') &&
                     !window.location.pathname.includes('pricing.html')) {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 }
                 return;
             }
@@ -2159,7 +2159,7 @@
             try {
                 const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js');
                 await signOut(window.auth);
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             } catch (error) {
                 console.error('Error signing out:', error);
                 alert('Error signing out. Please try again.');
@@ -2286,7 +2286,7 @@
                 await loadDocuments();
                 setupRealtimeListeners();
             } else {
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             }
         });
 

@@ -2470,7 +2470,7 @@
                     !window.location.pathname.includes('index.html') &&
                     !window.location.pathname.includes('about.html') &&
                     !window.location.pathname.includes('pricing.html')) {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 }
                 return;
             }
@@ -2502,7 +2502,7 @@
             
             try {
                 await signOut(auth);
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             } catch (error) {
                 console.error('Error signing out:', error);
                 alert('Error signing out. Please try again.');
@@ -2733,7 +2733,7 @@
                 }
             } else {
                 console.log('❌ No user authenticated, redirecting to login');
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             }
         });
 

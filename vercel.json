@@ -14,7 +14,15 @@
     },
     {
       "source": "/",
-      "destination": "/dashboard.html"
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/signup",
+      "destination": "/signup.html"
     },
     {
       "source": "/dashboard",
@@ -23,6 +31,10 @@
     {
       "source": "/essay-coach",
       "destination": "/essaycoach.html"
+    },
+    {
+      "source": "/discovery",
+      "destination": "/discovery.html"
     },
     {
       "source": "/timeline",
@@ -35,6 +47,26 @@
     {
       "source": "/testprep-practice",
       "destination": "/testprep-practice.html"
+    },
+    {
+      "source": "/myapp",
+      "destination": "/myapp.html"
+    },
+    {
+      "source": "/questions",
+      "destination": "/questions.html"
+    },
+    {
+      "source": "/document",
+      "destination": "/document.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/scholarships",
+      "destination": "/my-scholarships.html"
     }
   ],
   "headers": [
