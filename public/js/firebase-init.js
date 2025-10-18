@@ -2,21 +2,18 @@
  * Firebase Initialization Module
  * Centralizes Firebase configuration for the entire app
  *
- * SECURITY: These keys are safe to expose in frontend as they're client-side Firebase keys
- * Backend security rules in Firebase console protect the actual data
+ * SECURITY: Configuration now loaded from environment variables via /api/config
+ * No hardcoded credentials in source code
  */
 
-// Firebase configuration
-// These are PUBLIC keys - security is handled by Firebase security rules
-const firebaseConfig = {
-    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-    authDomain: "collegeclimb-ai.firebaseapp.com",
-    projectId: "collegeclimb-ai",
-    storageBucket: "collegeclimb-ai.appspot.com",
-    messagingSenderId: "187139654658",
-    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-    measurementId: "G-E0B2RQM9XS"
-};
+// Get Firebase configuration from window.FIREBASE_CONFIG (loaded by firebase-env-inject.js)
+// This is set by the /api/config endpoint which pulls from environment variables
+const firebaseConfig = window.FIREBASE_CONFIG;
+
+if (!firebaseConfig) {
+    console.error('Firebase configuration not loaded. Ensure firebase-env-inject.js is included before this script.');
+    throw new Error('Firebase configuration missing');
+}
 
 // Export for ES modules
 export { firebaseConfig };

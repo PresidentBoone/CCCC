@@ -84,8 +84,13 @@ module.exports = async (req, res) => {
             return intelligenceHandler(req, res);
         }
 
+        if (path.startsWith('/api/config')) {
+            const configHandler = require('./handlers/config');
+            return configHandler(req, res);
+        }
+
         // 404 for unknown routes
-        return res.status(404).json({ 
+        return res.status(404).json({
             error: 'Not Found',
             message: `API endpoint ${path} not found`
         });

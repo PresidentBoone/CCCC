@@ -49,16 +49,13 @@ class UnifiedAuthManager {
                     'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'
                 );
 
-                // Firebase configuration
-                const firebaseConfig = {
-                    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-                    authDomain: "collegeclimb-ai.firebaseapp.com",
-                    projectId: "collegeclimb-ai",
-                    storageBucket: "collegeclimb-ai.firebasestorage.app",
-                    messagingSenderId: "187139654658",
-                    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-                    measurementId: "G-E0B2RQM9XS"
-                };
+                // Firebase configuration - use window.FIREBASE_CONFIG from firebase-env-inject.js
+                if (!window.FIREBASE_CONFIG) {
+                    console.error('Firebase configuration not loaded. Ensure firebase-env-inject.js is included.');
+                    return;
+                }
+
+                const firebaseConfig = window.FIREBASE_CONFIG;
 
                 // Initialize Firebase (check if already initialized)
                 const apps = getApps();

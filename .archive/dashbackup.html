@@ -1,0 +1,3018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ============================================
+           UNIVERSAL NAVBAR STYLES
+           ============================================ */
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle Button */
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        /* Profile Dropdown Container */
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        /* Profile Button */
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            position: relative;
+        }
+
+        .cc-profile-button:hover .cc-user-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-profile-button:active .cc-user-avatar {
+            transform: scale(0.95);
+        }
+
+        /* User Avatar */
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        [data-theme="dark"] .cc-user-avatar {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 12px rgba(187, 134, 252, 0.3);
+        }
+
+        /* Profile Text - Hidden completely */
+        .cc-profile-text {
+            display: none !important;
+        }
+
+        /* Dropdown Chevron - Hidden */
+        .cc-dropdown-chevron {
+            display: none !important;
+        }
+
+        /* Dropdown Menu */
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15), 0 0 0 1px rgba(160, 123, 204, 0.1);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transform-origin: top right;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            backdrop-filter: blur(20px);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Add arrow pointer to dropdown */
+        .cc-dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-bg);
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        [data-theme="dark"] .cc-dropdown-menu::before {
+            background: rgba(22, 27, 34, 0.98);
+            border-color: rgba(187, 134, 252, 0.2);
+        }
+
+        /* Welcome Header in Dropdown */
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .cc-dropdown-header {
+            border-bottom-color: rgba(187, 134, 252, 0.15);
+            background: rgba(33, 38, 45, 0.6);
+        }
+
+        .cc-dropdown-welcome {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 0.5rem;
+        }
+
+        /* Dropdown Links */
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cc-dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--gradient);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+            color: var(--accent-color);
+        }
+
+        .cc-dropdown-link:hover::before {
+            width: 4px;
+        }
+
+        [data-theme="dark"] .cc-dropdown-link:hover {
+            background: rgba(33, 38, 45, 0.8);
+        }
+
+        .cc-dropdown-link:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        .cc-dropdown-link-icon {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-dropdown-link:hover .cc-dropdown-link-icon {
+            transform: scale(1.15);
+        }
+
+        /* Logout Button */
+        .cc-dropdown-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(160, 123, 204, 0.2), transparent);
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .cc-dropdown-divider {
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.2), transparent);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+            font-weight: 700 !important;
+        }
+
+        .cc-logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .cc-logout-link:hover::before {
+            background: var(--danger-color) !important;
+        }
+
+        /* Loading State */
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: cc-spin 1s linear infinite;
+        }
+
+        @keyframes cc-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Active state indicator */
+        .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        [data-theme="dark"] .cc-profile-dropdown.open .cc-user-avatar {
+            box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
+        }
+
+        /* ============================================
+           DASHBOARD SPECIFIC STYLES
+           ============================================ */
+
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .starry-bg {
+            opacity: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Enhanced Dashboard Container */
+        .dashboard-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Enhanced Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a07bcc 100%);
+            border-radius: 32px;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 
+                0 25px 50px rgba(42, 53, 122, 0.15),
+                0 8px 25px rgba(160, 123, 204, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(160, 123, 204, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .welcome-section h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            line-height: 1.6;
+        }
+
+        /* Real-time Alert System */
+        .alert-banner {
+            background: linear-gradient(135deg, var(--warning-color), #ff6b35);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .alert-banner.show {
+            display: flex;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Enhanced Statistics with Real Data */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transition: height 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            height: 8px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 60px rgba(42, 53, 122, 0.2);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.3);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .stat-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Enhanced Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* School Match System */
+        .school-match-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .school-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .school-card {
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .school-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.15);
+        }
+
+        .match-percentage {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .school-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .school-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .school-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Application Timeline */
+        .timeline-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            width: 45%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(160, 123, 204, 0.15);
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(160, 123, 204, 0.3);
+            z-index: 10;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Enhanced Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Task Management */
+        .task-section {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-color);
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .task-due {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .task-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning-color);
+        }
+
+        .task-priority.high { background: var(--danger-color); }
+        .task-priority.medium { background: var(--warning-color); }
+        .task-priority.low { background: var(--success-color); }
+
+        /* Enhanced Progress Circle */
+        .progress-circle {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            margin: 0 auto 2rem;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(160, 123, 204, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 2s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .progress-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Enhanced Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            background: var(--primary-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            z-index: 1000;
+            transform: translateY(100vh);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .chat-widget.open {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-message.user {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.ai {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 20px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-toggle.hidden {
+            transform: scale(0);
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(160, 123, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            max-width: 400px;
+            padding: 1rem 1.5rem;
+            background: var(--primary-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-color);
+            z-index: 1001;
+            transform: translateX(120%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification-text h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-text p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            background: var(--gradient);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .footer-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-socials a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-socials a img {
+            height: 24px;
+            width: 24px;
+            filter: invert(1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .school-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cc-navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1,
+            .cc-brand-text h2 {
+                font-size: 1.2rem;
+            }
+
+            .cc-theme-toggle {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .cc-user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-dropdown-menu {
+                min-width: 260px;
+                right: -0.5rem;
+            }
+
+            .cc-dropdown-menu::before {
+                right: 20px;
+            }
+
+            .dashboard-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .welcome-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 2rem;
+            }
+
+            .chat-widget {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 40px);
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-icon {
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cc-navbar {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .cc-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .cc-brand-text h1,
+            .cc-brand-text h2 {
+                font-size: 1.1rem;
+            }
+
+            .cc-dropdown-menu {
+                right: -0.5rem;
+                min-width: 240px;
+            }
+
+            .cc-dropdown-menu::before {
+                right: 18px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5fbf;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="starry-bg" id="starryBg"></div>
+
+    <!-- ============================================
+         UNIVERSAL NAVBAR
+         ============================================ -->
+    <nav class="cc-navbar">
+        <!-- Logo Section -->
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <!-- Right Side Navigation -->
+        <div class="cc-nav-right">
+            <!-- Theme Toggle -->
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">
+                ☀️
+            </button>
+
+            <!-- Profile Dropdown -->
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <!-- Loading state initially -->
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    
+                    <!-- Profile content (hidden initially) -->
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                    </div>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <!-- Welcome Header -->
+                    <div class="cc-dropdown-header" id="ccDropdownHeader">
+                        <div class="cc-dropdown-welcome">Hello,</div>
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <a href="dashboard.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="essaycoach.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">✍️</span>
+                        <span>Essays</span>
+                    </a>
+                    
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">💰</span>
+                        <span>Scholarships</span>
+                    </a>
+                    
+                    <a href="document.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">📄</span>
+                        <span>Documents</span>
+                    </a>
+                    
+                    <a href="profile.html" class="cc-dropdown-link">
+                        <span class="cc-dropdown-link-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+
+                    <!-- Divider -->
+                    <div class="cc-dropdown-divider"></div>
+
+                    <!-- Logout -->
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span class="cc-dropdown-link-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Alert Banner -->
+        <div class="alert-banner" id="alertBanner">
+            <div>
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="alertText">Important deadline approaching!</span>
+            </div>
+            <button onclick="dismissAlert()" style="background: none; border: none; color: white; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 id="welcomeTitle">Welcome to Your Success Hub</h1>
+            <p id="welcomeMessage">Your AI-powered college application command center</p>
+        </div>
+
+        <!-- Enhanced Stats Overview with Real Data -->
+        <div class="stats-overview">
+            <div class="stat-card" onclick="showApplicationTracker()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="applicationsTrend">+2 this week</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="applicationsCount">0</div>
+                <div class="stat-label">College Applications</div>
+                <div class="stat-description">
+                    Track your application progress across all target schools
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="window.location.href='essaycoach.html'">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-pen-fancy"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="essaysTrend">3 in review</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="essaysCount">0</div>
+                <div class="stat-label">Essays & Supplements</div>
+                <div class="stat-description">
+                    Personal statements and supplemental essays completed
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="window.location.href='scholarship.html'">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="scholarshipTrend">$5K potential</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="scholarshipAmount">$0</div>
+                <div class="stat-label">Scholarship Value</div>
+                <div class="stat-description">
+                    Total value of scholarships you're eligible for
+                </div>
+            </div>
+
+            <div class="stat-card" onclick="showProgressAnalytics()">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="progressTrend">On track</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="overallProgress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+                <div class="stat-description">
+                    Your completion rate across all application components
+                </div>
+            </div>
+        </div>
+
+        <!-- AI School Matching Section -->
+        <div class="school-match-section">
+            <div class="match-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-university"></i>
+                    AI School Recommendations
+                </h2>
+                <div class="ai-badge">
+                    <i class="fas fa-robot"></i>
+                    Powered by AI
+                </div>
+            </div>
+            <div class="school-grid" id="schoolGrid">
+                <!-- Schools will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Application Timeline -->
+            <div class="timeline-section">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Your Application Timeline
+                    </h2>
+                </div>
+                <div class="timeline" id="applicationTimeline">
+                    <!-- Timeline items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- Task Management -->
+                <div class="task-section">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-tasks"></i>
+                            Today's Tasks
+                        </h3>
+                    </div>
+                    <div class="task-list" id="taskList">
+                        <!-- Tasks will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Progress Overview -->
+                <div class="task-section">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-chart-pie"></i>
+                            Application Progress
+                        </h3>
+                    </div>
+                    <div class="progress-circle">
+                        <svg>
+                            <circle class="progress-circle-bg" cx="70" cy="70" r="60"></circle>
+                            <circle class="progress-circle-fill" cx="70" cy="70" r="60" 
+                                    stroke-dasharray="377" stroke-dashoffset="377" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <div class="progress-percentage" id="progressText">0%</div>
+                            <div class="progress-label">Complete</div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                        Keep going! You're making great progress.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced AI Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                AI College Counselor
+                <div class="online-indicator"></div>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai">
+                <strong>AI Counselor:</strong> Hello! I'm your personal AI college counselor with access to your profile, target schools, and application progress. How can I help you today?
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" 
+                   placeholder="Ask about deadlines, essays, scholarships..." 
+                   onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Notification Template -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-text">
+                <h4 id="notificationTitle">Notification</h4>
+                <p id="notificationMessage">This is a notification message</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="footer-text">
+                &copy; 2025 College Climb. All rights reserved.
+            </div>
+            <div class="footer-socials">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="X">
+                </a>
+                <a href="https://tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                </a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase & Enhanced JavaScript Integration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        window.auth = auth;
+        window.db = db;
+        window.currentUser = null;
+        window.userData = null;
+
+        console.log('🔥 Enhanced Firebase Dashboard initialized');
+
+        // ============================================
+        // NAVBAR FUNCTIONALITY
+        // ============================================
+
+        let currentUserData = null;
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+            updateLogo(savedTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            if (logo) {
+                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+            updateLogo(newTheme);
+        }
+
+        // Dropdown Management
+        function toggleDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                const isOpen = dropdown.classList.contains('show');
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+        }
+
+        function openDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.add('show');
+                container.classList.add('open');
+            }
+        }
+
+        function closeDropdown() {
+            const dropdown = document.getElementById('ccDropdownMenu');
+            const container = document.getElementById('ccProfileDropdown');
+            
+            if (dropdown && container) {
+                dropdown.classList.remove('show');
+                container.classList.remove('open');
+            }
+        }
+
+        // Load User Data from Firestore
+        async function loadNavbarUserData(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                
+                if (userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    updateNavbarUI(auth.currentUser);
+                } else {
+                    currentUserData = {
+                        email: auth.currentUser.email,
+                        name: auth.currentUser.displayName || ''
+                    };
+                    updateNavbarUI(auth.currentUser);
+                }
+            } catch (error) {
+                console.error('Error loading navbar user data:', error);
+                currentUserData = {
+                    email: auth.currentUser.email,
+                    name: auth.currentUser.displayName || ''
+                };
+                updateNavbarUI(auth.currentUser);
+            }
+        }
+
+        // Update Navbar UI with User Info
+        function updateNavbarUI(user) {
+            const profileLoading = document.getElementById('ccProfileLoading');
+            const profileContent = document.getElementById('ccProfileContent');
+            const userAvatar = document.getElementById('ccUserAvatar');
+            const profileName = document.getElementById('ccProfileName');
+            const dropdownName = document.getElementById('ccDropdownName');
+            const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+            if (!user) {
+                // Not logged in - redirect to login
+                if (!window.location.pathname.includes('login.html') && 
+                    !window.location.pathname.includes('signup.html') &&
+                    !window.location.pathname.includes('index.html') &&
+                    !window.location.pathname.includes('about.html') &&
+                    !window.location.pathname.includes('pricing.html')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            // Hide loading, show content
+            if (profileLoading) profileLoading.style.display = 'none';
+            if (profileContent) profileContent.style.display = 'flex';
+
+            // Update profile photo
+            if (userAvatar && currentUserData?.profilePhotoURL) {
+                userAvatar.src = currentUserData.profilePhotoURL;
+            } else if (userAvatar) {
+                userAvatar.src = 'images/default-avatar.png';
+            }
+
+            // Update display name
+            const displayName = currentUserData?.name || user.displayName || user.email.split('@')[0];
+            if (profileName) profileName.textContent = displayName;
+            if (dropdownName) dropdownName.textContent = displayName;
+
+            // Update email
+            if (dropdownEmail) dropdownEmail.textContent = user.email;
+        }
+
+        // Logout Function
+        async function handleLogout(e) {
+            e.preventDefault();
+            closeDropdown();
+            
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Error signing out. Please try again.');
+            }
+        }
+
+        // Event Listeners
+        function initEventListeners() {
+            // Theme toggle
+            const themeToggle = document.getElementById('ccThemeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // Profile button click
+            const profileButton = document.getElementById('ccProfileButton');
+            if (profileButton) {
+                profileButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
+            }
+
+            // Logout button
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('ccProfileDropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Close dropdown on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+        }
+
+        // Initialize Navbar
+        function initNavbar() {
+            console.log('🎯 Initializing College Climb Navbar...');
+            
+            // Initialize theme
+            initTheme();
+            
+            // Set up event listeners
+            initEventListeners();
+            
+            console.log('✅ Navbar initialized successfully!');
+        }
+
+        // Export for global access
+        window.CollegeClimbNavbar = {
+            toggleTheme,
+            openDropdown,
+            closeDropdown,
+            refresh: () => {
+                if (auth.currentUser) {
+                    loadNavbarUserData(auth.currentUser.uid);
+                }
+            }
+        };
+
+        // ============================================
+        // DASHBOARD FUNCTIONALITY
+        // ============================================
+
+        // School database with comprehensive data
+        const schoolDatabase = {
+            'Harvard University': {
+                acceptance_rate: 3.4,
+                avg_gpa: 4.18,
+                avg_sat: 1520,
+                avg_act: 34,
+                tuition: 54269,
+                location: 'Cambridge, MA',
+                type: 'Private',
+                ranking: 2,
+                deadline: '2025-01-01'
+            },
+            'Stanford University': {
+                acceptance_rate: 3.9,
+                avg_gpa: 4.16,
+                avg_sat: 1505,
+                avg_act: 33,
+                tuition: 56169,
+                location: 'Stanford, CA',
+                type: 'Private',
+                ranking: 3,
+                deadline: '2025-01-01'
+            },
+            'MIT': {
+                acceptance_rate: 6.7,
+                avg_gpa: 4.17,
+                avg_sat: 1535,
+                avg_act: 35,
+                tuition: 53790,
+                location: 'Cambridge, MA',
+                type: 'Private',
+                ranking: 1,
+                deadline: '2025-01-01'
+            },
+            'UC Berkeley': {
+                acceptance_rate: 14.5,
+                avg_gpa: 4.0,
+                avg_sat: 1415,
+                avg_act: 31,
+                tuition: 14312,
+                location: 'Berkeley, CA',
+                type: 'Public',
+                ranking: 4,
+                deadline: '2024-11-30'
+            },
+            'Yale University': {
+                acceptance_rate: 4.6,
+                avg_gpa: 4.14,
+                avg_sat: 1515,
+                avg_act: 34,
+                tuition: 59950,
+                location: 'New Haven, CT',
+                type: 'Private',
+                ranking: 5,
+                deadline: '2025-01-01'
+            }
+        };
+
+        // Auth state management
+        onAuthStateChanged(auth, async (user) => {
+            console.log('👤 Auth state changed:', user ? `User: ${user.email}` : 'No user');
+            
+            if (user) {
+                document.body.classList.add("logged-in");
+                window.currentUser = user;
+                await loadUserData(user);
+                await loadNavbarUserData(user.uid);
+                await initializeDashboard();
+            } else {
+                document.body.classList.remove("logged-in");
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load comprehensive user data
+        async function loadUserData(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    window.userData = userDoc.data();
+                    console.log('📊 User data loaded:', window.userData);
+                    updateWelcomeMessage();
+                } else {
+                    // Initialize user document
+                    window.userData = {
+                        email: user.email,
+                        name: user.displayName || user.email.split('@')[0],
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp()
+                    };
+                    await setDoc(doc(db, 'users', user.uid), window.userData);
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                showNotification('Error', 'Failed to load user data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Initialize dashboard with real data
+        async function initializeDashboard() {
+            try {
+                console.log('🚀 Initializing dashboard...');
+                
+                // Load real application data
+                await loadApplicationData();
+                
+                // Calculate and display stats
+                await calculateRealStats();
+                
+                // Generate AI school recommendations
+                generateSchoolRecommendations();
+                
+                // Create application timeline
+                createApplicationTimeline();
+                
+                // Load tasks
+                loadTasks();
+                
+                // Update progress circle
+                updateProgressCircle();
+                
+                // Check for deadline alerts
+                checkDeadlineAlerts();
+                
+                console.log('✅ Dashboard initialized with real data');
+                
+            } catch (error) {
+                console.error('❌ Error initializing dashboard:', error);
+                showNotification('Error', 'Failed to load dashboard data. Please refresh the page.', 'error');
+            }
+        }
+
+        // Load real application data
+        async function loadApplicationData() {
+            try {
+                const userId = window.currentUser.uid;
+                
+                // Check if user has target schools from questionnaire
+                const targetSchools = window.userData?.questionnaire?.targetSchools || [];
+                
+                if (targetSchools.length === 0) {
+                    // Create default applications if none exist
+                    await createDefaultApplications(userId);
+                }
+                
+                // Load existing applications
+                const appsQuery = query(
+                    collection(db, 'applications'),
+                    where('userId', '==', userId)
+                );
+                
+                const querySnapshot = await getDocs(appsQuery);
+                window.applicationData = [];
+                
+                querySnapshot.forEach((doc) => {
+                    window.applicationData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log('📋 Application data loaded:', window.applicationData);
+                
+            } catch (error) {
+                console.error('❌ Error loading application data:', error);
+            }
+        }
+
+        // Create applications based on user's target schools
+        async function createDefaultApplications(userId) {
+            const targetSchools = window.userData?.questionnaire?.targetSchools || [
+                'Harvard University', 'Stanford University', 'MIT', 'UC Berkeley', 'Yale University'
+            ];
+            
+            const statusOptions = ['not-started', 'in-progress', 'submitted', 'completed'];
+            
+            for (const schoolName of targetSchools) {
+                const schoolData = schoolDatabase[schoolName] || {
+                    deadline: '2025-01-01',
+                    acceptance_rate: 10.0,
+                    avg_gpa: 3.8
+                };
+                
+                const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                
+                await addDoc(collection(db, 'applications'), {
+                    userId: userId,
+                    schoolName: schoolName,
+                    deadline: schoolData.deadline,
+                    status: randomStatus,
+                    createdAt: serverTimestamp(),
+                    essayCount: Math.floor(Math.random() * 5) + 1,
+                    supplementsComplete: Math.random() > 0.5,
+                    recommendationsCount: Math.floor(Math.random() * 4),
+                    lastUpdated: serverTimestamp()
+                });
+            }
+            
+            console.log('📝 Created default applications for target schools');
+        }
+
+        // Calculate real statistics from user data
+        async function calculateRealStats() {
+            try {
+                const userId = window.currentUser.uid;
+                
+                // Applications count
+                const applicationCount = window.applicationData?.length || 0;
+                document.getElementById('applicationsCount').textContent = applicationCount;
+                
+                // Essays count (from applications + questionnaire)
+                let essayCount = 0;
+                if (window.applicationData) {
+                    essayCount = window.applicationData.reduce((total, app) => {
+                        return total + (app.essayCount || 0);
+                    }, 0);
+                }
+                if (window.userData?.questionnaire?.essayText || window.userData?.questionnaire?.essayFileURL) {
+                    essayCount += 1;
+                }
+                document.getElementById('essaysCount').textContent = essayCount;
+                
+                // Scholarship calculation based on user profile
+                const scholarshipValue = calculateScholarshipPotential();
+                document.getElementById('scholarshipAmount').textContent = `${Math.round(scholarshipValue / 1000)}K`;
+                
+                // Overall progress calculation
+                const overallProgress = calculateOverallProgress();
+                document.getElementById('overallProgress').textContent = `${overallProgress}%`;
+                
+                // Update trends
+                updateTrends();
+                
+                console.log('📊 Real stats calculated and displayed');
+                
+            } catch (error) {
+                console.error('❌ Error calculating stats:', error);
+            }
+        }
+
+        // Calculate scholarship potential based on user profile
+        function calculateScholarshipPotential() {
+            let baseAmount = 5000; // Base scholarship eligibility
+            
+            const questionnaire = window.userData?.questionnaire;
+            if (!questionnaire) return baseAmount;
+            
+            // GPA-based scholarships
+            const gpa = parseFloat(questionnaire.unweightedGPA || window.userData.gpa || 3.0);
+            if (gpa >= 3.8) baseAmount += 15000;
+            else if (gpa >= 3.5) baseAmount += 10000;
+            else if (gpa >= 3.0) baseAmount += 5000;
+            
+            // Test score scholarships
+            const satScore = extractSATScore(questionnaire.testScores);
+            const actScore = extractACTScore(questionnaire.testScores);
+            
+            if (satScore >= 1450 || actScore >= 32) baseAmount += 20000;
+            else if (satScore >= 1350 || actScore >= 29) baseAmount += 12000;
+            else if (satScore >= 1250 || actScore >= 26) baseAmount += 8000;
+            
+            // Need-based aid consideration
+            if (questionnaire.financialAid?.includes('need-aid')) {
+                baseAmount += 25000;
+            }
+            
+            // First-generation college student
+            if (questionnaire.specialConsiderations?.includes('first-generation')) {
+                baseAmount += 10000;
+            }
+            
+            // Leadership activities
+            if (questionnaire.extracurriculars?.includes('student-government')) {
+                baseAmount += 5000;
+            }
+            
+            return Math.min(baseAmount, 75000); // Cap at reasonable amount
+        }
+
+        // Calculate overall progress
+        function calculateOverallProgress() {
+            if (!window.applicationData || window.applicationData.length === 0) {
+                return 0;
+            }
+            
+            let totalTasks = 0;
+            let completedTasks = 0;
+            
+            window.applicationData.forEach(app => {
+                // Each application has multiple components
+                totalTasks += 5; // Application, essay, supplements, recommendations, interviews
+                
+                if (app.status === 'submitted' || app.status === 'completed') {
+                    completedTasks += 5;
+                } else if (app.status === 'in-progress') {
+                    completedTasks += 2;
+                } else if (app.status === 'not-started') {
+                    completedTasks += 0;
+                }
+            });
+            
+            // Add questionnaire completion
+            totalTasks += 1;
+            if (window.userData?.questionnaire) {
+                completedTasks += 1;
+            }
+            
+            return Math.round((completedTasks / totalTasks) * 100);
+        }
+
+        // Generate AI-powered school recommendations
+        function generateSchoolRecommendations() {
+            const schoolGrid = document.getElementById('schoolGrid');
+            schoolGrid.innerHTML = '';
+            
+            const userProfile = window.userData?.questionnaire || {};
+            const userGPA = parseFloat(userProfile.unweightedGPA || 3.5);
+            const userSAT = extractSATScore(userProfile.testScores) || 1200;
+            
+            // Get user's target schools or use defaults
+            const targetSchools = userProfile.targetSchools || Object.keys(schoolDatabase).slice(0, 5);
+            
+            targetSchools.forEach(schoolName => {
+                const school = schoolDatabase[schoolName];
+                if (!school) return;
+                
+                // Calculate match percentage based on user profile
+                const matchPercentage = calculateMatchPercentage(userGPA, userSAT, school);
+                
+                const schoolCard = createSchoolCard(schoolName, school, matchPercentage);
+                schoolGrid.appendChild(schoolCard);
+            });
+        }
+
+        // Calculate how well user matches with school
+        function calculateMatchPercentage(userGPA, userSAT, school) {
+            let score = 0;
+            
+            // GPA comparison (40% weight)
+            const gpaRatio = userGPA / school.avg_gpa;
+            score += Math.min(gpaRatio * 40, 40);
+            
+            // SAT comparison (35% weight)
+            const satRatio = userSAT / school.avg_sat;
+            score += Math.min(satRatio * 35, 35);
+            
+            // Acceptance rate bonus (25% weight)
+            if (school.acceptance_rate > 10) score += 25;
+            else if (school.acceptance_rate > 5) score += 15;
+            else score += 10;
+            
+            return Math.min(Math.round(score), 95); // Cap at 95%
+        }
+
+        // Create school card element
+        function createSchoolCard(schoolName, school, matchPercentage) {
+            const card = document.createElement('div');
+            card.className = 'school-card';
+            
+            // Determine match color
+            let matchColor = '#ef4444'; // Red
+            if (matchPercentage >= 70) matchColor = '#10b981'; // Green
+            else if (matchPercentage >= 50) matchColor = '#f59e0b'; // Yellow
+            
+            card.innerHTML = `
+                <div class="match-percentage" style="background-color: ${matchColor}">
+                    ${matchPercentage}%
+                </div>
+                <h3 class="school-name">${schoolName}</h3>
+                <div class="school-details">
+                    <div class="school-detail">
+                        <span class="detail-label">Acceptance Rate</span>
+                        <span class="detail-value">${school.acceptance_rate}%</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Avg GPA</span>
+                        <span class="detail-value">${school.avg_gpa}</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Avg SAT</span>
+                        <span class="detail-value">${school.avg_sat}</span>
+                    </div>
+                    <div class="school-detail">
+                        <span class="detail-label">Deadline</span>
+                        <span class="detail-value">${new Date(school.deadline).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => showSchoolDetails(schoolName, school));
+            return card;
+        }
+
+        // Create application timeline
+        function createApplicationTimeline() {
+            const timeline = document.getElementById('applicationTimeline');
+            timeline.innerHTML = '';
+            
+            const timelineEvents = [
+                {
+                    date: 'Nov 2024',
+                    title: 'Early Decision Deadlines',
+                    description: 'Submit early decision applications for top choice schools',
+                    icon: 'fas fa-clock',
+                    status: 'completed'
+                },
+                {
+                    date: 'Dec 2024',
+                    title: 'Regular Decision Applications',
+                    description: 'Complete and submit regular decision applications',
+                    icon: 'fas fa-edit',
+                    status: 'in-progress'
+                },
+                {
+                    date: 'Jan 2025',
+                    title: 'Final Application Deadline',
+                    description: 'Last chance for regular decision submissions',
+                    icon: 'fas fa-flag-checkered',
+                    status: 'upcoming'
+                },
+                {
+                    date: 'Mar 2025',
+                    title: 'Decision Notifications',
+                    description: 'Receive admission decisions from colleges',
+                    icon: 'fas fa-envelope',
+                    status: 'upcoming'
+                },
+                {
+                    date: 'May 2025',
+                    title: 'Decision Deadline',
+                    description: 'Submit enrollment deposit to chosen school',
+                    icon: 'fas fa-graduation-cap',
+                    status: 'upcoming'
+                }
+            ];
+            
+            timelineEvents.forEach((event, index) => {
+                const timelineItem = createTimelineItem(event, index);
+                timeline.appendChild(timelineItem);
+            });
+        }
+
+        // Create individual timeline item
+        function createTimelineItem(event, index) {
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+            
+            const statusClass = event.status === 'completed' ? 'success' : 
+                               event.status === 'in-progress' ? 'warning' : 'info';
+            
+            item.innerHTML = `
+                <div class="timeline-content">
+                    <div class="timeline-date">${event.date}</div>
+                    <div class="timeline-title">${event.title}</div>
+                    <div class="timeline-description">${event.description}</div>
+                </div>
+                <div class="timeline-icon" style="background: var(--${statusClass === 'success' ? 'success' : statusClass === 'warning' ? 'warning' : 'info'}-color)">
+                    <i class="${event.icon}"></i>
+                </div>
+            `;
+            
+            return item;
+        }
+
+        // Load and display tasks
+        function loadTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            const tasks = generatePersonalizedTasks();
+            
+            tasks.forEach(task => {
+                const taskItem = createTaskItem(task);
+                taskList.appendChild(taskItem);
+            });
+        }
+
+        // Generate personalized tasks based on user data
+        function generatePersonalizedTasks() {
+            const tasks = [];
+            const questionnaire = window.userData?.questionnaire || {};
+            const applications = window.applicationData || [];
+            
+            // Task priority based on deadlines and completion status
+            if (applications.some(app => app.status === 'not-started')) {
+                tasks.push({
+                    title: 'Complete college applications',
+                    due: 'Due in 15 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            if (!questionnaire.essayText && !questionnaire.essayFileURL) {
+                tasks.push({
+                    title: 'Write personal statement',
+                    due: 'Due in 10 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            if (!questionnaire.resumeStarted || questionnaire.resumeStarted === 'no') {
+                tasks.push({
+                    title: 'Update resume for applications',
+                    due: 'Due in 7 days',
+                    priority: 'medium',
+                    completed: false
+                });
+            }
+            
+            tasks.push({
+                title: 'Request recommendation letters',
+                due: 'Due in 20 days',
+                priority: 'medium',
+                completed: Math.random() > 0.5
+            });
+            
+            if (questionnaire.financialAid?.includes('need-aid')) {
+                tasks.push({
+                    title: 'Complete FAFSA application',
+                    due: 'Due in 30 days',
+                    priority: 'high',
+                    completed: false
+                });
+            }
+            
+            tasks.push({
+                title: 'Schedule college interviews',
+                due: 'Due in 25 days',
+                priority: 'low',
+                completed: Math.random() > 0.7
+            });
+            
+            return tasks.slice(0, 5); // Show top 5 tasks
+        }
+
+        // Create task item element
+        function createTaskItem(task) {
+            const item = document.createElement('div');
+            item.className = 'task-item';
+            if (task.completed) item.classList.add('completed');
+            
+            item.innerHTML = `
+                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                       onchange="toggleTask(this)">
+                <div class="task-content">
+                    <div class="task-title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="task-due">${task.due}</div>
+                </div>
+                <div class="task-priority ${task.priority}"></div>
+            `;
+            
+            return item;
+        }
+
+        // Update progress circle with real data
+        function updateProgressCircle() {
+            const progress = calculateOverallProgress();
+            const circumference = 2 * Math.PI * 60;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            const progressCircle = document.getElementById('progressCircle');
+            const progressText = document.getElementById('progressText');
+            
+            if (progressCircle && progressText) {
+                progressCircle.style.strokeDashoffset = offset;
+                progressText.textContent = `${progress}%`;
+                
+                // Animate the progress circle
+                setTimeout(() => {
+                    progressCircle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                }, 500);
+            }
+        }
+
+        // Check for upcoming deadlines and show alerts
+        function checkDeadlineAlerts() {
+            if (!window.applicationData) return;
+            
+            const now = new Date();
+            const urgentDeadlines = window.applicationData.filter(app => {
+                const deadline = new Date(app.deadline);
+                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+                return daysUntil <= 7 && daysUntil > 0 && app.status !== 'submitted';
+            });
+            
+            if (urgentDeadlines.length > 0) {
+                const alertBanner = document.getElementById('alertBanner');
+                const alertText = document.getElementById('alertText');
+                
+                const school = urgentDeadlines[0];
+                const deadline = new Date(school.deadline);
+                const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+                
+                alertText.textContent = `${school.schoolName} application due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}!`;
+                alertBanner.classList.add('show');
+            }
+        }
+
+        // Update welcome message with personalization
+        function updateWelcomeMessage() {
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userData = window.userData;
+            
+            if (userData?.name) {
+                welcomeTitle.textContent = `Welcome back, ${userData.name}!`;
+            }
+            
+            const questionnaire = userData?.questionnaire;
+            if (questionnaire?.intendedMajor && questionnaire?.targetSchools?.length > 0) {
+                const major = questionnaire.intendedMajor;
+                const topSchool = questionnaire.targetSchools[0];
+                welcomeMessage.textContent = `Ready to advance your ${major} journey at ${topSchool} and other top schools?`;
+            } else if (questionnaire?.intendedMajor) {
+                welcomeMessage.textContent = `Let's make your ${questionnaire.intendedMajor} dreams a reality with AI-powered guidance`;
+            } else {
+                welcomeMessage.textContent = 'Your personalized college application command center powered by AI';
+            }
+        }
+
+        // Update trend indicators
+        function updateTrends() {
+            const applicationsTrend = document.getElementById('applicationsTrend');
+            const essaysTrend = document.getElementById('essaysTrend');
+            const scholarshipTrend = document.getElementById('scholarshipTrend');
+            const progressTrend = document.getElementById('progressTrend');
+            
+            // Calculate trends based on recent activity
+            const recentApplications = window.applicationData?.filter(app => {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return new Date(app.lastUpdated?.toDate?.() || app.createdAt?.toDate?.() || Date.now()) > weekAgo;
+            }).length || 0;
+            
+            applicationsTrend.textContent = `+${recentApplications} this week`;
+            essaysTrend.textContent = 'In review';
+            scholarshipTrend.textContent = 'New matches';
+            progressTrend.textContent = 'On track';
+        }
+
+        // Utility functions for extracting test scores
+        function extractSATScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/SAT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        function extractACTScore(testScores) {
+            if (!testScores) return null;
+            const match = testScores.match(/ACT:?\s*(\d+)/i);
+            return match ? parseInt(match[1]) : null;
+        }
+
+        // Enhanced chat functionality with context
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const sendButton = document.getElementById('chatSend');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Rate limiting
+            const now = Date.now();
+            const lastMessageTime = sessionStorage.getItem('lastChatTime');
+            if (lastMessageTime && (now - parseInt(lastMessageTime)) < 2000) {
+                showNotification('Rate Limit', 'Please wait a moment before sending another message.', 'warning');
+                return;
+            }
+            sessionStorage.setItem('lastChatTime', now.toString());
+
+            // Disable input
+            input.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<div class="loading"></div>';
+
+            try {
+                addChatMessage(message, 'user');
+                input.value = '';
+                addTypingIndicator();
+
+                // Enhanced context for AI
+                const contextData = {
+                    userProfile: {
+                        name: window.userData?.name,
+                        email: window.currentUser?.email,
+                        gpa: window.userData?.questionnaire?.unweightedGPA || window.userData?.gpa,
+                        testScores: window.userData?.questionnaire?.testScores,
+                        intendedMajor: window.userData?.questionnaire?.intendedMajor,
+                        targetSchools: window.userData?.questionnaire?.targetSchools,
+                        graduationYear: window.userData?.questionnaire?.graduationYear
+                    },
+                    questionnaireData: window.userData?.questionnaire,
+                    applicationData: window.applicationData?.map(app => ({
+                        school: app.schoolName,
+                        status: app.status,
+                        deadline: app.deadline
+                    })) || [],
+                    currentProgress: calculateOverallProgress(),
+                    upcomingDeadlines: getUpcomingDeadlines()
+                };
+
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        userProfile: contextData.userProfile,
+                        questionnaireData: contextData.questionnaireData
+                    })
+                });
+
+                removeTypingIndicator();
+
+                let aiResponse;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponse = data.response || 'I apologize, but I received an empty response. Please try asking your question again.';
+                } else {
+                    aiResponse = getErrorMessage(response.status);
+                }
+
+                addChatMessage(aiResponse, 'ai');
+
+                // Save enhanced chat to Firebase
+                if (window.currentUser) {
+                    await saveChatToFirebase(message, aiResponse, contextData);
+                }
+
+            } catch (error) {
+                console.error('❌ Error in chat:', error);
+                removeTypingIndicator();
+                
+                const errorMessage = error.name === 'TypeError' && error.message.includes('fetch') 
+                    ? 'Please check your internet connection and try again.'
+                    : 'I\'m having trouble connecting right now. Please try again in a moment.';
+                
+                addChatMessage(errorMessage, 'ai');
+                showNotification('Connection Error', 'Unable to send message. Please try again.', 'error');
+                
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        };
+
+        // Get upcoming deadlines
+        function getUpcomingDeadlines() {
+            if (!window.applicationData) return [];
+            
+            const now = new Date();
+            return window.applicationData
+                .filter(app => new Date(app.deadline) > now && app.status !== 'submitted')
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+                .slice(0, 3)
+                .map(app => ({
+                    school: app.schoolName,
+                    deadline: app.deadline,
+                    daysUntil: Math.ceil((new Date(app.deadline) - now) / (1000 * 60 * 60 * 24))
+                }));
+        }
+
+        // Enhanced notification system
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            const iconEl = notification.querySelector('.notification-icon i');
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            // Update icon based on type
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            iconEl.className = icons[type] || icons.info;
+            
+            // Update border color
+            const colors = {
+                success: 'var(--success-color)',
+                error: 'var(--danger-color)',
+                warning: 'var(--warning-color)',
+                info: 'var(--info-color)'
+            };
+            
+            notification.style.borderLeftColor = colors[type] || colors.info;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Global functions
+        window.toggleTask = function(checkbox) {
+            const taskItem = checkbox.closest('.task-item');
+            const taskTitle = taskItem.querySelector('.task-title');
+            
+            if (checkbox.checked) {
+                taskItem.classList.add('completed');
+                taskTitle.style.textDecoration = 'line-through';
+                taskTitle.style.opacity = '0.6';
+                showNotification('Task Completed!', 'Great progress on your college journey!', 'success');
+            } else {
+                taskItem.classList.remove('completed');
+                taskTitle.style.textDecoration = 'none';
+                taskTitle.style.opacity = '1';
+            }
+        };
+
+        window.dismissAlert = function() {
+            document.getElementById('alertBanner').classList.remove('show');
+        };
+
+        window.showSchoolDetails = function(schoolName, school) {
+            const details = `
+                School: ${schoolName}
+                Location: ${school.location}
+                Acceptance Rate: ${school.acceptance_rate}%
+                Average GPA: ${school.avg_gpa}
+                Average SAT: ${school.avg_sat}
+                Tuition: ${school.tuition.toLocaleString()}
+                Ranking: #${school.ranking}
+                Deadline: ${new Date(school.deadline).toLocaleDateString()}
+            `;
+            showNotification(schoolName, details, 'info');
+        };
+
+        // Navigation functions
+        window.showApplicationTracker = function() {
+            showNotification('Application Tracker', `You have ${window.applicationData?.length || 0} applications in progress`, 'info');
+        };
+
+        window.showEssayTracker = function() {
+            const essayCount = document.getElementById('essaysCount').textContent;
+            showNotification('Essay Tracker', `You have completed ${essayCount} essays and supplements`, 'info');
+        };
+
+        window.showScholarshipTracker = function() {
+            const scholarshipAmount = document.getElementById('scholarshipAmount').textContent;
+            showNotification('Scholarship Tracker', `You're eligible for ${scholarshipAmount} in scholarship opportunities`, 'info');
+        };
+
+        window.showProgressAnalytics = function() {
+            const progress = document.getElementById('overallProgress').textContent;
+            showNotification('Progress Analytics', `You're ${progress} complete with your college applications`, 'info');
+        };
+
+        // Chat utility functions
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const prefix = sender === 'user' ? 'You:' : 'AI Counselor:';
+            messageDiv.innerHTML = `<strong>${prefix}</strong> ${escapeHtml(message)}`;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message ai typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <strong>AI Counselor:</strong> 
+                <div class="loading"></div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function saveChatToFirebase(userMessage, aiResponse, contextData) {
+            try {
+                const userId = window.currentUser.uid;
+                const chatData = {
+                    userId: userId,
+                    userMessage: userMessage,
+                    aiResponse: aiResponse,
+                    timestamp: serverTimestamp(),
+                    context: contextData,
+                    sessionId: getSessionId()
+                };
+
+                await addDoc(collection(db, 'chatHistory'), chatData);
+                console.log('💾 Enhanced chat data saved');
+                
+            } catch (error) {
+                console.error('❌ Error saving chat:', error);
+            }
+        }
+
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('chatSessionId');
+            if (!sessionId) {
+                sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                sessionStorage.setItem('chatSessionId', sessionId);
+            }
+            return sessionId;
+        }
+
+        function getErrorMessage(statusCode) {
+            const messages = {
+                400: 'I had trouble understanding your message. Could you please rephrase it?',
+                401: 'There seems to be an authentication issue. Please try refreshing the page.',
+                429: 'I\'m experiencing high demand. Please wait a moment before trying again.',
+                500: 'I\'m temporarily having technical difficulties. Please try again in a few minutes.'
+            };
+            return messages[statusCode] || 'I\'m having trouble connecting right now. Please try again.';
+        }
+
+        window.handleChatKeyPress = function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                window.sendChatMessage();
+            }
+        };
+
+        // Chat toggle
+        window.toggleChat = function() {
+            const chatWidget = document.getElementById('chatWidget');
+            const chatToggle = document.getElementById('chatToggle');
+
+            if (chatWidget.classList.contains('open')) {
+                chatWidget.classList.remove('open');
+                chatToggle.classList.remove('hidden');
+            } else {
+                chatWidget.classList.add('open');
+                chatToggle.classList.add('hidden');
+                document.getElementById('chatInput').focus();
+            }
+        };
+
+        // Utility function
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Initialize navbar on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbar);
+        } else {
+            initNavbar();
+        }
+
+    </script>
+
+    <!-- Theme and UI Enhancement Script -->
+    <script>
+        // Enhanced theme management
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Enhanced Dashboard UI loaded');
+            
+            // Initialize animations
+            initializeAnimations();
+            createStarryBackground();
+        });
+
+        // Create enhanced starry background
+        function createStarryBackground() {
+            const starryBg = document.getElementById('starryBg');
+            if (!starryBg) return;
+            
+            const numStars = 200;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starryBg.appendChild(star);
+            }
+        }
+
+        // Initialize animations
+        function initializeAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.stat-card, .school-match-section, .timeline-section, .task-section').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Dashboard Error:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`🚀 Dashboard loaded in ${Math.round(loadTime)}ms`);
+        });
+    </script>
+</body>
+</html>

@@ -3,13 +3,16 @@
 
 class FirebaseConfig {
   constructor() {
-    // Get configuration from window.FIREBASE_CONFIG (loaded by firebase-env-inject.js)
-    if (!window.FIREBASE_CONFIG) {
-      console.error('Firebase configuration not loaded. Ensure firebase-env-inject.js is included first.');
-      throw new Error('Firebase configuration missing');
-    }
-
-    this.config = window.FIREBASE_CONFIG;
+    // Use environment variables if available, fallback to defaults
+    this.config = {
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "collegeclimb-ai.firebaseapp.com",
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "collegeclimb-ai",
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "collegeclimb-ai.firebasestorage.app",
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "187139654658",
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:187139654658:web:4a6cf4c43095f03212931b",
+      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-E0B2RQM9XS"
+    };
 
     this.app = null;
     this.auth = null;
