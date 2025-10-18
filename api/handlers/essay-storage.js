@@ -362,7 +362,7 @@ async function handleInMemoryRequest(req, res) {
 // MAIN HANDLER (Routes to appropriate mode)
 // ============================================
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -398,3 +398,4 @@ export default async function handler(req, res) {
     });
   }
 }
+

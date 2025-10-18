@@ -2,7 +2,6 @@
   "name": "college-climb-enhanced",
   "version": "2.0.0",
   "description": "AI-powered college application platform with comprehensive test prep, essay coaching, and timeline management",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "vercel dev",

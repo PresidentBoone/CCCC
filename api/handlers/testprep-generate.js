@@ -486,4 +486,3 @@ function getFallbackQuestions(subject, count) {
 }
 
 module.exports = handler;
-module.exports.default = handler;
