@@ -28,7 +28,7 @@ class ProductTour {
                 target: "#essaysCount",
                 position: "bottom",
                 highlightParent: ".stat-card",
-                link: "essaycoach.html"
+                link: '/essay-coach'
             },
             {
                 title: "Scholarships Worth Applying For",
@@ -44,7 +44,7 @@ class ProductTour {
                 target: "#testprepScore",
                 position: "bottom",
                 highlightParent: ".stat-card",
-                link: "testprep-enhanced.html"
+                link: '/testprep'
             },
             {
                 title: "Your Task List",
@@ -70,7 +70,7 @@ class ProductTour {
                     primary: "Add My First Application",
                     primaryAction: () => window.showApplicationTracker(),
                     secondary: "Start Writing Essays",
-                    secondaryAction: () => window.location.href = 'essaycoach.html'
+                    secondaryAction: () => window.location.href = '/essay-coach'
                 }
             }
         ];

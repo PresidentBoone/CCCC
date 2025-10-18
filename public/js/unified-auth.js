@@ -21,7 +21,7 @@ class UnifiedAuthManager {
         // Public pages that don't require authentication
         this.PUBLIC_PAGES = [
             '/', '/index.html', '/index',
-            '/login.html', '/login',
+            '/login', '/login',
             '/signup.html', '/signup',
             '/about.html', '/about',
             '/pricing.html', '/pricing'
@@ -127,7 +127,7 @@ class UnifiedAuthManager {
                 }
             } else if (this.isAuthPage()) {
                 // Redirect if on login/signup page (unless custom handler set)
-                window.location.href = '/dashboard.html';
+                window.location.href = '/dashboard';
             }
         } else {
             // User is signed out
@@ -139,7 +139,7 @@ class UnifiedAuthManager {
             // Redirect to login if on protected page
             if (!this.isPublicPage()) {
                 console.log('🔒 Protected page - redirecting to login');
-                window.location.href = '/login.html';
+                window.location.href = '/login';
             }
         }
     }
@@ -180,7 +180,7 @@ class UnifiedAuthManager {
         const session = this.getSession();
         if (!session) {
             console.log('🔒 No valid session - redirecting to login');
-            window.location.href = '/login.html';
+            window.location.href = '/login';
             return false;
         }
 
@@ -188,7 +188,7 @@ class UnifiedAuthManager {
         if (this.isSessionExpired(session)) {
             console.log('⏰ Session expired - redirecting to login');
             this.clearSession();
-            window.location.href = '/login.html';
+            window.location.href = '/login';
             return false;
         }
 
@@ -258,7 +258,7 @@ class UnifiedAuthManager {
             await signOut(this.auth);
             this.clearSession();
             console.log('✅ Signed out successfully');
-            window.location.href = '/login.html';
+            window.location.href = '/login';
         } catch (error) {
             console.error('❌ Sign out error:', error);
             throw error;

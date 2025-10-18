@@ -141,7 +141,7 @@ class ScholarshipNotifications {
 
             notification.onclick = () => {
                 window.focus();
-                window.location.href = `/scholarship.html?id=${saved.id}`;
+                window.location.href = `/scholarships?id=${saved.id}`;
                 notification.close();
             };
         }
@@ -178,7 +178,7 @@ class ScholarshipNotifications {
             <div class="notification-body">
                 <p>${message}</p>
                 <div class="notification-actions">
-                    <button onclick="window.location.href='/scholarship.html?id=${saved.id}'" class="btn-secondary">
+                    <button onclick="window.location.href='/scholarships?id=${saved.id}'" class="btn-secondary">
                         View Details
                     </button>
                     <a href="${saved.scholarshipData.applicationUrl}" target="_blank" class="btn-primary">

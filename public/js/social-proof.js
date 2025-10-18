@@ -150,7 +150,7 @@ class SocialProof {
                 ${this.renderSimilarStudents(userGPA, userSAT)}
             </div>
 
-            <button class="widget-action-btn" onclick="window.location.href='college-discovery.html'">
+            <button class="widget-action-btn" onclick="window.location.href='/discovery'">
                 <i class="fas fa-search"></i>
                 Find More Matches
             </button>

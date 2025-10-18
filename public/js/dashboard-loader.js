@@ -397,7 +397,7 @@ class DashboardLoader {
                         <i class="fas fa-university"></i>
                         <h3>No Recommendations Yet</h3>
                         <p>Complete your profile to get personalized school recommendations</p>
-                        <button class="btn-primary" onclick="window.location.href='profile.html'">
+                        <button class="btn-primary" onclick="window.location.href='/profile'">
                             Complete Profile
                         </button>
                     </div>
@@ -464,7 +464,7 @@ class DashboardLoader {
         `;
 
         card.addEventListener('click', () => {
-            window.location.href = `college-details.html?id=${school.id}`;
+            window.location.href = `/discovery?id=${school.id}`;
         });
 
         return card;

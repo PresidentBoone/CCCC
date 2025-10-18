@@ -756,8 +756,8 @@
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href='/about'>About</a></li>
+            <li><a href='/pricing'>Pricing</a></li>
             <li class="dropdown" id="profileDropdown">
                 <a href="#" id="authToggle" style="display: flex; align-items: center;">
                     <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
@@ -768,13 +768,13 @@
                         Welcome, <span id="dropdownDisplayName"></span>!
                     </div>
                     <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
+                        <a href='/login'>Login</a>
+                        <a href='/signup'>Sign Up</a>
                     </div>
                     <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
+                        <a href='/profile'>Profile</a>
                         <a href="settings.html">Settings</a>
-                        <a href="dashboard.html">Dashboard</a>
+                        <a href='/dashboard'>Dashboard</a>
                         <a href="college-profile.html">College Profile</a>
                         <a href="#" id="logoutBtn">Logout</a>
                     </div>
@@ -1881,7 +1881,7 @@ if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         await signOut(auth);
-        window.location.href = "/login.html";
+        window.location.href = "/login";
     });
 }
 

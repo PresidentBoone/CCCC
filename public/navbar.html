@@ -512,12 +512,12 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <a href="dashboard.html" class="cc-dropdown-link">
+                <a href='/dashboard' class="cc-dropdown-link">
                     <span class="cc-dropdown-link-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
                 
-                <a href="essaycoach.html" class="cc-dropdown-link">
+                <a href='/essay-coach' class="cc-dropdown-link">
                     <span class="cc-dropdown-link-icon">✍️</span>
                     <span>Essays</span>
                 </a>
@@ -532,7 +532,7 @@
                     <span>Documents</span>
                 </a>
                 
-                <a href="profile.html" class="cc-dropdown-link">
+                <a href='/profile' class="cc-dropdown-link">
                     <span class="cc-dropdown-link-icon">👤</span>
                     <span>Profile</span>
                 </a>
@@ -661,11 +661,11 @@
 
         if (!user) {
             // Not logged in - redirect to login
-            if (!window.location.pathname.includes('login.html') && 
-                !window.location.pathname.includes('signup.html') &&
+            if (!window.location.pathname.includes('/login') && 
+                !window.location.pathname.includes('/signup') &&
                 !window.location.pathname.includes('index.html') &&
-                !window.location.pathname.includes('about.html') &&
-                !window.location.pathname.includes('pricing.html')) {
+                !window.location.pathname.includes('/about') &&
+                !window.location.pathname.includes('/pricing')) {
                 window.location.href = '/login';
             }
             return;

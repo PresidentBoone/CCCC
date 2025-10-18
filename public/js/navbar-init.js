@@ -138,13 +138,13 @@
         function updateDropdownLinks() {
             const links = document.querySelectorAll('.cc-dropdown-link:not(.cc-logout-link)');
             const linkData = [
-                { href: 'dashboard.html', icon: '📊', text: 'Dashboard' },
-                { href: 'essaycoach.html', icon: '✍️', text: 'Essay Coach' },
-                { href: 'adaptive-timeline.html', icon: '📅', text: 'Timeline' },
-                { href: 'testprep-enhanced.html', icon: '📝', text: 'Test Prep' },
+                { href: '/dashboard', icon: '📊', text: 'Dashboard' },
+                { href: '/essay-coach', icon: '✍️', text: 'Essay Coach' },
+                { href: '/timeline', icon: '📅', text: 'Timeline' },
+                { href: '/testprep', icon: '📝', text: 'Test Prep' },
                 { href: 'scholarship.html', icon: '💰', text: 'Scholarships' },
                 { href: 'document.html', icon: '📄', text: 'Documents' },
-                { href: 'profile.html', icon: '👤', text: 'Profile' }
+                { href: '/profile', icon: '👤', text: 'Profile' }
             ];
 
             links.forEach((link, index) => {
@@ -171,7 +171,7 @@
             event.preventDefault();
             try {
                 await signOut(auth);
-                window.location.href = 'index.html';
+                window.location.href = '/';
             } catch (error) {
                 console.error('Logout error:', error);
                 alert('Failed to logout. Please try again.');
@@ -200,11 +200,11 @@
                 loadUserData(user);
             } else {
                 // Redirect to login if not authenticated
-                const publicPages = ['index.html', 'about.html', 'pricing.html', 'login.html', 'signup.html'];
-                const currentPage = window.location.pathname.split('/').pop();
-                
-                if (!publicPages.includes(currentPage)) {
-                    window.location.href = 'login.html';
+                const publicPages = ['/', '/index', '/about', '/pricing', '/login', '/signup'];
+                const currentPage = window.location.pathname;
+
+                if (!publicPages.includes(currentPage) && !publicPages.includes(currentPage.replace('.html', ''))) {
+                    window.location.href = '/login';
                 }
             }
         });

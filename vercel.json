@@ -67,6 +67,14 @@
     {
       "source": "/scholarships",
       "destination": "/my-scholarships.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
     }
   ],
   "headers": [

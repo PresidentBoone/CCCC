@@ -912,22 +912,22 @@
                     </div>
 
                     <!-- Navigation Links -->
-                    <a href="dashboard.html" class="cc-dropdown-link">
+                    <a href='/dashboard' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📊</span>
                         <span>Dashboard</span>
                     </a>
                     
-                    <a href="essaycoach.html" class="cc-dropdown-link">
+                    <a href='/essay-coach' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">✍️</span>
                         <span>Essays</span>
                     </a>
                     
-                    <a href="adaptive-timeline.html" class="cc-dropdown-link">
+                    <a href='/timeline' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📅</span>
                         <span>Timeline</span>
                     </a>
                     
-                    <a href="testprep-enhanced.html" class="cc-dropdown-link">
+                    <a href='/testprep' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📊</span>
                         <span>Test Prep</span>
                     </a>
@@ -942,7 +942,7 @@
                         <span>Documents</span>
                     </a>
                     
-                    <a href="profile.html" class="cc-dropdown-link">
+                    <a href='/profile' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">👤</span>
                         <span>Profile</span>
                     </a>
@@ -963,7 +963,7 @@
     <!-- Old Navigation (replaced with universal navbar above) -->
     <!--
     <nav class="navbar">
-        <a href="dashboard.html" class="logo">
+        <a href='/dashboard' class="logo">
             <img src="images/whiteclearcc.png" alt="College Climb">
             <div class="brand-text">College Climb</div>
         </a>
@@ -971,7 +971,7 @@
             <button class="theme-toggle" onclick="toggleTheme()">
                 <i class="fas fa-moon"></i>
             </button>
-            <a href="dashboard.html" class="btn btn-secondary" style="text-decoration: none; display: inline-flex;">
+            <a href='/dashboard' class="btn btn-secondary" style="text-decoration: none; display: inline-flex;">
                 <i class="fas fa-home"></i> Dashboard
             </a>
         </div>
@@ -1391,15 +1391,15 @@
 
         window.startPractice = function(subject) {
             closeModal();
-            window.location.href = `testprep-practice.html?subject=${subject}&sessionType=practice`;
+            window.location.href = `/testprep-practice?subject=${subject}&sessionType=practice`;
         };
 
         window.startDiagnostic = function() {
-            window.location.href = 'testprep-practice.html?sessionType=diagnostic';
+            window.location.href = '/testprep-practice?sessionType=diagnostic';
         };
 
         window.startFullTest = function() {
-            window.location.href = 'testprep-practice.html?sessionType=full-test';
+            window.location.href = '/testprep-practice?sessionType=full-test';
         };
 
         window.closeModal = function() {
@@ -2047,7 +2047,7 @@
                         <button onclick="saveResults()" class="action-btn secondary">
                             <i class="fas fa-save"></i> Save Results
                         </button>
-                        <button onclick="window.location.href='testprep-practice.html'" class="action-btn secondary">
+                        <button onclick="window.location.href='/testprep-practice'" class="action-btn secondary">
                             <i class="fas fa-play"></i> Practice Mode
                         </button>
                     </div>

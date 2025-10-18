@@ -665,20 +665,20 @@
         </div>
         <ul class="nav-links desktop-nav">
             <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href='/about'>About</a></li>
+            <li><a href='/pricing'>Pricing</a></li>
             <li class="dropdown">
                 <a href="#" id="authToggle">Login/Sign Up</a>
                 <!-- Dropdown content -->
                 <div class="dropdown-content" id="authDropdown">
                     <!-- Not logged in content -->
                     <div id="notLoggedIn">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
+                        <a href='/login'>Login</a>
+                        <a href='/signup'>Sign Up</a>
                     </div>
                     <!-- Logged in content -->
                     <div id="loggedIn" style="display: none;">
-                        <a href="profile.html">Profile</a>
+                        <a href='/profile'>Profile</a>
                         <a href="settings.html">Settings</a>
                         <a href="college-profile.html">College Profile</a>
                         <a href="#" id="logoutBtn">Logout</a>
@@ -690,11 +690,11 @@
         <div class="mobile-nav">
             <button class="hamburger" onclick="toggleMenu()">☰</button>
             <div class="dropdown-menu" id="dropdownMenu">
-                <button onclick="window.location.href='index.html'">Home</button>
-                <button onclick="window.location.href='about.html'">About</button>
-                <button onclick="window.location.href='pricing.html'">Pricing</button>
-                <button onclick="window.location.href='signup.html'">Sign Up</button>
-                <button onclick="window.location.href='login.html'">Log In</button>
+                <button onclick="window.location.href='/'">Home</button>
+                <button onclick="window.location.href='/about'">About</button>
+                <button onclick="window.location.href='/pricing'">Pricing</button>
+                <button onclick="window.location.href='/signup'">Sign Up</button>
+                <button onclick="window.location.href='/login'">Log In</button>
             </div>
         </div>
     </nav>
@@ -741,7 +741,7 @@
             </form>
 
             <div class="login-link">
-                Already have an account? <a href="login.html">Sign In</a>
+                Already have an account? <a href='/login'>Sign In</a>
             </div>
         </div>
     </div>
@@ -842,7 +842,7 @@
             await window.authManager.signInWithGoogle();
             console.log("Google Sign-Up successful");
             // Redirect to questions page after successful signup
-            window.location.href = "questions.html";
+            window.location.href = "/questions";
         } catch (error) {
             console.error("Google Sign-Up error:", error);
             if (error.code === 'auth/unauthorized-domain') {
@@ -888,7 +888,7 @@
             console.log("Account created successfully for:", contact);
             
             setTimeout(() => {
-                window.location.href = "questions.html";
+                window.location.href = "/questions";
             }, 1500);
         } catch (error) {
             console.error("Signup error:", error);

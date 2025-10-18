@@ -623,10 +623,10 @@
                         <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
                     </div>
 
-                    <a href="dashboard.html" class="cc-dropdown-link">
+                    <a href='/dashboard' class="cc-dropdown-link">
                         <span>📊</span> Dashboard
                     </a>
-                    <a href="essaycoach.html" class="cc-dropdown-link">
+                    <a href='/essay-coach' class="cc-dropdown-link">
                         <span>✍️</span> Essays
                     </a>
                     <a href="scholarship.html" class="cc-dropdown-link">
@@ -635,7 +635,7 @@
                     <a href="myapp.html" class="cc-dropdown-link">
                         <span>📋</span> My Applications
                     </a>
-                    <a href="profile.html" class="cc-dropdown-link">
+                    <a href='/profile' class="cc-dropdown-link">
                         <span>👤</span> Profile
                     </a>
                     <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
@@ -699,7 +699,7 @@
                 <p class="card-description">
                     Start with a comprehensive diagnostic to identify your strengths and weaknesses across all test sections.
                 </p>
-                <button class="card-cta" onclick="window.location.href='testprep-diagnostic.html'">
+                <button class="card-cta" onclick="window.location.href='/testprep-practice?sessionType=diagnostic'">
                     <i class="fas fa-clipboard-check"></i> Start Diagnostic
                 </button>
             </div>
@@ -712,7 +712,7 @@
                 <p class="card-description">
                     AI-powered practice sessions that focus on your weak areas and adjust difficulty in real-time.
                 </p>
-                <button class="card-cta" onclick="window.location.href='testprep-practice.html'">
+                <button class="card-cta" onclick="window.location.href='/testprep-practice'">
                     <i class="fas fa-brain"></i> Start Practice
                 </button>
             </div>
@@ -738,7 +738,7 @@
                 <p class="card-description">
                     Take complete, timed practice tests that simulate the real testing experience.
                 </p>
-                <button class="card-cta secondary" onclick="window.location.href='testprep-fulltest.html'">
+                <button class="card-cta secondary" onclick="window.location.href='/testprep-practice?sessionType=full-test'">
                     <i class="fas fa-clock"></i> Take Full Test
                 </button>
             </div>
@@ -751,7 +751,7 @@
                 <p class="card-description">
                     Revisit questions you've flagged for review using our spaced repetition system.
                 </p>
-                <button class="card-cta secondary" onclick="window.location.href='testprep-review.html'">
+                <button class="card-cta secondary" onclick="window.location.href='/testprep'">
                     <i class="fas fa-flag"></i> Review (<span id="flaggedCount">0</span>)
                 </button>
             </div>
@@ -764,7 +764,7 @@
                 <p class="card-description">
                     Deep dive into your performance data, track progress, and identify trends over time.
                 </p>
-                <button class="card-cta secondary" onclick="window.location.href='testprep-analytics.html'">
+                <button class="card-cta secondary" onclick="window.location.href='/testprep'">
                     <i class="fas fa-chart-line"></i> View Analytics
                 </button>
             </div>
@@ -1163,7 +1163,7 @@
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
                         ${subjects.map(subject => `
-                            <button onclick="window.location.href='testprep-practice.html?subject=${subject.id}'; this.closest('div').parentElement.parentElement.remove();" style="padding: 1.5rem; background: var(--secondary-bg); border: 2px solid rgba(160, 123, 204, 0.2); border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left;">
+                            <button onclick="window.location.href='/testprep-practice?subject=${subject.id}'; this.closest('div').parentElement.parentElement.remove();" style="padding: 1.5rem; background: var(--secondary-bg); border: 2px solid rgba(160, 123, 204, 0.2); border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left;">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">${subject.icon}</div>
                                 <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">${subject.name}</div>
                                 <div style="font-size: 0.85rem; color: var(--text-secondary);">${subject.test}</div>

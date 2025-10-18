@@ -11,7 +11,7 @@ class AuthGuard {
     constructor() {
         this.publicPages = [
             '/index.html',
-            '/login.html',
+            '/login',
             '/signup.html',
             '/about.html',
             '/pricing.html',
@@ -106,7 +106,7 @@ class AuthGuard {
      */
     redirectToLogin() {
         const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.href = `/login.html?redirect=${currentUrl}`;
+        window.location.href = `/login?redirect=${currentUrl}`;
     }
 
     /**
@@ -197,7 +197,7 @@ class AuthGuard {
             if (missingFields.length > 0) {
                 console.warn('Missing required user data:', missingFields);
                 // Redirect to profile completion
-                window.location.href = `/profile.html?complete=${missingFields.join(',')}`;
+                window.location.href = `/profile?complete=${missingFields.join(',')}`;
                 return null;
             }
 

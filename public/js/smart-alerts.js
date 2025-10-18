@@ -466,7 +466,7 @@ class SmartAlerts {
                     {
                         label: 'Update Profile',
                         type: 'primary',
-                        action: () => window.location.href = 'profile.html'
+                        action: () => window.location.href = '/profile'
                     },
                     {
                         label: 'Later',
@@ -495,7 +495,7 @@ class SmartAlerts {
                     {
                         label: 'Start Practice',
                         type: 'primary',
-                        action: () => window.location.href = 'testprep-enhanced.html'
+                        action: () => window.location.href = '/testprep'
                     },
                     {
                         label: 'Not Now',
@@ -525,7 +525,7 @@ class SmartAlerts {
                         {
                             label: 'Browse Scholarships',
                             type: 'primary',
-                            action: () => window.location.href = 'scholarship.html'
+                            action: () => window.location.href = '/scholarships'
                         }
                     ]
                 });
@@ -560,7 +560,7 @@ class SmartAlerts {
                         {
                             label: 'Review Essays',
                             type: 'primary',
-                            action: () => window.location.href = 'essaycoach.html'
+                            action: () => window.location.href = '/essay-coach'
                         }
                     ]
                 });
