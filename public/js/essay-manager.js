@@ -478,7 +478,7 @@ class EssayManager {
     }
 
     /**
-     * Export essay to PDF or Word
+     * Export essay to PDF with professional formatting
      */
     async exportEssay(essayId) {
         try {
@@ -494,42 +494,174 @@ class EssayManager {
 
             const essay = essayDoc.data();
 
-            // Create formatted text content
-            let content = '';
-            content += `${essay.title || 'Untitled Essay'}\n`;
-            content += `${'='.repeat(50)}\n\n`;
-
-            if (essay.prompt) {
-                content += `Prompt: ${essay.prompt}\n\n`;
+            // Load jsPDF library dynamically
+            if (!window.jspdf) {
+                this.showMessage('info', 'Loading PDF generator...');
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script.onload = () => {
+                    this.generatePDF(essay);
+                };
+                script.onerror = () => {
+                    console.warn('PDF library failed to load, using text export');
+                    this.exportAsText(essay);
+                };
+                document.head.appendChild(script);
+            } else {
+                this.generatePDF(essay);
             }
-
-            if (essay.targetColleges && essay.targetColleges.length > 0) {
-                content += `Target Colleges: ${essay.targetColleges.join(', ')}\n\n`;
-            }
-
-            content += `${'='.repeat(50)}\n\n`;
-            content += essay.content || '';
-            content += `\n\n${'='.repeat(50)}\n`;
-            content += `Word Count: ${essay.wordCount || 0}\n`;
-            content += `Last Updated: ${new Date().toLocaleDateString()}\n`;
-
-            // Create downloadable text file
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${essay.title || 'essay'}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            this.showMessage('success', 'Essay exported successfully!');
 
         } catch (error) {
             console.error('Error exporting essay:', error);
             this.showMessage('error', 'Failed to export essay');
         }
+    }
+
+    /**
+     * Generate PDF with professional formatting
+     */
+    generatePDF(essay) {
+        try {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 20;
+            const maxWidth = pageWidth - (margin * 2);
+            let y = margin;
+
+            const checkPage = (space) => {
+                if (y + space > pageHeight - margin) {
+                    pdf.addPage();
+                    y = margin;
+                    return true;
+                }
+                return false;
+            };
+
+            // Title
+            pdf.setFontSize(18);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(essay.title || 'Untitled Essay', pageWidth / 2, y, { align: 'center' });
+            y += 12;
+
+            // Metadata
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(100);
+
+            if (essay.targetColleges && essay.targetColleges.length > 0) {
+                pdf.text(`Colleges: ${essay.targetColleges.join(', ')}`, margin, y);
+                y += 5;
+            }
+
+            if (essay.prompt) {
+                pdf.text('Prompt:', margin, y);
+                y += 4;
+                const promptLines = pdf.splitTextToSize(essay.prompt, maxWidth);
+                pdf.text(promptLines, margin, y);
+                y += (promptLines.length * 4) + 2;
+            }
+
+            pdf.text(`Words: ${essay.wordCount || 0} | ${new Date().toLocaleDateString()}`, margin, y);
+            y += 8;
+
+            // Line
+            pdf.setDrawColor(160, 123, 204);
+            pdf.line(margin, y, pageWidth - margin, y);
+            y += 6;
+
+            // Content
+            pdf.setFontSize(10);
+            pdf.setTextColor(0);
+            const lines = pdf.splitTextToSize(essay.content || '', maxWidth);
+            lines.forEach(line => {
+                checkPage(5);
+                pdf.text(line, margin, y);
+                y += 5;
+            });
+
+            // Feedback
+            if (essay.analysis) {
+                checkPage(15);
+                y += 4;
+                pdf.line(margin, y, pageWidth - margin, y);
+                y += 6;
+
+                pdf.setFontSize(12);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(160, 123, 204);
+                pdf.text('AI Feedback', margin, y);
+                y += 7;
+
+                pdf.setFontSize(9);
+                pdf.setTextColor(0);
+
+                if (essay.analysis.overallFeedback) {
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.text('Overall:', margin, y);
+                    y += 4;
+                    pdf.setFont('helvetica', 'normal');
+                    const fbLines = pdf.splitTextToSize(essay.analysis.overallFeedback, maxWidth);
+                    fbLines.forEach(line => {
+                        checkPage(4);
+                        pdf.text(line, margin, y);
+                        y += 4;
+                    });
+                    y += 2;
+                }
+
+                if (essay.analysis.strengthsToLeanInto?.length > 0) {
+                    checkPage(10);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setTextColor(16, 185, 129);
+                    pdf.text('Strengths:', margin, y);
+                    y += 4;
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setTextColor(0);
+                    essay.analysis.strengthsToLeanInto.forEach(s => {
+                        checkPage(4);
+                        pdf.text(`• ${s}`, margin + 2, y);
+                        y += 4;
+                    });
+                }
+            }
+
+            // Footer
+            pdf.setFontSize(7);
+            pdf.setTextColor(150);
+            pdf.text('College Climb AI', pageWidth / 2, pageHeight - 8, { align: 'center' });
+
+            pdf.save(`${essay.title || 'essay'}.pdf`);
+            this.showMessage('success', 'PDF exported successfully!');
+
+        } catch (error) {
+            console.error('PDF generation error:', error);
+            this.exportAsText(essay);
+        }
+    }
+
+    /**
+     * Fallback text export
+     */
+    exportAsText(essay) {
+        let content = `${essay.title || 'Untitled'}\n${'='.repeat(50)}\n\n`;
+        if (essay.prompt) content += `Prompt: ${essay.prompt}\n\n`;
+        if (essay.targetColleges?.length) content += `Colleges: ${essay.targetColleges.join(', ')}\n\n`;
+        content += `${'='.repeat(50)}\n\n${essay.content || ''}\n\n`;
+        content += `Words: ${essay.wordCount || 0}\n`;
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${essay.title || 'essay'}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showMessage('success', 'Text file exported');
     }
 
     /**
