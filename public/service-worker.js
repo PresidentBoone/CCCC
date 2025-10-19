@@ -1,8 +1,8 @@
 // College Climb Service Worker
 // Provides offline caching and improved performance
 
-const CACHE_NAME = 'college-climb-v2.0.0';
-const RUNTIME_CACHE = 'college-climb-runtime';
+const CACHE_NAME = 'college-climb-v2.1.0';  // UPDATED VERSION - forces cache refresh
+const RUNTIME_CACHE = 'college-climb-runtime-v2.1.0';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
@@ -73,9 +73,14 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip cross-origin requests
+  // NEVER intercept POST/PUT/DELETE requests
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  // Skip cross-origin requests except fonts/icons
   if (url.origin !== location.origin) {
-    // Cache external assets like fonts and icons
+    // Cache external assets like fonts and icons (GET only)
     if (url.hostname.includes('googleapis.com') ||
         url.hostname.includes('cdnjs.cloudflare.com') ||
         url.hostname.includes('gstatic.com')) {
@@ -90,16 +95,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Firebase requests - always network
-  if (url.hostname.includes('firebase')) {
+  // HTML/JS files - Use stale-while-revalidate (check for updates in background)
+  if (url.pathname.endsWith('.html') ||
+      url.pathname.endsWith('.js') ||
+      url.pathname === '/' ||
+      url.pathname.startsWith('/login') ||
+      url.pathname.startsWith('/dashboard') ||
+      url.pathname.startsWith('/signup')) {
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
-  // Static assets - Cache first
+  // Static assets (images, CSS) - Cache first
   event.respondWith(cacheFirst(request));
 });
 
-// Cache first strategy - for static assets
+// Cache first strategy - for static assets (images, fonts, CSS only)
 async function cacheFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -112,8 +123,9 @@ async function cacheFirst(request) {
   try {
     const response = await fetch(request);
 
-    // Cache successful responses
-    if (response.ok) {
+    // Only cache successful GET requests with status 200
+    // Don't cache redirects or error responses
+    if (response.ok && response.status === 200 && request.method === 'GET') {
       console.log('[Service Worker] Caching new resource:', request.url);
       cache.put(request, response.clone());
     }
@@ -132,6 +144,27 @@ async function cacheFirst(request) {
       })
     });
   }
+}
+
+// Stale-while-revalidate strategy - for HTML/JS files
+// Serves cached version immediately, then updates cache in background
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+
+  const fetchPromise = fetch(request).then((networkResponse) => {
+    // Update cache in background if successful
+    if (networkResponse.ok && networkResponse.status === 200) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  }).catch(() => {
+    // Return cached version if network fails
+    return cachedResponse;
+  });
+
+  // Return cached version immediately if available, otherwise wait for network
+  return cachedResponse || fetchPromise;
 }
 
 // Network first strategy - for API calls
