@@ -2665,71 +2665,139 @@
                     }
                 }
 
-                // Create application tracker
-                window.applicationTracker = new ApplicationTracker(db, user.uid);
-
-                // Create dashboard loader
-                window.dashboardLoader = new DashboardLoader(auth, db, user);
-
-                // Initialize and load all data
-                await window.dashboardLoader.initialize();
-
-                // Add social proof widgets
-                window.socialProof = new SocialProof(db, user.uid, userData);
-                const socialProofContainer = document.getElementById('socialProofContainer');
-                const studentsLikeYouContainer = document.getElementById('studentsLikeYouContainer');
-
-                if (socialProofContainer) {
-                    socialProofContainer.appendChild(window.socialProof.getSuccessWidget());
+                // Create application tracker (with error handling)
+                try {
+                    window.applicationTracker = new ApplicationTracker(db, user.uid);
+                    console.log('✅ Application Tracker created');
+                } catch (error) {
+                    console.error('❌ Application Tracker failed:', error);
                 }
 
-                if (studentsLikeYouContainer) {
-                    studentsLikeYouContainer.appendChild(window.socialProof.getStudentsLikeYouWidget());
+                // Create dashboard loader (with error handling)
+                try {
+                    window.dashboardLoader = new DashboardLoader(auth, db, user);
+                    console.log('✅ Dashboard Loader created');
+
+                    // Initialize and load all data
+                    await window.dashboardLoader.initialize();
+                    console.log('✅ Dashboard Loader initialized');
+                } catch (error) {
+                    console.error('❌ Dashboard Loader failed:', error);
+                    throw error; // This is critical, re-throw to show error to user
                 }
 
-                // Initialize product tour
-                window.productTour = new ProductTour();
+                // Add social proof widgets (with error handling)
+                try {
+                    window.socialProof = new SocialProof(db, user.uid, userData);
+                    const socialProofContainer = document.getElementById('socialProofContainer');
+                    const studentsLikeYouContainer = document.getElementById('studentsLikeYouContainer');
 
-                // Only auto-start for users who just completed onboarding
-                if (userData.onboardingCompleted && window.productTour.shouldAutoStart()) {
-                    setTimeout(() => {
-                        window.productTour.start();
-                    }, 2000); // Start after 2 seconds
+                    if (socialProofContainer) {
+                        socialProofContainer.appendChild(window.socialProof.getSuccessWidget());
+                    }
+
+                    if (studentsLikeYouContainer) {
+                        studentsLikeYouContainer.appendChild(window.socialProof.getStudentsLikeYouWidget());
+                    }
+                    console.log('✅ Social Proof initialized');
+                } catch (error) {
+                    console.error('⚠️ Social Proof failed (non-critical):', error);
                 }
 
-                // Initialize AI Chat Assistant
-                window.aiChat = new AIChatAssistant(db, user.uid, userData);
-                window.aiChat.initialize();
-                console.log('✅ AI Chat Assistant initialized');
+                // Initialize product tour (with error handling)
+                try {
+                    window.productTour = new ProductTour();
 
-                // Initialize Smart Alerts
-                window.smartAlerts = new SmartAlerts(db, user.uid, userData);
-                await window.smartAlerts.initialize();
-                console.log('✅ Smart Alerts initialized');
+                    // Only auto-start for users who just completed onboarding
+                    if (userData.onboardingCompleted && window.productTour.shouldAutoStart()) {
+                        setTimeout(() => {
+                            window.productTour.start();
+                        }, 2000); // Start after 2 seconds
+                    }
+                    console.log('✅ Product Tour initialized');
+                } catch (error) {
+                    console.error('⚠️ Product Tour failed (non-critical):', error);
+                }
 
-                // Initialize Gamification
-                window.gamification = new Gamification(db, user.uid, userData);
-                await window.gamification.initialize();
-                console.log('✅ Gamification initialized');
+                // Initialize AI Chat Assistant (with error handling)
+                try {
+                    window.aiChat = new AIChatAssistant(db, user.uid, userData);
+                    window.aiChat.initialize();
+                    console.log('✅ AI Chat Assistant initialized');
+                } catch (error) {
+                    console.error('⚠️ AI Chat failed (non-critical):', error);
+                }
 
-                // Initialize Share Success
-                window.shareSuccess = new ShareSuccess(db, user.uid, userData);
-                window.shareSuccess.initialize();
-                console.log('✅ Share Success initialized');
+                // Initialize Smart Alerts (with error handling)
+                try {
+                    window.smartAlerts = new SmartAlerts(db, user.uid, userData);
+                    await window.smartAlerts.initialize();
+                    console.log('✅ Smart Alerts initialized');
+                } catch (error) {
+                    console.error('⚠️ Smart Alerts failed (non-critical):', error);
+                }
 
-                // Initialize Scholarship Features
-                await scholarshipTracker.initialize(user.uid);
-                await scholarshipMatchScore.initialize(user.uid);
-                await scholarshipNotifications.initialize(user.uid);
-                console.log('✅ Scholarship features initialized');
+                // Initialize Gamification (with error handling)
+                try {
+                    window.gamification = new Gamification(db, user.uid, userData);
+                    await window.gamification.initialize();
+                    console.log('✅ Gamification initialized');
+                } catch (error) {
+                    console.error('⚠️ Gamification failed (non-critical):', error);
+                }
 
-                // Update scholarship stats on dashboard
-                updateScholarshipStats();
+                // Initialize Share Success (with error handling)
+                try {
+                    window.shareSuccess = new ShareSuccess(db, user.uid, userData);
+                    window.shareSuccess.initialize();
+                    console.log('✅ Share Success initialized');
+                } catch (error) {
+                    console.error('⚠️ Share Success failed (non-critical):', error);
+                }
+
+                // Initialize Scholarship Features (with error handling)
+                try {
+                    if (window.scholarshipTracker) {
+                        await window.scholarshipTracker.initialize(user.uid);
+                        console.log('✅ Scholarship Tracker initialized');
+                    } else {
+                        console.warn('⚠️ Scholarship Tracker not available');
+                    }
+
+                    if (window.scholarshipMatchScore) {
+                        await window.scholarshipMatchScore.initialize(user.uid);
+                        console.log('✅ Scholarship Match Score initialized');
+                    } else {
+                        console.warn('⚠️ Scholarship Match Score not available');
+                    }
+
+                    if (window.scholarshipNotifications) {
+                        await window.scholarshipNotifications.initialize(user.uid);
+                        console.log('✅ Scholarship Notifications initialized');
+                    } else {
+                        console.warn('⚠️ Scholarship Notifications not available');
+                    }
+
+                    // Update scholarship stats on dashboard
+                    if (typeof updateScholarshipStats === 'function') {
+                        updateScholarshipStats();
+                    }
+                } catch (scholarshipError) {
+                    console.error('⚠️ Scholarship features failed (non-critical):', scholarshipError);
+                    // Don't fail entire dashboard for scholarship features
+                }
 
                 console.log('✅ Dashboard initialized successfully');
             } catch (error) {
                 console.error('❌ Dashboard initialization failed:', error);
-                showToast('Failed to load dashboard. Please refresh the page.', 'error');
+                console.error('Error stack:', error.stack);
+                console.error('Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    user: user?.uid,
+                    timestamp: new Date().toISOString()
+                });
+                showToast(`Dashboard failed: ${error.message}. Check console for details.`, 'error', 10000);
             }
         }
 
