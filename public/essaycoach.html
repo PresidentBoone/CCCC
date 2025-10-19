@@ -1399,6 +1399,82 @@
             margin: 0.3rem 0;
         }
 
+        /* Writing Metrics */
+        .writing-metrics {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 123, 204, 0.15);
+        }
+
+        .metrics-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metrics-title i {
+            color: var(--accent-color);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--primary-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value.good {
+            color: var(--success-color);
+        }
+
+        .metric-value.warning {
+            color: var(--warning-color);
+        }
+
+        .metric-value.poor {
+            color: var(--danger-color);
+        }
+
+        .metric-detail {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
         /* Feedback Section */
         .analysis-results {
             margin-top: 2rem;
@@ -1907,6 +1983,35 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     </div>
                 </div>
 
+                <!-- Real-Time Writing Metrics -->
+                <div id="writingMetrics" class="writing-metrics" style="display: none;">
+                    <h3 class="metrics-title">
+                        <i class="fas fa-chart-line"></i> Writing Metrics
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Reading Level</div>
+                            <div class="metric-value" id="readingLevel">-</div>
+                            <div class="metric-detail" id="readingLevelDetail">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Avg Sentence Length</div>
+                            <div class="metric-value" id="avgSentenceLength">-</div>
+                            <div class="metric-detail" id="sentenceVariety">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Passive Voice</div>
+                            <div class="metric-value" id="passiveVoice">-</div>
+                            <div class="metric-detail">of sentences</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Essay Tone</div>
+                            <div class="metric-value" id="essayTone">-</div>
+                            <div class="metric-detail" id="toneDetail">-</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Analysis Results -->
                 <div id="analysisResults" class="analysis-results" style="display: none;">
                     <!-- Detailed Highlights Feedback -->
@@ -2219,10 +2324,159 @@ Don't forget to specify your target colleges and essay prompt for more personali
             const text = textarea.value;
             const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
             const charCount = text.length;
-            
+
             document.getElementById('wordCount').textContent = wordCount;
             document.getElementById('charCount').textContent = charCount;
+
+            // Update writing metrics if there's content
+            if (wordCount > 20) {
+                updateWritingMetrics(text);
+                document.getElementById('writingMetrics').style.display = 'block';
+            } else {
+                document.getElementById('writingMetrics').style.display = 'none';
+            }
         };
+
+        // Calculate and update writing metrics
+        function updateWritingMetrics(text) {
+            if (!text || text.trim().length < 20) return;
+
+            // Split into sentences
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const words = text.trim().split(/\s+/);
+            const wordCount = words.length;
+
+            // 1. READING LEVEL (Flesch-Kincaid Grade Level)
+            const syllableCount = words.reduce((count, word) => count + countSyllables(word), 0);
+            const avgSentenceLength = wordCount / Math.max(sentences.length, 1);
+            const avgSyllablesPerWord = syllableCount / Math.max(wordCount, 1);
+
+            const fleschKincaid = (0.39 * avgSentenceLength) + (11.8 * avgSyllablesPerWord) - 15.59;
+            const gradeLevel = Math.max(1, Math.min(18, Math.round(fleschKincaid)));
+
+            const readingLevelEl = document.getElementById('readingLevel');
+            const readingDetailEl = document.getElementById('readingLevelDetail');
+            readingLevelEl.textContent = `Grade ${gradeLevel}`;
+
+            if (gradeLevel >= 10 && gradeLevel <= 12) {
+                readingLevelEl.className = 'metric-value good';
+                readingDetailEl.textContent = 'Perfect for college essays';
+            } else if (gradeLevel < 8) {
+                readingLevelEl.className = 'metric-value warning';
+                readingDetailEl.textContent = 'Too simple - add complexity';
+            } else if (gradeLevel > 14) {
+                readingLevelEl.className = 'metric-value warning';
+                readingDetailEl.textContent = 'Too complex - simplify';
+            } else {
+                readingLevelEl.className = 'metric-value';
+                readingDetailEl.textContent = 'Good readability';
+            }
+
+            // 2. SENTENCE VARIETY
+            const sentenceLengths = sentences.map(s => s.trim().split(/\s+/).length);
+            const avgLength = Math.round(sentenceLengths.reduce((a, b) => a + b, 0) / Math.max(sentenceLengths.length, 1));
+            const variance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgLength, 2), 0) / Math.max(sentenceLengths.length, 1);
+            const variety = Math.round(variance);
+
+            const avgSentLenEl = document.getElementById('avgSentenceLength');
+            const varietyEl = document.getElementById('sentenceVariety');
+            avgSentLenEl.textContent = `${avgLength} words`;
+
+            if (variety > 20) {
+                avgSentLenEl.className = 'metric-value good';
+                varietyEl.textContent = 'Excellent variety';
+            } else if (variety < 10) {
+                avgSentLenEl.className = 'metric-value warning';
+                varietyEl.textContent = 'Too monotonous';
+            } else {
+                avgSentLenEl.className = 'metric-value';
+                varietyEl.textContent = 'Good variety';
+            }
+
+            // 3. PASSIVE VOICE DETECTION
+            const passivePatterns = [
+                /\b(am|is|are|was|were|be|been|being)\s+\w+ed\b/gi,
+                /\b(am|is|are|was|were|be|been|being)\s+\w+en\b/gi
+            ];
+
+            let passiveCount = 0;
+            sentences.forEach(sentence => {
+                passivePatterns.forEach(pattern => {
+                    if (pattern.test(sentence)) {
+                        passiveCount++;
+                    }
+                });
+            });
+
+            const passivePercent = Math.round((passiveCount / Math.max(sentences.length, 1)) * 100);
+            const passiveEl = document.getElementById('passiveVoice');
+            passiveEl.textContent = `${passivePercent}%`;
+
+            if (passivePercent < 10) {
+                passiveEl.className = 'metric-value good';
+            } else if (passivePercent > 25) {
+                passiveEl.className = 'metric-value poor';
+            } else {
+                passiveEl.className = 'metric-value warning';
+            }
+
+            // 4. TONE ANALYSIS
+            const formalWords = ['therefore', 'furthermore', 'consequently', 'nevertheless', 'moreover', 'thus', 'hence', 'wherein'];
+            const casualWords = ['really', 'very', 'pretty', 'kind of', 'sort of', 'like', 'just', 'actually'];
+            const emotionalWords = ['love', 'hate', 'amazing', 'terrible', 'wonderful', 'horrible', 'excited', 'passionate'];
+
+            const textLower = text.toLowerCase();
+            const formalScore = formalWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
+            const casualScore = casualWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
+            const emotionalScore = emotionalWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
+
+            const toneEl = document.getElementById('essayTone');
+            const toneDetailEl = document.getElementById('toneDetail');
+
+            if (formalScore > casualScore && emotionalScore < 3) {
+                toneEl.textContent = 'Formal';
+                toneEl.className = 'metric-value';
+                toneDetailEl.textContent = 'Academic tone';
+            } else if (casualScore > formalScore) {
+                toneEl.textContent = 'Casual';
+                toneEl.className = 'metric-value warning';
+                toneDetailEl.textContent = 'Consider more formal language';
+            } else if (emotionalScore > 5) {
+                toneEl.textContent = 'Emotional';
+                toneEl.className = 'metric-value good';
+                toneDetailEl.textContent = 'Shows genuine feeling';
+            } else {
+                toneEl.textContent = 'Balanced';
+                toneEl.className = 'metric-value good';
+                toneDetailEl.textContent = 'Good mix of personal & formal';
+            }
+        }
+
+        // Count syllables in a word (simplified algorithm)
+        function countSyllables(word) {
+            word = word.toLowerCase().replace(/[^a-z]/g, '');
+            if (word.length <= 3) return 1;
+
+            const vowels = 'aeiouy';
+            let count = 0;
+            let previousWasVowel = false;
+
+            for (let i = 0; i < word.length; i++) {
+                const isVowel = vowels.includes(word[i]);
+                if (isVowel && !previousWasVowel) {
+                    count++;
+                }
+                previousWasVowel = isVowel;
+            }
+
+            // Adjust for silent 'e'
+            if (word.endsWith('e')) {
+                count--;
+            }
+
+            // Ensure at least 1 syllable
+            return Math.max(1, count);
+        }
 
         // Show message function
         function showMessage(type, text) {
