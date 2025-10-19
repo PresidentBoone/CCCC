@@ -2054,6 +2054,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
             let editorDiv = document.getElementById('essayEditor');
 
             if (!editorDiv) {
+                // Create new contenteditable div
                 editorDiv = document.createElement('div');
                 editorDiv.id = 'essayEditor';
                 editorDiv.className = 'essay-textarea essay-editor-highlighted';
@@ -2061,16 +2062,19 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 editorDiv.setAttribute('spellcheck', 'true');
                 editorDiv.style.whiteSpace = 'pre-wrap';
                 editorDiv.style.wordWrap = 'break-word';
-                editorDiv.style.position = 'relative';
-                editorDiv.style.zIndex = '1';
 
-                // Insert after textarea
-                textarea.parentNode.insertBefore(editorDiv, textarea.nextSibling);
+                // REPLACE textarea with editorDiv (not insert after)
+                textarea.parentNode.replaceChild(editorDiv, textarea);
+
+                // Keep reference to hidden textarea for form submission
+                editorDiv._originalTextarea = textarea;
 
                 // Add event listeners
                 editorDiv.addEventListener('input', function() {
-                    // Sync back to textarea for form submission
-                    textarea.value = editorDiv.textContent;
+                    // Sync back to hidden textarea
+                    if (editorDiv._originalTextarea) {
+                        editorDiv._originalTextarea.value = editorDiv.textContent;
+                    }
                     updateWordCount();
                 });
 
@@ -2085,15 +2089,6 @@ Don't forget to specify your target colleges and essay prompt for more personali
             // Set the highlighted content
             editorDiv.innerHTML = highlightedHTML;
 
-            // Hide textarea completely, show editor
-            textarea.style.display = 'none';
-            textarea.style.visibility = 'hidden';
-            textarea.style.position = 'absolute';
-            textarea.style.zIndex = '-1';
-
-            editorDiv.style.display = 'block';
-            editorDiv.style.visibility = 'visible';
-
             console.log(`✅ Applied ${sortedHighlights.length} highlights successfully`);
 
             // Show success message
@@ -2103,16 +2098,10 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Clear all highlights and restore textarea
         function clearHighlights() {
             const editorDiv = document.getElementById('essayEditor');
-            if (editorDiv) {
-                editorDiv.remove();
-            }
-
-            const textarea = document.getElementById('essayTextarea');
-            if (textarea) {
-                textarea.style.display = 'block';
-                textarea.style.visibility = 'visible';
-                textarea.style.position = 'static';
-                textarea.style.zIndex = 'auto';
+            if (editorDiv && editorDiv._originalTextarea) {
+                // Restore the original textarea
+                const textarea = editorDiv._originalTextarea;
+                editorDiv.parentNode.replaceChild(textarea, editorDiv);
             }
 
             const summaryDiv = document.getElementById('highlightSummaryDiv');
