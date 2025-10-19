@@ -21,6 +21,9 @@ class EssayManager {
         // Load user's essays
         await this.loadEssays();
 
+        // Load essay deadlines
+        await this.loadEssayDeadlines();
+
         // Load draft from localStorage
         this.loadDraft();
 
@@ -333,6 +336,9 @@ class EssayManager {
 
             // Reload essay list
             await this.loadEssays();
+
+            // Refresh deadlines (in case target colleges changed)
+            await this.refreshDeadlines();
 
             this.showMessage('success', 'Essay saved successfully!');
 
@@ -961,6 +967,214 @@ class EssayManager {
                 messageEl.classList.remove('show');
             }, 5000);
         }
+    }
+
+    /**
+     * Load essay deadlines from essays with target colleges
+     */
+    async loadEssayDeadlines() {
+        const deadlinesContainer = document.getElementById('essayDeadlines');
+        if (!deadlinesContainer) return;
+
+        try {
+            // Get all essays with target colleges
+            if (!this.allEssays || this.allEssays.length === 0) {
+                this.displayDeadlinesEmpty();
+                return;
+            }
+
+            // Generate deadlines from essays with target colleges
+            const deadlines = this.generateDeadlinesFromEssays(this.allEssays);
+
+            if (deadlines.length === 0) {
+                this.displayDeadlinesEmpty();
+                return;
+            }
+
+            // Sort by date (soonest first)
+            deadlines.sort((a, b) => a.date - b.date);
+
+            // Display deadlines
+            this.displayDeadlines(deadlines);
+
+        } catch (error) {
+            console.error('Error loading deadlines:', error);
+            deadlinesContainer.innerHTML = `
+                <div class="deadlines-empty">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Unable to load deadlines</p>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Generate deadlines from essays with target colleges
+     */
+    generateDeadlinesFromEssays(essays) {
+        const deadlines = [];
+        const now = new Date();
+
+        // Common college application deadlines
+        const deadlineTemplates = {
+            'ED': { month: 10, day: 15, name: 'Early Decision' },     // Nov 1
+            'EA': { month: 10, day: 15, name: 'Early Action' },       // Nov 1
+            'RD': { month: 0, day: 1, name: 'Regular Decision' },     // Jan 1
+            'Priority': { month: 11, day: 1, name: 'Priority' },      // Dec 1
+            'Rolling': { month: 2, day: 1, name: 'Rolling' }          // Mar 1
+        };
+
+        essays.forEach(essay => {
+            if (!essay.targetColleges || essay.targetColleges.length === 0) return;
+
+            essay.targetColleges.forEach(college => {
+                // Determine deadline type (default to RD)
+                const deadlineType = essay.applicationType || 'RD';
+                const template = deadlineTemplates[deadlineType] || deadlineTemplates['RD'];
+
+                // Create deadline date (assume next occurrence of the deadline)
+                const currentYear = now.getFullYear();
+                const nextYear = now.getMonth() > template.month ? currentYear + 1 : currentYear;
+                const deadlineDate = new Date(nextYear, template.month, template.day);
+
+                // Calculate progress based on essay status and content
+                const progress = this.calculateEssayProgress(essay);
+
+                deadlines.push({
+                    id: `${essay.id}-${college}`,
+                    essayId: essay.id,
+                    title: essay.title || 'Untitled Essay',
+                    college: college,
+                    date: deadlineDate,
+                    type: deadlineType,
+                    typeName: template.name,
+                    progress: progress,
+                    status: essay.status || 'draft'
+                });
+            });
+        });
+
+        return deadlines;
+    }
+
+    /**
+     * Calculate essay progress (0-100%)
+     */
+    calculateEssayProgress(essay) {
+        let progress = 0;
+
+        // Has content
+        if (essay.content && essay.content.trim().length > 0) {
+            progress += 25;
+        }
+
+        // Has title
+        if (essay.title && essay.title.trim().length > 0) {
+            progress += 10;
+        }
+
+        // Has been analyzed
+        if (essay.analysis) {
+            progress += 25;
+        }
+
+        // Word count reasonable
+        const wordCount = essay.wordCount || 0;
+        if (wordCount >= 250) progress += 20;
+        if (wordCount >= 500) progress += 10;
+
+        // Status based
+        if (essay.status === 'reviewed') progress = Math.max(progress, 60);
+        if (essay.status === 'final') progress = Math.max(progress, 85);
+        if (essay.status === 'submitted') progress = 100;
+
+        return Math.min(progress, 100);
+    }
+
+    /**
+     * Display deadlines in sidebar
+     */
+    displayDeadlines(deadlines) {
+        const container = document.getElementById('essayDeadlines');
+        if (!container) return;
+
+        const now = new Date();
+
+        const html = deadlines.slice(0, 5).map(deadline => {
+            const daysUntil = Math.ceil((deadline.date - now) / (1000 * 60 * 60 * 24));
+            let urgency = 'upcoming';
+            let dateText = '';
+
+            if (daysUntil < 0) {
+                urgency = 'urgent';
+                dateText = `${Math.abs(daysUntil)}d overdue`;
+            } else if (daysUntil === 0) {
+                urgency = 'urgent';
+                dateText = 'Today!';
+            } else if (daysUntil <= 7) {
+                urgency = 'urgent';
+                dateText = `${daysUntil}d left`;
+            } else if (daysUntil <= 30) {
+                urgency = 'soon';
+                dateText = `${daysUntil}d left`;
+            } else {
+                dateText = deadline.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+
+            const progressClass = deadline.progress < 30 ? 'low' : deadline.progress < 70 ? 'medium' : 'high';
+
+            return `
+                <div class="deadline-item ${urgency}" onclick="window.essayManager.loadEssay('${deadline.essayId}')">
+                    <div class="deadline-header">
+                        <div class="deadline-title">${this.escapeHtml(deadline.title)}</div>
+                        <div class="deadline-date ${urgency}">${dateText}</div>
+                    </div>
+                    <div class="deadline-college">
+                        <i class="fas fa-university"></i> ${this.escapeHtml(deadline.college)} (${deadline.typeName})
+                    </div>
+                    <div class="deadline-progress">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span>${deadline.progress}%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar ${progressClass}" style="width: ${deadline.progress}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = html || this.getDeadlinesEmptyHTML();
+    }
+
+    /**
+     * Display empty state for deadlines
+     */
+    displayDeadlinesEmpty() {
+        const container = document.getElementById('essayDeadlines');
+        if (!container) return;
+        container.innerHTML = this.getDeadlinesEmptyHTML();
+    }
+
+    /**
+     * Get empty deadlines HTML
+     */
+    getDeadlinesEmptyHTML() {
+        return `
+            <div class="deadlines-empty">
+                <i class="fas fa-calendar-check"></i>
+                <p><strong>No deadlines yet</strong></p>
+                <p>Add target colleges to your essays to see deadlines here!</p>
+            </div>
+        `;
+    }
+
+    /**
+     * Update deadlines when essays change
+     */
+    async refreshDeadlines() {
+        await this.loadEssayDeadlines();
     }
 }
 
