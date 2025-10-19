@@ -2,7 +2,7 @@
  * Configuration API Handler
  * Safely exposes PUBLIC environment variables to the frontend
  *
- * SECURITY: Only exposes NEXT_PUBLIC_* variables which are meant to be public
+ * SECURITY: Only exposes Firebase configuration variables which are meant to be public
  */
 
 module.exports = async function handler(req, res) {
@@ -14,16 +14,15 @@ module.exports = async function handler(req, res) {
   try {
     // Expose only public Firebase configuration
     // These are safe to expose as they're client-side Firebase config
-    // Check both NEXT_PUBLIC_ and non-prefixed versions for compatibility
     const config = {
       firebase: {
-        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY || null,
-        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || process.env.FIREBASE_AUTH_DOMAIN || null,
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID || null,
-        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || process.env.FIREBASE_STORAGE_BUCKET || null,
-        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || process.env.FIREBASE_MESSAGING_SENDER_ID || null,
-        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID || null,
-        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || process.env.FIREBASE_MEASUREMENT_ID || null
+        apiKey: process.env.FIREBASE_API_KEY || null,
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN || null,
+        projectId: process.env.FIREBASE_PROJECT_ID || null,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || null,
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || null,
+        appId: process.env.FIREBASE_APP_ID || null,
+        measurementId: process.env.FIREBASE_MEASUREMENT_ID || null
       }
     };
 
