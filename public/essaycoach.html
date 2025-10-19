@@ -606,28 +606,175 @@
         }
 
         /* Text highlighting styles */
+        .essay-highlight {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 3px;
+            padding: 2px 4px;
+            margin: 0 -2px;
+        }
+
+        .essay-highlight:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
         .highlight-red {
-            background-color: rgba(239, 68, 68, 0.2);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15));
             border-bottom: 2px solid #ef4444;
-            padding: 2px 0;
-            cursor: help;
-            position: relative;
+            color: var(--text-primary);
+        }
+
+        .highlight-red:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.25));
+            border-bottom-width: 3px;
         }
 
         .highlight-yellow {
-            background-color: rgba(245, 158, 11, 0.2);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.15));
             border-bottom: 2px solid #f59e0b;
-            padding: 2px 0;
-            cursor: help;
-            position: relative;
+            color: var(--text-primary);
+        }
+
+        .highlight-yellow:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(245, 158, 11, 0.25));
+            border-bottom-width: 3px;
         }
 
         .highlight-green {
-            background-color: rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.15));
             border-bottom: 2px solid #10b981;
-            padding: 2px 0;
-            cursor: help;
-            position: relative;
+            color: var(--text-primary);
+        }
+
+        .highlight-green:hover {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(16, 185, 129, 0.25));
+            border-bottom-width: 3px;
+        }
+
+        /* Highlight tooltip */
+        .highlight-tooltip {
+            position: fixed;
+            background: var(--accent-bg);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            pointer-events: none;
+            transform: translate(-50%, -100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            max-width: 250px;
+        }
+
+        .highlight-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--accent-bg);
+        }
+
+        .tooltip-header {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tooltip-body {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Highlight summary */
+        .highlight-summary {
+            background: linear-gradient(135deg, var(--accent-bg), rgba(160, 123, 204, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(42, 53, 122, 0.2);
+            animation: slideInDown 0.5s ease;
+        }
+
+        .highlight-summary strong {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-counts {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .summary-counts span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .count-red {
+            border-left: 3px solid #ef4444;
+        }
+
+        .count-yellow {
+            border-left: 3px solid #f59e0b;
+        }
+
+        .count-green {
+            border-left: 3px solid #10b981;
+        }
+
+        /* Pulse animation for clicked highlights */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(160, 123, 204, 0.5);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Editor with highlights */
+        .essay-editor-highlighted {
+            line-height: 1.9;
+            letter-spacing: 0.01em;
+        }
+
+        /* Make mark element inherit theme colors */
+        mark.essay-highlight {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] mark.essay-highlight {
+            color: var(--text-primary);
         }
 
         /* Word count and stats */
@@ -1831,60 +1978,243 @@ Don't forget to specify your target colleges and essay prompt for more personali
         }
 
         // Apply highlights to text
+        // ============================================
+        // ROBUST HIGHLIGHTING SYSTEM
+        // ============================================
+
         function applyHighlights(highlights) {
+            console.log('🎨 Applying highlights:', highlights);
+
+            if (!highlights || highlights.length === 0) {
+                console.log('⚠️ No highlights to apply');
+                clearHighlights();
+                return;
+            }
+
             const textarea = document.getElementById('essayTextarea');
-            let text = textarea.value;
-            
-            // Sort highlights by start index in reverse order to maintain indices
-            highlights.sort((a, b) => b.startIndex - a.startIndex);
-            
-            highlights.forEach((highlight, index) => {
-                const beforeText = text.substring(0, highlight.startIndex);
-                const highlightText = text.substring(highlight.startIndex, highlight.endIndex);
-                const afterText = text.substring(highlight.endIndex);
-                
-                // Make highlights clickable with data attribute to link to feedback card
+            if (!textarea) {
+                console.error('❌ Essay textarea not found');
+                return;
+            }
+
+            const text = textarea.value;
+            if (!text || text.trim().length === 0) {
+                console.error('❌ No essay text to highlight');
+                return;
+            }
+
+            // Clean up any previous highlights
+            clearHighlights();
+
+            // Sort highlights by start index in reverse to maintain correct positions
+            const sortedHighlights = [...highlights].sort((a, b) => b.startIndex - a.startIndex);
+
+            // Build highlighted HTML
+            let highlightedHTML = text;
+
+            sortedHighlights.forEach((highlight, index) => {
+                const { text: highlightedText, type, category, startIndex, endIndex } = highlight;
+
+                // Validate indices
+                if (typeof startIndex !== 'number' || typeof endIndex !== 'number') {
+                    console.warn('Invalid highlight indices:', highlight);
+                    return;
+                }
+
+                if (startIndex < 0 || endIndex > text.length || startIndex >= endIndex) {
+                    console.warn('Highlight indices out of bounds:', highlight);
+                    return;
+                }
+
+                // Extract the actual text to highlight
+                const textToHighlight = text.substring(startIndex, endIndex);
+
+                // Category display names
                 const categoryNames = {
                     'cliche': 'Cliché',
                     'weak_verb': 'Weak Verb',
-                    'vague': 'Vague',
+                    'vague': 'Vague Statement',
                     'show_dont_tell': 'Show, Don\'t Tell',
                     'grammar': 'Grammar',
                     'unclear': 'Unclear',
                     'strength': 'Strength'
                 };
-                const categoryDisplay = categoryNames[highlight.category] || highlight.category || 'Feedback';
-                const tooltipText = `${categoryDisplay} - Click for details`;
-                
-                const wrappedText = `<span class="highlight-${highlight.type}" data-highlight-index="${index}" title="${tooltipText}" style="cursor: pointer;">${highlightText}</span>`;
-                text = beforeText + wrappedText + afterText;
+                const categoryDisplay = categoryNames[category] || category || 'Feedback';
+
+                // Create highlight span with tooltip
+                const highlightSpan = `<mark class="essay-highlight highlight-${type}" data-index="${index}" data-category="${categoryDisplay}" title="Click to see feedback">${escapeHTML(textToHighlight)}</mark>`;
+
+                // Replace in the text
+                const before = highlightedHTML.substring(0, startIndex);
+                const after = highlightedHTML.substring(endIndex);
+                highlightedHTML = before + highlightSpan + after;
             });
-            
-            // Create contenteditable div to replace textarea
-            const editorDiv = document.createElement('div');
-            editorDiv.className = 'essay-textarea';
-            editorDiv.contentEditable = true;
-            editorDiv.innerHTML = text;
-            editorDiv.style.whiteSpace = 'pre-wrap';
-            
-            editorDiv.addEventListener('input', function() {
-                updateWordCount();
-            });
-            
-            // Add click listener for highlights
-            editorDiv.addEventListener('click', function(e) {
-                if (e.target.classList.contains('highlight-red') || 
-                    e.target.classList.contains('highlight-yellow') || 
-                    e.target.classList.contains('highlight-green')) {
-                    const highlightIndex = e.target.getAttribute('data-highlight-index');
-                    if (highlightIndex !== null) {
-                        scrollToFeedbackCard(parseInt(highlightIndex));
-                    }
-                }
-            });
-            
+
+            // Create or get the contenteditable div
+            let editorDiv = document.getElementById('essayEditor');
+
+            if (!editorDiv) {
+                editorDiv = document.createElement('div');
+                editorDiv.id = 'essayEditor';
+                editorDiv.className = 'essay-textarea essay-editor-highlighted';
+                editorDiv.contentEditable = true;
+                editorDiv.setAttribute('spellcheck', 'true');
+                editorDiv.style.whiteSpace = 'pre-wrap';
+                editorDiv.style.wordWrap = 'break-word';
+
+                // Insert after textarea
+                textarea.parentNode.insertBefore(editorDiv, textarea.nextSibling);
+
+                // Add event listeners
+                editorDiv.addEventListener('input', function() {
+                    // Sync back to textarea for form submission
+                    textarea.value = editorDiv.textContent;
+                    updateWordCount();
+                });
+
+                // Handle highlight clicks
+                editorDiv.addEventListener('click', handleHighlightClick);
+
+                // Show tooltip on hover
+                editorDiv.addEventListener('mouseover', handleHighlightHover);
+                editorDiv.addEventListener('mouseout', handleHighlightHoverOut);
+            }
+
+            // Set the highlighted content
+            editorDiv.innerHTML = highlightedHTML;
+
+            // Hide textarea, show editor
             textarea.style.display = 'none';
-            textarea.parentNode.insertBefore(editorDiv, textarea.nextSibling);
+            editorDiv.style.display = 'block';
+
+            console.log(`✅ Applied ${sortedHighlights.length} highlights successfully`);
+
+            // Show success message
+            showHighlightSummary(highlights);
+        }
+
+        // Clear all highlights and restore textarea
+        function clearHighlights() {
+            const editorDiv = document.getElementById('essayEditor');
+            if (editorDiv) {
+                editorDiv.remove();
+            }
+
+            const textarea = document.getElementById('essayTextarea');
+            if (textarea) {
+                textarea.style.display = 'block';
+            }
+
+            // Remove any highlight tooltips
+            const existingTooltip = document.getElementById('highlightTooltip');
+            if (existingTooltip) {
+                existingTooltip.remove();
+            }
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Handle highlight clicks - scroll to feedback
+        function handleHighlightClick(e) {
+            const highlight = e.target.closest('.essay-highlight');
+            if (highlight) {
+                const index = parseInt(highlight.getAttribute('data-index'));
+                if (!isNaN(index)) {
+                    scrollToFeedbackCard(index);
+
+                    // Add visual feedback
+                    highlight.style.animation = 'pulse 0.5s ease-in-out';
+                    setTimeout(() => {
+                        highlight.style.animation = '';
+                    }, 500);
+                }
+            }
+        }
+
+        // Show tooltip on hover
+        function handleHighlightHover(e) {
+            const highlight = e.target.closest('.essay-highlight');
+            if (!highlight) return;
+
+            const category = highlight.getAttribute('data-category');
+            const index = highlight.getAttribute('data-index');
+
+            // Create tooltip if it doesn't exist
+            let tooltip = document.getElementById('highlightTooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'highlightTooltip';
+                tooltip.className = 'highlight-tooltip';
+                document.body.appendChild(tooltip);
+            }
+
+            // Set tooltip content
+            tooltip.innerHTML = `
+                <div class="tooltip-header">${category}</div>
+                <div class="tooltip-body">Click to see detailed feedback</div>
+            `;
+
+            // Position tooltip
+            const rect = highlight.getBoundingClientRect();
+            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+            tooltip.style.top = (rect.top - 10) + 'px';
+            tooltip.style.opacity = '1';
+            tooltip.style.visibility = 'visible';
+        }
+
+        // Hide tooltip
+        function handleHighlightHoverOut(e) {
+            if (!e.target.closest('.essay-highlight')) {
+                const tooltip = document.getElementById('highlightTooltip');
+                if (tooltip) {
+                    tooltip.style.opacity = '0';
+                    tooltip.style.visibility = 'hidden';
+                }
+            }
+        }
+
+        // Show summary of highlights
+        function showHighlightSummary(highlights) {
+            const redCount = highlights.filter(h => h.type === 'red').length;
+            const yellowCount = highlights.filter(h => h.type === 'yellow').length;
+            const greenCount = highlights.filter(h => h.type === 'green').length;
+
+            let summaryHTML = `<div class="highlight-summary">
+                <strong>✨ Analysis Complete!</strong>
+                <div class="summary-counts">`;
+
+            if (redCount > 0) {
+                summaryHTML += `<span class="count-red"><i class="fas fa-exclamation-circle"></i> ${redCount} area${redCount !== 1 ? 's' : ''} to improve</span>`;
+            }
+            if (yellowCount > 0) {
+                summaryHTML += `<span class="count-yellow"><i class="fas fa-lightbulb"></i> ${yellowCount} suggestion${yellowCount !== 1 ? 's' : ''}</span>`;
+            }
+            if (greenCount > 0) {
+                summaryHTML += `<span class="count-green"><i class="fas fa-check-circle"></i> ${greenCount} strength${greenCount !== 1 ? 's' : ''}</span>`;
+            }
+
+            summaryHTML += `</div>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <i class="fas fa-hand-pointer"></i> Click any highlight to see detailed feedback below
+                </p>
+            </div>`;
+
+            // Insert summary above the editor
+            const editor = document.getElementById('essayEditor');
+            if (editor) {
+                let summaryDiv = document.getElementById('highlightSummaryDiv');
+                if (!summaryDiv) {
+                    summaryDiv = document.createElement('div');
+                    summaryDiv.id = 'highlightSummaryDiv';
+                    editor.parentNode.insertBefore(summaryDiv, editor);
+                }
+                summaryDiv.innerHTML = summaryHTML;
+            }
         }
 
         // Scroll to feedback card when highlight is clicked
@@ -2343,54 +2673,10 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Duplicate displayAnalysisResults removed - using the one from earlier in the file
         
         // Highlight text in essay
-        function highlightEssayText(highlights) {
-            const textarea = document.getElementById('essay-content') || 
-                           document.querySelector('.essay-textarea') || 
-                           document.querySelector('textarea');
-            
-            if (!textarea) return;
-            
-            // Create highlighted version (this is a simplified implementation)
-            const originalText = textarea.value;
-            
-            // For now, just add a visual indicator that highlighting is available
-            const highlightInfo = document.querySelector('.highlight-info');
-            if (highlightInfo) {
-                highlightInfo.innerHTML = `
-                    <div class="highlight-notice">
-                        <i class="fas fa-highlighter"></i>
-                        Found ${highlights.length} area(s) for improvement in your essay.
-                        <button onclick="showHighlightDetails()" class="btn-secondary">View Details</button>
-                    </div>
-                `;
-            }
-        }
-        
-        // Show highlight details
-        function showHighlightDetails() {
-            if (!analysisResults?.highlights) return;
-            
-            const modal = document.createElement('div');
-            modal.className = 'highlight-modal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Text Highlights & Suggestions</h3>
-                        <button onclick="this.closest('.highlight-modal').remove()" class="close-btn">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        ${analysisResults.highlights.map((highlight, index) => `
-                            <div class="highlight-item">
-                                <div class="highlight-text">"${highlight.text}"</div>
-                                <div class="highlight-feedback">${highlight.feedback}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
+        // ============================================
+        // REMOVED: Old broken highlighting functions
+        // Now using robust applyHighlights() system above
+        // ============================================
         
         // Duplicate sendChatMessage removed - using the one from earlier in the file
         
