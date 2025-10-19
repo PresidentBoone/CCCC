@@ -61,7 +61,7 @@ class EssayChatAssistant {
             // Try API first
             let response;
             try {
-                const apiResponse = await fetch('/api/essay-chat', {
+                const apiResponse = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
