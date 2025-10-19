@@ -1991,20 +1991,27 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 return;
             }
 
-            const textarea = document.getElementById('essayTextarea');
-            if (!textarea) {
+            // Get textarea OR editorDiv (in case of re-analysis)
+            let textarea = document.getElementById('essayTextarea');
+            let editorDiv = document.getElementById('essayEditor');
+
+            // If editorDiv exists, get text from it and restore textarea first
+            let text;
+            if (editorDiv && editorDiv._originalTextarea) {
+                text = editorDiv.textContent; // Get plain text from highlighted version
+                textarea = editorDiv._originalTextarea; // Get original textarea
+                clearHighlights(); // Restore textarea
+            } else if (textarea) {
+                text = textarea.value;
+            } else {
                 console.error('❌ Essay textarea not found');
                 return;
             }
 
-            const text = textarea.value;
             if (!text || text.trim().length === 0) {
                 console.error('❌ No essay text to highlight');
                 return;
             }
-
-            // Clean up any previous highlights
-            clearHighlights();
 
             // Sort highlights by start index in reverse to maintain correct positions
             const sortedHighlights = [...highlights].sort((a, b) => b.startIndex - a.startIndex);
