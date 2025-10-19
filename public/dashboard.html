@@ -2250,24 +2250,44 @@
 
     <!-- Firebase & Enhanced JavaScript Integration -->
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        // Import Firebase modules (same version as unified-auth.js for compatibility)
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
+        // IMPORTANT: Use the Firebase instance from unified-auth.js
+        // unified-auth.js already initialized Firebase with proper config from API
+        // DO NOT re-initialize Firebase here - it causes conflicts!
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        // Wait for unified-auth to initialize Firebase
+        async function waitForFirebase() {
+            // Check if authManager has initialized
+            if (window.authManager && window.authManager.isInitialized) {
+                return true;
+            }
+
+            // Wait up to 5 seconds for initialization
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    if (window.authManager && window.authManager.isInitialized) {
+                        clearInterval(checkInterval);
+                        resolve(true);
+                    }
+                    attempts++;
+                    if (attempts > 50) { // 5 seconds (50 * 100ms)
+                        clearInterval(checkInterval);
+                        reject(new Error('Firebase initialization timeout'));
+                    }
+                }, 100);
+            });
+        }
+
+        // Initialize dashboard after Firebase is ready
+        await waitForFirebase();
+
+        // Use the existing Firebase instance initialized by unified-auth.js
+        const app = getApp(); // Get the already-initialized Firebase app
         const auth = getAuth(app);
         const db = getFirestore(app);
 
@@ -2279,13 +2299,13 @@
         window.aiEngine = null;
         window.timelineGenerator = null;
         window.collegeDiscovery = null;
-        
+
         // Make Firebase available globally for AI Engine
         window.firebaseApp = app;
         window.firebaseAuth = auth;
         window.firebaseDb = db;
 
-        console.log('🔥 Enhanced Firebase Dashboard initialized');
+        console.log('✅ Dashboard using unified Firebase instance from auth manager');
 
         // ============================================
         // TOAST NOTIFICATION SYSTEM
