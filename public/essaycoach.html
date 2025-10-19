@@ -950,27 +950,144 @@
             justify-content: center;
         }
 
-        /* Essay List */
-        .essay-list {
-            max-height: 300px;
-            overflow-y: auto;
+        /* Essay Library Controls */
+        .essay-library-controls {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .essay-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
+        .essay-search-input {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
             border-radius: 8px;
-            border: 1px solid rgba(160, 123, 204, 0.1);
-            margin-bottom: 0.5rem;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .essay-search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .essay-filter-select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 8px;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        .essay-filter-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+        }
+
+        .btn-icon {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-bg);
+            transform: scale(1.1);
+        }
+
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+
+        /* Essay List */
+        .essay-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .essay-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .essay-list::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+            border-radius: 3px;
+        }
+
+        .essay-list::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        .essay-list::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-bg);
+        }
+
+        /* College Group Header */
+        .college-group-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-color);
+            margin: 1rem 0 0.5rem 0;
+            padding: 0.5rem;
+            background: var(--secondary-bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .college-group-header:first-child {
+            margin-top: 0;
+        }
+
+        /* Essay Item - Enhanced */
+        .essay-item {
+            display: flex;
+            flex-direction: column;
+            padding: 0.85rem;
+            border-radius: 10px;
+            border: 1px solid rgba(160, 123, 204, 0.15);
+            margin-bottom: 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--primary-bg);
+            position: relative;
         }
 
         .essay-item:hover {
             background: var(--secondary-bg);
             border-color: var(--accent-color);
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.15);
+        }
+
+        .essay-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
         }
 
         .essay-info {
@@ -979,13 +1096,141 @@
 
         .essay-title {
             font-weight: 600;
+            font-size: 0.95rem;
             color: var(--text-primary);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Essay Status Badge */
+        .essay-status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .essay-status.draft {
+            background: rgba(160, 123, 204, 0.15);
+            color: var(--accent-color);
+        }
+
+        .essay-status.reviewed {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .essay-status.final {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .essay-status.submitted {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .essay-colleges {
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .essay-college-tag {
+            background: rgba(160, 123, 204, 0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 500;
         }
 
         .essay-meta {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .essay-meta-left {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .essay-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Essay Actions */
+        .essay-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.6rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .essay-item:hover .essay-actions {
+            opacity: 1;
+        }
+
+        .essay-action-btn {
+            flex: 1;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid rgba(160, 123, 204, 0.2);
+            border-radius: 6px;
+            background: var(--primary-bg);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .essay-action-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .essay-action-btn.delete:hover {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        /* Empty state */
+        .essay-list-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .essay-list-empty i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .essay-list-empty p {
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
         }
 
         /* Feedback Section */
@@ -1602,9 +1847,38 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
                 <!-- Past Essays -->
                 <div class="sidebar-section">
-                    <h3 class="sidebar-title">
-                        <i class="fas fa-folder-open"></i> My Essays
-                    </h3>
+                    <div class="sidebar-title" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fas fa-folder-open"></i> My Essays</span>
+                        <button class="btn-icon" onclick="window.essayManager && window.essayManager.createNewEssay()" title="New Essay">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <!-- Search & Filter -->
+                    <div class="essay-library-controls">
+                        <input
+                            type="text"
+                            id="essaySearchInput"
+                            class="essay-search-input"
+                            placeholder="Search essays..."
+                            oninput="window.essayManager && window.essayManager.filterEssays()"
+                        >
+                        <select id="essayFilterSelect" class="essay-filter-select" onchange="window.essayManager && window.essayManager.filterEssays()">
+                            <option value="all">All Essays</option>
+                            <option value="draft">Drafts</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="final">Final</option>
+                            <option value="submitted">Submitted</option>
+                        </select>
+                        <select id="essaySortSelect" class="essay-filter-select" onchange="window.essayManager && window.essayManager.filterEssays()">
+                            <option value="updated">Recently Updated</option>
+                            <option value="created">Recently Created</option>
+                            <option value="title">Title A-Z</option>
+                            <option value="college">By College</option>
+                        </select>
+                    </div>
+
+                    <!-- Essay List -->
                     <div id="essayList" class="essay-list">
                         <div class="loading">
                             <div class="spinner"></div>

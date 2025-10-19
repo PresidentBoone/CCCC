@@ -59,43 +59,160 @@ class EssayManager {
     }
 
     /**
-     * Display essay list in sidebar
+     * Display essay list in sidebar - ENHANCED VERSION
      */
     displayEssayList(essays) {
         const listContainer = document.getElementById('essayList');
         if (!listContainer) return;
 
+        // Store all essays for filtering
+        this.allEssays = essays;
+
         if (essays.length === 0) {
             listContainer.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                    <i class="fas fa-pen-fancy" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                    <p>No essays yet</p>
-                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Start writing to create your first essay!</p>
+                <div class="essay-list-empty">
+                    <i class="fas fa-pen-fancy"></i>
+                    <p><strong>No essays yet</strong></p>
+                    <p>Start writing to create your first essay!</p>
                 </div>
             `;
             return;
         }
 
-        listContainer.innerHTML = essays.map(essay => {
-            const createdDate = essay.createdAt?.toDate ? essay.createdAt.toDate() : new Date(essay.createdAt);
-            const updatedDate = essay.updatedAt?.toDate ? essay.updatedAt.toDate() : new Date(essay.updatedAt);
+        // Group by sort selection
+        const sortBy = document.getElementById('essaySortSelect')?.value || 'updated';
+        let groupedEssays = {};
 
-            return `
-                <div class="essay-item" onclick="window.essayManager.loadEssay('${essay.id}')">
+        if (sortBy === 'college') {
+            // Group by college
+            essays.forEach(essay => {
+                const colleges = essay.targetColleges || ['Uncategorized'];
+                colleges.forEach(college => {
+                    if (!groupedEssays[college]) groupedEssays[college] = [];
+                    groupedEssays[college].push(essay);
+                });
+            });
+        } else {
+            // Single group
+            groupedEssays['All'] = essays;
+        }
+
+        let html = '';
+        Object.keys(groupedEssays).forEach(groupName => {
+            if (sortBy === 'college' && groupName !== 'All') {
+                html += `<div class="college-group-header">
+                    <i class="fas fa-university"></i> ${groupName}
+                </div>`;
+            }
+
+            groupedEssays[groupName].forEach(essay => {
+                html += this.renderEssayItem(essay);
+            });
+        });
+
+        listContainer.innerHTML = html;
+    }
+
+    /**
+     * Render individual essay item with all features
+     */
+    renderEssayItem(essay) {
+        const updatedDate = essay.updatedAt?.toDate ? essay.updatedAt.toDate() : new Date(essay.updatedAt);
+        const status = essay.status || 'draft';
+        const colleges = essay.targetColleges || [];
+        const wordCount = essay.wordCount || 0;
+
+        return `
+            <div class="essay-item" data-essay-id="${essay.id}">
+                <div class="essay-item-header">
                     <div class="essay-info">
-                        <div class="essay-title">${essay.title || 'Untitled Essay'}</div>
-                        <div class="essay-meta">
-                            ${essay.wordCount || 0} words${essay.versionCount ? ` • ${essay.versionCount} versions` : ''}
-                            <br>
-                            <small>Updated ${this.formatRelativeTime(updatedDate)}</small>
-                        </div>
+                        <div class="essay-title" onclick="window.essayManager.loadEssay('${essay.id}')">${this.escapeHtml(essay.title || 'Untitled Essay')}</div>
+                        ${colleges.length > 0 ? `
+                            <div class="essay-colleges">
+                                ${colleges.slice(0, 2).map(c => `<span class="essay-college-tag">${this.escapeHtml(c)}</span>`).join('')}
+                                ${colleges.length > 2 ? `<span class="essay-college-tag">+${colleges.length - 2}</span>` : ''}
+                            </div>
+                        ` : ''}
                     </div>
-                    <div>
-                        <i class="fas fa-chevron-right"></i>
+                    <span class="essay-status ${status}">${status}</span>
+                </div>
+
+                <div class="essay-meta">
+                    <div class="essay-meta-left">
+                        <span class="essay-meta-item">
+                            <i class="fas fa-file-word"></i> ${wordCount} words
+                        </span>
+                        <span class="essay-meta-item">
+                            <i class="fas fa-clock"></i> ${this.formatRelativeTime(updatedDate)}
+                        </span>
                     </div>
                 </div>
-            `;
-        }).join('');
+
+                <div class="essay-actions">
+                    <button class="essay-action-btn" onclick="event.stopPropagation(); window.essayManager.duplicateEssay('${essay.id}')" title="Duplicate">
+                        <i class="fas fa-copy"></i> Duplicate
+                    </button>
+                    <button class="essay-action-btn" onclick="event.stopPropagation(); window.essayManager.exportEssay('${essay.id}')" title="Export">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="essay-action-btn delete" onclick="event.stopPropagation(); window.essayManager.deleteEssay('${essay.id}')" title="Delete">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Filter and sort essays based on search/filter controls
+     */
+    filterEssays() {
+        if (!this.allEssays) return;
+
+        const searchTerm = document.getElementById('essaySearchInput')?.value.toLowerCase() || '';
+        const filterStatus = document.getElementById('essayFilterSelect')?.value || 'all';
+        const sortBy = document.getElementById('essaySortSelect')?.value || 'updated';
+
+        let filtered = this.allEssays.filter(essay => {
+            // Search filter
+            const matchesSearch = searchTerm === '' ||
+                (essay.title || '').toLowerCase().includes(searchTerm) ||
+                (essay.prompt || '').toLowerCase().includes(searchTerm) ||
+                (essay.targetColleges || []).some(c => c.toLowerCase().includes(searchTerm));
+
+            // Status filter
+            const matchesStatus = filterStatus === 'all' || (essay.status || 'draft') === filterStatus;
+
+            return matchesSearch && matchesStatus;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case 'created':
+                    return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                case 'title':
+                    return (a.title || '').localeCompare(b.title || '');
+                case 'college':
+                    const aCollege = (a.targetColleges || [''])[0];
+                    const bCollege = (b.targetColleges || [''])[0];
+                    return aCollege.localeCompare(bCollege);
+                case 'updated':
+                default:
+                    return (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0);
+            }
+        });
+
+        this.displayEssayList(filtered);
+    }
+
+    /**
+     * HTML escape helper
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     /**
@@ -287,6 +404,125 @@ class EssayManager {
         } catch (error) {
             console.error('Error creating version:', error);
             this.showMessage('error', 'Failed to create version');
+        }
+    }
+
+    /**
+     * Create new essay (clear form)
+     */
+    createNewEssay() {
+        this.currentEssayId = null;
+        this.currentEssay = null;
+        this.analysisResult = null;
+
+        document.getElementById('essayTitle').value = '';
+        document.getElementById('essayTextarea').value = '';
+        document.getElementById('essayPrompt').value = '';
+        document.getElementById('targetColleges').value = '';
+
+        // Hide analysis results
+        const analysisResults = document.getElementById('analysisResults');
+        if (analysisResults) {
+            analysisResults.style.display = 'none';
+        }
+
+        // Clear highlights
+        if (window.clearHighlights) {
+            window.clearHighlights();
+        }
+
+        this.updateWordCount();
+        this.showMessage('info', 'Ready to write a new essay!');
+    }
+
+    /**
+     * Duplicate essay
+     */
+    async duplicateEssay(essayId) {
+        try {
+            const { doc, getDoc, addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+
+            const essayRef = doc(this.db, 'users', this.userId, 'essays', essayId);
+            const essayDoc = await getDoc(essayRef);
+
+            if (!essayDoc.exists()) {
+                this.showMessage('error', 'Essay not found');
+                return;
+            }
+
+            const originalEssay = essayDoc.data();
+            const duplicatedEssay = {
+                ...originalEssay,
+                title: `${originalEssay.title || 'Untitled'} (Copy)`,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+                status: 'draft' // Reset status to draft
+            };
+
+            const essaysRef = collection(this.db, 'users', this.userId, 'essays');
+            await addDoc(essaysRef, duplicatedEssay);
+
+            this.showMessage('success', 'Essay duplicated successfully!');
+            await this.loadEssays();
+
+        } catch (error) {
+            console.error('Error duplicating essay:', error);
+            this.showMessage('error', 'Failed to duplicate essay');
+        }
+    }
+
+    /**
+     * Export essay to PDF or Word
+     */
+    async exportEssay(essayId) {
+        try {
+            const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+
+            const essayRef = doc(this.db, 'users', this.userId, 'essays', essayId);
+            const essayDoc = await getDoc(essayRef);
+
+            if (!essayDoc.exists()) {
+                this.showMessage('error', 'Essay not found');
+                return;
+            }
+
+            const essay = essayDoc.data();
+
+            // Create formatted text content
+            let content = '';
+            content += `${essay.title || 'Untitled Essay'}\n`;
+            content += `${'='.repeat(50)}\n\n`;
+
+            if (essay.prompt) {
+                content += `Prompt: ${essay.prompt}\n\n`;
+            }
+
+            if (essay.targetColleges && essay.targetColleges.length > 0) {
+                content += `Target Colleges: ${essay.targetColleges.join(', ')}\n\n`;
+            }
+
+            content += `${'='.repeat(50)}\n\n`;
+            content += essay.content || '';
+            content += `\n\n${'='.repeat(50)}\n`;
+            content += `Word Count: ${essay.wordCount || 0}\n`;
+            content += `Last Updated: ${new Date().toLocaleDateString()}\n`;
+
+            // Create downloadable text file
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${essay.title || 'essay'}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            this.showMessage('success', 'Essay exported successfully!');
+
+        } catch (error) {
+            console.error('Error exporting essay:', error);
+            this.showMessage('error', 'Failed to export essay');
         }
     }
 
