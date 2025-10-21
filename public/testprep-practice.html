@@ -2459,6 +2459,7 @@
         // Confetti animation system
         const confettiSystem = {
             enabled: true,
+            styleElements: [], // Track style tags for cleanup
 
             // Create a single confetti piece
             createConfettiPiece() {
@@ -2526,7 +2527,22 @@
                 style.textContent = keyframes;
                 document.head.appendChild(style);
 
+                // 🔧 FIX MEMORY LEAK: Store style reference for cleanup
+                confetti.styleElement = style;
+                this.styleElements.push(style);
+
                 return confetti;
+            },
+
+            // 🔧 NEW: Clean up old style tags to prevent memory leak
+            cleanupStyles() {
+                // Remove old style tags (keep last 50 to avoid breaking active animations)
+                while (this.styleElements.length > 50) {
+                    const oldStyle = this.styleElements.shift();
+                    if (oldStyle && oldStyle.parentNode) {
+                        oldStyle.parentNode.removeChild(oldStyle);
+                    }
+                }
             },
 
             // Launch confetti burst
@@ -2557,8 +2573,15 @@
                     // Remove after animation completes
                     setTimeout(() => {
                         piece.remove();
+                        // 🔧 FIX: Also remove associated style tag
+                        if (piece.styleElement && piece.styleElement.parentNode) {
+                            piece.styleElement.parentNode.removeChild(piece.styleElement);
+                        }
                     }, 5000);
                 }
+
+                // 🔧 FIX: Clean up old style tags periodically
+                this.cleanupStyles();
             },
 
             // Continuous confetti rain (for epic moments)
@@ -2570,8 +2593,16 @@
                         const piece = this.createConfettiPiece();
                         document.body.appendChild(piece);
 
-                        setTimeout(() => piece.remove(), 5000);
+                        setTimeout(() => {
+                            piece.remove();
+                            // 🔧 FIX: Also remove associated style tag
+                            if (piece.styleElement && piece.styleElement.parentNode) {
+                                piece.styleElement.parentNode.removeChild(piece.styleElement);
+                            }
+                        }, 5000);
                     }
+                    // 🔧 FIX: Clean up periodically during rain
+                    this.cleanupStyles();
                 }, 100);
 
                 setTimeout(() => {

@@ -555,21 +555,185 @@
         }
 
         /* Responsive Design */
+        /* ========================================
+           MOBILE RESPONSIVENESS - COMPREHENSIVE
+           ======================================== */
+
         @media (max-width: 768px) {
+            /* Navbar Adjustments */
+            .cc-navbar {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .cc-brand-text h2 {
+                font-size: 0.9rem;
+            }
+
+            .cc-nav-right {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+
+            /* Hero Section */
+            .hero-section {
+                padding: 6rem 1rem 4rem !important;
+            }
+
             .hero-section h1 {
-                font-size: 2rem;
+                font-size: 2rem !important;
             }
 
             .hero-section p {
+                font-size: 1rem !important;
+            }
+
+            /* Dashboard Grid */
+            .dashboard-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+
+            /* Stats Cards */
+            .stat-card {
+                padding: 1.25rem !important;
+            }
+
+            .stat-value {
+                font-size: 2rem !important;
+            }
+
+            /* Test Categories */
+            .test-categories {
+                grid-template-columns: 1fr !important;
+            }
+
+            .test-card {
+                padding: 1.5rem !important;
+            }
+
+            /* Container Padding */
+            .testprep-container {
+                padding: 1rem !important;
+            }
+
+            /* Buttons */
+            .cta-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Ultra-mobile optimizations */
+            body {
+                padding-top: 100px;
+            }
+
+            .cc-navbar {
+                padding: 0.5rem;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1 {
                 font-size: 1rem;
             }
 
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .cc-brand-text h2 {
+                font-size: 0.8rem;
             }
 
-            .testprep-container {
-                padding: 1rem;
+            /* Hero */
+            .hero-section {
+                padding: 5rem 0.75rem 3rem !important;
+            }
+
+            .hero-section h1 {
+                font-size: 1.75rem !important;
+            }
+
+            .hero-section p {
+                font-size: 0.95rem !important;
+            }
+
+            /* Stats */
+            .stat-card {
+                padding: 1rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.85rem !important;
+            }
+
+            .stat-value {
+                font-size: 1.75rem !important;
+            }
+
+            /* Test Cards */
+            .test-card h3 {
+                font-size: 1.1rem !important;
+            }
+
+            .test-card p {
+                font-size: 0.9rem !important;
+            }
+
+            /* Subject Grid */
+            .subject-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem;
+            }
+
+            /* Progress Bars */
+            .progress-bar {
+                height: 6px !important;
+            }
+
+            /* Modals */
+            .modal {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            /* Small mobile devices */
+            .cc-brand-text {
+                display: none;
+            }
+
+            .hero-section h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .btn {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
             }
         }
 
