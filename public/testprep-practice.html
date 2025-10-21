@@ -45,6 +45,444 @@
             color: var(--text-primary);
             background: var(--primary-bg);
             transition: all 0.3s ease;
+            padding-top: 80px; /* Space for fixed navbar */
+        }
+
+        /* Navigation Bar */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1, .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+        }
+
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+        }
+
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* XP Display */
+        .xp-display {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .xp-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
+        }
+
+        .xp-icon {
+            font-size: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .xp-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .xp-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1;
+        }
+
+        .xp-amount {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+        }
+
+        /* XP Gain Popup */
+        .xp-gain-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 24px;
+            font-size: 3rem;
+            font-weight: 900;
+            z-index: 10002;
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.6);
+            animation: xpPopup 1.5s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes xpPopup {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1) rotate(-2deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes levelUpBounce {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+
+        /* Hearts Display */
+        .hearts-display {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .hearts-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .heart {
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .heart.lost {
+            opacity: 0.2;
+            filter: grayscale(100%);
+            transform: scale(0.7);
+        }
+
+        .heart.shake {
+            animation: heartShake 0.5s ease;
+        }
+
+        @keyframes heartShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes heartLose {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 0.5; }
+            100% { transform: scale(0.7); opacity: 0.2; filter: grayscale(100%); }
+        }
+
+        @keyframes heartGain {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; filter: grayscale(0%); }
+        }
+
+        /* Out of Hearts Modal */
+        .out-of-hearts-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10004;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .out-of-hearts-content {
+            background: var(--primary-bg);
+            border-radius: 32px;
+            padding: 3rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+        }
+
+        .out-of-hearts-icon {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .out-of-hearts-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+
+        .out-of-hearts-message {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .refill-options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .refill-option {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refill-option:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.3);
+        }
+
+        .refill-option-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .refill-option-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Practice Container */
@@ -446,6 +884,85 @@
     <script src="/js/diagnostic-questions.js"></script>
 </head>
 <body data-theme="dark">
+    <!-- Navigation -->
+    <nav class="cc-navbar">
+        <a href="/testprep" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <div class="cc-nav-right">
+            <!-- Hearts Display -->
+            <div class="hearts-display" id="heartsDisplay">
+                <div class="heart" id="heart1">❤️</div>
+                <div class="heart" id="heart2">❤️</div>
+                <div class="heart" id="heart3">❤️</div>
+                <div class="heart" id="heart4">❤️</div>
+                <div class="heart" id="heart5">❤️</div>
+            </div>
+
+            <!-- XP Display -->
+            <div class="xp-display" id="xpDisplay">
+                <div class="xp-icon">⭐</div>
+                <div class="xp-info">
+                    <div class="xp-label">XP</div>
+                    <div class="xp-amount" id="xpAmount">0</div>
+                </div>
+            </div>
+
+            <button class="cc-theme-toggle" id="soundToggleBtn" onclick="toggleSoundEffects()" title="Toggle sound effects">🔊</button>
+
+            <button class="cc-theme-toggle" id="confettiToggleBtn" onclick="toggleConfetti()" title="Toggle confetti animations">🎉</button>
+
+            <button class="cc-theme-toggle" onclick="leaderboardSystem.showLeaderboard()" title="View leaderboard">🏆</button>
+
+            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                    </div>
+                </div>
+
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <div class="cc-dropdown-header">
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                    </div>
+
+                    <a href='/dashboard' class="cc-dropdown-link">
+                        <span>📊</span> Dashboard
+                    </a>
+                    <a href='/essay-coach' class="cc-dropdown-link">
+                        <span>✍️</span> Essays
+                    </a>
+                    <a href='/testprep' class="cc-dropdown-link">
+                        <span>📝</span> Test Prep
+                    </a>
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span>💰</span> Scholarships
+                    </a>
+                    <a href="myapp.html" class="cc-dropdown-link">
+                        <span>📋</span> My Applications
+                    </a>
+                    <a href='/profile' class="cc-dropdown-link">
+                        <span>👤</span> Profile
+                    </a>
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span>🚪</span> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <div class="practice-container">
         <!-- Header -->
         <div class="practice-header">
@@ -561,24 +1078,99 @@
             </div>
         </div>
     </div>
+
+    <!-- Out of Hearts Modal -->
+    <div class="out-of-hearts-modal" id="outOfHeartsModal" style="display: none;">
+        <div class="out-of-hearts-content">
+            <div class="out-of-hearts-icon">💔</div>
+            <h2 class="out-of-hearts-title">Out of Hearts!</h2>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem; text-align: center;">
+                You've run out of hearts. Choose how to continue:
+            </p>
+
+            <div class="refill-options">
+                <div class="refill-option">
+                    <div class="refill-option-icon">⏰</div>
+                    <h3>Wait for Refill</h3>
+                    <p class="refill-timer">4h 0m until refill</p>
+                    <button class="nav-btn secondary" onclick="refillHearts()">
+                        Check if Ready
+                    </button>
+                </div>
+
+                <div class="refill-option highlight">
+                    <div class="refill-option-icon">⭐</div>
+                    <h3>Spend XP</h3>
+                    <p>50 XP to refill all hearts</p>
+                    <button class="nav-btn primary" onclick="purchaseHeart()">
+                        Refill Now
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <button class="nav-btn secondary" onclick="closeOutOfHeartsModal(); window.location.href='/testprep'">
+                    <i class="fas fa-arrow-left"></i> Return to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b"
-        };
+        // Initialize Firebase with environment-based config (same pattern as Essay Coach)
+        async function initializeFirebase() {
+            let firebaseConfig;
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+            try {
+                // Try to load from environment first (production)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+                try {
+                    const response = await fetch('/api/config', { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    if (response.ok) {
+                        const config = await response.json();
+                        firebaseConfig = config.firebase;
+                        console.log('✅ Firebase config loaded from environment');
+                    } else {
+                        throw new Error('Config API unavailable');
+                    }
+                } catch (fetchError) {
+                    clearTimeout(timeoutId);
+                    if (fetchError.name === 'AbortError') {
+                        throw new Error('Request timed out. The server is taking too long to respond.');
+                    }
+                    throw fetchError;
+                }
+            } catch (error) {
+                // Fallback to hardcoded config (development only)
+                console.warn('⚠️ Using fallback Firebase config (development mode)');
+                firebaseConfig = {
+                    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+                    authDomain: "collegeclimb-ai.firebaseapp.com",
+                    projectId: "collegeclimb-ai",
+                    storageBucket: "collegeclimb-ai.firebasestorage.app",
+                    messagingSenderId: "187139654658",
+                    appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+                };
+            }
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            return { app, auth, db };
+        }
+
+        // Initialize Firebase
+        const firebasePromise = initializeFirebase();
+        let auth, db;
 
         // Global variables
         let currentUser = null;
@@ -603,65 +1195,1810 @@
             sessionType = urlParams.get('sessionType');
         }
 
-        // Initialize
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                await loadUserData();
-                await loadTestPrepData();
-                initializeSession();
-            } else {
-                window.location.href = '/login';
+        // ============================================
+        // OFFICIAL SAT/ACT SCORE CONVERSION TABLES
+        // Based on College Board and ACT scoring guides
+        // ============================================
+
+        // SAT Math: 58 questions total (20 no-calc + 38 calc)
+        // Converts raw score (0-58) to scaled score (200-800)
+        const SAT_MATH_CONVERSION = {
+            0: 200, 1: 200, 2: 210, 3: 230, 4: 240, 5: 260, 6: 280, 7: 290, 8: 310,
+            9: 320, 10: 330, 11: 340, 12: 360, 13: 370, 14: 380, 15: 390, 16: 410,
+            17: 420, 18: 430, 19: 440, 20: 450, 21: 460, 22: 470, 23: 480, 24: 480,
+            25: 490, 26: 500, 27: 510, 28: 520, 29: 520, 30: 530, 31: 540, 32: 550,
+            33: 560, 34: 560, 35: 570, 36: 580, 37: 590, 38: 600, 39: 600, 40: 610,
+            41: 620, 42: 630, 43: 640, 44: 650, 45: 660, 46: 670, 47: 680, 48: 690,
+            49: 700, 50: 710, 51: 730, 52: 740, 53: 750, 54: 760, 55: 780, 56: 790,
+            57: 800, 58: 800
+        };
+
+        // SAT Reading/Writing: 52 questions total (Reading) + 44 (Writing) = 96, but scored as single section
+        // For practice purposes, we'll use simplified 50-question scale
+        const SAT_READING_CONVERSION = {
+            0: 200, 1: 200, 2: 210, 3: 230, 4: 240, 5: 260, 6: 270, 7: 280, 8: 290,
+            9: 300, 10: 310, 11: 320, 12: 330, 13: 340, 14: 350, 15: 360, 16: 370,
+            17: 380, 18: 380, 19: 390, 20: 400, 21: 410, 22: 420, 23: 430, 24: 440,
+            25: 450, 26: 460, 27: 470, 28: 480, 29: 480, 30: 490, 31: 500, 32: 510,
+            33: 520, 34: 530, 35: 540, 36: 550, 37: 560, 38: 570, 39: 580, 40: 590,
+            41: 600, 42: 610, 43: 620, 44: 630, 45: 650, 46: 670, 47: 690, 48: 710,
+            49: 730, 50: 760, 51: 780, 52: 800
+        };
+
+        // ACT Scoring: Raw score to scaled score (1-36)
+        // Each section has different question counts but all scale to 1-36
+        const ACT_CONVERSION = {
+            // Math: 60 questions
+            math: {
+                0: 1, 1: 1, 2: 5, 3: 8, 4: 10, 5: 11, 6: 12, 7: 13, 8: 14, 9: 14,
+                10: 15, 11: 15, 12: 16, 13: 16, 14: 17, 15: 17, 16: 18, 17: 18, 18: 18,
+                19: 19, 20: 19, 21: 19, 22: 20, 23: 20, 24: 20, 25: 21, 26: 21, 27: 21,
+                28: 22, 29: 22, 30: 23, 31: 23, 32: 24, 33: 24, 34: 25, 35: 25, 36: 26,
+                37: 26, 38: 27, 39: 27, 40: 28, 41: 28, 42: 28, 43: 29, 44: 29, 45: 30,
+                46: 30, 47: 31, 48: 31, 49: 32, 50: 33, 51: 33, 52: 34, 53: 34, 54: 35,
+                55: 35, 56: 36, 57: 36, 58: 36, 59: 36, 60: 36
+            },
+            // English: 75 questions
+            english: {
+                0: 1, 5: 5, 10: 9, 15: 11, 20: 13, 25: 15, 30: 16, 35: 18, 40: 20,
+                45: 22, 50: 24, 55: 26, 60: 28, 65: 30, 70: 33, 75: 36
+            },
+            // Reading: 40 questions
+            reading: {
+                0: 1, 2: 5, 4: 8, 6: 10, 8: 12, 10: 13, 12: 15, 14: 16, 16: 18,
+                18: 19, 20: 20, 22: 22, 24: 23, 26: 25, 28: 26, 30: 28, 32: 30,
+                34: 32, 36: 34, 38: 35, 40: 36
+            },
+            // Science: 40 questions
+            science: {
+                0: 1, 2: 5, 4: 8, 6: 10, 8: 12, 10: 13, 12: 15, 14: 16, 16: 18,
+                18: 19, 20: 20, 22: 22, 24: 23, 26: 25, 28: 26, 30: 28, 32: 30,
+                34: 32, 36: 34, 38: 35, 40: 36
             }
-        });
+        };
+
+        // Score calculation functions
+        function calculateSATScore(correctCount, totalQuestions, subject) {
+            // Normalize to expected question count for the section
+            let expectedTotal, conversionTable;
+
+            if (subject.includes('math')) {
+                expectedTotal = 58;
+                conversionTable = SAT_MATH_CONVERSION;
+            } else {
+                expectedTotal = 52;
+                conversionTable = SAT_READING_CONVERSION;
+            }
+
+            // Scale the score based on accuracy
+            const accuracy = correctCount / totalQuestions;
+            const estimatedRawScore = Math.round(accuracy * expectedTotal);
+
+            // Use conversion table
+            return conversionTable[estimatedRawScore] || 200;
+        }
+
+        function calculateACTScore(correctCount, totalQuestions, subject) {
+            // Determine which ACT section
+            let sectionName = 'math'; // default
+            if (subject.includes('english')) sectionName = 'english';
+            else if (subject.includes('reading')) sectionName = 'reading';
+            else if (subject.includes('science')) sectionName = 'science';
+
+            const conversionTable = ACT_CONVERSION[sectionName];
+
+            // Get expected total for this section
+            const expectedTotals = { math: 60, english: 75, reading: 40, science: 40 };
+            const expectedTotal = expectedTotals[sectionName];
+
+            // Scale the score
+            const accuracy = correctCount / totalQuestions;
+            const estimatedRawScore = Math.round(accuracy * expectedTotal);
+
+            // Find closest match in conversion table
+            let closestKey = 0;
+            for (let key in conversionTable) {
+                if (parseInt(key) <= estimatedRawScore) {
+                    closestKey = parseInt(key);
+                }
+            }
+
+            return conversionTable[closestKey] || 1;
+        }
+
+        function calculateScore(correctCount, totalQuestions, subject) {
+            if (subject.startsWith('sat')) {
+                return calculateSATScore(correctCount, totalQuestions, subject);
+            } else if (subject.startsWith('act')) {
+                return calculateACTScore(correctCount, totalQuestions, subject);
+            } else if (subject.startsWith('psat')) {
+                // PSAT uses same scale as SAT but max 760 per section
+                const satScore = calculateSATScore(correctCount, totalQuestions, subject);
+                return Math.min(satScore, 760);
+            }
+            return 0;
+        }
+
+        // Initialize auth after Firebase is ready
+        (async () => {
+            const firebase = await firebasePromise;
+            auth = firebase.auth;
+            db = firebase.db;
+
+            // Initialize navbar
+            initNavbar();
+
+            // Initialize
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    await loadTestPrepData();
+                    initializeSession();
+                    updateNavbarUI();
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+        })();
+
+        // ============================================
+        // 🔧 UTILITY FUNCTIONS
+        // ============================================
+
+        // Fetch with timeout helper (60 second default for AI operations)
+        async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timed out. The server is taking too long to respond. Please try again.');
+                }
+                throw error;
+            }
+        }
 
         async function loadUserData() {
-            const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-            if (userDoc.exists()) {
-                userData = userDoc.data();
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Continue with null userData - non-blocking error
             }
         }
 
         async function loadTestPrepData() {
-            const testPrepDoc = await getDoc(doc(db, 'testprep', currentUser.uid));
-            if (testPrepDoc.exists()) {
-                testPrepData = testPrepDoc.data();
-            } else {
+            try {
+                const testPrepDoc = await getDoc(doc(db, 'testprep', currentUser.uid));
+                if (testPrepDoc.exists()) {
+                    testPrepData = testPrepDoc.data();
+                } else {
+                    testPrepData = {
+                        questionsCompleted: 0,
+                        currentScore: { sat: 0, act: 0 },
+                        flaggedQuestions: [],
+                        subjectProgress: {},
+                        totalXP: 0,
+                        level: 1,
+                        hearts: 5,
+                        maxHearts: 5,
+                        heartRefillTime: null
+                    };
+                }
+
+                // Ensure XP and level exist (for existing users)
+                if (!testPrepData.totalXP) testPrepData.totalXP = 0;
+                if (!testPrepData.level) testPrepData.level = 1;
+
+                // Ensure hearts exist (for existing users)
+                if (!testPrepData.hearts) testPrepData.hearts = 5;
+                if (!testPrepData.maxHearts) testPrepData.maxHearts = 5;
+
+                // Update gamification displays
+                updateXPDisplay();
+                await initializeHearts();
+
+            } catch (error) {
+                console.error('Error loading test prep data:', error);
+                // Initialize with default data on error
                 testPrepData = {
                     questionsCompleted: 0,
                     currentScore: { sat: 0, act: 0 },
                     flaggedQuestions: [],
-                    subjectProgress: {}
+                    subjectProgress: {},
+                    totalXP: 0,
+                    level: 1,
+                    hearts: 5,
+                    maxHearts: 5,
+                    heartRefillTime: null
                 };
             }
         }
 
-        async function initializeSession() {
-            // Update title
-            const titles = {
-                'sat-math': 'SAT Math Practice',
-                'sat-reading': 'SAT Reading & Writing Practice',
-                'act-math': 'ACT Math Practice',
-                'act-english': 'ACT English Practice',
-                'act-reading': 'ACT Reading Practice',
-                'act-science': 'ACT Science Practice'
-            };
-            document.getElementById('sessionTitle').textContent = titles[sessionSubject] || 'Practice Session';
+        // ============================================
+        // 🎮 GAMIFICATION: XP SYSTEM
+        // ============================================
 
-            // Initialize Desmos calculator
-            if (sessionSubject.includes('math')) {
-                const calcElement = document.getElementById('calculator');
-                calculator = Desmos.GraphingCalculator(calcElement, {
-                    expressionsCollapsed: true,
-                    settingsMenu: false,
-                    expressions: false
-                });
-            } else {
-                document.getElementById('calculatorBtn').style.display = 'none';
+        function updateXPDisplay() {
+            const xpAmount = document.getElementById('xpAmount');
+            if (xpAmount && testPrepData) {
+                xpAmount.textContent = testPrepData.totalXP || 0;
+            }
+        }
+
+        async function awardXP(amount, reason = '') {
+            if (!testPrepData || !currentUser) return;
+
+            const oldXP = testPrepData.totalXP || 0;
+            const newXP = oldXP + amount;
+
+            // Update local data
+            testPrepData.totalXP = newXP;
+
+            // 🎮 PLAY XP GAIN SOUND
+            soundEffects.play('xpGain');
+
+            // Show XP gain popup
+            showXPGain(amount, reason);
+
+            // Animate XP counter
+            animateXPCounter(oldXP, newXP);
+
+            // Check for level up
+            const oldLevel = testPrepData.level || 1;
+            const newLevel = calculateLevel(newXP);
+            if (newLevel > oldLevel) {
+                testPrepData.level = newLevel;
+
+                // 🎮 PLAY LEVEL UP SOUND
+                soundEffects.play('levelUp');
+
+                // 🎮 CONFETTI CELEBRATION FOR LEVEL UP
+                confettiSystem.burst('heavy');
+
+                showLevelUp(newLevel);
             }
 
-            // Generate questions
-            await generateQuestions();
+            // Save to Firestore
+            try {
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    totalXP: newXP,
+                    level: testPrepData.level
+                });
+                console.log(`🎉 Awarded ${amount} XP! ${reason ? '(' + reason + ')' : ''} Total: ${newXP}`);
+            } catch (error) {
+                console.error('Error saving XP:', error);
+            }
+        }
+
+        function showXPGain(amount, reason) {
+            const popup = document.createElement('div');
+            popup.className = 'xp-gain-popup';
+            popup.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 3rem;">⭐</div>
+                    <div>
+                        <div style="font-size: 3rem;">+${amount} XP</div>
+                        ${reason ? `<div style="font-size: 1.2rem; font-weight: 600; opacity: 0.9;">${reason}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+
+            setTimeout(() => popup.remove(), 1500);
+        }
+
+        function animateXPCounter(from, to) {
+            const xpAmount = document.getElementById('xpAmount');
+            if (!xpAmount) return;
+
+            const duration = 1000; // 1 second
+            const steps = 30;
+            const increment = (to - from) / steps;
+            let current = from;
+            let step = 0;
+
+            const timer = setInterval(() => {
+                step++;
+                current += increment;
+                xpAmount.textContent = Math.floor(current);
+
+                if (step >= steps) {
+                    clearInterval(timer);
+                    xpAmount.textContent = to;
+                }
+            }, duration / steps);
+        }
+
+        function calculateLevel(xp) {
+            // Level formula: Level = floor(sqrt(XP / 100)) + 1
+            // Level 1: 0-99 XP
+            // Level 2: 100-399 XP
+            // Level 3: 400-899 XP
+            // Level 10: 8100-9999 XP
+            // Level 100: 980,000+ XP
+            return Math.floor(Math.sqrt(xp / 100)) + 1;
+        }
+
+        function showLevelUp(newLevel) {
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #a07bcc 0%, #2a357a 100%);
+                color: white;
+                padding: 3rem 4rem;
+                border-radius: 32px;
+                font-size: 2.5rem;
+                font-weight: 900;
+                z-index: 10003;
+                box-shadow: 0 25px 80px rgba(160, 123, 204, 0.6);
+                text-align: center;
+                animation: levelUpBounce 0.6s ease-out;
+            `;
+            popup.innerHTML = `
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+                <div>LEVEL UP!</div>
+                <div style="font-size: 4rem; margin-top: 1rem;">Level ${newLevel}</div>
+            `;
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => popup.remove(), 300);
+            }, 3000);
+        }
+
+        // ============================================
+        // 🎮 GAMIFICATION: HEARTS/LIVES SYSTEM
+        // ============================================
+
+        async function initializeHearts() {
+            if (!testPrepData || !currentUser) return;
+
+            // Initialize hearts if not present
+            if (!testPrepData.hearts) {
+                testPrepData.hearts = 5; // Start with 5 hearts
+            }
+            if (!testPrepData.maxHearts) {
+                testPrepData.maxHearts = 5;
+            }
+            if (!testPrepData.heartRefillTime) {
+                testPrepData.heartRefillTime = null;
+            }
+
+            // Check if hearts should be refilled (4-hour timer)
+            await checkHeartRefillTimer();
+
+            // Update display
+            updateHeartsDisplay();
+        }
+
+        function updateHeartsDisplay() {
+            if (!testPrepData) return;
+
+            const currentHearts = testPrepData.hearts || 0;
+            const maxHearts = testPrepData.maxHearts || 5;
+
+            // Update each heart element
+            for (let i = 1; i <= maxHearts; i++) {
+                const heartElement = document.getElementById(`heart${i}`);
+                if (heartElement) {
+                    if (i <= currentHearts) {
+                        heartElement.classList.remove('lost');
+                    } else {
+                        heartElement.classList.add('lost');
+                    }
+                }
+            }
+        }
+
+        async function loseHeart() {
+            if (!testPrepData || !currentUser) return;
+
+            // Decrement hearts
+            const currentHearts = testPrepData.hearts || 0;
+            if (currentHearts <= 0) {
+                showOutOfHeartsModal();
+                return;
+            }
+
+            testPrepData.hearts = currentHearts - 1;
+
+            // 🎮 PLAY HEART LOSS SOUND
+            soundEffects.play('heartLoss');
+
+            // Animate the heart loss
+            const lostHeartElement = document.getElementById(`heart${currentHearts}`);
+            if (lostHeartElement) {
+                lostHeartElement.style.animation = 'heartLose 0.5s ease-out, heartShake 0.5s ease-out';
+                setTimeout(() => {
+                    lostHeartElement.classList.add('lost');
+                    lostHeartElement.style.animation = '';
+                }, 500);
+            }
+
+            // Update display
+            updateHeartsDisplay();
+
+            // Save to Firestore
+            try {
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    hearts: testPrepData.hearts,
+                    heartRefillTime: testPrepData.hearts === 0 ? new Date().toISOString() : testPrepData.heartRefillTime
+                });
+            } catch (error) {
+                console.error('Error saving hearts:', error);
+            }
+
+            // Check if out of hearts
+            if (testPrepData.hearts === 0) {
+                setTimeout(() => showOutOfHeartsModal(), 1000);
+            }
+        }
+
+        async function gainHeart() {
+            if (!testPrepData || !currentUser) return;
+
+            const currentHearts = testPrepData.hearts || 0;
+            const maxHearts = testPrepData.maxHearts || 5;
+
+            if (currentHearts >= maxHearts) return; // Already at max
+
+            testPrepData.hearts = currentHearts + 1;
+
+            // 🎮 PLAY HEART GAIN SOUND
+            soundEffects.play('heartGain');
+
+            // Animate the heart gain
+            const gainedHeartElement = document.getElementById(`heart${testPrepData.hearts}`);
+            if (gainedHeartElement) {
+                gainedHeartElement.classList.remove('lost');
+                gainedHeartElement.style.animation = 'heartGain 0.5s ease-out';
+                setTimeout(() => {
+                    gainedHeartElement.style.animation = '';
+                }, 500);
+            }
+
+            // Update display
+            updateHeartsDisplay();
+
+            // Save to Firestore
+            try {
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    hearts: testPrepData.hearts
+                });
+            } catch (error) {
+                console.error('Error saving hearts:', error);
+            }
+        }
+
+        function showOutOfHeartsModal() {
+            const modal = document.getElementById('outOfHeartsModal');
+            if (modal) {
+                // Calculate time until refill
+                const refillTime = testPrepData.heartRefillTime ? new Date(testPrepData.heartRefillTime) : new Date();
+                const refillReady = new Date(refillTime.getTime() + (4 * 60 * 60 * 1000)); // 4 hours
+                const now = new Date();
+                const timeLeft = Math.max(0, refillReady - now);
+
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+                const timerElement = modal.querySelector('.refill-timer');
+                if (timerElement) {
+                    if (timeLeft > 0) {
+                        timerElement.textContent = `${hours}h ${minutes}m until refill`;
+                    } else {
+                        timerElement.textContent = 'Hearts ready to refill!';
+                    }
+                }
+
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeOutOfHeartsModal() {
+            const modal = document.getElementById('outOfHeartsModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        async function refillHearts() {
+            if (!testPrepData || !currentUser) return;
+
+            const refillTime = testPrepData.heartRefillTime ? new Date(testPrepData.heartRefillTime) : new Date(0);
+            const refillReady = new Date(refillTime.getTime() + (4 * 60 * 60 * 1000)); // 4 hours
+            const now = new Date();
+
+            if (now >= refillReady) {
+                // Free refill available
+                testPrepData.hearts = testPrepData.maxHearts || 5;
+                testPrepData.heartRefillTime = null;
+
+                // Animate all hearts coming back
+                for (let i = 1; i <= testPrepData.maxHearts; i++) {
+                    const heartElement = document.getElementById(`heart${i}`);
+                    if (heartElement) {
+                        setTimeout(() => {
+                            heartElement.classList.remove('lost');
+                            heartElement.style.animation = 'heartGain 0.5s ease-out';
+                            setTimeout(() => heartElement.style.animation = '', 500);
+                        }, i * 100);
+                    }
+                }
+
+                // Update display
+                updateHeartsDisplay();
+
+                // Save to Firestore
+                try {
+                    await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                        hearts: testPrepData.hearts,
+                        heartRefillTime: null
+                    });
+                } catch (error) {
+                    console.error('Error saving hearts:', error);
+                }
+
+                closeOutOfHeartsModal();
+
+                // Show success message
+                const popup = document.createElement('div');
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+                    color: white;
+                    padding: 2rem 3rem;
+                    border-radius: 24px;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    z-index: 10004;
+                    box-shadow: 0 15px 50px rgba(255, 107, 157, 0.5);
+                    text-align: center;
+                `;
+                popup.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">❤️</div>
+                    <div>Hearts Refilled!</div>
+                `;
+                document.body.appendChild(popup);
+
+                setTimeout(() => popup.remove(), 2000);
+            } else {
+                alert('Hearts are not ready to refill yet. Please wait a bit longer!');
+            }
+        }
+
+        async function purchaseHeart() {
+            if (!testPrepData || !currentUser) return;
+
+            const heartCost = 50; // 50 XP per heart
+            const currentXP = testPrepData.totalXP || 0;
+
+            if (currentXP < heartCost) {
+                alert(`Not enough XP! You need ${heartCost} XP to refill hearts. Current XP: ${currentXP}`);
+                return;
+            }
+
+            if (testPrepData.hearts >= testPrepData.maxHearts) {
+                alert('Your hearts are already full!');
+                return;
+            }
+
+            // Deduct XP and refill hearts
+            testPrepData.totalXP -= heartCost;
+            testPrepData.hearts = testPrepData.maxHearts || 5;
+            testPrepData.heartRefillTime = null;
+
+            // Animate all hearts coming back
+            for (let i = 1; i <= testPrepData.maxHearts; i++) {
+                const heartElement = document.getElementById(`heart${i}`);
+                if (heartElement) {
+                    setTimeout(() => {
+                        heartElement.classList.remove('lost');
+                        heartElement.style.animation = 'heartGain 0.5s ease-out';
+                        setTimeout(() => heartElement.style.animation = '', 500);
+                    }, i * 100);
+                }
+            }
+
+            // Update displays
+            updateHeartsDisplay();
+            updateXPDisplay();
+
+            // Save to Firestore
+            try {
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    hearts: testPrepData.hearts,
+                    heartRefillTime: null,
+                    totalXP: testPrepData.totalXP
+                });
+            } catch (error) {
+                console.error('Error saving hearts purchase:', error);
+            }
+
+            closeOutOfHeartsModal();
+
+            // Show success message
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+                color: white;
+                padding: 2rem 3rem;
+                border-radius: 24px;
+                font-size: 1.5rem;
+                font-weight: 700;
+                z-index: 10004;
+                box-shadow: 0 15px 50px rgba(255, 107, 157, 0.5);
+                text-align: center;
+            `;
+            popup.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">❤️</div>
+                <div>Hearts Refilled!</div>
+                <div style="font-size: 1rem; margin-top: 0.5rem; opacity: 0.9;">-${heartCost} XP</div>
+            `;
+            document.body.appendChild(popup);
+
+            setTimeout(() => popup.remove(), 2000);
+        }
+
+        async function checkHeartRefillTimer() {
+            if (!testPrepData || !currentUser) return;
+
+            const currentHearts = testPrepData.hearts || 0;
+            const refillTime = testPrepData.heartRefillTime ? new Date(testPrepData.heartRefillTime) : null;
+
+            // If hearts are full, no need to check timer
+            if (currentHearts >= (testPrepData.maxHearts || 5)) {
+                testPrepData.heartRefillTime = null;
+                return;
+            }
+
+            // If no refill time set but hearts are missing, set it now
+            if (!refillTime && currentHearts < (testPrepData.maxHearts || 5)) {
+                testPrepData.heartRefillTime = new Date().toISOString();
+                try {
+                    await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                        heartRefillTime: testPrepData.heartRefillTime
+                    });
+                } catch (error) {
+                    console.error('Error setting refill time:', error);
+                }
+                return;
+            }
+
+            // Check if 4 hours have passed since refill time
+            if (refillTime) {
+                const refillReady = new Date(refillTime.getTime() + (4 * 60 * 60 * 1000)); // 4 hours
+                const now = new Date();
+
+                if (now >= refillReady) {
+                    // Auto-refill hearts
+                    testPrepData.hearts = testPrepData.maxHearts || 5;
+                    testPrepData.heartRefillTime = null;
+
+                    // Animate hearts coming back
+                    for (let i = 1; i <= testPrepData.maxHearts; i++) {
+                        const heartElement = document.getElementById(`heart${i}`);
+                        if (heartElement) {
+                            setTimeout(() => {
+                                heartElement.classList.remove('lost');
+                                heartElement.style.animation = 'heartGain 0.5s ease-out';
+                                setTimeout(() => heartElement.style.animation = '', 500);
+                            }, i * 100);
+                        }
+                    }
+
+                    // Save to Firestore
+                    try {
+                        await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                            hearts: testPrepData.hearts,
+                            heartRefillTime: null
+                        });
+                    } catch (error) {
+                        console.error('Error auto-refilling hearts:', error);
+                    }
+
+                    // Show notification
+                    const popup = document.createElement('div');
+                    popup.style.cssText = `
+                        position: fixed;
+                        top: 100px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+                        color: white;
+                        padding: 1rem 1.5rem;
+                        border-radius: 16px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        z-index: 10004;
+                        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+                    `;
+                    popup.innerHTML = `❤️ Hearts Refilled!`;
+                    document.body.appendChild(popup);
+
+                    setTimeout(() => popup.remove(), 3000);
+                }
+            }
+        }
+
+        // ============================================
+        // 🎮 GAMIFICATION: SOUND EFFECTS SYSTEM
+        // ============================================
+
+        // Sound effect library using Web Audio API
+        const soundEffects = {
+            enabled: true, // User can toggle this
+
+            // Create AudioContext (lazy initialization)
+            getContext() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                return this.audioContext;
+            },
+
+            // Play a sound effect
+            play(type) {
+                if (!this.enabled) return;
+
+                try {
+                    const ctx = this.getContext();
+                    const oscillator = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+
+                    // Configure sound based on type
+                    switch(type) {
+                        case 'correct':
+                            // Happy ding - C major chord arpeggio
+                            this.playChord(ctx, [523.25, 659.25, 783.99], 0.3, 0.4); // C, E, G
+                            break;
+
+                        case 'wrong':
+                            // Sad buzz - Low thud
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.setValueAtTime(80, ctx.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.3);
+                            gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                            oscillator.start(ctx.currentTime);
+                            oscillator.stop(ctx.currentTime + 0.3);
+                            break;
+
+                        case 'xpGain':
+                            // Coin collection sound - short beep
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+                            gainNode.gain.setValueAtTime(0.15, ctx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                            oscillator.start(ctx.currentTime);
+                            oscillator.stop(ctx.currentTime + 0.15);
+                            break;
+
+                        case 'levelUp':
+                            // Victory fanfare - ascending notes
+                            setTimeout(() => this.playNote(ctx, 523.25, 0.15, 0.2), 0);    // C
+                            setTimeout(() => this.playNote(ctx, 659.25, 0.15, 0.2), 150);  // E
+                            setTimeout(() => this.playNote(ctx, 783.99, 0.15, 0.2), 300);  // G
+                            setTimeout(() => this.playNote(ctx, 1046.50, 0.3, 0.25), 450); // C (octave)
+                            break;
+
+                        case 'heartLoss':
+                            // Heartbreak - descending sad notes
+                            oscillator.type = 'triangle';
+                            oscillator.frequency.setValueAtTime(400, ctx.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.4);
+                            gainNode.gain.setValueAtTime(0.15, ctx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                            oscillator.start(ctx.currentTime);
+                            oscillator.stop(ctx.currentTime + 0.4);
+                            break;
+
+                        case 'heartGain':
+                            // Happy chime - ascending
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(600, ctx.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 0.2);
+                            gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                            oscillator.start(ctx.currentTime);
+                            oscillator.stop(ctx.currentTime + 0.25);
+                            break;
+
+                        case 'sessionComplete':
+                            // Completion fanfare
+                            setTimeout(() => this.playNote(ctx, 523.25, 0.2, 0.2), 0);
+                            setTimeout(() => this.playNote(ctx, 659.25, 0.2, 0.2), 200);
+                            setTimeout(() => this.playNote(ctx, 783.99, 0.2, 0.2), 400);
+                            setTimeout(() => this.playNote(ctx, 1046.50, 0.4, 0.25), 600);
+                            setTimeout(() => this.playNote(ctx, 1318.51, 0.5, 0.3), 1000);
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Error playing sound:', error);
+                }
+            },
+
+            // Play a single note
+            playNote(ctx, frequency, duration, volume = 0.2) {
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+                gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + duration);
+            },
+
+            // Play a chord (multiple notes simultaneously)
+            playChord(ctx, frequencies, duration, volume = 0.15) {
+                frequencies.forEach((freq, index) => {
+                    setTimeout(() => {
+                        this.playNote(ctx, freq, duration, volume / frequencies.length);
+                    }, index * 50); // Slight stagger for arpeggio effect
+                });
+            },
+
+            // Toggle sound effects on/off
+            toggle() {
+                this.enabled = !this.enabled;
+                localStorage.setItem('soundEffectsEnabled', this.enabled);
+                return this.enabled;
+            },
+
+            // Load saved preference
+            loadPreference() {
+                const saved = localStorage.getItem('soundEffectsEnabled');
+                if (saved !== null) {
+                    this.enabled = saved === 'true';
+                }
+            }
+        };
+
+        // Load sound preference on page load
+        soundEffects.loadPreference();
+
+        // Update sound toggle button on page load
+        function updateSoundButton() {
+            const btn = document.getElementById('soundToggleBtn');
+            if (btn) {
+                btn.innerHTML = soundEffects.enabled ? '🔊' : '🔇';
+                btn.title = soundEffects.enabled ? 'Click to turn off sound effects' : 'Click to turn on sound effects';
+            }
+        }
+
+        // Add sound toggle button functionality
+        function toggleSoundEffects() {
+            const enabled = soundEffects.toggle();
+            updateSoundButton();
+
+            // Play test sound
+            if (enabled) {
+                soundEffects.play('xpGain');
+            }
+        }
+
+        // Set initial button state
+        setTimeout(updateSoundButton, 100);
+
+        // ============================================
+        // 🎮 GAMIFICATION: CONFETTI ANIMATIONS
+        // ============================================
+
+        // Confetti animation system
+        const confettiSystem = {
+            enabled: true,
+
+            // Create a single confetti piece
+            createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+
+                // Random colors - bright, celebratory
+                const colors = [
+                    '#a07bcc', // Purple (brand color)
+                    '#2a357a', // Navy (brand color)
+                    '#10b981', // Green
+                    '#f59e0b', // Orange
+                    '#ef4444', // Red
+                    '#3b82f6', // Blue
+                    '#ec4899', // Pink
+                    '#fbbf24'  // Yellow
+                ];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                // Random starting position (top of screen, random X)
+                const startX = Math.random() * window.innerWidth;
+                const startY = -20;
+
+                // Random physics properties
+                const endX = startX + (Math.random() - 0.5) * 400; // Drift left/right
+                const endY = window.innerHeight + 50; // Fall off screen
+                const rotation = Math.random() * 720 - 360; // Random spin
+                const duration = 2 + Math.random() * 2; // 2-4 seconds
+                const delay = Math.random() * 0.3; // Stagger start
+
+                // Random shape (rectangle or circle)
+                const isCircle = Math.random() > 0.5;
+                const size = 8 + Math.random() * 6; // 8-14px
+
+                confetti.style.cssText = `
+                    position: fixed;
+                    left: ${startX}px;
+                    top: ${startY}px;
+                    width: ${isCircle ? size : size * 1.5}px;
+                    height: ${size}px;
+                    background-color: ${color};
+                    border-radius: ${isCircle ? '50%' : '2px'};
+                    pointer-events: none;
+                    z-index: 10005;
+                    animation: confettiFall${Date.now()}${Math.random()} ${duration}s ease-out ${delay}s forwards;
+                `;
+
+                // Create unique animation for this piece
+                const animationName = `confettiFall${Date.now()}${Math.random()}`;
+                const keyframes = `
+                    @keyframes ${animationName} {
+                        0% {
+                            transform: translate(0, 0) rotate(0deg);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translate(${endX - startX}px, ${endY}px) rotate(${rotation}deg);
+                            opacity: 0;
+                        }
+                    }
+                `;
+
+                // Add keyframes to document
+                const style = document.createElement('style');
+                style.textContent = keyframes;
+                document.head.appendChild(style);
+
+                return confetti;
+            },
+
+            // Launch confetti burst
+            burst(intensity = 'medium') {
+                if (!this.enabled) return;
+
+                let count = 30; // Default
+                switch(intensity) {
+                    case 'light':
+                        count = 20;
+                        break;
+                    case 'medium':
+                        count = 40;
+                        break;
+                    case 'heavy':
+                        count = 60;
+                        break;
+                    case 'epic':
+                        count = 100;
+                        break;
+                }
+
+                // Create confetti pieces
+                for (let i = 0; i < count; i++) {
+                    const piece = this.createConfettiPiece();
+                    document.body.appendChild(piece);
+
+                    // Remove after animation completes
+                    setTimeout(() => {
+                        piece.remove();
+                    }, 5000);
+                }
+            },
+
+            // Continuous confetti rain (for epic moments)
+            rain(duration = 3000) {
+                if (!this.enabled) return;
+
+                const interval = setInterval(() => {
+                    for (let i = 0; i < 5; i++) {
+                        const piece = this.createConfettiPiece();
+                        document.body.appendChild(piece);
+
+                        setTimeout(() => piece.remove(), 5000);
+                    }
+                }, 100);
+
+                setTimeout(() => {
+                    clearInterval(interval);
+                }, duration);
+            },
+
+            // Confetti explosion from a specific element
+            explodeFrom(element, intensity = 'medium') {
+                if (!this.enabled || !element) return;
+
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                let count = 20;
+                switch(intensity) {
+                    case 'light': count = 15; break;
+                    case 'medium': count = 25; break;
+                    case 'heavy': count = 40; break;
+                }
+
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+
+                    const colors = ['#a07bcc', '#2a357a', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#fbbf24'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+
+                    // Explode outward from center
+                    const angle = (Math.PI * 2 * i) / count;
+                    const velocity = 100 + Math.random() * 150;
+                    const endX = centerX + Math.cos(angle) * velocity;
+                    const endY = centerY + Math.sin(angle) * velocity;
+
+                    const size = 6 + Math.random() * 8;
+                    const isCircle = Math.random() > 0.5;
+
+                    confetti.style.cssText = `
+                        position: fixed;
+                        left: ${centerX}px;
+                        top: ${centerY}px;
+                        width: ${isCircle ? size : size * 1.5}px;
+                        height: ${size}px;
+                        background-color: ${color};
+                        border-radius: ${isCircle ? '50%' : '2px'};
+                        pointer-events: none;
+                        z-index: 10005;
+                        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                        opacity: 1;
+                    `;
+
+                    document.body.appendChild(confetti);
+
+                    // Trigger explosion
+                    requestAnimationFrame(() => {
+                        confetti.style.transform = `translate(${endX - centerX}px, ${endY - centerY + 200}px) rotate(${Math.random() * 720}deg)`;
+                        confetti.style.opacity = '0';
+                    });
+
+                    setTimeout(() => confetti.remove(), 1000);
+                }
+            },
+
+            // Toggle confetti on/off
+            toggle() {
+                this.enabled = !this.enabled;
+                localStorage.setItem('confettiEnabled', this.enabled);
+                return this.enabled;
+            },
+
+            // Load preference
+            loadPreference() {
+                const saved = localStorage.getItem('confettiEnabled');
+                if (saved !== null) {
+                    this.enabled = saved === 'true';
+                }
+            }
+        };
+
+        // Load confetti preference
+        confettiSystem.loadPreference();
+
+        // Update confetti toggle button
+        function updateConfettiButton() {
+            const btn = document.getElementById('confettiToggleBtn');
+            if (btn) {
+                btn.innerHTML = confettiSystem.enabled ? '🎉' : '🎊';
+                btn.title = confettiSystem.enabled ? 'Click to turn off confetti' : 'Click to turn on confetti';
+            }
+        }
+
+        // Toggle confetti on/off
+        function toggleConfetti() {
+            const enabled = confettiSystem.toggle();
+            updateConfettiButton();
+
+            // Test confetti
+            if (enabled) {
+                confettiSystem.burst('light');
+            }
+        }
+
+        // Set initial confetti button state
+        setTimeout(updateConfettiButton, 100);
+
+        // ============================================
+        // 🎮 GAMIFICATION: BADGE/ACHIEVEMENT SYSTEM
+        // ============================================
+
+        // Badge definitions
+        const badgeDefinitions = {
+            // First steps
+            firstCorrect: {
+                id: 'firstCorrect',
+                name: 'First Steps',
+                icon: '🎯',
+                description: 'Answer your first question correctly',
+                rarity: 'common'
+            },
+            perfectScore: {
+                id: 'perfectScore',
+                name: 'Perfectionist',
+                icon: '💯',
+                description: 'Get 100% on a practice session',
+                rarity: 'rare'
+            },
+
+            // Speed achievements
+            speedDemon: {
+                id: 'speedDemon',
+                name: 'Speed Demon',
+                icon: '⚡',
+                description: 'Complete a session in under 5 minutes',
+                rarity: 'rare'
+            },
+
+            // Time-based
+            nightOwl: {
+                id: 'nightOwl',
+                name: 'Night Owl',
+                icon: '🦉',
+                description: 'Study between 10 PM and 4 AM',
+                rarity: 'uncommon'
+            },
+            earlyBird: {
+                id: 'earlyBird',
+                name: 'Early Bird',
+                icon: '🐦',
+                description: 'Study between 5 AM and 7 AM',
+                rarity: 'uncommon'
+            },
+
+            // Streak badges
+            streak7: {
+                id: 'streak7',
+                name: 'Week Warrior',
+                icon: '🔥',
+                description: 'Maintain a 7-day study streak',
+                rarity: 'uncommon'
+            },
+            streak30: {
+                id: 'streak30',
+                name: 'Monthly Master',
+                icon: '🏆',
+                description: 'Maintain a 30-day study streak',
+                rarity: 'epic'
+            },
+            streak100: {
+                id: 'streak100',
+                name: 'Century Club',
+                icon: '👑',
+                description: 'Maintain a 100-day study streak',
+                rarity: 'legendary'
+            },
+
+            // Level milestones
+            level10: {
+                id: 'level10',
+                name: 'Rising Star',
+                icon: '⭐',
+                description: 'Reach level 10',
+                rarity: 'common'
+            },
+            level25: {
+                id: 'level25',
+                name: 'Dedicated Learner',
+                icon: '🌟',
+                description: 'Reach level 25',
+                rarity: 'uncommon'
+            },
+            level50: {
+                id: 'level50',
+                name: 'Master Student',
+                icon: '✨',
+                description: 'Reach level 50',
+                rarity: 'rare'
+            },
+            level100: {
+                id: 'level100',
+                name: 'Legendary Scholar',
+                icon: '💫',
+                description: 'Reach level 100',
+                rarity: 'legendary'
+            },
+
+            // XP milestones
+            xp1000: {
+                id: 'xp1000',
+                name: 'XP Collector',
+                icon: '💰',
+                description: 'Earn 1,000 total XP',
+                rarity: 'common'
+            },
+            xp5000: {
+                id: 'xp5000',
+                name: 'XP Hoarder',
+                icon: '💎',
+                description: 'Earn 5,000 total XP',
+                rarity: 'uncommon'
+            },
+            xp10000: {
+                id: 'xp10000',
+                name: 'XP Tycoon',
+                icon: '👑',
+                description: 'Earn 10,000 total XP',
+                rarity: 'rare'
+            },
+
+            // Question milestones
+            questions100: {
+                id: 'questions100',
+                name: 'Hundred Club',
+                icon: '📚',
+                description: 'Answer 100 questions correctly',
+                rarity: 'uncommon'
+            },
+            questions500: {
+                id: 'questions500',
+                name: 'Question Master',
+                icon: '📖',
+                description: 'Answer 500 questions correctly',
+                rarity: 'rare'
+            },
+            questions1000: {
+                id: 'questions1000',
+                name: 'Question Legend',
+                icon: '📜',
+                description: 'Answer 1,000 questions correctly',
+                rarity: 'epic'
+            },
+
+            // Subject mastery
+            mathExpert: {
+                id: 'mathExpert',
+                name: 'Math Expert',
+                icon: '🧮',
+                description: 'Score 90%+ on 10 math sessions',
+                rarity: 'rare'
+            },
+            readingExpert: {
+                id: 'readingExpert',
+                name: 'Reading Expert',
+                icon: '📘',
+                description: 'Score 90%+ on 10 reading sessions',
+                rarity: 'rare'
+            }
+        };
+
+        // Badge system
+        const badgeSystem = {
+            // Check and unlock badges
+            async checkBadges(testPrepData, currentUser) {
+                if (!testPrepData || !currentUser) return;
+
+                const unlockedBadges = testPrepData.unlockedBadges || [];
+                const newBadges = [];
+
+                // Check each badge condition
+                for (const [key, badge] of Object.entries(badgeDefinitions)) {
+                    if (!unlockedBadges.includes(badge.id)) {
+                        if (await this.checkBadgeCondition(badge.id, testPrepData)) {
+                            newBadges.push(badge);
+                            unlockedBadges.push(badge.id);
+                        }
+                    }
+                }
+
+                // Update Firestore if new badges unlocked
+                if (newBadges.length > 0) {
+                    try {
+                        await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                            unlockedBadges: unlockedBadges
+                        });
+
+                        // Show badge unlock animations
+                        for (const badge of newBadges) {
+                            await this.showBadgeUnlock(badge);
+                        }
+                    } catch (error) {
+                        console.error('Error saving badges:', error);
+                    }
+                }
+
+                return newBadges;
+            },
+
+            // Check individual badge conditions
+            checkBadgeCondition(badgeId, data) {
+                const correctAnswersTotal = data.correctAnswersTotal || 0;
+                const totalXP = data.totalXP || 0;
+                const level = data.level || 1;
+                const streak = data.studyStreak || 0;
+
+                switch(badgeId) {
+                    case 'firstCorrect':
+                        return correctAnswersTotal >= 1;
+
+                    case 'perfectScore':
+                        return data.hasPerfectScore || false;
+
+                    case 'speedDemon':
+                        return data.hasSpeedRun || false;
+
+                    case 'nightOwl':
+                        const hour = new Date().getHours();
+                        return hour >= 22 || hour < 4;
+
+                    case 'earlyBird':
+                        const morningHour = new Date().getHours();
+                        return morningHour >= 5 && morningHour < 7;
+
+                    case 'streak7':
+                        return streak >= 7;
+
+                    case 'streak30':
+                        return streak >= 30;
+
+                    case 'streak100':
+                        return streak >= 100;
+
+                    case 'level10':
+                        return level >= 10;
+
+                    case 'level25':
+                        return level >= 25;
+
+                    case 'level50':
+                        return level >= 50;
+
+                    case 'level100':
+                        return level >= 100;
+
+                    case 'xp1000':
+                        return totalXP >= 1000;
+
+                    case 'xp5000':
+                        return totalXP >= 5000;
+
+                    case 'xp10000':
+                        return totalXP >= 10000;
+
+                    case 'questions100':
+                        return correctAnswersTotal >= 100;
+
+                    case 'questions500':
+                        return correctAnswersTotal >= 500;
+
+                    case 'questions1000':
+                        return correctAnswersTotal >= 1000;
+
+                    case 'mathExpert':
+                        return (data.mathExpertSessions || 0) >= 10;
+
+                    case 'readingExpert':
+                        return (data.readingExpertSessions || 0) >= 10;
+
+                    default:
+                        return false;
+                }
+            },
+
+            // Show badge unlock animation
+            async showBadgeUnlock(badge) {
+                // Play celebration sound
+                soundEffects.play('levelUp');
+
+                // Show confetti
+                confettiSystem.burst(badge.rarity === 'legendary' ? 'epic' : 'heavy');
+
+                // Create badge unlock modal
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10006;
+                    animation: fadeIn 0.3s ease;
+                `;
+
+                const rarityColors = {
+                    common: '#10b981',
+                    uncommon: '#3b82f6',
+                    rare: '#a07bcc',
+                    epic: '#f59e0b',
+                    legendary: '#ef4444'
+                };
+
+                modal.innerHTML = `
+                    <div style="
+                        background: var(--primary-bg);
+                        border-radius: 32px;
+                        padding: 3rem;
+                        text-align: center;
+                        max-width: 400px;
+                        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+                        border: 3px solid ${rarityColors[badge.rarity]};
+                        animation: bounceIn 0.6s ease;
+                    ">
+                        <div style="font-size: 5rem; margin-bottom: 1rem;">${badge.icon}</div>
+                        <div style="
+                            font-size: 1.2rem;
+                            font-weight: 700;
+                            color: ${rarityColors[badge.rarity]};
+                            text-transform: uppercase;
+                            letter-spacing: 2px;
+                            margin-bottom: 0.5rem;
+                        ">${badge.rarity}</div>
+                        <h2 style="
+                            font-size: 2rem;
+                            font-weight: 900;
+                            margin-bottom: 1rem;
+                            color: var(--text-primary);
+                        ">${badge.name}</h2>
+                        <p style="
+                            font-size: 1.1rem;
+                            color: var(--text-secondary);
+                            margin-bottom: 2rem;
+                        ">${badge.description}</p>
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="
+                            background: var(--gradient);
+                            color: white;
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: 12px;
+                            font-size: 1rem;
+                            font-weight: 700;
+                            cursor: pointer;
+                        ">Awesome!</button>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                // Auto-close after 8 seconds
+                setTimeout(() => {
+                    modal.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => modal.remove(), 300);
+                }, 8000);
+            }
+        };
+
+        // ============================================
+        // 🎮 GAMIFICATION: LEADERBOARD SYSTEM
+        // ============================================
+
+        const leaderboardSystem = {
+            // Fetch top users from Firestore
+            async fetchLeaderboard(period = 'alltime') {
+                try {
+                    const { collection, query, orderBy, limit, getDocs, where } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+
+                    let leaderboardQuery;
+
+                    if (period === 'weekly') {
+                        const weekAgo = new Date();
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        leaderboardQuery = query(
+                            collection(db, 'testprep'),
+                            where('lastStudyDate', '>=', weekAgo.toISOString()),
+                            orderBy('totalXP', 'desc'),
+                            limit(10)
+                        );
+                    } else if (period === 'monthly') {
+                        const monthAgo = new Date();
+                        monthAgo.setMonth(monthAgo.getMonth() - 1);
+                        leaderboardQuery = query(
+                            collection(db, 'testprep'),
+                            where('lastStudyDate', '>=', monthAgo.toISOString()),
+                            orderBy('totalXP', 'desc'),
+                            limit(10)
+                        );
+                    } else {
+                        // All-time
+                        leaderboardQuery = query(
+                            collection(db, 'testprep'),
+                            orderBy('totalXP', 'desc'),
+                            limit(10)
+                        );
+                    }
+
+                    const snapshot = await getDocs(leaderboardQuery);
+                    const leaderboard = [];
+
+                    for (const docSnap of snapshot.docs) {
+                        const data = docSnap.data();
+                        const userId = docSnap.id;
+
+                        // Fetch user name from users collection
+                        let username = 'Anonymous';
+                        try {
+                            const userDoc = await getDoc(doc(db, 'users', userId));
+                            if (userDoc.exists()) {
+                                const userData = userDoc.data();
+                                username = userData.name || userData.displayName || 'Anonymous';
+                            }
+                        } catch (error) {
+                            console.error('Error fetching username:', error);
+                        }
+
+                        leaderboard.push({
+                            userId,
+                            username,
+                            totalXP: data.totalXP || 0,
+                            level: data.level || 1,
+                            streak: data.studyStreak || 0,
+                            questionsCompleted: data.questionsCompleted || 0
+                        });
+                    }
+
+                    return leaderboard;
+                } catch (error) {
+                    console.error('Error fetching leaderboard:', error);
+                    return [];
+                }
+            },
+
+            // Show leaderboard modal
+            async showLeaderboard() {
+                // Create modal
+                const modal = document.createElement('div');
+                modal.id = 'leaderboardModal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10007;
+                    animation: fadeIn 0.3s ease;
+                `;
+
+                modal.innerHTML = `
+                    <div style="
+                        background: var(--primary-bg);
+                        border-radius: 24px;
+                        padding: 2rem;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+                    ">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2 style="font-size: 2rem; font-weight: 900; color: var(--text-primary); margin: 0;">
+                                🏆 Leaderboard
+                            </h2>
+                            <button onclick="document.getElementById('leaderboardModal').remove()" style="
+                                background: none;
+                                border: none;
+                                font-size: 2rem;
+                                cursor: pointer;
+                                color: var(--text-secondary);
+                            ">×</button>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                            <button id="leaderboardAllTime" class="leaderboard-tab active" onclick="switchLeaderboardTab('alltime')">
+                                All Time
+                            </button>
+                            <button id="leaderboardMonthly" class="leaderboard-tab" onclick="switchLeaderboardTab('monthly')">
+                                This Month
+                            </button>
+                            <button id="leaderboardWeekly" class="leaderboard-tab" onclick="switchLeaderboardTab('weekly')">
+                                This Week
+                            </button>
+                        </div>
+
+                        <div id="leaderboardContent" style="min-height: 400px;">
+                            <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                                Loading leaderboard...
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add tab styles
+                const style = document.createElement('style');
+                style.textContent = `
+                    .leaderboard-tab {
+                        flex: 1;
+                        padding: 0.75rem;
+                        border: 2px solid var(--accent-color);
+                        background: transparent;
+                        color: var(--text-primary);
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    }
+                    .leaderboard-tab:hover {
+                        background: rgba(160, 123, 204, 0.1);
+                    }
+                    .leaderboard-tab.active {
+                        background: var(--gradient);
+                        color: white;
+                        border-color: transparent;
+                    }
+                    .leaderboard-row {
+                        display: flex;
+                        align-items: center;
+                        padding: 1rem;
+                        border-radius: 12px;
+                        margin-bottom: 0.5rem;
+                        background: var(--secondary-bg);
+                        transition: transform 0.2s ease;
+                    }
+                    .leaderboard-row:hover {
+                        transform: translateX(5px);
+                    }
+                    .leaderboard-row.current-user {
+                        background: rgba(160, 123, 204, 0.15);
+                        border: 2px solid var(--accent-color);
+                    }
+                `;
+                document.head.appendChild(style);
+
+                document.body.appendChild(modal);
+
+                // Load initial data (all-time)
+                await this.loadLeaderboardData('alltime');
+            },
+
+            // Load leaderboard data for specific period
+            async loadLeaderboardData(period) {
+                const content = document.getElementById('leaderboardContent');
+                if (!content) return;
+
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <div class="loading-spinner" style="margin: 0 auto;"></div>
+                        <p style="margin-top: 1rem;">Loading leaderboard...</p>
+                    </div>
+                `;
+
+                const leaderboard = await this.fetchLeaderboard(period);
+
+                if (leaderboard.length === 0) {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                            <p>No leaderboard data yet. Be the first!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                leaderboard.forEach((user, index) => {
+                    const rank = index + 1;
+                    const isCurrentUser = currentUser && user.userId === currentUser.uid;
+
+                    let rankDisplay;
+                    if (rank === 1) rankDisplay = '🥇';
+                    else if (rank === 2) rankDisplay = '🥈';
+                    else if (rank === 3) rankDisplay = '🥉';
+                    else rankDisplay = `#${rank}`;
+
+                    html += `
+                        <div class="leaderboard-row ${isCurrentUser ? 'current-user' : ''}">
+                            <div style="font-size: 1.5rem; width: 50px; font-weight: 900;">${rankDisplay}</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">
+                                    ${user.username}${isCurrentUser ? ' (You)' : ''}
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                    ${user.questionsCompleted} questions • Level ${user.level}
+                                    ${user.streak > 0 ? ` • ${user.streak}🔥` : ''}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 1.2rem; font-weight: 900; color: var(--accent-color);">
+                                    ${user.totalXP.toLocaleString()} XP
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                content.innerHTML = html;
+            }
+        };
+
+        // Global function for tab switching
+        window.switchLeaderboardTab = async function(period) {
+            // Update active tab
+            document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            const tabIds = {
+                'alltime': 'leaderboardAllTime',
+                'monthly': 'leaderboardMonthly',
+                'weekly': 'leaderboardWeekly'
+            };
+
+            const activeTab = document.getElementById(tabIds[period]);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            // Load data
+            await leaderboardSystem.loadLeaderboardData(period);
+        };
+
+        async function initializeSession() {
+            try {
+                // Update title
+                const titles = {
+                    'sat-math': 'SAT Math Practice',
+                    'sat-reading': 'SAT Reading & Writing Practice',
+                    'act-math': 'ACT Math Practice',
+                    'act-english': 'ACT English Practice',
+                    'act-reading': 'ACT Reading Practice',
+                    'act-science': 'ACT Science Practice'
+                };
+                document.getElementById('sessionTitle').textContent = titles[sessionSubject] || 'Practice Session';
+
+                // Initialize Desmos calculator
+                if (sessionSubject.includes('math')) {
+                    const calcElement = document.getElementById('calculator');
+                    calculator = Desmos.GraphingCalculator(calcElement, {
+                        expressionsCollapsed: true,
+                        settingsMenu: false,
+                        expressions: false
+                    });
+                } else {
+                    document.getElementById('calculatorBtn').style.display = 'none';
+                }
+
+                // Generate questions
+                await generateQuestions();
+            } catch (error) {
+                console.error('Error initializing session:', error);
+                showErrorMessage('Failed to initialize practice session. Please refresh the page.');
+            }
         }
 
         async function generateQuestions() {
@@ -675,6 +3012,24 @@
                     return;
                 }
 
+                // Check if this is a review flagged questions session
+                if (sessionType === 'review-flagged') {
+                    if (!testPrepData.flaggedQuestions || testPrepData.flaggedQuestions.length === 0) {
+                        showErrorMessage('No flagged questions found. Flag questions during practice to review them later!');
+                        setTimeout(() => window.location.href = '/testprep', 2000);
+                        return;
+                    }
+
+                    // Load flagged questions
+                    currentQuestions = testPrepData.flaggedQuestions;
+                    console.log(`Loaded ${currentQuestions.length} flagged questions for review`);
+
+                    // Hide loading and show first question
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    displayQuestion();
+                    return;
+                }
+
                 // Determine weak areas from testPrepData
                 const weakAreas = testPrepData.weakAreas || [];
                 const difficulty = calculateDifficulty();
@@ -683,7 +3038,7 @@
                 console.log(`Generating questions for ${sessionSubject} at ${difficulty} level...`);
 
                 // Generate questions using enhanced test prep API
-                const response = await fetch('/api/testprep-generate', {
+                const response = await fetchWithTimeout('/api/testprep-generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1397,41 +3752,81 @@ Generate 10 questions now:`;
         window.submitAnswer = async function() {
             if (selectedAnswer === null) return;
 
-            const question = currentQuestions[currentQuestionIndex];
-            const isCorrect = selectedAnswer === question.correctAnswer;
+            try {
+                const question = currentQuestions[currentQuestionIndex];
+                const isCorrect = selectedAnswer === question.correctAnswer;
 
-            // Track user answer for diagnostic mode
-            userAnswers[currentQuestionIndex] = selectedAnswer;
+                // Track user answer for diagnostic mode
+                userAnswers[currentQuestionIndex] = selectedAnswer;
 
-            // Update UI
-            const choices = document.querySelectorAll('.answer-choice');
-            choices.forEach((choice, index) => {
-                choice.classList.add('disabled');
-                choice.onclick = null;
-                
-                if (index === question.correctAnswer) {
-                    choice.classList.add('correct');
-                } else if (index === selectedAnswer && !isCorrect) {
-                    choice.classList.add('incorrect');
+                // Update UI
+                const choices = document.querySelectorAll('.answer-choice');
+                choices.forEach((choice, index) => {
+                    choice.classList.add('disabled');
+                    choice.onclick = null;
+
+                    if (index === question.correctAnswer) {
+                        choice.classList.add('correct');
+                    } else if (index === selectedAnswer && !isCorrect) {
+                        choice.classList.add('incorrect');
+                    }
+                });
+
+                // Show explanation with enhanced formatting
+                const explanationContent = document.getElementById('explanationContent');
+                const explanationPanel = document.getElementById('explanationPanel');
+
+                if (question.explanation) {
+                    // Format the explanation with proper line breaks and styling
+                    let formattedExplanation = question.explanation;
+
+                    // Add icon based on correctness
+                    const resultIcon = isCorrect ?
+                        '<div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border-left: 4px solid var(--success-color);"><span style="font-size: 1.5rem;">✅</span><span style="font-weight: 700; color: var(--success-color);">Correct!</span></div>' :
+                        '<div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border-left: 4px solid var(--danger-color);"><span style="font-size: 1.5rem;">❌</span><span style="font-weight: 700; color: var(--danger-color);">Incorrect</span></div>';
+
+                    // Format the explanation text
+                    formattedExplanation = formattedExplanation
+                        .replace(/\n/g, '<br>')
+                        .replace(/Step (\d+):/gi, '<br><strong>Step $1:</strong>')
+                        .replace(/Therefore,/gi, '<br><strong>Therefore,</strong>')
+                        .replace(/Solution:/gi, '<strong>Solution:</strong>');
+
+                    explanationContent.innerHTML = resultIcon + '<div style="line-height: 1.8;">' + formattedExplanation + '</div>';
+                    explanationPanel.classList.add('show');
+                } else {
+                    explanationContent.innerHTML = '<div style="color: var(--text-secondary); font-style: italic;">No explanation available for this question.</div>';
+                    explanationPanel.classList.add('show');
                 }
-            });
 
-            // Show explanation
-            document.getElementById('explanationContent').textContent = question.explanation;
-            document.getElementById('explanationPanel').classList.add('show');
+                // Update stats
+                if (isCorrect) {
+                    correctAnswers++;
+                    document.getElementById('correctCount').textContent = correctAnswers;
 
-            // Update stats
-            if (isCorrect) {
-                correctAnswers++;
-                document.getElementById('correctCount').textContent = correctAnswers;
+                    // 🎮 PLAY CORRECT ANSWER SOUND
+                    soundEffects.play('correct');
+
+                    // 🎮 AWARD XP FOR CORRECT ANSWER
+                    await awardXP(10, 'Correct Answer!');
+                } else {
+                    // 🎮 PLAY WRONG ANSWER SOUND
+                    soundEffects.play('wrong');
+
+                    // 🎮 LOSE HEART FOR INCORRECT ANSWER
+                    await loseHeart();
+                }
+
+                // Update buttons
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'flex';
+
+                // Save progress
+                await saveProgress(isCorrect);
+            } catch (error) {
+                console.error('Error submitting answer:', error);
+                showErrorMessage('Failed to submit answer. Your progress may not be saved.');
             }
-
-            // Update buttons
-            document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'flex';
-
-            // Save progress
-            await saveProgress(isCorrect);
         };
 
         window.nextQuestion = function() {
@@ -1451,28 +3846,33 @@ Generate 10 questions now:`;
         };
 
         window.toggleFlag = async function() {
-            const question = currentQuestions[currentQuestionIndex];
-            const flaggedQuestions = testPrepData.flaggedQuestions || [];
-            
-            const existingIndex = flaggedQuestions.findIndex(
-                q => q.prompt === question.prompt
-            );
+            try {
+                const question = currentQuestions[currentQuestionIndex];
+                const flaggedQuestions = testPrepData.flaggedQuestions || [];
 
-            if (existingIndex >= 0) {
-                // Unflag
-                flaggedQuestions.splice(existingIndex, 1);
-            } else {
-                // Flag
-                flaggedQuestions.push(question);
+                const existingIndex = flaggedQuestions.findIndex(
+                    q => q.prompt === question.prompt
+                );
+
+                if (existingIndex >= 0) {
+                    // Unflag
+                    flaggedQuestions.splice(existingIndex, 1);
+                } else {
+                    // Flag
+                    flaggedQuestions.push(question);
+                }
+
+                // Update Firestore
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    flaggedQuestions: flaggedQuestions
+                });
+
+                testPrepData.flaggedQuestions = flaggedQuestions;
+                updateFlagButton(existingIndex < 0);
+            } catch (error) {
+                console.error('Error toggling flag:', error);
+                showErrorMessage('Failed to update flagged status. Please try again.');
             }
-
-            // Update Firestore
-            await updateDoc(doc(db, 'testprep', currentUser.uid), {
-                flaggedQuestions: flaggedQuestions
-            });
-
-            testPrepData.flaggedQuestions = flaggedQuestions;
-            updateFlagButton(existingIndex < 0);
         };
 
         function updateFlagButton(isFlagged) {
@@ -1497,7 +3897,7 @@ Generate 10 questions now:`;
             try {
                 const subjectKey = sessionSubject.replace('-', '');
                 const subjectProgress = testPrepData.subjectProgress || {};
-                
+
                 if (!subjectProgress[subjectKey]) {
                     subjectProgress[subjectKey] = { correct: 0, total: 0, score: 0 };
                 }
@@ -1507,15 +3907,38 @@ Generate 10 questions now:`;
                     subjectProgress[subjectKey].correct++;
                 }
 
-                // Calculate score (simplified)
-                const accuracy = subjectProgress[subjectKey].correct / subjectProgress[subjectKey].total;
-                subjectProgress[subjectKey].score = Math.round(accuracy * 800); // SAT scale
+                // Calculate REAL score using official conversion tables
+                const realScore = calculateScore(
+                    subjectProgress[subjectKey].correct,
+                    subjectProgress[subjectKey].total,
+                    sessionSubject
+                );
+                subjectProgress[subjectKey].score = realScore;
+
+                // Update overall test score (SAT or ACT)
+                const currentScore = testPrepData.currentScore || { sat: 0, act: 0, psat: 0 };
+
+                if (sessionSubject.startsWith('sat')) {
+                    // SAT total is Math + Reading (two sections, 200-800 each = 400-1600 total)
+                    // For now, just update the section score
+                    currentScore.sat = realScore;
+                } else if (sessionSubject.startsWith('act')) {
+                    // ACT composite is average of 4 sections (1-36)
+                    currentScore.act = realScore;
+                } else if (sessionSubject.startsWith('psat')) {
+                    currentScore.psat = realScore;
+                }
 
                 await updateDoc(doc(db, 'testprep', currentUser.uid), {
                     questionsCompleted: (testPrepData.questionsCompleted || 0) + 1,
                     subjectProgress: subjectProgress,
+                    currentScore: currentScore,
                     lastStudyDate: new Date().toISOString()
                 });
+
+                // Update local data
+                testPrepData.subjectProgress = subjectProgress;
+                testPrepData.currentScore = currentScore;
 
             } catch (error) {
                 console.error('Error saving progress:', error);
@@ -1529,19 +3952,267 @@ Generate 10 questions now:`;
                 return;
             }
 
+            // 🎮 PLAY SESSION COMPLETE SOUND
+            soundEffects.play('sessionComplete');
+
             // Standard completion screen for regular practice
             document.getElementById('questionCard').style.display = 'none';
             document.getElementById('completionScreen').classList.add('show');
 
             const accuracy = Math.round((correctAnswers / currentQuestions.length) * 100);
-            const timeSpent = Math.round((Date.now() - startTime) / 60000); // minutes
-            const estimatedScore = Math.round((accuracy / 100) * 800); // Simplified SAT scale
 
-            document.getElementById('finalCorrect').textContent = 
+            // 🎮 CONFETTI CELEBRATION BASED ON PERFORMANCE
+            if (accuracy === 100) {
+                // Perfect score - epic celebration!
+                confettiSystem.rain(4000);
+            } else if (accuracy >= 90) {
+                // Excellent - heavy confetti
+                confettiSystem.burst('heavy');
+            } else if (accuracy >= 70) {
+                // Good - medium confetti
+                confettiSystem.burst('medium');
+            } else if (accuracy >= 50) {
+                // Passing - light confetti
+                confettiSystem.burst('light');
+            }
+            // Below 50% - no confetti, just encouragement
+            const timeSpent = Math.round((Date.now() - startTime) / 60000); // minutes
+
+            // Calculate REAL score using official conversion tables
+            const realScore = calculateScore(
+                correctAnswers,
+                currentQuestions.length,
+                sessionSubject
+            );
+
+            // Format score based on test type
+            let scoreDisplay = realScore;
+            let scoreLabel = 'Estimated Score';
+
+            if (sessionSubject.startsWith('sat') || sessionSubject.startsWith('psat')) {
+                scoreDisplay = realScore; // 200-800 scale
+                scoreLabel = sessionSubject.toUpperCase() + ' Score';
+            } else if (sessionSubject.startsWith('act')) {
+                scoreDisplay = realScore; // 1-36 scale
+                scoreLabel = 'ACT Score';
+            }
+
+            document.getElementById('finalCorrect').textContent =
                 `${correctAnswers}/${currentQuestions.length}`;
             document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
-            document.getElementById('finalScore').textContent = estimatedScore;
+            document.getElementById('finalScore').textContent = scoreDisplay;
             document.getElementById('finalTime').textContent = `${timeSpent}m`;
+
+            // Update score label if element exists
+            const scoreElement = document.getElementById('finalScore');
+            if (scoreElement && scoreElement.previousElementSibling) {
+                scoreElement.previousElementSibling.textContent = scoreLabel;
+            }
+
+            // 🎮 AWARD SESSION COMPLETION XP
+            let bonusXP = 50; // Base completion bonus
+            if (correctAnswers === currentQuestions.length) {
+                // Perfect score bonus!
+                bonusXP = 150; // 50 completion + 100 perfect
+                setTimeout(() => {
+                    awardXP(bonusXP, '🏆 Perfect Score!');
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    awardXP(bonusXP, '✅ Session Complete!');
+                }, 500);
+            }
+
+            // Update streak on session completion
+            updateStudyStreak();
+
+            // Update weak/strong areas
+            updateWeakAndStrongAreas();
+
+            // 🎮 CHECK AND UNLOCK BADGES
+            setTimeout(async () => {
+                // Track session-specific achievements
+                const sessionTime = (Date.now() - startTime) / 1000 / 60; // minutes
+
+                // Update badge-related data
+                const updates = {
+                    correctAnswersTotal: (testPrepData.correctAnswersTotal || 0) + correctAnswers
+                };
+
+                // Check for perfect score
+                if (accuracy === 100) {
+                    updates.hasPerfectScore = true;
+                }
+
+                // Check for speed run (under 5 minutes)
+                if (sessionTime < 5 && currentQuestions.length >= 10) {
+                    updates.hasSpeedRun = true;
+                }
+
+                // Track expert sessions for subject badges
+                if (accuracy >= 90) {
+                    if (sessionSubject.includes('math')) {
+                        updates.mathExpertSessions = (testPrepData.mathExpertSessions || 0) + 1;
+                    } else if (sessionSubject.includes('reading')) {
+                        updates.readingExpertSessions = (testPrepData.readingExpertSessions || 0) + 1;
+                    }
+                }
+
+                // Save badge data
+                try {
+                    await updateDoc(doc(db, 'testprep', currentUser.uid), updates);
+
+                    // Update local data
+                    Object.assign(testPrepData, updates);
+
+                    // Check for badge unlocks
+                    await badgeSystem.checkBadges(testPrepData, currentUser);
+                } catch (error) {
+                    console.error('Error checking badges:', error);
+                }
+            }, 1500); // Delay to let confetti and sounds play first
+        }
+
+        async function updateWeakAndStrongAreas() {
+            try {
+                const subjectProgress = testPrepData.subjectProgress || {};
+                const subjects = Object.keys(subjectProgress);
+
+                if (subjects.length === 0) return;
+
+                // Calculate accuracy for each subject
+                const subjectAccuracies = subjects.map(subject => {
+                    const data = subjectProgress[subject];
+                    const accuracy = data.total > 0 ? (data.correct / data.total) * 100 : 0;
+                    return { subject, accuracy, total: data.total };
+                }).filter(s => s.total >= 3); // Only consider subjects with at least 3 questions
+
+                if (subjectAccuracies.length === 0) return;
+
+                // Sort by accuracy
+                subjectAccuracies.sort((a, b) => a.accuracy - b.accuracy);
+
+                // Identify weak areas (bottom 30%, accuracy < 60%)
+                const weakAreas = subjectAccuracies
+                    .filter(s => s.accuracy < 60)
+                    .slice(0, 3)
+                    .map(s => s.subject);
+
+                // Identify strong areas (top 30%, accuracy > 80%)
+                const strongAreas = subjectAccuracies
+                    .filter(s => s.accuracy > 80)
+                    .slice(-3)
+                    .reverse()
+                    .map(s => s.subject);
+
+                // Update Firestore
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    weakAreas: weakAreas,
+                    strongAreas: strongAreas
+                });
+
+                // Update local data
+                testPrepData.weakAreas = weakAreas;
+                testPrepData.strongAreas = strongAreas;
+
+                console.log('📊 Updated weak areas:', weakAreas);
+                console.log('📊 Updated strong areas:', strongAreas);
+
+            } catch (error) {
+                console.error('Error updating weak/strong areas:', error);
+            }
+        }
+
+        async function updateStudyStreak() {
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Normalize to start of day
+                const todayISO = today.toISOString();
+
+                let newStreak = testPrepData.studyStreak || 0;
+                const lastStudyDate = testPrepData.lastStudyDate;
+
+                if (lastStudyDate) {
+                    const lastDate = new Date(lastStudyDate);
+                    lastDate.setHours(0, 0, 0, 0);
+
+                    const daysDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+
+                    if (daysDiff === 0) {
+                        // Already studied today, keep streak
+                        console.log('✅ Streak maintained (already studied today):', newStreak);
+                    } else if (daysDiff === 1) {
+                        // Consecutive day, increment streak
+                        newStreak++;
+                        console.log('🔥 Streak increased to:', newStreak);
+                    } else {
+                        // Missed a day, reset streak
+                        newStreak = 1;
+                        console.log('💔 Streak reset to 1 (missed days:', daysDiff, ')');
+                    }
+                } else {
+                    // First time studying
+                    newStreak = 1;
+                    console.log('🎉 First study session! Streak started at 1');
+                }
+
+                // Update Firestore
+                await updateDoc(doc(db, 'testprep', currentUser.uid), {
+                    studyStreak: newStreak,
+                    lastStudyDate: new Date().toISOString()
+                });
+
+                // Update local data
+                testPrepData.studyStreak = newStreak;
+                testPrepData.lastStudyDate = new Date().toISOString();
+
+                // Show streak celebration if milestone
+                if (newStreak === 7) {
+                    showStreakCelebration('🎉 7-Day Streak! You\'re on fire!');
+                } else if (newStreak === 30) {
+                    showStreakCelebration('🏆 30-Day Streak! Amazing dedication!');
+                } else if (newStreak === 100) {
+                    showStreakCelebration('👑 100-Day Streak! You\'re a legend!');
+                }
+
+            } catch (error) {
+                console.error('Error updating study streak:', error);
+            }
+        }
+
+        function showStreakCelebration(message) {
+            // 🎮 CONFETTI FOR STREAK MILESTONES
+            if (message.includes('100-Day')) {
+                confettiSystem.rain(5000); // Epic 5-second rain for 100 days!
+            } else if (message.includes('30-Day')) {
+                confettiSystem.burst('heavy');
+            } else if (message.includes('7-Day')) {
+                confettiSystem.burst('medium');
+            }
+
+            const celebration = document.createElement('div');
+            celebration.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--gradient);
+                color: white;
+                padding: 2rem 3rem;
+                border-radius: 24px;
+                font-size: 1.5rem;
+                font-weight: 800;
+                z-index: 10001;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                animation: bounceIn 0.5s ease;
+            `;
+            celebration.textContent = message;
+            document.body.appendChild(celebration);
+
+            setTimeout(() => {
+                celebration.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => celebration.remove(), 300);
+            }, 3000);
         }
 
         window.restartPractice = function() {
@@ -1627,6 +4298,86 @@ Generate 10 questions now:`;
         // Initialize theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
+
+        // ============================================
+        // 🧭 NAVBAR FUNCTIONS
+        // ============================================
+
+        function initNavbar() {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            const profileButton = document.getElementById('ccProfileButton');
+            const dropdownMenu = document.getElementById('ccDropdownMenu');
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+
+            // Theme toggle
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            updateLogo(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const current = document.body.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                updateLogo(newTheme);
+            });
+
+            // Profile dropdown
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('ccProfileDropdown').contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await signOut(auth);
+                    window.location.href = '/login';
+                } catch (error) {
+                    console.error('Error signing out:', error);
+                    showErrorMessage('Failed to sign out. Please try again.');
+                }
+            });
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            if (logo) {
+                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
+        function updateNavbarUI() {
+            const profileLoading = document.getElementById('ccProfileLoading');
+            const profileContent = document.getElementById('ccProfileContent');
+            const userAvatar = document.getElementById('ccUserAvatar');
+            const dropdownName = document.getElementById('ccDropdownName');
+            const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+            if (profileLoading) profileLoading.style.display = 'none';
+            if (profileContent) profileContent.style.display = 'flex';
+
+            if (userAvatar && userData?.profilePhotoURL) {
+                userAvatar.src = userData.profilePhotoURL;
+            }
+
+            if (dropdownName && currentUser) {
+                dropdownName.textContent = userData?.name || currentUser.displayName || currentUser.email.split('@')[0];
+            }
+
+            if (dropdownEmail && currentUser) {
+                dropdownEmail.textContent = currentUser.email;
+            }
+        }
     </script>
 </body>
 </html>

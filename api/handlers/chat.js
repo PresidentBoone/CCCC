@@ -308,19 +308,82 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { 
-      message, 
-      userProfile, 
+    const {
+      message,
+      messages: rawMessages, // For AI Writing Tools (direct OpenAI format)
+      userProfile,
       questionnaireData,
       // Essay-specific fields
-      essay, 
-      colleges, 
-      prompt, 
+      essay,
+      colleges,
+      prompt,
       chatHistory,
       // Chat type indicator
-      chatType 
+      chatType
     } = req.body;
 
+    // Handle two formats:
+    // 1. Standard format: { message, userProfile, ... } - for regular chat
+    // 2. Raw OpenAI format: { messages: [...] } - for AI Writing Tools
+
+    if (rawMessages && Array.isArray(rawMessages)) {
+      // AI Writing Tools format - use GPT-4o for advanced features
+      console.log('🎨 Using AI WRITING TOOLS mode (GPT-4o) - raw messages format');
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: rawMessages,
+          max_tokens: 1500,
+          temperature: 0.7
+        })
+      });
+
+      if (!openaiResponse.ok) {
+        const errorText = await openaiResponse.text();
+        console.error('OpenAI API error:', openaiResponse.status, errorText);
+
+        if (openaiResponse.status === 401) {
+          return res.status(500).json({
+            error: 'API authentication failed. Please check your OpenAI API key.',
+            details: 'Invalid API key'
+          });
+        } else if (openaiResponse.status === 429) {
+          return res.status(500).json({
+            error: 'I\'m experiencing high demand right now. Please wait a moment and try again.',
+            details: 'Rate limit exceeded - please try again in 1 minute'
+          });
+        } else if (openaiResponse.status === 403) {
+          return res.status(500).json({
+            error: 'API access denied. Please check your OpenAI account billing.',
+            details: 'Account may need billing setup'
+          });
+        } else {
+          return res.status(500).json({
+            error: 'External service temporarily unavailable.',
+            details: `OpenAI API error: ${openaiResponse.status}`
+          });
+        }
+      }
+
+      const data = await openaiResponse.json();
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.error('Invalid OpenAI response format:', data);
+        throw new Error('Invalid response format from OpenAI');
+      }
+
+      return res.status(200).json({
+        response: data.choices[0].message.content
+      });
+    }
+
+    // Standard format validation
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Valid message is required' });
     }

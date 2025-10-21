@@ -567,6 +567,129 @@
             background: var(--primary-bg);
         }
 
+        /* AI Tools Panel */
+        .ai-tools-panel {
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, rgba(160, 123, 204, 0.05) 0%, rgba(160, 123, 204, 0.02) 100%);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tools-header {
+            padding: 1rem 1.5rem;
+            background: rgba(160, 123, 204, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ai-tools-header:hover {
+            background: rgba(160, 123, 204, 0.15);
+        }
+
+        .ai-tools-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-tools-header h3 i {
+            color: var(--accent-color);
+        }
+
+        .ai-tools-toggle {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .ai-tools-panel.collapsed .ai-tools-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .ai-tools-content {
+            padding: 1.5rem;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .ai-tools-panel.collapsed .ai-tools-content {
+            max-height: 0;
+            padding: 0 1.5rem;
+        }
+
+        .ai-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .ai-tool-btn {
+            background: var(--primary-bg);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .ai-tool-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(160, 123, 204, 0.25);
+            border-color: var(--accent-color);
+            background: linear-gradient(135deg, rgba(160, 123, 204, 0.05) 0%, rgba(160, 123, 204, 0.02) 100%);
+        }
+
+        .ai-tool-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .ai-tool-btn i {
+            font-size: 2rem;
+            color: var(--accent-color);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(160, 123, 204, 0.1);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .ai-tool-info {
+            flex: 1;
+        }
+
+        .ai-tool-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .ai-tool-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
         /* Essay Editor */
         .essay-editor {
             position: relative;
@@ -1955,6 +2078,48 @@
                     </div>
                 </div>
 
+                <!-- AI Writing Tools Panel -->
+                <div class="ai-tools-panel">
+                    <div class="ai-tools-header">
+                        <h3><i class="fas fa-magic"></i> AI Writing Tools</h3>
+                        <button class="ai-tools-toggle" onclick="toggleAIToolsPanel()">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="ai-tools-content" id="aiToolsContent">
+                        <div class="ai-tools-grid">
+                            <button class="ai-tool-btn" onclick="generateOpeningHooks()">
+                                <i class="fas fa-bolt"></i>
+                                <div class="ai-tool-info">
+                                    <div class="ai-tool-name">Opening Hook</div>
+                                    <div class="ai-tool-desc">Get 5 engaging alternatives</div>
+                                </div>
+                            </button>
+                            <button class="ai-tool-btn" onclick="detectCliches()">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="ai-tool-info">
+                                    <div class="ai-tool-name">Cliché Detector</div>
+                                    <div class="ai-tool-desc">Highlight overused phrases</div>
+                                </div>
+                            </button>
+                            <button class="ai-tool-btn" onclick="enhanceWordChoice()">
+                                <i class="fas fa-spell-check"></i>
+                                <div class="ai-tool-info">
+                                    <div class="ai-tool-name">Word Choice</div>
+                                    <div class="ai-tool-desc">Suggest stronger alternatives</div>
+                                </div>
+                            </button>
+                            <button class="ai-tool-btn" onclick="checkShowDontTell()">
+                                <i class="fas fa-eye"></i>
+                                <div class="ai-tool-info">
+                                    <div class="ai-tool-name">Show Don't Tell</div>
+                                    <div class="ai-tool-desc">Make writing more concrete</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Essay Editor -->
                 <div class="essay-editor">
                     <textarea 
@@ -2192,25 +2357,51 @@ Don't forget to specify your target colleges and essay prompt for more personali
         import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-            authDomain: "collegeclimb-ai.firebaseapp.com",
-            projectId: "collegeclimb-ai",
-            storageBucket: "collegeclimb-ai.firebasestorage.app",
-            messagingSenderId: "187139654658",
-            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-            measurementId: "G-E0B2RQM9XS"
-        };
+        // Initialize Firebase with environment configuration
+        // SECURITY: Credentials are loaded from /api/config (environment variables)
+        // Fallback to hardcoded values ONLY for development/testing
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        // Make Firebase available globally for AI Engine
-        window.firebaseApp = app;
-        window.firebaseAuth = auth;
-        window.firebaseDb = db;
+        async function initializeFirebase() {
+            let firebaseConfig;
+
+            try {
+                // Try to load from environment first (production)
+                const response = await fetch('/api/config');
+                if (response.ok) {
+                    const config = await response.json();
+                    firebaseConfig = config.firebase;
+                    console.log('✅ Firebase config loaded from environment');
+                } else {
+                    throw new Error('Config API unavailable');
+                }
+            } catch (error) {
+                // Fallback to hardcoded config (development only)
+                console.warn('⚠️ Using fallback Firebase config (development mode)');
+                firebaseConfig = {
+                    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+                    authDomain: "collegeclimb-ai.firebaseapp.com",
+                    projectId: "collegeclimb-ai",
+                    storageBucket: "collegeclimb-ai.firebasestorage.app",
+                    messagingSenderId: "187139654658",
+                    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+                    measurementId: "G-E0B2RQM9XS"
+                };
+            }
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            // Make Firebase available globally
+            window.firebaseApp = app;
+            window.firebaseAuth = auth;
+            window.firebaseDb = db;
+
+            return { app, auth, db };
+        }
+
+        // Initialize Firebase and then start the app
+        const firebasePromise = initializeFirebase();
         
         // Expose Firestore functions globally for standalone AI Engine
         window.getFirestoreDoc = getDoc;
@@ -2235,14 +2426,18 @@ Don't forget to specify your target colleges and essay prompt for more personali
         let essayManager = null;
         let essayChatAssistant = null;
         let essayTemplates = null;
+        let currentEssayId = null;
+        let essayAutoSaver = null;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', async function() {
-            await initializeAuth();
+            // Wait for Firebase to initialize first
+            const { auth, db } = await firebasePromise;
+            await initializeAuth(auth, db);
         });
 
         // Initialize Essay Coach Systems
-        async function initializeEssaySystems(user, userData) {
+        async function initializeEssaySystems(user, userData, db) {
             try {
                 // Initialize Essay Manager
                 window.essayManager = new EssayManager(db, user.uid, userData);
@@ -2256,22 +2451,109 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 window.essayTemplates = new EssayTemplates();
                 window.essayTemplates.initialize();
 
+                // Initialize Auto-Save System
+                initializeAutoSave(user, db);
+
                 console.log('✅ All Essay Coach systems initialized');
             } catch (error) {
                 console.error('Error initializing Essay Coach systems:', error);
             }
         }
 
+        // Initialize Auto-Save
+        function initializeAutoSave(user, db) {
+            if (!window.AutoSave) {
+                console.warn('⚠️ AutoSave class not loaded');
+                return;
+            }
+
+            const statusElement = document.getElementById('saveStatus');
+
+            essayAutoSaver = new window.AutoSave({
+                debounceMs: 3000, // Save 3 seconds after last edit
+                statusElement: statusElement,
+
+                dataGetter: () => {
+                    return {
+                        title: document.getElementById('essayTitle')?.value?.trim() || 'Untitled Essay',
+                        essay: document.getElementById('essayTextarea')?.value?.trim() || '',
+                        prompt: document.getElementById('essayPrompt')?.value?.trim() || '',
+                        colleges: document.getElementById('targetColleges')?.value?.trim().split(',').map(c => c.trim()).filter(c => c) || []
+                    };
+                },
+
+                saveFunction: async (data) => {
+                    if (!data.essay) {
+                        return; // Don't save empty essays
+                    }
+
+                    const response = await fetch(`/api/essay-storage?userId=${user.uid}&action=save${currentEssayId ? '&essayId=' + currentEssayId : ''}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Failed to auto-save');
+                    }
+
+                    // Update currentEssayId if this is a new essay
+                    if (result.essayId && !currentEssayId) {
+                        currentEssayId = result.essayId;
+                    }
+
+                    // Update last saved time display
+                    const lastSavedElement = document.getElementById('lastSaved');
+                    if (lastSavedElement) {
+                        lastSavedElement.textContent = new Date().toLocaleTimeString();
+                    }
+
+                    return result;
+                },
+
+                onError: (error) => {
+                    console.error('Auto-save error:', error);
+                },
+
+                onSuccess: (data) => {
+                    console.log('Auto-saved successfully');
+                }
+            });
+
+            // Attach listeners to essay fields
+            const essayTextarea = document.getElementById('essayTextarea');
+            const essayTitle = document.getElementById('essayTitle');
+            const essayPrompt = document.getElementById('essayPrompt');
+            const targetColleges = document.getElementById('targetColleges');
+
+            if (essayTextarea) {
+                essayTextarea.addEventListener('input', () => essayAutoSaver.markDirty());
+            }
+            if (essayTitle) {
+                essayTitle.addEventListener('input', () => essayAutoSaver.markDirty());
+            }
+            if (essayPrompt) {
+                essayPrompt.addEventListener('input', () => essayAutoSaver.markDirty());
+            }
+            if (targetColleges) {
+                targetColleges.addEventListener('input', () => essayAutoSaver.markDirty());
+            }
+
+            console.log('✅ Auto-save initialized');
+        }
+
         // Auth state management
-        async function initializeAuth() {
+        async function initializeAuth(auth, db) {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
-                    await loadUserProfile();
+                    await loadUserProfile(db);
                     await updateNavbarWithUserData(user); // Update navbar with user data
 
                     // Initialize Essay Coach systems
-                    await initializeEssaySystems(user, userProfile || {});
+                    await initializeEssaySystems(user, userProfile || {}, db);
                 } else {
                     window.location.href = '/login';
                 }
@@ -2279,9 +2561,9 @@ Don't forget to specify your target colleges and essay prompt for more personali
         }
 
         // Load user profile for personalization
-        async function loadUserProfile() {
+        async function loadUserProfile(db) {
             if (!currentUser) return;
-            
+
             try {
                 const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
                 if (userDoc.exists()) {
@@ -2489,6 +2771,31 @@ Don't forget to specify your target colleges and essay prompt for more personali
             setTimeout(() => {
                 messageEl.classList.remove('show');
             }, 5000);
+        }
+
+        // ============================================
+        // 🔧 UTILITY FUNCTIONS
+        // ============================================
+
+        // Fetch with timeout helper (60 second default for AI operations)
+        async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timed out. The AI is taking too long to respond. Please try again.');
+                }
+                throw error;
+            }
         }
 
         // Essay analysis
@@ -2998,6 +3305,13 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 showMessage('success', result.message);
                 loadUserEssays();
 
+                // Reset auto-save dirty flag since we just manually saved
+                if (essayAutoSaver) {
+                    essayAutoSaver.isDirty = false;
+                    essayAutoSaver.lastSaveTime = new Date();
+                    essayAutoSaver.updateStatus('All changes saved', 'success');
+                }
+
             } catch (error) {
                 console.error('Save error:', error);
                 showMessage('error', 'Failed to save essay: ' + error.message);
@@ -3196,14 +3510,2060 @@ Don't forget to specify your target colleges and essay prompt for more personali
         }
 
         // Load essay versions
-        window.loadEssayVersions = function() {
+        window.loadEssayVersions = async function() {
             if (!currentEssayId) {
                 showMessage('error', 'Please save the essay first to view versions.');
                 return;
             }
-            // This could open a modal or redirect to a versions page
-            showMessage('info', 'Version history feature coming soon!');
+
+            try {
+                const { collection, query, getDocs, orderBy } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+
+                // Load all versions
+                const versionsRef = collection(db, 'users', currentUser.uid, 'essays', currentEssayId, 'versions');
+                const q = query(versionsRef, orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+
+                const versions = [];
+                snapshot.forEach(doc => {
+                    versions.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (versions.length === 0) {
+                    showMessage('info', 'No versions yet. Click "New Version" to save your current essay as a version.');
+                    return;
+                }
+
+                // Open version comparison modal
+                openVersionComparisonModal(versions);
+
+            } catch (error) {
+                console.error('Error loading versions:', error);
+                showMessage('error', 'Failed to load versions');
+            }
         };
+
+        // ============================================
+        // VERSION COMPARISON MODAL SYSTEM
+        // ============================================
+
+        function openVersionComparisonModal(versions) {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'version-modal';
+            modal.id = 'versionModal';
+            modal.innerHTML = generateVersionModalHTML(versions);
+
+            document.body.appendChild(modal);
+            addVersionModalStyles();
+
+            // Initialize with first two versions (or current + version 1)
+            if (versions.length >= 2) {
+                compareVersions(versions[0], versions[1]);
+            } else if (versions.length === 1) {
+                compareCurrentWithVersion(versions[0]);
+            }
+
+            // Animate in
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+
+        function generateVersionModalHTML(versions) {
+            return `
+                <div class="version-modal-overlay" onclick="closeVersionModal()"></div>
+                <div class="version-modal-content">
+                    <div class="version-modal-header">
+                        <h2><i class="fas fa-code-branch"></i> Version History & Comparison</h2>
+                        <button class="version-close-btn" onclick="closeVersionModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="version-modal-body">
+                        <!-- Version Timeline -->
+                        <div class="version-timeline-section">
+                            <h3><i class="fas fa-history"></i> Version Timeline</h3>
+                            <div class="version-timeline">
+                                <!-- Current Version -->
+                                <div class="version-timeline-item current" onclick="selectVersionForComparison('current', 'left')" data-version="current">
+                                    <div class="version-timeline-badge current">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="version-timeline-content">
+                                        <div class="version-timeline-title">Current Draft</div>
+                                        <div class="version-timeline-meta">
+                                            ${getCurrentWordCount()} words • Editing now
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Version History -->
+                                ${versions.map((version, index) => `
+                                    <div class="version-timeline-item" onclick="selectVersionForComparison('${version.id}', 'left')" data-version="${version.id}">
+                                        <div class="version-timeline-badge">
+                                            <span>${version.version}</span>
+                                        </div>
+                                        <div class="version-timeline-content">
+                                            <div class="version-timeline-title">
+                                                Version ${version.version}
+                                                ${index === 0 ? '<span class="version-badge-latest">Latest</span>' : ''}
+                                            </div>
+                                            <div class="version-timeline-meta">
+                                                ${version.wordCount || 0} words • ${formatVersionDate(version.createdAt)}
+                                            </div>
+                                            <div class="version-actions">
+                                                <button class="btn-version-action" onclick="event.stopPropagation(); restoreVersion('${version.id}')" title="Restore this version">
+                                                    <i class="fas fa-undo"></i> Restore
+                                                </button>
+                                                <button class="btn-version-action" onclick="event.stopPropagation(); selectVersionForComparison('${version.id}', 'left')" title="Compare">
+                                                    <i class="fas fa-columns"></i> Compare
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Comparison View -->
+                        <div class="version-comparison-section">
+                            <div class="comparison-header">
+                                <h3><i class="fas fa-columns"></i> Side-by-Side Comparison</h3>
+                                <div class="comparison-controls">
+                                    <label>
+                                        <input type="checkbox" id="highlightDiffsToggle" checked onchange="toggleDiffHighlighting()">
+                                        Highlight Differences
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="comparison-selectors">
+                                <div class="comparison-selector">
+                                    <label>Left Side:</label>
+                                    <select id="leftVersionSelect" onchange="updateComparison()">
+                                        <option value="current">Current Draft</option>
+                                        ${versions.map(v => `<option value="${v.id}">Version ${v.version}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="comparison-swap" onclick="swapComparisonSides()">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                                <div class="comparison-selector">
+                                    <label>Right Side:</label>
+                                    <select id="rightVersionSelect" onchange="updateComparison()">
+                                        <option value="current">Current Draft</option>
+                                        ${versions.map(v => `<option value="${v.id}">Version ${v.version}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Comparison Display -->
+                            <div class="comparison-display">
+                                <div class="comparison-pane left">
+                                    <div class="comparison-pane-header">
+                                        <h4 id="leftVersionTitle">Current Draft</h4>
+                                        <span class="comparison-word-count" id="leftWordCount">0 words</span>
+                                    </div>
+                                    <div class="comparison-pane-content" id="leftVersionContent">
+                                        Select versions to compare
+                                    </div>
+                                </div>
+                                <div class="comparison-divider"></div>
+                                <div class="comparison-pane right">
+                                    <div class="comparison-pane-header">
+                                        <h4 id="rightVersionTitle">Version 1</h4>
+                                        <span class="comparison-word-count" id="rightWordCount">0 words</span>
+                                    </div>
+                                    <div class="comparison-pane-content" id="rightVersionContent">
+                                        Select versions to compare
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Diff Summary -->
+                            <div class="diff-summary" id="diffSummary" style="display: none;">
+                                <div class="diff-stat additions">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span id="additionsCount">0</span> additions
+                                </div>
+                                <div class="diff-stat deletions">
+                                    <i class="fas fa-minus-circle"></i>
+                                    <span id="deletionsCount">0</span> deletions
+                                </div>
+                                <div class="diff-stat changes">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <span id="changesCount">0</span> words changed
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Store versions data globally for comparison
+        let versionsData = {};
+
+        function selectVersionForComparison(versionId, side) {
+            const select = document.getElementById(side === 'left' ? 'leftVersionSelect' : 'rightVersionSelect');
+            if (select) {
+                select.value = versionId;
+                updateComparison();
+            }
+        }
+
+        async function updateComparison() {
+            try {
+                const leftId = document.getElementById('leftVersionSelect').value;
+                const rightId = document.getElementById('rightVersionSelect').value;
+
+                const leftData = await getVersionData(leftId);
+                const rightData = await getVersionData(rightId);
+
+                displayComparison(leftData, rightData, leftId, rightId);
+            } catch (error) {
+                console.error('Error updating comparison:', error);
+                showMessage('error', 'Failed to update version comparison. Please try again.');
+            }
+        }
+
+        async function getVersionData(versionId) {
+            if (versionId === 'current') {
+                return {
+                    title: 'Current Draft',
+                    content: document.getElementById('essayTextarea').value,
+                    wordCount: document.getElementById('essayTextarea').value.split(/\s+/).filter(w => w).length
+                };
+            }
+
+            // Check cache
+            if (versionsData[versionId]) {
+                return versionsData[versionId];
+            }
+
+            // Load from Firestore
+            try {
+                const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+                const versionRef = doc(db, 'users', currentUser.uid, 'essays', currentEssayId, 'versions', versionId);
+                const versionDoc = await getDoc(versionRef);
+
+                if (versionDoc.exists()) {
+                    const data = versionDoc.data();
+                    versionsData[versionId] = {
+                        title: `Version ${data.version}`,
+                        content: data.content || '',
+                        wordCount: data.wordCount || 0,
+                        version: data.version
+                    };
+                    return versionsData[versionId];
+                }
+            } catch (error) {
+                console.error('Error loading version:', error);
+            }
+
+            return { title: 'Error', content: 'Failed to load version', wordCount: 0 };
+        }
+
+        function displayComparison(leftData, rightData, leftId, rightId) {
+            // Update titles
+            document.getElementById('leftVersionTitle').textContent = leftData.title;
+            document.getElementById('rightVersionTitle').textContent = rightData.title;
+            document.getElementById('leftWordCount').textContent = `${leftData.wordCount} words`;
+            document.getElementById('rightWordCount').textContent = `${rightData.wordCount} words`;
+
+            const highlightDiffs = document.getElementById('highlightDiffsToggle').checked;
+
+            if (highlightDiffs) {
+                // Show diff highlighting
+                const diff = computeWordDiff(leftData.content, rightData.content);
+                document.getElementById('leftVersionContent').innerHTML = diff.left;
+                document.getElementById('rightVersionContent').innerHTML = diff.right;
+
+                // Update diff summary
+                document.getElementById('additionsCount').textContent = diff.additions;
+                document.getElementById('deletionsCount').textContent = diff.deletions;
+                document.getElementById('changesCount').textContent = diff.additions + diff.deletions;
+                document.getElementById('diffSummary').style.display = 'flex';
+            } else {
+                // Show plain text
+                document.getElementById('leftVersionContent').innerHTML = `<pre>${escapeHtml(leftData.content)}</pre>`;
+                document.getElementById('rightVersionContent').innerHTML = `<pre>${escapeHtml(rightData.content)}</pre>`;
+                document.getElementById('diffSummary').style.display = 'none';
+            }
+        }
+
+        function computeWordDiff(leftText, rightText) {
+            const leftWords = leftText.split(/(\s+)/);
+            const rightWords = rightText.split(/(\s+)/);
+
+            let leftHtml = '';
+            let rightHtml = '';
+            let additions = 0;
+            let deletions = 0;
+
+            // Simple word-by-word diff (basic implementation)
+            const maxLen = Math.max(leftWords.length, rightWords.length);
+
+            for (let i = 0; i < maxLen; i++) {
+                const leftWord = leftWords[i] || '';
+                const rightWord = rightWords[i] || '';
+
+                if (leftWord === rightWord) {
+                    leftHtml += escapeHtml(leftWord);
+                    rightHtml += escapeHtml(rightWord);
+                } else {
+                    if (leftWord && !rightWords.includes(leftWord)) {
+                        leftHtml += `<span class="diff-deleted">${escapeHtml(leftWord)}</span>`;
+                        deletions++;
+                    } else {
+                        leftHtml += escapeHtml(leftWord);
+                    }
+
+                    if (rightWord && !leftWords.includes(rightWord)) {
+                        rightHtml += `<span class="diff-added">${escapeHtml(rightWord)}</span>`;
+                        additions++;
+                    } else {
+                        rightHtml += escapeHtml(rightWord);
+                    }
+                }
+            }
+
+            return {
+                left: `<pre class="diff-content">${leftHtml}</pre>`,
+                right: `<pre class="diff-content">${rightHtml}</pre>`,
+                additions,
+                deletions
+            };
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleDiffHighlighting() {
+            updateComparison();
+        }
+
+        function swapComparisonSides() {
+            const leftSelect = document.getElementById('leftVersionSelect');
+            const rightSelect = document.getElementById('rightVersionSelect');
+
+            const temp = leftSelect.value;
+            leftSelect.value = rightSelect.value;
+            rightSelect.value = temp;
+
+            updateComparison();
+        }
+
+        async function restoreVersion(versionId) {
+            if (!confirm('This will replace your current essay with this version. Continue?')) {
+                return;
+            }
+
+            try {
+                const versionData = await getVersionData(versionId);
+                document.getElementById('essayTextarea').value = versionData.content;
+
+                if (window.essayManager) {
+                    window.essayManager.updateWordCount();
+                }
+
+                showMessage('success', `Version ${versionData.version} restored! Remember to save.`);
+                closeVersionModal();
+
+            } catch (error) {
+                console.error('Error restoring version:', error);
+                showMessage('error', 'Failed to restore version');
+            }
+        }
+
+        function closeVersionModal() {
+            const modal = document.getElementById('versionModal');
+            if (modal) {
+                modal.classList.remove('open');
+                setTimeout(() => modal.remove(), 300);
+            }
+            versionsData = {}; // Clear cache
+        }
+
+        function getCurrentWordCount() {
+            const textarea = document.getElementById('essayTextarea');
+            if (!textarea) return 0;
+            return textarea.value.split(/\s+/).filter(w => w).length;
+        }
+
+        function formatVersionDate(timestamp) {
+            if (!timestamp) return 'Unknown date';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function compareVersions(version1, version2) {
+            const leftSelect = document.getElementById('leftVersionSelect');
+            const rightSelect = document.getElementById('rightVersionSelect');
+
+            if (leftSelect && rightSelect) {
+                leftSelect.value = version1.id;
+                rightSelect.value = version2.id;
+                updateComparison();
+            }
+        }
+
+        function compareCurrentWithVersion(version) {
+            const leftSelect = document.getElementById('leftVersionSelect');
+            const rightSelect = document.getElementById('rightVersionSelect');
+
+            if (leftSelect && rightSelect) {
+                leftSelect.value = 'current';
+                rightSelect.value = version.id;
+                updateComparison();
+            }
+        }
+
+        // ============================================
+        // AI WRITING TOOLS SYSTEM
+        // ============================================
+
+        // Toggle AI Tools Panel
+        function toggleAIToolsPanel() {
+            const panel = document.querySelector('.ai-tools-panel');
+            if (panel) {
+                panel.classList.toggle('collapsed');
+            }
+        }
+
+        // Make header clickable too
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.ai-tools-header');
+            if (header) {
+                header.addEventListener('click', toggleAIToolsPanel);
+            }
+        });
+
+        // 1. OPENING HOOK SUGGESTIONS
+        async function generateOpeningHooks() {
+            const textarea = document.getElementById('essayTextarea');
+            const essay = textarea.value.trim();
+
+            if (!essay || essay.length < 100) {
+                showMessage('error', 'Please write at least 100 characters before generating opening hooks.');
+                return;
+            }
+
+            // Get button and add loading state
+            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="generateOpeningHooks"]');
+            const originalHTML = button?.innerHTML;
+
+            try {
+                // Update button to loading state
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = `
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div class="ai-tool-info">
+                            <div class="ai-tool-name">Generating...</div>
+                            <div class="ai-tool-desc">AI is working...</div>
+                        </div>
+                    `;
+                }
+
+                showMessage('info', 'AI is generating 5 alternative opening hooks...');
+
+                const response = await fetchWithTimeout('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `You are an expert college essay coach specializing in compelling opening hooks. Analyze the student's essay and generate 5 different opening hook alternatives that are:
+1. Engaging and attention-grabbing
+2. Authentic to the student's voice
+3. Different styles (dialogue, scene, question, bold statement, sensory detail)
+4. Each 1-3 sentences maximum
+5. Set up the essay's main theme
+
+For each hook, explain why it works.
+
+Format your response EXACTLY as:
+HOOK 1: [hook text]
+WHY: [explanation]
+
+HOOK 2: [hook text]
+WHY: [explanation]
+
+... and so on for all 5 hooks.`
+                            },
+                            {
+                                role: 'user',
+                                content: `Essay:\n\n${essay}\n\nPlease analyze my essay and generate 5 compelling alternative opening hooks with explanations.`
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.response) {
+                    displayOpeningHooksModal(data.response, essay);
+                } else {
+                    throw new Error('No response from AI');
+                }
+
+            } catch (error) {
+                console.error('Error generating opening hooks:', error);
+                showMessage('error', 'Failed to generate opening hooks. Please try again.');
+            } finally {
+                // Restore button to original state
+                if (button && originalHTML) {
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                }
+            }
+        }
+
+        function displayOpeningHooksModal(aiResponse, currentEssay) {
+            // Parse hooks from AI response
+            const hookMatches = aiResponse.matchAll(/HOOK (\d+):\s*(.+?)\s*WHY:\s*(.+?)(?=HOOK \d+:|$)/gs);
+            const hooks = [];
+
+            for (const match of hookMatches) {
+                hooks.push({
+                    number: match[1],
+                    text: match[2].trim(),
+                    why: match[3].trim()
+                });
+            }
+
+            if (hooks.length === 0) {
+                showMessage('error', 'Failed to parse AI response. Please try again.');
+                return;
+            }
+
+            // Get current opening (first 2-3 sentences)
+            const sentences = currentEssay.split(/[.!?]+/).filter(s => s.trim());
+            const currentOpening = sentences.slice(0, 3).join('. ') + '.';
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-results-modal';
+            modal.id = 'openingHooksModal';
+            modal.innerHTML = `
+                <div class="ai-modal-overlay" onclick="closeAIModal('openingHooksModal')"></div>
+                <div class="ai-modal-content">
+                    <div class="ai-modal-header">
+                        <h2><i class="fas fa-bolt"></i> Opening Hook Suggestions</h2>
+                        <button class="ai-modal-close" onclick="closeAIModal('openingHooksModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ai-modal-body">
+                        <div class="ai-current-section">
+                            <h3>Your Current Opening:</h3>
+                            <div class="ai-current-text">${escapeHtml(currentOpening)}</div>
+                        </div>
+
+                        <div class="ai-suggestions-section">
+                            <h3>Alternative Hooks:</h3>
+                            <div class="ai-suggestions-list">
+                                ${hooks.map(hook => `
+                                    <div class="ai-suggestion-card">
+                                        <div class="ai-suggestion-header">
+                                            <span class="ai-suggestion-number">Hook ${hook.number}</span>
+                                            <button class="btn-use-suggestion" onclick="replaceOpening(\`${hook.text.replace(/`/g, '\\`')}\`)">
+                                                <i class="fas fa-check"></i> Use This
+                                            </button>
+                                        </div>
+                                        <div class="ai-suggestion-text">"${escapeHtml(hook.text)}"</div>
+                                        <div class="ai-suggestion-why">
+                                            <strong>Why it works:</strong> ${escapeHtml(hook.why)}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            addAIModalStyles();
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+
+        function replaceOpening(newHook) {
+            const textarea = document.getElementById('essayTextarea');
+            const essay = textarea.value;
+
+            // Find the end of the first 2-3 sentences
+            const sentences = essay.split(/([.!?]+\s*)/);
+            let charCount = 0;
+            let sentenceCount = 0;
+
+            for (let i = 0; i < sentences.length && sentenceCount < 3; i++) {
+                charCount += sentences[i].length;
+                if (sentences[i].match(/[.!?]/)) {
+                    sentenceCount++;
+                }
+            }
+
+            // Replace opening
+            const restOfEssay = essay.substring(charCount).trim();
+            textarea.value = newHook + (newHook.endsWith('.') ? '' : '.') + '\n\n' + restOfEssay;
+
+            if (window.essayManager) {
+                window.essayManager.updateWordCount();
+            }
+
+            showMessage('success', 'Opening replaced! Remember to save your changes.');
+            closeAIModal('openingHooksModal');
+        }
+
+        // 2. CLICHÉ DETECTOR
+        async function detectCliches() {
+            const textarea = document.getElementById('essayTextarea');
+            const essay = textarea.value.trim();
+
+            if (!essay || essay.length < 50) {
+                showMessage('error', 'Please write your essay before detecting clichés.');
+                return;
+            }
+
+            // Get button and add loading state
+            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="detectCliches"]');
+            const originalHTML = button?.innerHTML;
+
+            try {
+                // Update button to loading state
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = `
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div class="ai-tool-info">
+                            <div class="ai-tool-name">Scanning...</div>
+                            <div class="ai-tool-desc">Finding clichés...</div>
+                        </div>
+                    `;
+                }
+
+                showMessage('info', 'AI is scanning for clichés...');
+
+                const response = await fetchWithTimeout('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `You are an expert at identifying clichés in college application essays. Scan the essay and identify ALL clichéd phrases including:
+- Overused metaphors ("journey", "rollercoaster", "stepping stone")
+- Generic statements ("gave 110%", "think outside the box", "comfort zone")
+- Vague accomplishments ("learned so much", "grew as a person")
+- Tired college essay tropes ("the game/match", "the big game")
+
+For each cliché found, provide:
+1. The exact phrase (quote it)
+2. Why it's a cliché
+3. A specific, original alternative
+
+Format EXACTLY as:
+CLICHÉ: "[exact phrase from essay]"
+WHY: [explanation]
+BETTER: [specific alternative using concrete details]
+
+---
+
+If no clichés found, respond with: NO_CLICHES_FOUND`
+                            },
+                            {
+                                role: 'user',
+                                content: `Essay:\n\n${essay}\n\nPlease identify all clichés and suggest better alternatives.`
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.response) {
+                    if (data.response.includes('NO_CLICHES_FOUND')) {
+                        showMessage('success', 'Great! No clichés detected in your essay.');
+                    } else {
+                        displayClichesModal(data.response, essay);
+                    }
+                } else {
+                    throw new Error('No response from AI');
+                }
+
+            } catch (error) {
+                console.error('Error detecting clichés:', error);
+                showMessage('error', 'Failed to detect clichés. Please try again.');
+            } finally {
+                // Restore button to original state
+                if (button && originalHTML) {
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                }
+            }
+        }
+
+        function displayClichesModal(aiResponse, essay) {
+            // Parse clichés
+            const clicheMatches = aiResponse.matchAll(/CLICHÉ:\s*"(.+?)"\s*WHY:\s*(.+?)\s*BETTER:\s*(.+?)(?=CLICHÉ:|$)/gs);
+            const cliches = [];
+
+            for (const match of clicheMatches) {
+                cliches.push({
+                    phrase: match[1].trim(),
+                    why: match[2].trim(),
+                    better: match[3].trim()
+                });
+            }
+
+            if (cliches.length === 0) {
+                showMessage('info', 'No clichés detected or failed to parse response.');
+                return;
+            }
+
+            // Highlight clichés in essay
+            let highlightedEssay = essay;
+            cliches.forEach((cliche, index) => {
+                const regex = new RegExp(escapeRegex(cliche.phrase), 'gi');
+                highlightedEssay = highlightedEssay.replace(regex,
+                    `<span class="cliche-highlight" data-cliche="${index}">${cliche.phrase}</span>`
+                );
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-results-modal';
+            modal.id = 'clichesModal';
+            modal.innerHTML = `
+                <div class="ai-modal-overlay" onclick="closeAIModal('clichesModal')"></div>
+                <div class="ai-modal-content">
+                    <div class="ai-modal-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Clichés Detected (${cliches.length})</h2>
+                        <button class="ai-modal-close" onclick="closeAIModal('clichesModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ai-modal-body">
+                        <div class="ai-split-view">
+                            <div class="ai-split-pane">
+                                <h3>Your Essay (Clichés Highlighted)</h3>
+                                <div class="ai-highlighted-text">${highlightedEssay}</div>
+                            </div>
+                            <div class="ai-split-pane">
+                                <h3>Clichés Found & Alternatives</h3>
+                                <div class="ai-cliches-list">
+                                    ${cliches.map((cliche, index) => `
+                                        <div class="ai-cliche-card">
+                                            <div class="ai-cliche-phrase">"${escapeHtml(cliche.phrase)}"</div>
+                                            <div class="ai-cliche-why">
+                                                <strong>Why it's a cliché:</strong> ${escapeHtml(cliche.why)}
+                                            </div>
+                                            <div class="ai-cliche-better">
+                                                <strong>Better alternative:</strong> ${escapeHtml(cliche.better)}
+                                            </div>
+                                            <button class="btn-replace-cliche" onclick="replaceCliche('${escapeHtml(cliche.phrase)}', \`${cliche.better.replace(/`/g, '\\`')}\`)">
+                                                <i class="fas fa-exchange-alt"></i> Replace
+                                            </button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            addAIModalStyles();
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+
+        function replaceCliche(cliche, better) {
+            const textarea = document.getElementById('essayTextarea');
+            const regex = new RegExp(escapeRegex(cliche), 'i');
+            textarea.value = textarea.value.replace(regex, better);
+
+            if (window.essayManager) {
+                window.essayManager.updateWordCount();
+            }
+
+            showMessage('success', 'Cliché replaced! Remember to save.');
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // 3. WORD CHOICE ENHANCEMENT
+        async function enhanceWordChoice() {
+            const textarea = document.getElementById('essayTextarea');
+            const essay = textarea.value.trim();
+
+            if (!essay || essay.length < 50) {
+                showMessage('error', 'Please write your essay before enhancing word choice.');
+                return;
+            }
+
+            // Get button and add loading state
+            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="enhanceWordChoice"]');
+            const originalHTML = button?.innerHTML;
+
+            try {
+                // Update button to loading state
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = `
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div class="ai-tool-info">
+                            <div class="ai-tool-name">Analyzing...</div>
+                            <div class="ai-tool-desc">Finding weak words...</div>
+                        </div>
+                    `;
+                }
+
+                showMessage('info', 'AI is analyzing word choice...');
+
+                const response = await fetchWithTimeout('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `You are an expert at improving word choice in college essays. Identify weak or overused words and suggest stronger, more precise alternatives that maintain the student's voice.
+
+Focus on:
+- Weak intensifiers (very, really, extremely, quite, pretty)
+- Vague words (thing, stuff, good, bad, nice, interesting)
+- Overused verbs (get, got, make, do, go)
+- Generic adjectives (big, small, great, amazing)
+
+For each weak word, suggest 2-3 context-specific alternatives.
+
+Format EXACTLY as:
+WEAK: "[exact word or phrase from essay]"
+CONTEXT: [the sentence it appears in]
+ALTERNATIVES: [alternative 1] | [alternative 2] | [alternative 3]
+WHY: [brief explanation]
+
+---
+
+Limit to top 10 most impactful improvements.`
+                            },
+                            {
+                                role: 'user',
+                                content: `Essay:\n\n${essay}\n\nPlease identify weak word choices and suggest stronger alternatives.`
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.response) {
+                    displayWordChoiceModal(data.response, essay);
+                } else {
+                    throw new Error('No response from AI');
+                }
+
+            } catch (error) {
+                console.error('Error enhancing word choice:', error);
+                showMessage('error', 'Failed to analyze word choice. Please try again.');
+            } finally {
+                // Restore button to original state
+                if (button && originalHTML) {
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                }
+            }
+        }
+
+        function displayWordChoiceModal(aiResponse, essay) {
+            // Parse weak words
+            const wordMatches = aiResponse.matchAll(/WEAK:\s*"(.+?)"\s*CONTEXT:\s*(.+?)\s*ALTERNATIVES:\s*(.+?)\s*WHY:\s*(.+?)(?=WEAK:|$)/gs);
+            const weakWords = [];
+
+            for (const match of wordMatches) {
+                const alternatives = match[3].split('|').map(alt => alt.trim());
+                weakWords.push({
+                    word: match[1].trim(),
+                    context: match[2].trim(),
+                    alternatives: alternatives,
+                    why: match[4].trim()
+                });
+            }
+
+            if (weakWords.length === 0) {
+                showMessage('success', 'Great! No weak words detected in your essay.');
+                return;
+            }
+
+            // Highlight weak words
+            let highlightedEssay = essay;
+            weakWords.forEach((item, index) => {
+                const regex = new RegExp(`\\b${escapeRegex(item.word)}\\b`, 'gi');
+                highlightedEssay = highlightedEssay.replace(regex,
+                    `<span class="weak-word-highlight" data-word="${index}">${item.word}</span>`
+                );
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-results-modal';
+            modal.id = 'wordChoiceModal';
+            modal.innerHTML = `
+                <div class="ai-modal-overlay" onclick="closeAIModal('wordChoiceModal')"></div>
+                <div class="ai-modal-content">
+                    <div class="ai-modal-header">
+                        <h2><i class="fas fa-spell-check"></i> Word Choice Enhancements (${weakWords.length})</h2>
+                        <button class="ai-modal-close" onclick="closeAIModal('wordChoiceModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ai-modal-body">
+                        <div class="ai-split-view">
+                            <div class="ai-split-pane">
+                                <h3>Your Essay (Weak Words Highlighted)</h3>
+                                <div class="ai-highlighted-text">${highlightedEssay}</div>
+                            </div>
+                            <div class="ai-split-pane">
+                                <h3>Suggested Improvements</h3>
+                                <div class="ai-words-list">
+                                    ${weakWords.map((item, index) => `
+                                        <div class="ai-word-card">
+                                            <div class="ai-word-weak">"${escapeHtml(item.word)}"</div>
+                                            <div class="ai-word-context">
+                                                <strong>Context:</strong> ${escapeHtml(item.context)}
+                                            </div>
+                                            <div class="ai-word-alternatives">
+                                                <strong>Alternatives:</strong>
+                                                <div class="ai-word-options">
+                                                    ${item.alternatives.map(alt => `
+                                                        <button class="btn-word-option" onclick="replaceWord('${escapeHtml(item.word)}', '${escapeHtml(alt)}')">
+                                                            ${escapeHtml(alt)}
+                                                        </button>
+                                                    `).join('')}
+                                                </div>
+                                            </div>
+                                            <div class="ai-word-why">
+                                                ${escapeHtml(item.why)}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            addAIModalStyles();
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+
+        function replaceWord(oldWord, newWord) {
+            const textarea = document.getElementById('essayTextarea');
+            const regex = new RegExp(`\\b${escapeRegex(oldWord)}\\b`, 'i');
+            textarea.value = textarea.value.replace(regex, newWord);
+
+            if (window.essayManager) {
+                window.essayManager.updateWordCount();
+            }
+
+            showMessage('success', `Replaced "${oldWord}" with "${newWord}"`);
+        }
+
+        // 4. SHOW DON'T TELL CHECKER
+        async function checkShowDontTell() {
+            const textarea = document.getElementById('essayTextarea');
+            const essay = textarea.value.trim();
+
+            if (!essay || essay.length < 100) {
+                showMessage('error', 'Please write at least 100 characters before checking Show Don\'t Tell.');
+                return;
+            }
+
+            // Get button and add loading state
+            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="checkShowDontTell"]');
+            const originalHTML = button?.innerHTML;
+
+            try {
+                // Update button to loading state
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = `
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div class="ai-tool-info">
+                            <div class="ai-tool-name">Checking...</div>
+                            <div class="ai-tool-desc">Finding tell statements...</div>
+                        </div>
+                    `;
+                }
+
+                showMessage('info', 'AI is analyzing your essay for abstract statements...');
+
+                const response = await fetchWithTimeout('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `You are an expert at teaching "Show Don't Tell" in college essays. Identify abstract or "tell" statements that should be replaced with concrete "show" examples.
+
+Look for:
+- Claims about character traits ("I am hardworking", "I'm passionate", "I'm determined")
+- Abstract lessons ("I learned perseverance", "this taught me responsibility")
+- Vague feelings ("I felt proud", "I was nervous")
+- Generic accomplishments without specifics
+
+For each "tell" statement, create a concrete "show" rewrite with specific details, actions, or scenes.
+
+Format EXACTLY as:
+TELL: "[exact phrase from essay]"
+PROBLEM: [why this is abstract/telling]
+SHOW: [concrete rewrite with specific details, scenes, or actions]
+
+---
+
+Limit to top 8 most important improvements.`
+                            },
+                            {
+                                role: 'user',
+                                content: `Essay:\n\n${essay}\n\nPlease identify "tell" statements and suggest "show" rewrites.`
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.response) {
+                    displayShowDontTellModal(data.response, essay);
+                } else {
+                    throw new Error('No response from AI');
+                }
+
+            } catch (error) {
+                console.error('Error checking Show Don\'t Tell:', error);
+                showMessage('error', 'Failed to analyze essay. Please try again.');
+            } finally {
+                // Restore button to original state
+                if (button && originalHTML) {
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                }
+            }
+        }
+
+        function displayShowDontTellModal(aiResponse, essay) {
+            // Parse tell statements
+            const tellMatches = aiResponse.matchAll(/TELL:\s*"(.+?)"\s*PROBLEM:\s*(.+?)\s*SHOW:\s*(.+?)(?=TELL:|$)/gs);
+            const tellStatements = [];
+
+            for (const match of tellMatches) {
+                tellStatements.push({
+                    tell: match[1].trim(),
+                    problem: match[2].trim(),
+                    show: match[3].trim()
+                });
+            }
+
+            if (tellStatements.length === 0) {
+                showMessage('success', 'Great! Your essay shows effectively with concrete details.');
+                return;
+            }
+
+            // Highlight tell statements
+            let highlightedEssay = essay;
+            tellStatements.forEach((item, index) => {
+                const regex = new RegExp(escapeRegex(item.tell), 'gi');
+                highlightedEssay = highlightedEssay.replace(regex,
+                    `<span class="tell-highlight" data-tell="${index}">${item.tell}</span>`
+                );
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-results-modal';
+            modal.id = 'showDontTellModal';
+            modal.innerHTML = `
+                <div class="ai-modal-overlay" onclick="closeAIModal('showDontTellModal')"></div>
+                <div class="ai-modal-content">
+                    <div class="ai-modal-header">
+                        <h2><i class="fas fa-eye"></i> Show Don't Tell Analysis (${tellStatements.length})</h2>
+                        <button class="ai-modal-close" onclick="closeAIModal('showDontTellModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ai-modal-body">
+                        <div class="ai-split-view">
+                            <div class="ai-split-pane">
+                                <h3>Your Essay (Abstract Statements Highlighted)</h3>
+                                <div class="ai-highlighted-text">${highlightedEssay}</div>
+                            </div>
+                            <div class="ai-split-pane">
+                                <h3>Show Don't Tell Improvements</h3>
+                                <div class="ai-tell-list">
+                                    ${tellStatements.map((item, index) => `
+                                        <div class="ai-tell-card">
+                                            <div class="ai-tell-statement">
+                                                <span class="ai-label-tell">TELL:</span> "${escapeHtml(item.tell)}"
+                                            </div>
+                                            <div class="ai-tell-problem">
+                                                <strong>Problem:</strong> ${escapeHtml(item.problem)}
+                                            </div>
+                                            <div class="ai-tell-show">
+                                                <span class="ai-label-show">SHOW:</span> ${escapeHtml(item.show)}
+                                            </div>
+                                            <button class="btn-replace-tell" onclick="replaceTell('${escapeHtml(item.tell)}', \`${item.show.replace(/`/g, '\\`')}\`)">
+                                                <i class="fas fa-exchange-alt"></i> Replace with "Show"
+                                            </button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            addAIModalStyles();
+            setTimeout(() => modal.classList.add('open'), 10);
+        }
+
+        function replaceTell(tell, show) {
+            const textarea = document.getElementById('essayTextarea');
+            const regex = new RegExp(escapeRegex(tell), 'i');
+            textarea.value = textarea.value.replace(regex, show);
+
+            if (window.essayManager) {
+                window.essayManager.updateWordCount();
+            }
+
+            showMessage('success', 'Replaced with concrete "show" example! Remember to save.');
+        }
+
+        // Close AI Modal
+        function closeAIModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('open');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        // Add AI Modal Styles
+        function addAIModalStyles() {
+            if (document.getElementById('ai-modal-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'ai-modal-styles';
+            style.textContent = `
+                .ai-results-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 35000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+
+                .ai-results-modal.open {
+                    opacity: 1;
+                }
+
+                .ai-modal-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    backdrop-filter: blur(4px);
+                }
+
+                .ai-modal-content {
+                    position: relative;
+                    background: var(--primary-bg);
+                    border-radius: 20px;
+                    width: 95%;
+                    max-width: 1200px;
+                    max-height: 90vh;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                    animation: slideUp 0.3s ease;
+                }
+
+                .ai-modal-header {
+                    padding: 2rem;
+                    border-bottom: 2px solid rgba(160, 123, 204, 0.2);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .ai-modal-header h2 {
+                    margin: 0;
+                    font-size: 1.75rem;
+                    color: var(--text-primary);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .ai-modal-close {
+                    background: none;
+                    border: none;
+                    color: var(--text-secondary);
+                    font-size: 1.75rem;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    transition: all 0.2s;
+                    border-radius: 8px;
+                }
+
+                .ai-modal-close:hover {
+                    background: rgba(160, 123, 204, 0.1);
+                    color: var(--text-primary);
+                }
+
+                .ai-modal-body {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 2rem;
+                }
+
+                /* Current Section */
+                .ai-current-section {
+                    margin-bottom: 2rem;
+                }
+
+                .ai-current-section h3 {
+                    font-size: 1.2rem;
+                    color: var(--text-primary);
+                    margin-bottom: 1rem;
+                }
+
+                .ai-current-text {
+                    background: var(--secondary-bg);
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    border-left: 4px solid var(--info-color);
+                    font-size: 1.05rem;
+                    line-height: 1.8;
+                }
+
+                /* Suggestions Section */
+                .ai-suggestions-section h3 {
+                    font-size: 1.2rem;
+                    color: var(--text-primary);
+                    margin-bottom: 1rem;
+                }
+
+                .ai-suggestions-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+
+                .ai-suggestion-card {
+                    background: var(--secondary-bg);
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    border: 2px solid rgba(160, 123, 204, 0.1);
+                }
+
+                .ai-suggestion-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1rem;
+                }
+
+                .ai-suggestion-number {
+                    font-weight: 700;
+                    color: var(--accent-color);
+                    font-size: 1.1rem;
+                }
+
+                .btn-use-suggestion {
+                    background: var(--accent-color);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+
+                .btn-use-suggestion:hover {
+                    background: #8b5cf6;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(160, 123, 204, 0.4);
+                }
+
+                .ai-suggestion-text {
+                    font-size: 1.1rem;
+                    color: var(--text-primary);
+                    margin-bottom: 1rem;
+                    font-style: italic;
+                    line-height: 1.8;
+                }
+
+                .ai-suggestion-why {
+                    font-size: 0.95rem;
+                    color: var(--text-secondary);
+                    line-height: 1.6;
+                }
+
+                /* Split View */
+                .ai-split-view {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 2rem;
+                }
+
+                .ai-split-pane h3 {
+                    font-size: 1.2rem;
+                    color: var(--text-primary);
+                    margin-bottom: 1rem;
+                }
+
+                .ai-highlighted-text {
+                    background: var(--secondary-bg);
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    line-height: 1.8;
+                    max-height: 600px;
+                    overflow-y: auto;
+                }
+
+                /* Highlighting Styles */
+                .cliche-highlight {
+                    background: rgba(245, 158, 11, 0.3);
+                    border-bottom: 2px solid var(--warning-color);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                    cursor: help;
+                }
+
+                .weak-word-highlight {
+                    background: rgba(59, 130, 246, 0.2);
+                    border-bottom: 2px solid var(--info-color);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                    cursor: help;
+                }
+
+                .tell-highlight {
+                    background: rgba(239, 68, 68, 0.2);
+                    border-bottom: 2px solid var(--danger-color);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                    cursor: help;
+                }
+
+                /* Cliché Cards */
+                .ai-cliches-list,
+                .ai-words-list,
+                .ai-tell-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                    max-height: 600px;
+                    overflow-y: auto;
+                }
+
+                .ai-cliche-card,
+                .ai-word-card,
+                .ai-tell-card {
+                    background: var(--secondary-bg);
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    border-left: 4px solid var(--warning-color);
+                }
+
+                .ai-word-card {
+                    border-left-color: var(--info-color);
+                }
+
+                .ai-tell-card {
+                    border-left-color: var(--danger-color);
+                }
+
+                .ai-cliche-phrase,
+                .ai-word-weak {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: var(--warning-color);
+                    margin-bottom: 0.75rem;
+                }
+
+                .ai-word-weak {
+                    color: var(--info-color);
+                }
+
+                .ai-cliche-why,
+                .ai-cliche-better,
+                .ai-word-context,
+                .ai-word-alternatives,
+                .ai-word-why,
+                .ai-tell-problem,
+                .ai-tell-show {
+                    margin: 0.75rem 0;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                }
+
+                .ai-cliche-better {
+                    color: var(--success-color);
+                    font-weight: 600;
+                }
+
+                .ai-word-options {
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                    margin-top: 0.5rem;
+                }
+
+                .btn-word-option {
+                    background: var(--primary-bg);
+                    border: 2px solid var(--info-color);
+                    color: var(--text-primary);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+
+                .btn-word-option:hover {
+                    background: var(--info-color);
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+                .btn-replace-cliche,
+                .btn-replace-tell {
+                    background: var(--accent-color);
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    margin-top: 1rem;
+                    transition: all 0.2s;
+                }
+
+                .btn-replace-cliche:hover,
+                .btn-replace-tell:hover {
+                    background: #8b5cf6;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(160, 123, 204, 0.4);
+                }
+
+                /* Show Don't Tell Specific */
+                .ai-tell-statement {
+                    margin-bottom: 0.75rem;
+                }
+
+                .ai-label-tell {
+                    display: inline-block;
+                    background: var(--danger-color);
+                    color: white;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    margin-right: 0.5rem;
+                }
+
+                .ai-label-show {
+                    display: inline-block;
+                    background: var(--success-color);
+                    color: white;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    margin-right: 0.5rem;
+                }
+
+                .ai-tell-show {
+                    background: rgba(16, 185, 129, 0.1);
+                    padding: 1rem;
+                    border-radius: 8px;
+                    margin-top: 1rem;
+                }
+
+                /* Mobile Responsive */
+                @media (max-width: 1024px) {
+                    .ai-split-view {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .ai-modal-content {
+                        width: 100%;
+                        height: 100vh;
+                        max-height: 100vh;
+                        border-radius: 0;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .ai-modal-header {
+                        padding: 1.5rem;
+                    }
+
+                    .ai-modal-header h2 {
+                        font-size: 1.25rem;
+                    }
+
+                    .ai-modal-body {
+                        padding: 1.5rem;
+                    }
+
+                    .ai-suggestions-list,
+                    .ai-cliches-list,
+                    .ai-words-list,
+                    .ai-tell-list {
+                        gap: 1rem;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+
+        // Add CSS styles for version modal
+        function addVersionModalStyles() {
+            if (document.getElementById('version-modal-styles')) return;
+
+            const style = document.createElement('style');
+            style.id = 'version-modal-styles';
+            style.textContent = `
+                .version-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 30000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+
+                .version-modal.open {
+                    opacity: 1;
+                }
+
+                .version-modal-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.75);
+                    backdrop-filter: blur(4px);
+                }
+
+                .version-modal-content {
+                    position: relative;
+                    background: var(--primary-bg);
+                    border-radius: 20px;
+                    width: 95%;
+                    max-width: 1400px;
+                    height: 90vh;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+                    animation: slideUp 0.3s ease;
+                }
+
+                @keyframes slideUp {
+                    from { transform: translateY(30px); }
+                    to { transform: translateY(0); }
+                }
+
+                .version-modal-header {
+                    padding: 2rem;
+                    border-bottom: 2px solid rgba(160, 123, 204, 0.2);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .version-modal-header h2 {
+                    margin: 0;
+                    font-size: 1.75rem;
+                    color: var(--text-primary);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .version-close-btn {
+                    background: none;
+                    border: none;
+                    color: var(--text-secondary);
+                    font-size: 1.75rem;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    transition: all 0.2s;
+                    border-radius: 8px;
+                }
+
+                .version-close-btn:hover {
+                    background: rgba(160, 123, 204, 0.1);
+                    color: var(--text-primary);
+                }
+
+                .version-modal-body {
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 350px 1fr;
+                    gap: 0;
+                    overflow: hidden;
+                }
+
+                .version-timeline-section {
+                    padding: 2rem;
+                    background: var(--secondary-bg);
+                    border-right: 2px solid rgba(160, 123, 204, 0.1);
+                    overflow-y: auto;
+                }
+
+                .version-timeline-section h3 {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    margin-bottom: 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .version-timeline {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .version-timeline-item {
+                    display: flex;
+                    gap: 1rem;
+                    padding: 1rem;
+                    background: var(--primary-bg);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    border: 2px solid transparent;
+                }
+
+                .version-timeline-item:hover {
+                    border-color: var(--accent-color);
+                    transform: translateX(4px);
+                    box-shadow: 0 4px 16px rgba(160, 123, 204, 0.2);
+                }
+
+                .version-timeline-item.current {
+                    border-color: var(--accent-color);
+                    background: linear-gradient(135deg, rgba(160, 123, 204, 0.1) 0%, rgba(160, 123, 204, 0.05) 100%);
+                }
+
+                .version-timeline-badge {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: var(--secondary-bg);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    flex-shrink: 0;
+                }
+
+                .version-timeline-badge.current {
+                    background: var(--accent-color);
+                    color: white;
+                }
+
+                .version-timeline-content {
+                    flex: 1;
+                }
+
+                .version-timeline-title {
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    margin-bottom: 0.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .version-badge-latest {
+                    background: var(--success-color);
+                    color: white;
+                    padding: 0.125rem 0.5rem;
+                    border-radius: 12px;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                }
+
+                .version-timeline-meta {
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    margin-bottom: 0.5rem;
+                }
+
+                .version-actions {
+                    display: flex;
+                    gap: 0.5rem;
+                    margin-top: 0.5rem;
+                }
+
+                .btn-version-action {
+                    padding: 0.4rem 0.75rem;
+                    background: var(--secondary-bg);
+                    border: 1px solid rgba(160, 123, 204, 0.2);
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    color: var(--text-primary);
+                    font-weight: 500;
+                }
+
+                .btn-version-action:hover {
+                    background: var(--accent-color);
+                    color: white;
+                    border-color: var(--accent-color);
+                }
+
+                .version-comparison-section {
+                    padding: 2rem;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                }
+
+                .comparison-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                }
+
+                .comparison-header h3 {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .comparison-controls label {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 0.9rem;
+                    color: var(--text-secondary);
+                    cursor: pointer;
+                }
+
+                .comparison-controls input[type="checkbox"] {
+                    width: 18px;
+                    height: 18px;
+                    cursor: pointer;
+                }
+
+                .comparison-selectors {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    margin-bottom: 1.5rem;
+                    padding: 1.5rem;
+                    background: var(--secondary-bg);
+                    border-radius: 12px;
+                }
+
+                .comparison-selector {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .comparison-selector label {
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: var(--text-secondary);
+                }
+
+                .comparison-selector select {
+                    padding: 0.75rem;
+                    border: 2px solid rgba(160, 123, 204, 0.2);
+                    border-radius: 8px;
+                    background: var(--primary-bg);
+                    color: var(--text-primary);
+                    font-size: 1rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .comparison-selector select:hover {
+                    border-color: var(--accent-color);
+                }
+
+                .comparison-selector select:focus {
+                    outline: none;
+                    border-color: var(--accent-color);
+                    box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
+                }
+
+                .comparison-swap {
+                    padding: 0.75rem 1rem;
+                    background: var(--accent-color);
+                    color: white;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 44px;
+                    height: 44px;
+                    margin-top: 1.5rem;
+                }
+
+                .comparison-swap:hover {
+                    transform: rotate(180deg);
+                    box-shadow: 0 4px 16px rgba(160, 123, 204, 0.4);
+                }
+
+                .comparison-display {
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 1fr 2px 1fr;
+                    gap: 0;
+                    border: 2px solid rgba(160, 123, 204, 0.2);
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+
+                .comparison-pane {
+                    display: flex;
+                    flex-direction: column;
+                    background: var(--primary-bg);
+                }
+
+                .comparison-pane-header {
+                    padding: 1rem 1.5rem;
+                    background: var(--secondary-bg);
+                    border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .comparison-pane-header h4 {
+                    margin: 0;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                }
+
+                .comparison-word-count {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: var(--accent-color);
+                }
+
+                .comparison-pane-content {
+                    flex: 1;
+                    padding: 1.5rem;
+                    overflow-y: auto;
+                    font-family: 'Courier New', monospace;
+                    font-size: 0.95rem;
+                    line-height: 1.8;
+                }
+
+                .comparison-pane-content pre {
+                    margin: 0;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    font-family: inherit;
+                    color: var(--text-primary);
+                }
+
+                .comparison-divider {
+                    background: linear-gradient(180deg, rgba(160, 123, 204, 0.3) 0%, rgba(160, 123, 204, 0.1) 100%);
+                }
+
+                .diff-content {
+                    margin: 0;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
+
+                .diff-added {
+                    background: rgba(16, 185, 129, 0.2);
+                    color: var(--success-color);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                    font-weight: 600;
+                }
+
+                .diff-deleted {
+                    background: rgba(239, 68, 68, 0.2);
+                    color: var(--danger-color);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                    text-decoration: line-through;
+                    font-weight: 600;
+                }
+
+                .diff-summary {
+                    display: flex;
+                    justify-content: center;
+                    gap: 2rem;
+                    padding: 1.5rem;
+                    margin-top: 1.5rem;
+                    background: var(--secondary-bg);
+                    border-radius: 12px;
+                }
+
+                .diff-stat {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-weight: 600;
+                    font-size: 1rem;
+                }
+
+                .diff-stat.additions { color: var(--success-color); }
+                .diff-stat.deletions { color: var(--danger-color); }
+                .diff-stat.changes { color: var(--info-color); }
+
+                .diff-stat span {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                }
+
+                @media (max-width: 1024px) {
+                    .version-modal-body {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .version-timeline-section {
+                        border-right: none;
+                        border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+                        max-height: 300px;
+                    }
+
+                    .comparison-display {
+                        grid-template-columns: 1fr;
+                        grid-template-rows: 1fr auto 1fr;
+                    }
+
+                    .comparison-divider {
+                        height: 2px;
+                        width: 100%;
+                    }
+
+                    .comparison-selectors {
+                        flex-direction: column;
+                    }
+
+                    .comparison-swap {
+                        transform: rotate(90deg);
+                        margin: 0;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .version-modal-content {
+                        width: 100%;
+                        height: 100vh;
+                        border-radius: 0;
+                    }
+
+                    .version-modal-header {
+                        padding: 1.5rem;
+                    }
+
+                    .version-modal-header h2 {
+                        font-size: 1.25rem;
+                    }
+
+                    .version-timeline-section,
+                    .version-comparison-section {
+                        padding: 1.5rem;
+                    }
+
+                    .diff-summary {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
 
         // ============================================
         // UNIVERSAL NAVBAR FUNCTIONALITY
