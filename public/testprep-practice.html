@@ -1203,58 +1203,57 @@
 </head>
 <body data-theme="dark">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 10010; justify-content: center; align-items: center; flex-direction: column;">
-        <div class="loading-spinner"></div>
+    <div id="loadingOverlay" role="alert" aria-live="assertive" aria-busy="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 10010; justify-content: center; align-items: center; flex-direction: column;">
+        <div class="loading-spinner" aria-hidden="true"></div>
         <div class="loading-text" id="loadingText">Loading...</div>
     </div>
 
     <!-- Navigation -->
-    <nav class="cc-navbar">
-        <a href="/testprep" class="cc-logo-section">
+    <nav class="cc-navbar" role="navigation" aria-label="Main navigation">
+        <a href="/testprep" class="cc-logo-section" aria-label="Return to test prep dashboard">
             <div class="cc-logo">
                 <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
-            <div class="cc-brand-text">
+            <div class="cc-brand-text" aria-hidden="true">
                 <h1>College</h1>
                 <h2>Climb</h2>
             </div>
         </a>
 
-        <div class="cc-nav-right">
+        <div class="cc-nav-right" role="toolbar" aria-label="User tools and status">
             <!-- Hearts Display -->
-            <div class="hearts-display" id="heartsDisplay">
-                <div class="heart" id="heart1">❤️</div>
-                <div class="heart" id="heart2">❤️</div>
-                <div class="heart" id="heart3">❤️</div>
-                <div class="heart" id="heart4">❤️</div>
-                <div class="heart" id="heart5">❤️</div>
+            <div class="hearts-display" id="heartsDisplay" role="status" aria-label="Lives remaining" aria-live="polite">
+                <div class="heart" id="heart1" aria-hidden="true">❤️</div>
+                <div class="heart" id="heart2" aria-hidden="true">❤️</div>
+                <div class="heart" id="heart3" aria-hidden="true">❤️</div>
+                <div class="heart" id="heart4" aria-hidden="true">❤️</div>
+                <div class="heart" id="heart5" aria-hidden="true">❤️</div>
             </div>
 
-            <!-- XP Display -->
             <!-- Level Display -->
-            <div class="level-display" id="levelDisplay">
+            <div class="level-display" id="levelDisplay" role="status" aria-label="Current level" aria-live="polite">
                 <div class="level-badge">
-                    <div class="level-label">Level</div>
+                    <div class="level-label" aria-hidden="true">Level</div>
                     <div class="level-number" id="levelNumber">1</div>
                 </div>
             </div>
 
             <!-- XP Display -->
-            <div class="xp-display" id="xpDisplay">
-                <div class="xp-icon">⭐</div>
+            <div class="xp-display" id="xpDisplay" role="status" aria-label="Experience points" aria-live="polite">
+                <div class="xp-icon" aria-hidden="true">⭐</div>
                 <div class="xp-info">
-                    <div class="xp-label">XP</div>
+                    <div class="xp-label" aria-hidden="true">XP</div>
                     <div class="xp-amount" id="xpAmount">0</div>
                 </div>
             </div>
 
-            <button class="cc-theme-toggle" id="soundToggleBtn" onclick="toggleSoundEffects()" title="Toggle sound effects">🔊</button>
+            <button class="cc-theme-toggle" id="soundToggleBtn" onclick="toggleSoundEffects()" aria-label="Toggle sound effects on or off" aria-pressed="true">🔊</button>
 
-            <button class="cc-theme-toggle" id="confettiToggleBtn" onclick="toggleConfetti()" title="Toggle confetti animations">🎉</button>
+            <button class="cc-theme-toggle" id="confettiToggleBtn" onclick="toggleConfetti()" aria-label="Toggle confetti animations on or off" aria-pressed="true">🎉</button>
 
-            <button class="cc-theme-toggle" onclick="leaderboardSystem.showLeaderboard()" title="View leaderboard">🏆</button>
+            <button class="cc-theme-toggle" onclick="leaderboardSystem.showLeaderboard()" aria-label="View leaderboard">🏆</button>
 
-            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle dark mode">☀️</button>
 
             <div class="cc-profile-dropdown" id="ccProfileDropdown">
                 <div class="cc-profile-button" id="ccProfileButton">
@@ -1337,76 +1336,76 @@
         </div>
 
         <!-- Question Card -->
-        <div class="question-card" id="questionCard" style="display: none;">
+        <div class="question-card" id="questionCard" style="display: none;" role="main" aria-label="Practice question">
             <div class="question-header">
-                <div class="question-number" id="questionNumber">Question 1 of 10</div>
-                <div class="question-actions">
-                    <button class="action-btn" id="calculatorBtn" onclick="toggleCalculator()">
-                        <i class="fas fa-calculator"></i> Calculator
+                <div class="question-number" id="questionNumber" role="status" aria-live="polite">Question 1 of 10</div>
+                <div class="question-actions" role="toolbar" aria-label="Question tools">
+                    <button class="action-btn" id="calculatorBtn" onclick="toggleCalculator()" aria-label="Toggle calculator" aria-pressed="false">
+                        <i class="fas fa-calculator" aria-hidden="true"></i> Calculator
                     </button>
-                    <button class="action-btn" id="flagBtn" onclick="toggleFlag()">
-                        <i class="fas fa-flag"></i> <span id="flagText">Flag</span>
+                    <button class="action-btn" id="flagBtn" onclick="toggleFlag()" aria-label="Flag this question for review" aria-pressed="false">
+                        <i class="fas fa-flag" aria-hidden="true"></i> <span id="flagText">Flag</span>
                     </button>
                 </div>
             </div>
 
-            <div class="question-prompt" id="questionPrompt"></div>
+            <div class="question-prompt" id="questionPrompt" role="heading" aria-level="1"></div>
 
-            <div class="answer-choices" id="answerChoices"></div>
+            <div class="answer-choices" id="answerChoices" role="radiogroup" aria-label="Answer choices"></div>
 
-            <div class="explanation-panel" id="explanationPanel">
-                <div class="explanation-title">
+            <div class="explanation-panel" id="explanationPanel" role="region" aria-label="Answer explanation">
+                <div class="explanation-title" aria-hidden="true">
                     <i class="fas fa-lightbulb"></i> Explanation
                 </div>
-                <div class="explanation-content" id="explanationContent"></div>
+                <div class="explanation-content" id="explanationContent" aria-live="polite"></div>
             </div>
 
-            <div class="nav-buttons">
-                <button class="nav-btn secondary" onclick="previousQuestion()" id="prevBtn" disabled>
-                    <i class="fas fa-arrow-left"></i> Previous
+            <div class="nav-buttons" role="navigation" aria-label="Question navigation">
+                <button class="nav-btn secondary" onclick="previousQuestion()" id="prevBtn" disabled aria-label="Go to previous question" aria-disabled="true">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> Previous
                 </button>
-                <button class="nav-btn primary" onclick="submitAnswer()" id="submitBtn" disabled>
-                    Submit Answer <i class="fas fa-arrow-right"></i>
+                <button class="nav-btn primary" onclick="submitAnswer()" id="submitBtn" disabled aria-label="Submit your answer" aria-disabled="true">
+                    Submit Answer <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
-                <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">
-                    Next Question <i class="fas fa-arrow-right"></i>
+                <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" style="display: none;" aria-label="Go to next question">
+                    Next Question <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
 
         <!-- Completion Screen -->
-        <div class="completion-screen" id="completionScreen">
-            <div class="completion-icon">🎉</div>
+        <div class="completion-screen" id="completionScreen" role="region" aria-label="Practice session results">
+            <div class="completion-icon" aria-hidden="true">🎉</div>
             <h2 class="completion-title">Practice Session Complete!</h2>
             <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
                 Great job! Here's how you performed:
             </p>
 
-            <div class="completion-stats">
-                <div class="completion-stat">
-                    <div class="completion-stat-value" id="finalCorrect">0</div>
+            <div class="completion-stats" role="list" aria-label="Performance statistics">
+                <div class="completion-stat" role="listitem">
+                    <div class="completion-stat-value" id="finalCorrect" aria-label="Number of correct answers">0</div>
                     <div class="stat-label">Correct Answers</div>
                 </div>
-                <div class="completion-stat">
-                    <div class="completion-stat-value" id="finalAccuracy">0%</div>
+                <div class="completion-stat" role="listitem">
+                    <div class="completion-stat-value" id="finalAccuracy" aria-label="Accuracy percentage">0%</div>
                     <div class="stat-label">Accuracy</div>
                 </div>
-                <div class="completion-stat">
-                    <div class="completion-stat-value" id="finalScore">--</div>
+                <div class="completion-stat" role="listitem">
+                    <div class="completion-stat-value" id="finalScore" aria-label="Estimated test score">--</div>
                     <div class="stat-label">Estimated Score</div>
                 </div>
-                <div class="completion-stat">
-                    <div class="completion-stat-value" id="finalTime">0m</div>
+                <div class="completion-stat" role="listitem">
+                    <div class="completion-stat-value" id="finalTime" aria-label="Time spent on practice">0m</div>
                     <div class="stat-label">Time Spent</div>
                 </div>
             </div>
 
-            <div class="nav-buttons" style="margin-top: 2rem;">
-                <button class="nav-btn secondary" onclick="window.location.href='/testprep'">
-                    <i class="fas fa-home"></i> Back to Test Prep
+            <div class="nav-buttons" style="margin-top: 2rem;" role="navigation" aria-label="Next actions">
+                <button class="nav-btn secondary" onclick="window.location.href='/testprep'" aria-label="Return to test prep dashboard">
+                    <i class="fas fa-home" aria-hidden="true"></i> Back to Test Prep
                 </button>
-                <button class="nav-btn primary" onclick="restartPractice()">
-                    <i class="fas fa-redo"></i> Practice Again
+                <button class="nav-btn primary" onclick="restartPractice()" aria-label="Start a new practice session">
+                    <i class="fas fa-redo" aria-hidden="true"></i> Practice Again
                 </button>
             </div>
         </div>
@@ -4182,13 +4181,17 @@ Generate 10 questions now:`;
             // Clear and populate answer choices
             const choicesContainer = document.getElementById('answerChoices');
             choicesContainer.innerHTML = '';
-            
+
             question.options.forEach((option, index) => {
                 const choice = document.createElement('div');
                 choice.className = 'answer-choice';
                 choice.onclick = () => selectAnswer(index);
+                choice.setAttribute('role', 'radio');
+                choice.setAttribute('aria-checked', 'false');
+                choice.setAttribute('aria-label', `Answer ${String.fromCharCode(65 + index)}: ${option}`);
+                choice.setAttribute('tabindex', '0');
                 choice.innerHTML = `
-                    <div class="choice-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="choice-letter" aria-hidden="true">${String.fromCharCode(65 + index)}</div>
                     <div class="choice-text">${option}</div>
                 `;
                 choicesContainer.appendChild(choice);
@@ -4227,13 +4230,18 @@ Generate 10 questions now:`;
             // Remove previous selection
             document.querySelectorAll('.answer-choice').forEach(choice => {
                 choice.classList.remove('selected');
+                choice.setAttribute('aria-checked', 'false');
             });
 
             // Add selection to clicked choice
-            document.querySelectorAll('.answer-choice')[index].classList.add('selected');
-            
+            const selectedChoice = document.querySelectorAll('.answer-choice')[index];
+            selectedChoice.classList.add('selected');
+            selectedChoice.setAttribute('aria-checked', 'true');
+
             selectedAnswer = index;
-            document.getElementById('submitBtn').disabled = false;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.setAttribute('aria-disabled', 'false');
         };
 
         window.submitAnswer = async function() {
