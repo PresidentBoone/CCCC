@@ -295,6 +295,48 @@
             line-height: 1.2;
         }
 
+        /* Level Display */
+        .level-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .level-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #a07bcc 0%, #7c3aed 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(160, 123, 204, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 70px;
+        }
+
+        .level-badge:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(160, 123, 204, 0.4);
+        }
+
+        .level-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .level-number {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         /* XP Gain Popup */
         .xp-gain-popup {
             position: fixed;
@@ -858,8 +900,109 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Responsive */
+        /* ============================================
+         * MOBILE RESPONSIVENESS - COMPREHENSIVE
+         * ============================================ */
+
+        /* Tablet and below (768px) */
         @media (max-width: 768px) {
+            body {
+                padding-top: 100px; /* More space for taller mobile navbar */
+            }
+
+            /* Navbar - Stack elements */
+            .cc-navbar {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .cc-logo-section {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .cc-brand-text h2 {
+                font-size: 0.9rem;
+            }
+
+            /* Nav right - Wrap on second row */
+            .cc-nav-right {
+                width: 100%;
+                justify-content: space-between;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            /* Hearts - Show count instead of all 5 */
+            .hearts-display {
+                gap: 0.25rem;
+            }
+
+            .heart {
+                font-size: 1.2rem;
+            }
+
+            /* Hide extra hearts on small screens, show count */
+            .hearts-display .heart:nth-child(n+4) {
+                display: none;
+            }
+
+            /* Level badge - Compact */
+            .level-badge {
+                padding: 0.4rem 0.8rem;
+                min-width: 60px;
+            }
+
+            .level-label {
+                font-size: 0.6rem;
+            }
+
+            .level-number {
+                font-size: 1.2rem;
+            }
+
+            /* XP Display - Compact */
+            .xp-display {
+                padding: 0.4rem 0.9rem;
+                gap: 0.5rem;
+            }
+
+            .xp-icon {
+                font-size: 1.2rem;
+            }
+
+            .xp-label {
+                font-size: 0.6rem;
+            }
+
+            .xp-amount {
+                font-size: 0.95rem;
+            }
+
+            /* Theme toggle buttons - Smaller */
+            .cc-theme-toggle {
+                font-size: 1.1rem;
+                width: 36px;
+                height: 36px;
+            }
+
+            /* Hide less important buttons on tablet */
+            #soundToggleBtn,
+            #confettiToggleBtn {
+                display: none;
+            }
+
+            /* Practice container */
             .practice-container {
                 padding: 0 1rem;
             }
@@ -874,14 +1017,189 @@
 
             .nav-btn {
                 min-width: 100%;
+                padding: 0.75rem 1.5rem;
+            }
+
+            /* Modals - Full width on tablet */
+            .out-of-hearts-modal,
+            .badge-unlock-modal,
+            .leaderboard-modal {
+                width: 90%;
+                max-width: 500px;
+            }
+        }
+
+        /* Mobile phones (480px and below) */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 120px; /* Even more space for mobile navbar */
+            }
+
+            /* Navbar - Minimal */
+            .cc-navbar {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .cc-logo {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1rem;
+            }
+
+            .cc-brand-text h2 {
+                font-size: 0.8rem;
+            }
+
+            /* Hearts - Show only 2 hearts + count */
+            .hearts-display .heart:nth-child(n+3) {
+                display: none;
+            }
+
+            .hearts-display::after {
+                content: 'x' attr(data-count);
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-left: 0.25rem;
+            }
+
+            /* Level and XP - Stack vertically if needed */
+            .level-badge,
+            .xp-display {
+                padding: 0.35rem 0.7rem;
+                min-width: 50px;
+            }
+
+            .level-label,
+            .xp-label {
+                font-size: 0.55rem;
+            }
+
+            .level-number {
+                font-size: 1.1rem;
+            }
+
+            .xp-amount {
+                font-size: 0.9rem;
+            }
+
+            .xp-icon {
+                font-size: 1.1rem;
+            }
+
+            /* Theme toggle - Tiny */
+            .cc-theme-toggle {
+                font-size: 1rem;
+                width: 32px;
+                height: 32px;
+            }
+
+            /* Hide leaderboard button on mobile */
+            .cc-theme-toggle:nth-last-child(2) {
+                display: none;
+            }
+
+            /* Question card - More compact */
+            .question-card {
+                padding: 1rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .answer-choice {
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+
+            /* Navigation buttons - Stack */
+            .practice-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Modals - Full screen on mobile */
+            .out-of-hearts-modal,
+            .badge-unlock-modal,
+            .leaderboard-modal {
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            /* Calculator panel - Full width */
+            .calculator-panel {
+                width: 100%;
+                left: 0;
+                right: 0;
+                border-radius: 0;
+            }
+
+            /* Confetti - Reduce particles on mobile for performance */
+            .confetti-piece {
+                width: 8px;
+                height: 8px;
+            }
+        }
+
+        /* Very small screens (360px and below) */
+        @media (max-width: 360px) {
+            .cc-brand-text {
+                display: none; /* Hide "College Climb" text on tiny screens */
+            }
+
+            .hearts-display {
+                gap: 0.2rem;
+            }
+
+            .heart {
+                font-size: 1.1rem;
+            }
+
+            .level-badge,
+            .xp-display {
+                padding: 0.3rem 0.6rem;
+            }
+
+            .level-number,
+            .xp-amount {
+                font-size: 0.85rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .answer-choice {
+                padding: 0.875rem;
+                font-size: 0.9rem;
             }
         }
     </style>
     <!-- Error Handling System -->
     <script src="/js/error-boundary.js"></script>
     <script src="/js/error-handler.js"></script>
-    <!-- Diagnostic Question Bank -->
-    <script src="/js/diagnostic-questions.js"></script>
+    <!-- Diagnostic Question Bank - NEW 160 Questions -->
+    <script src="/js/diagnostic-questions-full.js"></script>
+    <script src="/js/adaptive-diagnostic.js"></script>
 </head>
 <body data-theme="dark">
     <!-- Navigation -->
@@ -904,6 +1222,15 @@
                 <div class="heart" id="heart3">❤️</div>
                 <div class="heart" id="heart4">❤️</div>
                 <div class="heart" id="heart5">❤️</div>
+            </div>
+
+            <!-- XP Display -->
+            <!-- Level Display -->
+            <div class="level-display" id="levelDisplay">
+                <div class="level-badge">
+                    <div class="level-label">Level</div>
+                    <div class="level-number" id="levelNumber">1</div>
+                </div>
             </div>
 
             <!-- XP Display -->
@@ -1433,8 +1760,14 @@
 
         function updateXPDisplay() {
             const xpAmount = document.getElementById('xpAmount');
+            const levelNumber = document.getElementById('levelNumber');
+
             if (xpAmount && testPrepData) {
                 xpAmount.textContent = testPrepData.totalXP || 0;
+            }
+
+            if (levelNumber && testPrepData) {
+                levelNumber.textContent = testPrepData.level || 1;
             }
         }
 
@@ -1593,6 +1926,12 @@
 
             const currentHearts = testPrepData.hearts || 0;
             const maxHearts = testPrepData.maxHearts || 5;
+
+            // Update hearts display element with data attribute for mobile count
+            const heartsDisplay = document.getElementById('heartsDisplay');
+            if (heartsDisplay) {
+                heartsDisplay.setAttribute('data-count', currentHearts);
+            }
 
             // Update each heart element
             for (let i = 1; i <= maxHearts; i++) {
@@ -3109,36 +3448,40 @@
                 // Update session title
                 document.getElementById('sessionTitle').textContent = '🧠 Diagnostic Assessment';
 
-                // Check if DiagnosticQuestions is available
-                if (!window.DiagnosticQuestions) {
+                // Check if diagnostic question bank is available
+                if (!window.diagnosticQuestionBank) {
                     throw new Error('Diagnostic question bank not loaded');
                 }
 
-                // Get previous performance to determine adaptive questions
-                const previousScore = testPrepData?.diagnosticScore?.percentage || 0;
-                
-                // Generate 40 adaptive questions
-                const diagnosticQuestions = window.DiagnosticQuestions.getAdaptiveQuestions(previousScore, 40);
-                
-                console.log(`📊 Generated ${diagnosticQuestions.length} diagnostic questions (adaptive based on ${previousScore}% previous score)`);
+                // Initialize adaptive diagnostic system (80 questions total - 20 per category)
+                window.adaptiveDiagnostic = new AdaptiveDiagnostic(window.diagnosticQuestionBank);
+
+                console.log('📊 Starting adaptive diagnostic test: 80 questions (20 Math, 20 English, 20 Reading, 20 Science)');
+
+                // Get first question
+                const firstQuestion = window.adaptiveDiagnostic.getNextQuestion();
+
+                if (!firstQuestion) {
+                    throw new Error('Unable to load first diagnostic question');
+                }
 
                 // Convert to format expected by displayQuestion()
-                currentQuestions = diagnosticQuestions.map(q => ({
+                currentQuestions = [firstQuestion].map(q => ({
                     prompt: q.question,
-                    options: [q.options.A, q.options.B, q.options.C, q.options.D],
-                    correctAnswer: q.options[q.correct], // Get full answer text
-                    correctLetter: q.correct,
+                    options: q.options,
+                    correctAnswer: q.correctAnswer,
                     explanation: q.explanation,
                     difficulty: q.difficulty,
-                    subject: q.section,
                     category: q.category,
                     id: q.id,
                     hasImage: false,
-                    source: 'Diagnostic Bank'
+                    source: 'Adaptive Diagnostic',
+                    passage: q.passage || null
                 }));
 
                 // Add diagnostic-specific metadata
                 currentQuestions.diagnosticMode = true;
+                currentQuestions.isAdaptive = true;
                 currentQuestions.startTime = Date.now();
 
                 // Show diagnostic instructions
@@ -3238,25 +3581,60 @@
          * Calculate and display diagnostic results
          */
         async function showDiagnosticResults() {
+            // 🧠 ADAPTIVE DIAGNOSTIC: Use adaptive system to calculate results
+            if (currentQuestions.isAdaptive && window.adaptiveDiagnostic) {
+                const diagnosticResults = window.adaptiveDiagnostic.calculateResults();
+
+                console.log('📊 Diagnostic Results:', diagnosticResults);
+
+                // Save to Firebase
+                await saveDiagnosticResults(diagnosticResults);
+
+                // Display results
+                displayDiagnosticResults(diagnosticResults);
+
+                // 🎮 AWARD DIAGNOSTIC COMPLETION XP
+                setTimeout(() => {
+                    const avgAccuracy = (diagnosticResults.math.accuracy + diagnosticResults.english.accuracy + diagnosticResults.reading.accuracy + diagnosticResults.science.accuracy) / 4;
+                    const baseXP = 200; // Base for completing diagnostic
+                    const accuracyBonus = Math.round(avgAccuracy * 3); // Up to 300 bonus for perfect
+                    const totalXP = baseXP + accuracyBonus;
+                    awardXP(totalXP, '🧠 Diagnostic Complete!');
+                }, 500);
+
+                // 🎮 CONFETTI CELEBRATION
+                const avgAccuracy = (diagnosticResults.math.accuracy + diagnosticResults.english.accuracy + diagnosticResults.reading.accuracy + diagnosticResults.science.accuracy) / 4;
+                if (avgAccuracy >= 90) {
+                    confettiSystem.rain(4000);
+                } else if (avgAccuracy >= 70) {
+                    confettiSystem.burst('heavy');
+                } else if (avgAccuracy >= 50) {
+                    confettiSystem.burst('medium');
+                }
+
+                return;
+            }
+
+            // OLD DIAGNOSTIC SYSTEM (Fallback)
             const totalQuestions = currentQuestions.length;
-            const correctAnswers = userAnswers.filter((answer, index) => 
+            const correctAnswers = userAnswers.filter((answer, index) =>
                 answer === currentQuestions[index].correctAnswer
             ).length;
 
             // Calculate section scores
             const sectionScores = {};
             const sections = ['English', 'Reading', 'Math_NoCalc', 'Math_Calc', 'Science'];
-            
+
             sections.forEach(section => {
                 const sectionQuestions = currentQuestions
                     .map((q, i) => ({ question: q, index: i }))
                     .filter(item => item.question.subject === section);
-                
+
                 if (sectionQuestions.length > 0) {
-                    const sectionCorrect = sectionQuestions.filter(item => 
+                    const sectionCorrect = sectionQuestions.filter(item =>
                         userAnswers[item.index] === item.question.correctAnswer
                     ).length;
-                    
+
                     sectionScores[section] = {
                         correct: sectionCorrect,
                         total: sectionQuestions.length,
@@ -3272,7 +3650,7 @@
                 sectionScores
             };
 
-            const estimatedScores = window.DiagnosticQuestions.calculateEstimatedScores(results);
+            const estimatedScores = window.DiagnosticQuestions?.calculateEstimatedScores(results) || {};
 
             // Save to Firebase
             await saveDiagnosticResults(estimatedScores, sectionScores);
@@ -3284,12 +3662,34 @@
         /**
          * Save diagnostic results to Firebase
          */
-        async function saveDiagnosticResults(scores, sectionScores) {
+        async function saveDiagnosticResults(diagnosticResults, legacySectionScores) {
             try {
-                const diagnosticData = {
+                // Adaptive diagnostic results have a different structure
+                const isAdaptive = diagnosticResults.sat !== undefined;
+
+                const diagnosticData = isAdaptive ? {
                     timestamp: new Date(),
-                    scores: scores,
-                    sectionBreakdown: sectionScores,
+                    type: 'adaptive',
+                    scores: {
+                        sat: diagnosticResults.sat,
+                        act: diagnosticResults.act,
+                        psat: diagnosticResults.psat
+                    },
+                    categoryBreakdown: {
+                        math: diagnosticResults.math,
+                        english: diagnosticResults.english,
+                        reading: diagnosticResults.reading,
+                        science: diagnosticResults.science
+                    },
+                    questionsCompleted: 80,
+                    timeSpent: Math.round((Date.now() - (currentQuestions.startTime || startTime)) / 1000 / 60), // minutes
+                    userId: currentUser.uid,
+                    recommendations: diagnosticResults.recommendations
+                } : {
+                    timestamp: new Date(),
+                    type: 'legacy',
+                    scores: diagnosticResults,
+                    sectionBreakdown: legacySectionScores,
                     questionsCompleted: currentQuestions.length,
                     timeSpent: Math.round((Date.now() - startTime) / 1000 / 60), // minutes
                     userId: currentUser.uid
@@ -3299,6 +3699,7 @@
                 await setDoc(doc(db, 'diagnosticResults', currentUser.uid), diagnosticData, { merge: true });
 
                 // Update test prep data with new scores
+                const scores = isAdaptive ? diagnosticResults : diagnosticResults;
                 await setDoc(doc(db, 'testprep', currentUser.uid), {
                     lastDiagnostic: diagnosticData,
                     diagnosticScore: scores,
@@ -3316,8 +3717,57 @@
         /**
          * Display beautiful diagnostic results
          */
-        function displayDiagnosticResults(scores, sectionScores, total, correct) {
-            const percentage = Math.round((correct / total) * 100);
+        function displayDiagnosticResults(diagnosticResults, legacySectionScores, legacyTotal, legacyCorrect) {
+            // Check if this is adaptive diagnostic or legacy
+            const isAdaptive = diagnosticResults.math !== undefined;
+
+            let scores, sectionData, total, correct, percentage;
+
+            if (isAdaptive) {
+                // Adaptive diagnostic results
+                scores = {
+                    sat: diagnosticResults.sat,
+                    act: diagnosticResults.act,
+                    psat: diagnosticResults.psat
+                };
+
+                // Convert category data to section format for display
+                sectionData = {
+                    'Math': {
+                        correct: diagnosticResults.math.correct,
+                        total: diagnosticResults.math.total,
+                        percentage: Math.round(diagnosticResults.math.accuracy)
+                    },
+                    'English': {
+                        correct: diagnosticResults.english.correct,
+                        total: diagnosticResults.english.total,
+                        percentage: Math.round(diagnosticResults.english.accuracy)
+                    },
+                    'Reading': {
+                        correct: diagnosticResults.reading.correct,
+                        total: diagnosticResults.reading.total,
+                        percentage: Math.round(diagnosticResults.reading.accuracy)
+                    },
+                    'Science': {
+                        correct: diagnosticResults.science.correct,
+                        total: diagnosticResults.science.total,
+                        percentage: Math.round(diagnosticResults.science.accuracy)
+                    }
+                };
+
+                total = 80;
+                correct = diagnosticResults.math.correct + diagnosticResults.english.correct +
+                         diagnosticResults.reading.correct + diagnosticResults.science.correct;
+                percentage = Math.round((correct / total) * 100);
+
+            } else {
+                // Legacy diagnostic results
+                scores = diagnosticResults;
+                sectionData = legacySectionScores;
+                total = legacyTotal;
+                correct = legacyCorrect;
+                percentage = Math.round((correct / total) * 100);
+            }
             
             const resultsHTML = `
                 <div class="diagnostic-results" style="max-width: 800px; margin: 2rem auto;">
@@ -3366,7 +3816,7 @@
                     <!-- Section Breakdown -->
                     <div style="background: var(--primary-bg); padding: 2rem; border-radius: 16px; margin-top: 1rem; box-shadow: var(--shadow);">
                         <h3 style="margin-bottom: 1.5rem;">📚 Section Breakdown</h3>
-                        ${Object.entries(sectionScores).map(([section, data]) => `
+                        ${Object.entries(sectionData).map(([section, data]) => `
                             <div style="margin-bottom: 1rem;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                                     <span>${section.replace('_', ' ')}</span>
@@ -3383,7 +3833,7 @@
                     <div style="background: var(--gradient); color: white; padding: 2rem; border-radius: 16px; margin-top: 1rem;">
                         <h3 style="margin-bottom: 1rem;">💡 Recommendations</h3>
                         <ul style="padding-left: 1.5rem; line-height: 1.8;">
-                            ${generateRecommendations(sectionScores, overallPercentage)}
+                            ${isAdaptive ? diagnosticResults.recommendations.map(r => `<li>${r}</li>`).join('') : generateRecommendations(sectionData, percentage)}
                         </ul>
                     </div>
 
@@ -3823,20 +4273,168 @@ Generate 10 questions now:`;
 
                 // Save progress
                 await saveProgress(isCorrect);
+
+                // 🧠 ADAPTIVE DIAGNOSTIC: Record answer and prepare next question
+                if (currentQuestions.isAdaptive && window.adaptiveDiagnostic) {
+                    try {
+                        // Record the answer in the adaptive system
+                        window.adaptiveDiagnostic.recordAnswer(question, selectedAnswer, isCorrect);
+
+                        console.log('📊 Adaptive progress:', {
+                            questionsAnswered: window.adaptiveDiagnostic.questionsAnswered,
+                            currentCategory: window.adaptiveDiagnostic.currentCategory,
+                            categoryProgress: window.adaptiveDiagnostic.categoryProgress
+                        });
+                    } catch (error) {
+                        console.error('Error recording adaptive answer:', error);
+                    }
+                }
+
             } catch (error) {
                 console.error('Error submitting answer:', error);
                 showErrorMessage('Failed to submit answer. Your progress may not be saved.');
             }
         };
 
-        window.nextQuestion = function() {
-            if (currentQuestionIndex < currentQuestions.length - 1) {
-                currentQuestionIndex++;
-                displayQuestion();
+        window.nextQuestion = async function() {
+            // 🧠 ADAPTIVE DIAGNOSTIC: Load next adaptive question
+            if (currentQuestions.isAdaptive && window.adaptiveDiagnostic) {
+                try {
+                    // Check if current category is complete
+                    const currentCategory = window.adaptiveDiagnostic.currentCategory;
+                    const isCategoryComplete = window.adaptiveDiagnostic.isCategoryComplete(currentCategory);
+
+                    if (isCategoryComplete) {
+                        // Check if all categories are complete (diagnostic finished)
+                        if (window.adaptiveDiagnostic.questionsAnswered >= 80) {
+                            console.log('✅ Diagnostic complete! Showing results...');
+                            showCompletionScreen();
+                            return;
+                        }
+
+                        // Move to next category
+                        const nextCategory = window.adaptiveDiagnostic.nextCategory();
+                        console.log(`✅ ${currentCategory} complete! Moving to ${nextCategory}...`);
+
+                        // Show category transition message
+                        showCategoryTransition(currentCategory, nextCategory);
+
+                        // Brief pause for transition, then load next question
+                        setTimeout(() => {
+                            loadNextAdaptiveQuestion();
+                        }, 2000);
+                        return;
+                    }
+
+                    // Load next question in current category
+                    loadNextAdaptiveQuestion();
+
+                } catch (error) {
+                    console.error('Error loading next adaptive question:', error);
+                    showErrorMessage('Failed to load next question. Please refresh the page.');
+                }
             } else {
-                showCompletionScreen();
+                // Standard (non-adaptive) navigation
+                if (currentQuestionIndex < currentQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                } else {
+                    showCompletionScreen();
+                }
             }
         };
+
+        function loadNextAdaptiveQuestion() {
+            const nextQuestion = window.adaptiveDiagnostic.getNextQuestion();
+
+            if (!nextQuestion) {
+                console.error('❌ No more questions available');
+                showCompletionScreen();
+                return;
+            }
+
+            // Convert to display format
+            const formattedQuestion = {
+                prompt: nextQuestion.question,
+                options: nextQuestion.options,
+                correctAnswer: nextQuestion.correctAnswer,
+                explanation: nextQuestion.explanation,
+                difficulty: nextQuestion.difficulty,
+                category: nextQuestion.category,
+                id: nextQuestion.id,
+                hasImage: false,
+                source: 'Adaptive Diagnostic',
+                passage: nextQuestion.passage || null
+            };
+
+            // Replace current question (adaptive mode only shows one at a time)
+            currentQuestions[0] = formattedQuestion;
+            currentQuestionIndex = 0;
+
+            // Display the new question
+            displayQuestion();
+        }
+
+        function showCategoryTransition(fromCategory, toCategory) {
+            const categoryEmojis = {
+                math: '🔢',
+                english: '📝',
+                reading: '📚',
+                science: '🔬'
+            };
+
+            const categoryNames = {
+                math: 'Math',
+                english: 'English',
+                reading: 'Reading',
+                science: 'Science'
+            };
+
+            const message = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">
+                        ${categoryEmojis[fromCategory]} ✅
+                    </div>
+                    <h2 style="color: var(--success-color); margin-bottom: 1rem;">
+                        ${categoryNames[fromCategory]} Complete!
+                    </h2>
+                    <div style="font-size: 2rem; margin: 1.5rem 0;">
+                        ↓
+                    </div>
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">
+                        ${categoryEmojis[toCategory]}
+                    </div>
+                    <h3 style="color: var(--primary-color);">
+                        Starting ${categoryNames[toCategory]}...
+                    </h3>
+                </div>
+            `;
+
+            // Show in a temporary overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            overlay.innerHTML = `<div style="background: var(--card-bg); border-radius: 20px; padding: 2rem; max-width: 500px; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">${message}</div>`;
+
+            document.body.appendChild(overlay);
+
+            // Remove after 2 seconds
+            setTimeout(() => {
+                overlay.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => overlay.remove(), 300);
+            }, 1700);
+        }
 
         window.previousQuestion = function() {
             if (currentQuestionIndex > 0) {
