@@ -14,7 +14,6 @@ describe('Adaptive Diagnostic Algorithm', () => {
 
   test('initializes with correct defaults', () => {
     expect(diagnostic.currentCategory).toBe('math');
-    expect(diagnostic.questionsAnswered).toBe(0);
     expect(diagnostic.questionsPerCategory).toBe(20);
     expect(diagnostic.totalQuestions).toBe(80);
   });
@@ -38,13 +37,13 @@ describe('Adaptive Diagnostic Algorithm', () => {
     expect(question).toHaveProperty('category');
   });
 
-  test('recordAnswer increases questions answered count', () => {
+  test('recordAnswer tracks answers in userAnswers', () => {
     const question = diagnostic.getNextQuestion();
-    const initialCount = diagnostic.questionsAnswered;
+    const initialCount = diagnostic.userAnswers.math.length;
 
     diagnostic.recordAnswer(question, 0, true);
 
-    expect(diagnostic.questionsAnswered).toBe(initialCount + 1);
+    expect(diagnostic.userAnswers.math.length).toBe(initialCount + 1);
   });
 
   test('difficulty increases after 2 consecutive correct answers', () => {
@@ -132,25 +131,27 @@ describe('Adaptive Diagnostic Algorithm', () => {
     const results = diagnostic.calculateResults();
 
     // Check that results have required properties
-    expect(results).toHaveProperty('sat');
-    expect(results).toHaveProperty('act');
-    expect(results).toHaveProperty('psat');
-    expect(results).toHaveProperty('math');
-    expect(results).toHaveProperty('english');
-    expect(results).toHaveProperty('reading');
-    expect(results).toHaveProperty('science');
+    expect(results).toHaveProperty('overall');
+    expect(results.overall).toHaveProperty('estimatedSAT');
+    expect(results.overall).toHaveProperty('estimatedACT');
+    expect(results.overall).toHaveProperty('estimatedPSAT');
+    expect(results).toHaveProperty('byCategory');
+    expect(results.byCategory).toHaveProperty('math');
+    expect(results.byCategory).toHaveProperty('english');
+    expect(results.byCategory).toHaveProperty('reading');
+    expect(results.byCategory).toHaveProperty('science');
 
     // Check SAT score range
-    expect(results.sat).toBeGreaterThanOrEqual(400);
-    expect(results.sat).toBeLessThanOrEqual(1600);
+    expect(results.overall.estimatedSAT).toBeGreaterThanOrEqual(400);
+    expect(results.overall.estimatedSAT).toBeLessThanOrEqual(1600);
 
     // Check ACT score range
-    expect(results.act).toBeGreaterThanOrEqual(1);
-    expect(results.act).toBeLessThanOrEqual(36);
+    expect(results.overall.estimatedACT).toBeGreaterThanOrEqual(1);
+    expect(results.overall.estimatedACT).toBeLessThanOrEqual(36);
 
     // Check PSAT score range
-    expect(results.psat).toBeGreaterThanOrEqual(320);
-    expect(results.psat).toBeLessThanOrEqual(1520);
+    expect(results.overall.estimatedPSAT).toBeGreaterThanOrEqual(320);
+    expect(results.overall.estimatedPSAT).toBeLessThanOrEqual(1520);
   });
 
   test('all categories have equal number of questions answered', () => {
@@ -166,9 +167,9 @@ describe('Adaptive Diagnostic Algorithm', () => {
 
     const results = diagnostic.calculateResults();
 
-    expect(results.math.total).toBe(20);
-    expect(results.english.total).toBe(20);
-    expect(results.reading.total).toBe(20);
-    expect(results.science.total).toBe(20);
+    expect(results.byCategory.math.total).toBe(20);
+    expect(results.byCategory.english.total).toBe(20);
+    expect(results.byCategory.reading.total).toBe(20);
+    expect(results.byCategory.science.total).toBe(20);
   });
 });

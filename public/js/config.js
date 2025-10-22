@@ -12,11 +12,24 @@
  * - Domain restrictions
  */
 
+// Function to detect environment (re-callable for testing)
+function detectEnvironment() {
+    if (typeof window !== 'undefined' && window.location) {
+        const hostname = window.location.hostname;
+        return {
+            isDevelopment: hostname === 'localhost' || hostname === '127.0.0.1',
+            isProduction: hostname !== 'localhost' && hostname !== '127.0.0.1'
+        };
+    }
+    // Default for Node.js environment (tests)
+    return {
+        isDevelopment: true,
+        isProduction: false
+    };
+}
+
 // Detect environment
-const ENV = {
-    isDevelopment: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
-    isProduction: window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-};
+const ENV = detectEnvironment();
 
 // Firebase Configuration
 // NOTE: This is intentionally exposed - Firebase handles security via rules, not key secrecy
@@ -42,17 +55,29 @@ const FEATURES = {
 };
 
 // Export configuration
-window.APP_CONFIG = {
-    ENV,
-    FIREBASE_CONFIG,
-    API_BASE_URL,
-    FEATURES
-};
+if (typeof window !== 'undefined') {
+    window.APP_CONFIG = {
+        ENV,
+        FIREBASE_CONFIG,
+        API_BASE_URL,
+        FEATURES
+    };
 
-// Debug info
-if (ENV.isDevelopment) {
-    console.log('🔧 Running in DEVELOPMENT mode');
-    console.log('📍 API Base URL:', API_BASE_URL);
-} else {
-    console.log('🚀 Running in PRODUCTION mode');
+    // Debug info
+    if (ENV.isDevelopment) {
+        console.log('🔧 Running in DEVELOPMENT mode');
+        console.log('📍 API Base URL:', API_BASE_URL);
+    } else {
+        console.log('🚀 Running in PRODUCTION mode');
+    }
+}
+
+// Export for Node.js (for testing)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        ENV,
+        FIREBASE_CONFIG,
+        API_BASE_URL,
+        FEATURES
+    };
 }

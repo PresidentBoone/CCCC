@@ -425,7 +425,7 @@ function generateMilestones(userProfile, colleges) {
 // MAIN HANDLER - Routes based on action
 // ============================================
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   console.log('=== CONSOLIDATED TIMELINE API CALLED ===');
   console.log(`Method: ${req.method}, Action: ${req.query.action || req.body?.action}`);
 
@@ -479,4 +479,3 @@ module.exports = async function handler(req, res) {
     });
   }
 }
-
