@@ -63,10 +63,14 @@ if (typeof window !== 'undefined') {
         FEATURES
     };
 
+    // Also set window.FIREBASE_CONFIG for backward compatibility with unified-auth.js
+    window.FIREBASE_CONFIG = FIREBASE_CONFIG;
+
     // Debug info
     if (ENV.isDevelopment) {
         console.log('🔧 Running in DEVELOPMENT mode');
         console.log('📍 API Base URL:', API_BASE_URL);
+        console.log('✅ Firebase config loaded');
     } else {
         console.log('🚀 Running in PRODUCTION mode');
     }
