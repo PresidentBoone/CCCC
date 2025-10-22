@@ -1504,6 +1504,127 @@
         const firebasePromise = initializeFirebase();
         let auth, db;
 
+        // ============================================
+        // XSS PROTECTION - SANITIZATION HELPERS
+        // ============================================
+
+        /**
+         * Sanitize HTML to prevent XSS attacks
+         * Escapes dangerous characters
+         */
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        /**
+         * Safely set HTML content (use textContent when possible)
+         */
+        function safeSetHTML(element, content) {
+            // If content has no HTML tags, use textContent (safer)
+            if (!/<[a-z][\s\S]*>/i.test(content)) {
+                element.textContent = content;
+                return;
+            }
+
+            // Otherwise, sanitize before setting
+            element.innerHTML = sanitizeHTML(content);
+        }
+
+        // ============================================
+        // INPUT VALIDATION
+        // ============================================
+
+        /**
+         * Validate and sanitize user input
+         */
+        function validateInput(input, type = 'text') {
+            if (!input) return '';
+
+            // Remove dangerous characters
+            let sanitized = String(input).trim();
+
+            switch (type) {
+                case 'number':
+                    sanitized = parseInt(sanitized, 10);
+                    return isNaN(sanitized) ? 0 : sanitized;
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+                case 'text':
+                default:
+                    // Remove script tags and dangerous content
+                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            }
+        }
+
+        // ============================================
+        // OFFLINE DETECTION AND HANDLING
+        // ============================================
+
+        let isOffline = !navigator.onLine;
+
+        window.addEventListener('online', () => {
+            isOffline = false;
+            console.log('✅ Back online');
+            // Show notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 1rem; border-radius: 8px; z-index: 10000;';
+            notification.textContent = '✅ Connection restored';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        });
+
+        window.addEventListener('offline', () => {
+            isOffline = true;
+            console.warn('⚠️ No internet connection');
+            // Show notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem; border-radius: 8px; z-index: 10000;';
+            notification.textContent = '⚠️ No internet connection';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        });
+
+        /**
+         * Check if online before making requests
+         */
+        function checkOnline() {
+            if (isOffline) {
+                showErrorMessage('You are offline. Some features may not work until you reconnect.');
+                return false;
+            }
+            return true;
+        }
+
+        // ============================================
+        // PRODUCTION-SAFE LOGGING
+        // ============================================
+
+        /**
+         * Logger that only outputs in development
+         */
+        const logger = {
+            log: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.log(...args);
+                }
+            },
+            error: (...args) => {
+                // Always log errors
+                console.error(...args);
+                // Report to error tracking if available
+                if (window.reportError && args[0] instanceof Error) {
+                    window.reportError(args[0], { context: args.slice(1) });
+                }
+            },
+            warn: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.warn(...args);
+                }
+            }
+        };
+
         // Global variables
         let currentUser = null;
         let userData = null;
@@ -3498,6 +3619,17 @@
                 const firstQuestion = window.adaptiveDiagnostic.getNextQuestion();
 
                 if (!firstQuestion) {
+                    // EMPTY STATE: No questions available
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    const emptyState = document.createElement('div');
+                    emptyState.style.cssText = 'text-align: center; padding: 4rem 2rem; max-width: 600px; margin: 0 auto;';
+                    emptyState.innerHTML = `
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
+                        <h2 style="margin-bottom: 1rem;">No Questions Available</h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">We couldn't load any diagnostic questions. This might be a temporary issue.</p>
+                        <button class="nav-btn primary" onclick="window.location.href='/testprep'">Return to Dashboard</button>
+                    `;
+                    document.querySelector('.container').appendChild(emptyState);
                     throw new Error('Unable to load first diagnostic question');
                 }
 
