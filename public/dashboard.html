@@ -21,6 +21,10 @@
     <link rel="stylesheet" href="/css/enhanced-error-handler.css">
     <link rel="stylesheet" href="/css/form-validator.css">
     
+    <!-- Production Infrastructure - MUST LOAD FIRST -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-tracking.js"></script>
+
     <!-- 🎯 BILLION-DOLLAR PLATFORM: Core Infrastructure -->
     <script src="/js/firebase-env-inject.js"></script>
     <script src="/js/unified-auth.js"></script>
@@ -32,10 +36,6 @@
     <script src="/js/pwa-installer.js"></script>
     <script src="/js/personalization-engine.js"></script>
     <script src="/js/milestone-celebration.js"></script>
-
-    <!-- Production Infrastructure -->
-    <script src="/js/config.js"></script>
-    <script src="/js/error-tracking.js"></script>
 
     <!-- Dashboard Core -->
     <script src="/js/dashboard-init.js"></script>
