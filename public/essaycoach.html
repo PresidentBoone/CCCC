@@ -6179,10 +6179,8 @@ Limit to top 8 most important improvements.`
         // Initialize essay coach when page loads
         initEssayCoach();
 
-        // Global function exports for onclick handlers
-        window.analyzeEssay = analyzeEssay;
-        window.sendChatMessage = sendChatMessage;
-        window.showHighlightDetails = showHighlightDetails;
+        // Note: analyzeEssay and sendChatMessage are already
+        // defined and exported to window earlier (lines 2806, 3459)
     </script>
 </body>
 </html>
