@@ -33,13 +33,17 @@
     <script src="/js/personalization-engine.js"></script>
     <script src="/js/milestone-celebration.js"></script>
     
+    <!-- Production Infrastructure -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-tracking.js"></script>
+    <script src="/js/analytics.js"></script>
+
     <!-- Essay Coach Core -->
     <script type="module" src="/js/auto-save.js"></script>
     <script type="module" src="/js/loading-state.js"></script>
     <script src="/js/empty-states.js"></script>
     <script src="/js/form-validator.js"></script>
     <script src="/js/accessibility-enhancer.js"></script>
-    <script src="/js/analytics.js"></script>
     
     <style>
         :root {
@@ -1935,9 +1939,9 @@
     <!-- ============================================
          UNIVERSAL NAVBAR
          ============================================ -->
-    <nav class="cc-navbar">
+    <nav class="cc-navbar" role="navigation" aria-label="Main navigation">
         <!-- Logo Section -->
-        <a href="index.html" class="cc-logo-section">
+        <a href="index.html" class="cc-logo-section" aria-label="Return to College Climb homepage">
             <div class="cc-logo">
                 <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
@@ -1955,7 +1959,7 @@
             </button>
 
             <!-- Profile Dropdown -->
-            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+            <div class="cc-profile-dropdown" role="menu" aria-label="User profile menu" id="ccProfileDropdown">
                 <div class="cc-profile-button" id="ccProfileButton">
                     <!-- Loading state initially -->
                     <div class="cc-profile-loading" id="ccProfileLoading"></div>
@@ -1967,7 +1971,7 @@
                 </div>
 
                 <!-- Dropdown Menu -->
-                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                <div class="cc-dropdown-menu" role="menu" aria-label="Navigation menu" id="ccDropdownMenu">
                     <!-- Welcome Header -->
                     <div class="cc-dropdown-header" id="ccDropdownHeader">
                         <div class="cc-dropdown-welcome">Hello,</div>
@@ -2025,7 +2029,7 @@
     </nav>
 
     <!-- Main Container -->
-    <div class="essay-coach-container">
+    <div class="essay-coach-container" role="main" aria-label="Essay coach application">
         <!-- Header -->
         <div class="essay-header">
             <h1><i class="fas fa-pen-fancy"></i> AI Essay Coach</h1>
@@ -2033,20 +2037,20 @@
         </div>
 
         <!-- Success/Error Messages -->
-        <div id="successMessage" class="message success">
+        <div id="successMessage" class="message success" role="alert" aria-live="assertive">
             <i class="fas fa-check-circle"></i> <span id="successText"></span>
         </div>
-        <div id="errorMessage" class="message error">
+        <div id="errorMessage" class="message error" role="alert" aria-live="assertive">
             <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
         </div>
-        <div id="infoMessage" class="message info">
+        <div id="infoMessage" class="message info" role="status" aria-live="polite">
             <i class="fas fa-info-circle"></i> <span id="infoText"></span>
         </div>
 
         <!-- Main Grid -->
         <div class="essay-main-grid">
             <!-- Essay Editor Section -->
-            <div class="essay-editor-section">
+            <div class="essay-editor-section" role="region" aria-label="Essay editor">
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-edit"></i> Essay Editor</h2>
                     <!-- ⭐ Auto-Save Status Indicator -->
@@ -2056,23 +2060,23 @@
                 <!-- Essay Controls -->
                 <div class="essay-controls">
                     <div class="control-group">
-                        <input type="text" id="essayTitle" class="input-field" placeholder="Essay Title" style="width: 200px;">
-                        <input type="text" id="essayPrompt" class="input-field" placeholder="Essay Prompt" style="width: 300px;">
+                        <input type="text" id="essayTitle" class="input-field" aria-label="Essay title" placeholder="Essay Title" style="width: 200px;">
+                        <input type="text" id="essayPrompt" class="input-field" aria-label="Essay prompt" placeholder="Essay Prompt" style="width: 300px;">
                     </div>
                     <div class="control-group">
-                        <input type="text" id="targetColleges" class="input-field" placeholder="Target Colleges (comma separated)" style="width: 250px;">
-                        <button class="btn btn-secondary" onclick="loadEssayVersions()">
+                        <input type="text" id="targetColleges" class="input-field" aria-label="Target colleges" placeholder="Target Colleges (comma separated)" style="width: 250px;">
+                        <button class="btn btn-secondary" onclick="loadEssayVersions()" aria-label="View essay versions">
                             <i class="fas fa-history"></i> Versions
                         </button>
                     </div>
                     <div class="control-group">
-                        <button class="btn btn-primary" onclick="window.essayManager && window.essayManager.analyzeEssay()">
+                        <button class="btn btn-primary" onclick="window.essayManager && window.essayManager.analyzeEssay()" aria-label="Analyze essay with AI feedback">
                             <i class="fas fa-search"></i> Analyze Essay
                         </button>
-                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.saveEssay()">
+                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.saveEssay()" aria-label="Save essay">
                             <i class="fas fa-save"></i> Save
                         </button>
-                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.createVersion()">
+                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.createVersion()" aria-label="Create new version">
                             <i class="fas fa-code-branch"></i> New Version
                         </button>
                     </div>
@@ -2122,7 +2126,7 @@
 
                 <!-- Essay Editor -->
                 <div class="essay-editor">
-                    <textarea 
+                    <textarea role="textbox" aria-label="Essay content" 
                         id="essayTextarea" 
                         class="essay-textarea" 
                         placeholder="Start writing your essay here... 
@@ -2138,7 +2142,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 </div>
 
                 <!-- Essay Stats -->
-                <div class="essay-stats">
+                <div class="essay-stats" role="region" aria-label="Essay statistics and metrics" aria-live="polite">
                     <div>
                         <strong>Word Count:</strong> <span id="wordCount">0</span>
                         <span style="margin-left: 1rem;"><strong>Characters:</strong> <span id="charCount">0</span></span>
@@ -2225,7 +2229,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
             </div>
 
             <!-- Sidebar -->
-            <div class="essay-sidebar">
+            <div class="essay-sidebar" role="complementary" aria-label="Essay tools and chat">
                 <!-- Highlight Legend -->
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">
@@ -2274,8 +2278,8 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     <h3 class="sidebar-title">
                         <i class="fas fa-comments"></i> Ask the AI Coach
                     </h3>
-                    <div class="essay-chat">
-                        <div id="chatMessages" class="chat-messages">
+                    <div class="essay-chat" role="region" aria-label="AI writing assistant chat">
+                        <div id="chatMessages" class="chat-messages" role="log" aria-label="Chat conversation" aria-live="polite">
                             <div class="chat-message message-ai">
                                 <div class="message-bubble">
                                     Hi! I'm your AI essay coach. I'm here to help you improve your essay. Feel free to ask me questions about your writing, college admissions, or anything else related to your essays!
@@ -2285,12 +2289,12 @@ Don't forget to specify your target colleges and essay prompt for more personali
                         <div class="chat-input-container">
                             <input 
                                 type="text" 
-                                id="chatInput" 
+                                id="chatInput" aria-label="Type your question or request" 
                                 class="chat-input" 
                                 placeholder="Ask about your essay..."
                                 onkeypress="handleChatKeyPress(event)"
                             >
-                            <button class="chat-send" onclick="sendChatMessage()">
+                            <button class="chat-send" onclick="sendChatMessage()" aria-label="Send message to AI assistant">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -2331,7 +2335,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     </div>
 
                     <!-- Essay List -->
-                    <div id="essayList" class="essay-list">
+                    <div id="essayList" class="essay-list" role="list" aria-label="Your essays">
                         <div class="loading">
                             <div class="spinner"></div>
                             Loading essays...
@@ -5977,10 +5981,204 @@ Limit to top 8 most important improvements.`
             
             console.log('✅ Essay Coach initialized successfully!');
         }
-        
+
+        // ========================================
+        // XSS PROTECTION HELPERS
+        // ========================================
+
+        /**
+         * Sanitize HTML to prevent XSS attacks
+         * Converts HTML to text, then back to HTML (escapes dangerous chars)
+         */
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        /**
+         * Safely set HTML content - prefer textContent when possible
+         * Only use innerHTML when content has legitimate HTML tags
+         */
+        function safeSetHTML(element, content) {
+            if (!element || content === null || content === undefined) return;
+
+            // If content has no HTML tags, use textContent (safer)
+            if (!/<[a-z][\s\S]*>/i.test(content)) {
+                element.textContent = content;
+                return;
+            }
+
+            // Otherwise, sanitize before setting
+            element.innerHTML = sanitizeHTML(content);
+        }
+
+        // ========================================
+        // INPUT VALIDATION HELPERS
+        // ========================================
+
+        /**
+         * Validate and sanitize user input
+         * @param {*} input - The input to validate
+         * @param {string} type - Type of validation (text, email, number, url)
+         * @returns {string|number} - Sanitized input
+         */
+        function validateInput(input, type = 'text') {
+            if (!input) return '';
+
+            let sanitized = String(input).trim();
+
+            switch (type) {
+                case 'number':
+                    sanitized = parseInt(sanitized, 10);
+                    return isNaN(sanitized) ? 0 : sanitized;
+
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+
+                case 'url':
+                    try {
+                        new URL(sanitized);
+                        return sanitized;
+                    } catch {
+                        return '';
+                    }
+
+                case 'text':
+                default:
+                    // Remove script tags and dangerous content
+                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            }
+        }
+
+        // ========================================
+        // OFFLINE DETECTION
+        // ========================================
+
+        let isOffline = !navigator.onLine;
+
+        window.addEventListener('online', () => {
+            isOffline = false;
+            console.log('✅ Back online');
+
+            // Show user notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.textContent = '✅ Connection restored';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        });
+
+        window.addEventListener('offline', () => {
+            isOffline = true;
+            console.log('⚠️ Connection lost');
+
+            // Show offline notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.textContent = '⚠️ You are offline - changes may not save';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        });
+
+        /**
+         * Check if user is online before making API calls
+         */
+        function checkOnline() {
+            if (isOffline) {
+                showErrorMessage('You are offline. Please check your internet connection.');
+                return false;
+            }
+            return true;
+        }
+
+        // ========================================
+        // PRODUCTION-SAFE LOGGING
+        // ========================================
+
+        const logger = {
+            log: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.log(...args);
+                }
+            },
+            error: (...args) => {
+                console.error(...args);
+                // Report to Sentry if available
+                if (window.reportError && args[0] instanceof Error) {
+                    window.reportError(args[0], { context: args.slice(1) });
+                }
+            },
+            warn: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.warn(...args);
+                }
+            }
+        };
+
+        // ========================================
+        // USER-FACING ERROR MESSAGES
+        // ========================================
+
+        /**
+         * Show error message to user
+         */
+        function showErrorMessage(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            if (errorDiv && errorText) {
+                safeSetHTML(errorText, message);
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        /**
+         * Show success message to user
+         */
+        function showSuccessMessage(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            if (successDiv && successText) {
+                safeSetHTML(successText, message);
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        /**
+         * Show info message to user
+         */
+        function showInfoMessage(message) {
+            const infoDiv = document.getElementById('infoMessage');
+            const infoText = document.getElementById('infoText');
+            if (infoDiv && infoText) {
+                safeSetHTML(infoText, message);
+                infoDiv.style.display = 'block';
+                setTimeout(() => {
+                    infoDiv.style.display = 'none';
+                }, 4000);
+            }
+        }
+
+        // Make error handlers global
+        window.showErrorMessage = showErrorMessage;
+        window.showSuccessMessage = showSuccessMessage;
+        window.showInfoMessage = showInfoMessage;
+        window.sanitizeHTML = sanitizeHTML;
+        window.safeSetHTML = safeSetHTML;
+        window.validateInput = validateInput;
+        window.checkOnline = checkOnline;
+        window.logger = logger;
+
         // Initialize essay coach when page loads
         initEssayCoach();
-        
+
         // Global function exports for onclick handlers
         window.analyzeEssay = analyzeEssay;
         window.sendChatMessage = sendChatMessage;

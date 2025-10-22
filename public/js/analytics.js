@@ -39,11 +39,31 @@
                 gtag('event', eventName, params);
             }
         },
+        // Test Prep Analytics
         diagnosticComplete: (satScore, actScore, duration) => {
             window.analytics.track('diagnostic_complete', { satScore, actScore, duration });
         },
         practiceSession: (subject, questionCount, accuracy) => {
             window.analytics.track('practice_session', { subject, questionCount, accuracy });
+        },
+        // Essay Coach Analytics
+        essayCreated: (title, wordCount) => {
+            window.analytics.track('essay_created', { title, wordCount });
+        },
+        essaySaved: (title, wordCount, duration) => {
+            window.analytics.track('essay_saved', { title, wordCount, duration });
+        },
+        essayAnalyzed: (title, wordCount, feedbackCount) => {
+            window.analytics.track('essay_analyzed', { title, wordCount, feedbackCount });
+        },
+        aiFeedbackRequested: (feedbackType, wordCount) => {
+            window.analytics.track('ai_feedback_requested', { feedbackType, wordCount });
+        },
+        essayVersionCreated: (essayTitle, versionNumber) => {
+            window.analytics.track('essay_version_created', { essayTitle, versionNumber });
+        },
+        chatMessageSent: (messageLength, category) => {
+            window.analytics.track('chat_message_sent', { messageLength, category });
         },
     };
 
