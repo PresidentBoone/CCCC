@@ -6,6 +6,11 @@
     <title>Login - College Climb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Production Infrastructure - MUST LOAD FIRST -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-tracking.js"></script>
+    <script src="/js/analytics.js"></script>
+
     <!-- 🎯 BILLION-DOLLAR FIX: Unified Authentication System -->
     <script src="/js/firebase-env-inject.js"></script>
     <script src="/js/unified-auth.js"></script>
@@ -612,9 +617,9 @@
     <!-- ============================================
          UNIVERSAL NAVBAR
          ============================================ -->
-    <nav class="cc-navbar">
+    <nav class="cc-navbar" role="navigation" aria-label="Main navigation">
         <!-- Logo Section -->
-        <a href="index.html" class="cc-logo-section">
+        <a href="index.html" class="cc-logo-section" aria-label="College Climb Home">
             <div class="cc-logo">
                 <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
@@ -683,16 +688,16 @@
     </nav>
 
     <div class="login-container">
-        <div class="login-card">
+        <div class="login-card" role="main" aria-label="Login form">
             <div class="login-logo">
                 <img src="blackcc.png" alt="College Climb Logo" class="login-logo-img">
             </div>
             <h1 class="login-title">Welcome Back</h1>
-            
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-            
-            <button class="google-btn" id="googleBtn" onclick="loginWithGoogle()">
+
+            <div class="error-message" id="errorMessage" role="alert" aria-live="assertive"></div>
+            <div class="success-message" id="successMessage" role="status" aria-live="polite"></div>
+
+            <button class="google-btn" id="googleBtn" onclick="loginWithGoogle()" aria-label="Sign in with Google">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -706,10 +711,10 @@
                 <span>OR</span>
             </div>
 
-            <form class="login-form" id="loginForm">
-                <input type="email" id="loginEmail" placeholder="Email Address" required>
-                <input type="password" id="loginPassword" placeholder="Password" required>
-                <button type="submit" class="login-btn" id="loginBtn">Log In</button>
+            <form class="login-form" id="loginForm" role="form" aria-label="Login with email and password">
+                <input type="email" id="loginEmail" placeholder="Email Address" required aria-label="Email address" aria-required="true">
+                <input type="password" id="loginPassword" placeholder="Password" required aria-label="Password" aria-required="true">
+                <button type="submit" class="login-btn" id="loginBtn" aria-label="Log in">Log In</button>
             </form>
 
             <p>Don't have an account? <a href='/signup' class="signup-link">Sign up here</a></p>
@@ -776,12 +781,88 @@
             createStars();
         }
 
+        // ============================================
+        // PRODUCTION SECURITY HELPERS
+        // ============================================
+
+        // XSS PROTECTION
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function safeSetHTML(element, content) {
+            if (!element || content === null || content === undefined) return;
+            if (!/<[a-z][\s\S]*>/i.test(content)) {
+                element.textContent = content;
+                return;
+            }
+            element.innerHTML = sanitizeHTML(content);
+        }
+
+        // INPUT VALIDATION
+        function validateInput(input, type = 'text') {
+            if (!input) return '';
+            let sanitized = String(input).trim();
+
+            switch (type) {
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+                case 'text':
+                default:
+                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            }
+        }
+
+        // OFFLINE DETECTION
+        let isOffline = !navigator.onLine;
+
+        window.addEventListener('online', () => {
+            isOffline = false;
+            showSuccess('✅ Connection restored');
+        });
+
+        window.addEventListener('offline', () => {
+            isOffline = true;
+            showError('⚠️ You are offline - please check your internet connection');
+        });
+
+        function checkOnline() {
+            if (isOffline) {
+                showError('You are offline. Please check your internet connection.');
+                return false;
+            }
+            return true;
+        }
+
+        // PRODUCTION-SAFE LOGGING
+        const logger = {
+            log: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.log(...args);
+                }
+            },
+            error: (...args) => {
+                console.error(...args);
+                if (window.reportError && args[0] instanceof Error) {
+                    window.reportError(args[0], { context: args.slice(1) });
+                }
+            },
+            warn: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.warn(...args);
+                }
+            }
+        };
+
         // Utility functions
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             const successDiv = document.getElementById('successMessage');
             successDiv.style.display = 'none';
-            errorDiv.textContent = message;
+            safeSetHTML(errorDiv, message);
             errorDiv.style.display = 'block';
             setTimeout(() => {
                 errorDiv.style.display = 'none';
@@ -792,33 +873,50 @@
             const errorDiv = document.getElementById('errorMessage');
             const successDiv = document.getElementById('successMessage');
             errorDiv.style.display = 'none';
-            successDiv.textContent = message;
+            safeSetHTML(successDiv, message);
             successDiv.style.display = 'block';
             setTimeout(() => {
                 successDiv.style.display = 'none';
             }, 3000);
         }
 
+        // Make functions global
+        window.showErrorMessage = showError;
+        window.showSuccessMessage = showSuccess;
+        window.sanitizeHTML = sanitizeHTML;
+        window.safeSetHTML = safeSetHTML;
+        window.validateInput = validateInput;
+        window.checkOnline = checkOnline;
+        window.logger = logger;
+
         // Google Login Function
         window.loginWithGoogle = async function() {
+            if (!checkOnline()) return;
+
             const button = document.getElementById('googleBtn');
             const originalText = button.innerHTML;
-            
+
             button.innerHTML = 'Connecting...';
             button.disabled = true;
 
             try {
                 await window.authManager.signInWithGoogle();
                 showSuccess('Welcome back!');
+                if (window.analytics && window.analytics.loginSuccess) {
+                    window.analytics.loginSuccess('google');
+                }
                 // Unified auth will handle redirect automatically
             } catch (error) {
-                console.error("Google Login error:", error);
+                logger.error("Google Login error:", error);
                 if (error.code === 'auth/unauthorized-domain') {
                     showError("Domain not authorized. Please contact support.");
                 } else if (error.code === 'auth/popup-blocked') {
                     showError("Popup blocked. Please allow popups for this site.");
                 } else {
                     showError("Google Login failed. Please try again.");
+                }
+                if (window.analytics && window.analytics.loginFailed) {
+                    window.analytics.loginFailed('google', error.code);
                 }
                 button.innerHTML = originalText;
                 button.disabled = false;
@@ -828,26 +926,38 @@
         // Email/Password Login
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value.trim();
+
+            if (!checkOnline()) return;
+
+            const emailInput = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
-            if (!email || !password) {
-                showError('Please fill in all fields');
+
+            // INPUT VALIDATION
+            const email = validateInput(emailInput, 'email');
+            if (!email) {
+                showError('Please enter a valid email address');
                 return;
             }
-            
+
+            if (!password || password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
             const button = document.getElementById('loginBtn');
             const originalText = button.textContent;
             button.textContent = 'Logging in...';
             button.disabled = true;
-            
+
             try {
                 await window.authManager.signInWithEmail(email, password);
-                showSuccess(`Welcome back, ${email}!`);
+                showSuccess(`Welcome back!`);
+                if (window.analytics && window.analytics.loginSuccess) {
+                    window.analytics.loginSuccess('email');
+                }
                 // Unified auth will handle redirect automatically
             } catch (error) {
-                console.error("Login error:", error);
+                logger.error("Login error:", error);
                 let errorMessage = "Login failed. Please try again.";
                 
                 switch (error.code) {
@@ -871,6 +981,9 @@
                 }
                 
                 showError(errorMessage);
+                if (window.analytics && window.analytics.loginFailed) {
+                    window.analytics.loginFailed('email', error.code);
+                }
                 button.textContent = originalText;
                 button.disabled = false;
             }

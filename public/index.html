@@ -19,7 +19,12 @@
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Production Infrastructure - MUST LOAD FIRST -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-tracking.js"></script>
+    <script src="/js/analytics.js"></script>
+
     <!-- 🎯 BILLION-DOLLAR PLATFORM: Core Infrastructure -->
     <script src="/js/firebase-env-inject.js"></script>
     <script src="/js/unified-auth.js"></script>
@@ -743,10 +748,10 @@
     <div class="starry-bg" id="starryBg"></div>
   
     <!-- Navigation Bar -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="logo-section">
             <div class="logo">
-                <a href="index.html">
+                <a href="index.html" aria-label="College Climb Home">
                     <img id="navbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
                 </a>
             </div>
@@ -755,37 +760,37 @@
                 <h2>Climb</h2>
             </div>
         </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href='/about'>About</a></li>
-            <li><a href='/pricing'>Pricing</a></li>
-            <li class="dropdown" id="profileDropdown">
-                <a href="#" id="authToggle" style="display: flex; align-items: center;">
+        <ul class="nav-links" role="menubar">
+            <li role="none"><a href="index.html" role="menuitem" aria-label="Home page">Home</a></li>
+            <li role="none"><a href='/about' role="menuitem" aria-label="About College Climb">About</a></li>
+            <li role="none"><a href='/pricing' role="menuitem" aria-label="View pricing plans">Pricing</a></li>
+            <li class="dropdown" id="profileDropdown" role="none">
+                <a href="#" id="authToggle" role="menuitem" aria-haspopup="true" aria-expanded="false" aria-label="Account menu" style="display: flex; align-items: center;">
                     <img id="navUserAvatar" class="user-avatar" src="images/default-avatar.png" alt="Profile" style="display: none;">
                     <span id="navAccountText">Account</span>
                 </a>
-                <div class="dropdown-content" id="authDropdown">
+                <div class="dropdown-content" id="authDropdown" role="menu" aria-label="Account options">
                     <div id="dropdownWelcome" style="padding: 1rem 1rem 0.5rem 1rem; font-weight: 600; color: var(--accent-color); display: none;">
                         Welcome, <span id="dropdownDisplayName"></span>!
                     </div>
                     <div id="notLoggedIn">
-                        <a href='/login'>Login</a>
-                        <a href='/signup'>Sign Up</a>
+                        <a href='/login' role="menuitem" aria-label="Login to your account">Login</a>
+                        <a href='/signup' role="menuitem" aria-label="Create new account">Sign Up</a>
                     </div>
                     <div id="loggedIn" style="display: none;">
-                        <a href='/profile'>Profile</a>
-                        <a href="settings.html">Settings</a>
-                        <a href='/dashboard'>Dashboard</a>
-                        <a href="college-profile.html">College Profile</a>
-                        <a href="#" id="logoutBtn">Logout</a>
+                        <a href='/profile' role="menuitem" aria-label="View your profile">Profile</a>
+                        <a href="settings.html" role="menuitem" aria-label="Account settings">Settings</a>
+                        <a href='/dashboard' role="menuitem" aria-label="Go to dashboard">Dashboard</a>
+                        <a href="college-profile.html" role="menuitem" aria-label="View college profile">College Profile</a>
+                        <a href="#" id="logoutBtn" role="menuitem" aria-label="Logout from account">Logout</a>
                     </div>
                 </div>
             </li>
-            <li><button class="theme-toggle" id="themeToggle">☀️</button></li>
+            <li role="none"><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button></li>
         </ul>
 </nav>
 
-    <section id="home" class="hero">
+    <section id="home" class="hero" role="banner">
       <div class="hero-content">
         <div class="hero-logo">
           <img id="heroLogo" src="images/whiteclearcc.png" alt="College Climb Logo" />
@@ -793,28 +798,28 @@
         <h1 class="hero-title">College Climb</h1>
         <p class="hero-subtitle">Your AI-powered admissions co-pilot</p>
         <p class="hero-description">Transform your college dreams into reality with personalized guidance, winning essays, and strategic insights powered by cutting-edge AI technology.</p>
-        
-        <div class="hero-stats">
+
+        <div class="hero-stats" role="region" aria-label="Key features">
           <div class="stat-item">
-            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">✍️</span>
+            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;" aria-hidden="true">✍️</span>
             <span class="stat-label">Perfect Your Essays</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">🎯</span>
+            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;" aria-hidden="true">🎯</span>
             <span class="stat-label">Find Your Match</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;">💰</span>
+            <span class="stat-number" style="-webkit-background-clip: unset; -webkit-text-fill-color: unset; background-clip: unset; background: transparent;" aria-hidden="true">💰</span>
             <span class="stat-label">Get Scholarships</span>
           </div>
         </div>
 
-        <div class="hero-form">
+        <div class="hero-form" role="region" aria-label="Sign up form">
           <h3>Start Your Journey Today</h3>
-          <form class="hero-signup-form">
-            <input type="text" placeholder="Full Name" required>
-            <input type="email" placeholder="Email Address" required>
-            <select required>
+          <form class="hero-signup-form" aria-label="Create account">
+            <input type="text" placeholder="Full Name" required aria-label="Full name" aria-required="true">
+            <input type="email" placeholder="Email Address" required aria-label="Email address" aria-required="true">
+            <select required aria-label="Graduation class" aria-required="true">
               <option value="">Class of...</option>
               <option value="2025">2026</option>
               <option value="2026">2027</option>
@@ -824,7 +829,7 @@
               <option value="2030">2031</option>
               <option value="2031">2032</option>
             </select>
-            <button type="submit" class="hero-cta-button">Get Started Free</button>
+            <button type="submit" class="hero-cta-button" aria-label="Get started with free trial">Get Started Free</button>
           </form>
           <p class="form-note">🔒 No credit card required • Free trial for 7 days</p>
         </div>
@@ -1050,15 +1055,15 @@
             }
         }
     </style>
-    <section class="section why-choose-us fade-in-up">
+    <section class="section why-choose-us fade-in-up" role="region" aria-label="Why choose College Climb">
       <div class="why-choose-container">
       <h2 class="section-title">Why Students Choose College Climb</h2>
       <p class="section-subtitle">Discover what makes us the premier choice for college admissions success</p>
       </div>
-      
-      <div class="reasons-grid">
-        <div class="reason-card main-card">
-        <div class="reason-icon-large">🎯</div>
+
+      <div class="reasons-grid" role="list" aria-label="Features and benefits">
+        <div class="reason-card main-card" role="listitem">
+        <div class="reason-icon-large" aria-hidden="true">🎯</div>
         <h3>AI-Powered Precision</h3>
         <p>Our advanced artificial intelligence analyzes millions of successful applications to provide you with data-driven insights and personalized recommendations that actually work.</p>
         <div class="feature-highlights">
@@ -1067,55 +1072,55 @@
           <span class="highlight">Success Probability</span>
         </div>
         </div>
-        
-        <div class="reason-card">
-        <div class="reason-icon">✨</div>
+
+        <div class="reason-card" role="listitem">
+        <div class="reason-icon" aria-hidden="true">✨</div>
         <h3>Proven Results</h3>
         <p>95% acceptance rate into top-choice schools with over $20M in scholarships secured for our students.</p>
         </div>
-        
-        <div class="reason-card">
-        <div class="reason-icon">👥</div>
+
+        <div class="reason-card" role="listitem">
+        <div class="reason-icon" aria-hidden="true">👥</div>
         <h3>Expert Guidance</h3>
         <p>Access to experienced college counselors and admissions experts who understand the evolving landscape.</p>
         </div>
-        
-        <div class="reason-card">
-        <div class="reason-icon">⚡</div>
+
+        <div class="reason-card" role="listitem">
+        <div class="reason-icon" aria-hidden="true">⚡</div>
         <h3>Instant Feedback</h3>
         <p>Get real-time suggestions and improvements on your essays, applications, and profile optimization.</p>
         </div>
-        
-        <div class="reason-card">
-        <div class="reason-icon">🔒</div>
+
+        <div class="reason-card" role="listitem">
+        <div class="reason-icon" aria-hidden="true">🔒</div>
         <h3>Secure & Private</h3>
         <p>Your personal information and essays are protected with enterprise-grade security and privacy measures.</p>
         </div>
-        
-        <div class="reason-card">
-        <div class="reason-icon">💡</div>
+
+        <div class="reason-card" role="listitem">
+        <div class="reason-icon" aria-hidden="true">💡</div>
         <h3>Smart Recommendations</h3>
         <p>Discover hidden gem schools and scholarship opportunities you never knew existed through our intelligent matching.</p>
         </div>
       </div>
-      
-      <div class="trust-indicators">
-        <div class="trust-item">
-        <div class="trust-icon">🏆</div>
+
+      <div class="trust-indicators" role="list" aria-label="Trust indicators">
+        <div class="trust-item" role="listitem">
+        <div class="trust-icon" aria-hidden="true">🏆</div>
         <div class="trust-text">
           <h4>Award Winning</h4>
           <p>Best AI Education Platform 2024</p>
         </div>
         </div>
-        <div class="trust-item">
-        <div class="trust-icon">🔐</div>
+        <div class="trust-item" role="listitem">
+        <div class="trust-icon" aria-hidden="true">🔐</div>
         <div class="trust-text">
           <h4>FERPA Compliant</h4>
           <p>Certified secure & private</p>
         </div>
         </div>
-        <div class="trust-item">
-        <div class="trust-icon">⭐</div>
+        <div class="trust-item" role="listitem">
+        <div class="trust-icon" aria-hidden="true">⭐</div>
         <div class="trust-text">
           <h4>4.9/5 Rating</h4>
           <p>From 10,000+ students</p>
@@ -1923,12 +1928,180 @@ function toggleTheme() {
 // Initialize navbar
 document.addEventListener('DOMContentLoaded', function() {
     initTheme();
-    
+
     const themeToggle = document.getElementById('ccThemeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
 });
+
+// ============================================
+// PRODUCTION SECURITY HELPERS
+// ============================================
+
+// XSS PROTECTION
+function sanitizeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function safeSetHTML(element, content) {
+    if (!element || content === null || content === undefined) return;
+    if (!/<[a-z][\s\S]*>/i.test(content)) {
+        element.textContent = content;
+        return;
+    }
+    element.innerHTML = sanitizeHTML(content);
+}
+
+// INPUT VALIDATION
+function validateInput(input, type = 'text') {
+    if (!input) return '';
+    let sanitized = String(input).trim();
+
+    switch (type) {
+        case 'number':
+            sanitized = parseInt(sanitized, 10);
+            return isNaN(sanitized) ? 0 : sanitized;
+        case 'email':
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+        case 'phone':
+            return sanitized.replace(/[^\d\+\-\(\) ]/g, '');
+        case 'text':
+        default:
+            return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    }
+}
+
+// OFFLINE DETECTION
+let isOffline = !navigator.onLine;
+
+window.addEventListener('online', () => {
+    isOffline = false;
+    if (window.showSuccessMessage) {
+        window.showSuccessMessage('✅ Connection restored');
+    }
+});
+
+window.addEventListener('offline', () => {
+    isOffline = true;
+    if (window.showErrorMessage) {
+        window.showErrorMessage('⚠️ You are offline - changes may not save');
+    }
+});
+
+function checkOnline() {
+    if (isOffline) {
+        if (window.showErrorMessage) {
+            window.showErrorMessage('You are offline. Please check your internet connection.');
+        }
+        return false;
+    }
+    return true;
+}
+
+// PRODUCTION-SAFE LOGGING
+const logger = {
+    log: (...args) => {
+        if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+            console.log(...args);
+        }
+    },
+    error: (...args) => {
+        console.error(...args);
+        if (window.reportError && args[0] instanceof Error) {
+            window.reportError(args[0], { context: args.slice(1) });
+        }
+    },
+    warn: (...args) => {
+        if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+            console.warn(...args);
+        }
+    }
+};
+
+// USER-FACING ERROR/SUCCESS MESSAGES
+function showError(message) {
+    // Create error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'toast-notification error';
+    errorDiv.setAttribute('role', 'alert');
+    errorDiv.setAttribute('aria-live', 'assertive');
+    safeSetHTML(errorDiv, message);
+
+    document.body.appendChild(errorDiv);
+
+    setTimeout(() => {
+        errorDiv.style.opacity = '0';
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 300);
+    }, 5000);
+}
+
+function showSuccess(message) {
+    // Create success notification
+    const successDiv = document.createElement('div');
+    successDiv.className = 'toast-notification success';
+    successDiv.setAttribute('role', 'status');
+    successDiv.setAttribute('aria-live', 'polite');
+    safeSetHTML(successDiv, message);
+
+    document.body.appendChild(successDiv);
+
+    setTimeout(() => {
+        successDiv.style.opacity = '0';
+        setTimeout(() => {
+            if (successDiv.parentNode) {
+                successDiv.parentNode.removeChild(successDiv);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Add toast notification styles
+const toastStyles = document.createElement('style');
+toastStyles.textContent = `
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    max-width: 400px;
+    font-weight: 500;
+}
+
+.toast-notification.error {
+    background: #ef4444;
+    color: white;
+}
+
+.toast-notification.success {
+    background: #10b981;
+    color: white;
+}
+`;
+document.head.appendChild(toastStyles);
+
+// Make functions global
+window.showErrorMessage = showError;
+window.showSuccessMessage = showSuccess;
+window.sanitizeHTML = sanitizeHTML;
+window.safeSetHTML = safeSetHTML;
+window.validateInput = validateInput;
+window.checkOnline = checkOnline;
+window.logger = logger;
+
+logger.log('Index page loaded - Production security helpers initialized');
     </script>
 </body>
 </html>

@@ -21,7 +21,12 @@
     <link rel="stylesheet" href="/css/empty-states.css">
     <link rel="stylesheet" href="/css/enhanced-error-handler.css">
     <link rel="stylesheet" href="/css/form-validator.css">
-    
+
+    <!-- Production Infrastructure - MUST LOAD FIRST -->
+    <script src="/js/config.js"></script>
+    <script src="/js/error-tracking.js"></script>
+    <script src="/js/analytics.js"></script>
+
     <!-- 🎯 BILLION-DOLLAR PLATFORM: Core Infrastructure -->
     <script src="/js/firebase-env-inject.js"></script>
     <script src="/js/unified-auth.js"></script>
@@ -1487,8 +1492,8 @@
     <div class="starry-bg" id="starryBg"></div>
 
     <!-- Dashboard Navbar -->
-    <nav class="cc-navbar">
-        <a href="index.html" class="cc-logo-section">
+    <nav class="cc-navbar" role="navigation" aria-label="Main navigation">
+        <a href="index.html" class="cc-logo-section" aria-label="College Climb Home">
             <div class="cc-logo">
                 <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
             </div>
@@ -1499,7 +1504,7 @@
         </a>
 
         <div class="cc-nav-right">
-            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+            <button class="cc-theme-toggle" id="ccThemeToggle" aria-label="Toggle theme">☀️</button>
 
             <div class="cc-profile-dropdown" id="ccProfileDropdown">
                 <div class="cc-profile-button" id="ccProfileButton">
@@ -1566,29 +1571,29 @@
     <!-- Main Container -->
     <div class="scholarship-container">
         <!-- Header -->
-        <div class="scholarship-header">
+        <div class="scholarship-header" role="banner">
             <h1><i class="fas fa-trophy"></i> AI Scholarship Finder</h1>
             <p id="headerMessage">Discover personalized scholarship opportunities matched to your profile</p>
         </div>
 
         <!-- Statistics -->
-        <div class="scholarship-stats">
-            <div class="stat-card" onclick="showTab('discover')">
+        <div class="scholarship-stats" role="region" aria-label="Scholarship statistics">
+            <div class="stat-card" onclick="showTab('discover')" role="button" tabindex="0" aria-label="View total available scholarships">
                 <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
                 <div class="stat-value" id="totalValueStat">$0</div>
                 <div class="stat-label">Total Available</div>
             </div>
-            <div class="stat-card" onclick="showTab('discover')">
+            <div class="stat-card" onclick="showTab('discover')" role="button" tabindex="0" aria-label="View AI matched scholarships">
                 <div class="stat-icon"><i class="fas fa-star"></i></div>
                 <div class="stat-value" id="matchedStat">0</div>
                 <div class="stat-label">AI Matches</div>
             </div>
-            <div class="stat-card" onclick="showTab('tracker')">
+            <div class="stat-card" onclick="showTab('tracker')" role="button" tabindex="0" aria-label="View applied scholarships">
                 <div class="stat-icon"><i class="fas fa-check"></i></div>
                 <div class="stat-value" id="appliedStat">0</div>
                 <div class="stat-label">Applied</div>
             </div>
-            <div class="stat-card" onclick="showTab('analytics')">
+            <div class="stat-card" onclick="showTab('analytics')" role="button" tabindex="0" aria-label="View total won scholarships">
                 <div class="stat-icon"><i class="fas fa-award"></i></div>
                 <div class="stat-value" id="wonStat">$0</div>
                 <div class="stat-label">Total Won</div>
@@ -1596,17 +1601,17 @@
         </div>
 
         <!-- Tabs -->
-        <div class="scholarship-tabs">
-            <button class="tab-btn active" onclick="showTab('discover')" id="discoverTab">
+        <div class="scholarship-tabs" role="tablist" aria-label="Scholarship sections">
+            <button class="tab-btn active" onclick="showTab('discover')" id="discoverTab" role="tab" aria-selected="true" aria-controls="discoverContent">
                 <i class="fas fa-search"></i> Discover
             </button>
-            <button class="tab-btn" onclick="showTab('tracker')" id="trackerTab">
+            <button class="tab-btn" onclick="showTab('tracker')" id="trackerTab" role="tab" aria-selected="false" aria-controls="trackerContent">
                 <i class="fas fa-clipboard-list"></i> Tracker
             </button>
-            <button class="tab-btn" onclick="showTab('analytics')" id="analyticsTab">
+            <button class="tab-btn" onclick="showTab('analytics')" id="analyticsTab" role="tab" aria-selected="false" aria-controls="analyticsContent">
                 <i class="fas fa-chart-line"></i> Analytics
             </button>
-            <button class="tab-btn" onclick="showTab('community')" id="communityTab">
+            <button class="tab-btn" onclick="showTab('community')" id="communityTab" role="tab" aria-selected="false" aria-controls="communityContent">
                 <i class="fas fa-users"></i> Community
             </button>
         </div>
@@ -1614,12 +1619,12 @@
         <!-- Main Grid -->
         <div class="scholarship-main-grid">
             <!-- Results Section -->
-            <div id="tabContent">
-                <div id="discoverContent">
+            <div id="tabContent" role="main">
+                <div id="discoverContent" role="tabpanel" aria-labelledby="discoverTab">
                     <div class="scholarship-results">
                         <div class="results-header">
                             <div class="results-title">Scholarship Opportunities</div>
-                            <select class="sort-select" id="sortSelect" onchange="sortScholarships()">
+                            <select class="sort-select" id="sortSelect" onchange="sortScholarships()" aria-label="Sort scholarships by">
                                 <option value="match">Best Match</option>
                                 <option value="amount">Highest Amount</option>
                                 <option value="deadline">Deadline (Soonest)</option>
@@ -2440,8 +2445,18 @@
         };
 
         window.saveScholarship = async function(scholarshipId) {
+            if (!checkOnline()) return;
+
             const scholarship = window.allScholarships.find(s => s.id === scholarshipId);
-            if (!scholarship) return;
+            if (!scholarship) {
+                showError('Scholarship not found');
+                return;
+            }
+
+            if (!window.currentUser) {
+                showError('Please login to save scholarships');
+                return;
+            }
 
             try {
                 await addDoc(collection(db, 'scholarshipApplications'), {
@@ -2453,18 +2468,34 @@
                     savedAt: serverTimestamp()
                 });
 
-                alert(`✅ ${scholarship.title} saved to your tracker!`);
+                showSuccess(`${scholarship.title} saved to your tracker!`);
+                if (window.analytics && window.analytics.scholarshipSaved) {
+                    window.analytics.scholarshipSaved(scholarship.title, scholarship.amount);
+                }
                 await loadScholarshipApplications();
                 updateStatistics();
             } catch (error) {
-                console.error('Error saving scholarship:', error);
+                logger.error('Error saving scholarship:', error);
+                showError('Failed to save scholarship. Please try again.');
+                if (window.reportError) {
+                    window.reportError(error, { scholarshipId, action: 'save' });
+                }
             }
         };
 
         window.viewDetails = function(scholarshipId) {
             const scholarship = window.allScholarships.find(s => s.id === scholarshipId);
-            if (!scholarship) return;
+            if (!scholarship) {
+                showError('Scholarship not found');
+                return;
+            }
 
+            // Track analytics
+            if (window.analytics && window.analytics.scholarshipViewed) {
+                window.analytics.scholarshipViewed(scholarship.title, scholarship.amount);
+            }
+
+            // For now, still use alert but formatted better (TODO: create modal)
             const reqList = scholarship.requirements.map(req => `• ${req}`).join('\n');
             alert(`${scholarship.title}\n\n${scholarship.description}\n\nRequirements:\n${reqList}\n\nDeadline: ${new Date(scholarship.deadline).toLocaleDateString()}`);
         };
@@ -2892,6 +2923,125 @@
         window.showExploreTab = function() {
             showLiveScholarshipsTab();
         };
+
+        // ============================================
+        // PRODUCTION SECURITY HELPERS
+        // ============================================
+
+        // XSS PROTECTION
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function safeSetHTML(element, content) {
+            if (!element || content === null || content === undefined) return;
+            if (!/<[a-z][\s\S]*>/i.test(content)) {
+                element.textContent = content;
+                return;
+            }
+            element.innerHTML = sanitizeHTML(content);
+        }
+
+        // INPUT VALIDATION
+        function validateInput(input, type = 'text') {
+            if (!input) return '';
+            let sanitized = String(input).trim();
+
+            switch (type) {
+                case 'number':
+                    sanitized = parseInt(sanitized, 10);
+                    return isNaN(sanitized) ? 0 : sanitized;
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+                case 'url':
+                    try {
+                        new URL(sanitized);
+                        return sanitized;
+                    } catch {
+                        return '';
+                    }
+                case 'text':
+                default:
+                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            }
+        }
+
+        // OFFLINE DETECTION
+        let isOffline = !navigator.onLine;
+
+        window.addEventListener('online', () => {
+            isOffline = false;
+            showSuccess('✅ Connection restored');
+        });
+
+        window.addEventListener('offline', () => {
+            isOffline = true;
+            showError('⚠️ You are offline - changes may not save');
+        });
+
+        function checkOnline() {
+            if (isOffline) {
+                showError('You are offline. Please check your internet connection.');
+                return false;
+            }
+            return true;
+        }
+
+        // PRODUCTION-SAFE LOGGING
+        const logger = {
+            log: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.log(...args);
+                }
+            },
+            error: (...args) => {
+                console.error(...args);
+                if (window.reportError && args[0] instanceof Error) {
+                    window.reportError(args[0], { context: args.slice(1) });
+                }
+            },
+            warn: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.warn(...args);
+                }
+            }
+        };
+
+        // USER-FACING ERROR/SUCCESS MESSAGES
+        function showError(message) {
+            // Create error notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 80px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.setAttribute('role', 'alert');
+            notification.setAttribute('aria-live', 'assertive');
+            safeSetHTML(notification, message);
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        function showSuccess(message) {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 80px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.setAttribute('role', 'status');
+            notification.setAttribute('aria-live', 'polite');
+            safeSetHTML(notification, message);
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Make functions global
+        window.showErrorMessage = showError;
+        window.showSuccessMessage = showSuccess;
+        window.sanitizeHTML = sanitizeHTML;
+        window.safeSetHTML = safeSetHTML;
+        window.validateInput = validateInput;
+        window.checkOnline = checkOnline;
+        window.logger = logger;
+
     </script>
 </body>
 </html>

@@ -3195,6 +3195,124 @@
 
         console.log('🎉 Dashboard script loaded and ready!');
 
+        // ============================================
+        // PRODUCTION SECURITY HELPERS
+        // ============================================
+
+        // XSS PROTECTION
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function safeSetHTML(element, content) {
+            if (!element || content === null || content === undefined) return;
+            if (!/<[a-z][\s\S]*>/i.test(content)) {
+                element.textContent = content;
+                return;
+            }
+            element.innerHTML = sanitizeHTML(content);
+        }
+
+        // INPUT VALIDATION
+        function validateInput(input, type = 'text') {
+            if (!input) return '';
+            let sanitized = String(input).trim();
+
+            switch (type) {
+                case 'number':
+                    sanitized = parseInt(sanitized, 10);
+                    return isNaN(sanitized) ? 0 : sanitized;
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
+                case 'url':
+                    try {
+                        new URL(sanitized);
+                        return sanitized;
+                    } catch {
+                        return '';
+                    }
+                case 'text':
+                default:
+                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            }
+        }
+
+        // OFFLINE DETECTION
+        let isOffline = !navigator.onLine;
+
+        window.addEventListener('online', () => {
+            isOffline = false;
+            showSuccess('✅ Connection restored');
+        });
+
+        window.addEventListener('offline', () => {
+            isOffline = true;
+            showError('⚠️ You are offline - changes may not save');
+        });
+
+        function checkOnline() {
+            if (isOffline) {
+                showError('You are offline. Please check your internet connection.');
+                return false;
+            }
+            return true;
+        }
+
+        // PRODUCTION-SAFE LOGGING
+        const logger = {
+            log: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.log(...args);
+                }
+            },
+            error: (...args) => {
+                console.error(...args);
+                if (window.reportError && args[0] instanceof Error) {
+                    window.reportError(args[0], { context: args.slice(1) });
+                }
+            },
+            warn: (...args) => {
+                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES.enableDebugLogs) {
+                    console.warn(...args);
+                }
+            }
+        };
+
+        // USER-FACING ERROR/SUCCESS MESSAGES
+        function showError(message) {
+            // Create error notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 80px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.setAttribute('role', 'alert');
+            notification.setAttribute('aria-live', 'assertive');
+            safeSetHTML(notification, message);
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        function showSuccess(message) {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 80px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.setAttribute('role', 'status');
+            notification.setAttribute('aria-live', 'polite');
+            safeSetHTML(notification, message);
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Make functions global
+        window.showErrorMessage = showError;
+        window.showSuccessMessage = showSuccess;
+        window.sanitizeHTML = sanitizeHTML;
+        window.safeSetHTML = safeSetHTML;
+        window.validateInput = validateInput;
+        window.checkOnline = checkOnline;
+        window.logger = logger;
+
     </script>
 </body>
 </html>
