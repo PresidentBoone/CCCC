@@ -20,24 +20,25 @@
                         window.location.hostname === '127.0.0.1';
 
   if (isDevelopment) {
-    // Development: Show error that env vars need to be set
-    console.warn('⚠️ DEVELOPMENT MODE: Firebase config not set');
-    console.warn('For local testing, temporarily add your Firebase config here');
-
-    window.FIREBASE_CONFIG = null;
-
-    // Uncomment and fill in for local testing:
-    /*
-    window.FIREBASE_CONFIG = {
-      apiKey: "your-dev-api-key",
-      authDomain: "your-project.firebaseapp.com",
-      projectId: "your-project-id",
-      storageBucket: "your-project.firebasestorage.app",
-      messagingSenderId: "your-sender-id",
-      appId: "your-app-id",
-      measurementId: "your-measurement-id"
-    };
-    */
+    // Development: Use config from config.js
+    // config.js should already be loaded before this script
+    if (window.APP_CONFIG && window.APP_CONFIG.FIREBASE_CONFIG) {
+      window.FIREBASE_CONFIG = window.APP_CONFIG.FIREBASE_CONFIG;
+      console.log('✅ Development: Using Firebase config from config.js');
+    } else {
+      console.warn('⚠️ DEVELOPMENT MODE: Waiting for config.js to load...');
+      // Give config.js a moment to load if it hasn't yet
+      setTimeout(() => {
+        if (window.APP_CONFIG && window.APP_CONFIG.FIREBASE_CONFIG) {
+          window.FIREBASE_CONFIG = window.APP_CONFIG.FIREBASE_CONFIG;
+          console.log('✅ Development: Firebase config loaded');
+          window.dispatchEvent(new CustomEvent('firebaseConfigLoaded'));
+        } else {
+          console.error('❌ config.js not loaded - Firebase will not work');
+          window.FIREBASE_CONFIG = null;
+        }
+      }, 100);
+    }
   } else {
     // Production: These will be replaced by Vercel environment variables
     // through a build script or API endpoint
