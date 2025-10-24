@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Test Prep - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar - Same as myapp.html */
+        .cc-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(160, 123, 204, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .cc-navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cc-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cc-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cc-logo:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cc-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cc-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1;
+        }
+
+        .cc-brand-text h1, .cc-brand-text h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .cc-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cc-theme-toggle {
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cc-theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow);
+        }
+
+        .cc-profile-dropdown {
+            position: relative;
+        }
+
+        .cc-profile-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+        }
+
+        .cc-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(160, 123, 204, 0.2);
+        }
+
+        .cc-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.75rem);
+            right: 0;
+            background: var(--primary-bg);
+            box-shadow: 0 10px 40px rgba(42, 53, 122, 0.15);
+            border-radius: 20px;
+            padding: 0.75rem;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.9);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(160, 123, 204, 0.15);
+        }
+
+        .cc-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .cc-dropdown-header {
+            padding: 1.25rem;
+            border-bottom: 2px solid rgba(160, 123, 204, 0.1);
+            margin-bottom: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .cc-dropdown-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cc-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .cc-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cc-dropdown-link:hover {
+            background: var(--secondary-bg);
+            transform: translateX(4px);
+        }
+
+        .cc-logout-link {
+            color: var(--danger-color) !important;
+        }
+
+        .cc-profile-loading {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-bg);
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Main Container */
+        .testprep-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient);
+            border-radius: 32px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(160, 123, 204, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(42, 53, 122, 0.2);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-cta {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .card-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 123, 204, 0.4);
+        }
+
+        .card-cta.secondary {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 2px solid rgba(160, 123, 204, 0.2);
+        }
+
+        /* Progress Section */
+        .progress-overview {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 2px solid var(--accent-color);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .progress-item {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(160, 123, 204, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Test Type Badges */
+        .test-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .test-badge.sat {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .test-badge.act {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .test-badge.psat {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        /* Recommendation Cards */
+        .recommendations {
+            background: var(--primary-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-item {
+            background: var(--secondary-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .recommendation-item.high-priority {
+            border-left-color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .recommendation-item.good-progress {
+            border-left-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(160, 123, 204, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+
+        /* Responsive Design */
+        /* ========================================
+           MOBILE RESPONSIVENESS - COMPREHENSIVE
+           ======================================== */
+
+        @media (max-width: 768px) {
+            /* Navbar Adjustments */
+            .cc-navbar {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .cc-brand-text h2 {
+                font-size: 0.9rem;
+            }
+
+            .cc-nav-right {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+
+            /* Hero Section */
+            .hero-section {
+                padding: 6rem 1rem 4rem !important;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem !important;
+            }
+
+            .hero-section p {
+                font-size: 1rem !important;
+            }
+
+            /* Dashboard Grid */
+            .dashboard-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+
+            /* Stats Cards */
+            .stat-card {
+                padding: 1.25rem !important;
+            }
+
+            .stat-value {
+                font-size: 2rem !important;
+            }
+
+            /* Test Categories */
+            .test-categories {
+                grid-template-columns: 1fr !important;
+            }
+
+            .test-card {
+                padding: 1.5rem !important;
+            }
+
+            /* Container Padding */
+            .testprep-container {
+                padding: 1rem !important;
+            }
+
+            /* Buttons */
+            .cta-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Ultra-mobile optimizations */
+            body {
+                padding-top: 100px;
+            }
+
+            .cc-navbar {
+                padding: 0.5rem;
+            }
+
+            .cc-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cc-brand-text h1 {
+                font-size: 1rem;
+            }
+
+            .cc-brand-text h2 {
+                font-size: 0.8rem;
+            }
+
+            /* Hero */
+            .hero-section {
+                padding: 5rem 0.75rem 3rem !important;
+            }
+
+            .hero-section h1 {
+                font-size: 1.75rem !important;
+            }
+
+            .hero-section p {
+                font-size: 0.95rem !important;
+            }
+
+            /* Stats */
+            .stat-card {
+                padding: 1rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.85rem !important;
+            }
+
+            .stat-value {
+                font-size: 1.75rem !important;
+            }
+
+            /* Test Cards */
+            .test-card h3 {
+                font-size: 1.1rem !important;
+            }
+
+            .test-card p {
+                font-size: 0.9rem !important;
+            }
+
+            /* Subject Grid */
+            .subject-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem;
+            }
+
+            /* Progress Bars */
+            .progress-bar {
+                height: 6px !important;
+            }
+
+            /* Modals */
+            .modal {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            /* Small mobile devices */
+            .cc-brand-text {
+                display: none;
+            }
+
+            .hero-section h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .btn {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <!-- Error Handling System -->
+    <script src="/js/error-boundary.js"></script>
+    <script src="/js/error-handler.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Navigation -->
+    <nav class="cc-navbar">
+        <a href="index.html" class="cc-logo-section">
+            <div class="cc-logo">
+                <img id="ccNavbarLogo" src="images/whiteclearcc.png" alt="College Climb Logo">
+            </div>
+            <div class="cc-brand-text">
+                <h1>College</h1>
+                <h2>Climb</h2>
+            </div>
+        </a>
+
+        <div class="cc-nav-right">
+            <button class="cc-theme-toggle" id="ccThemeToggle">☀️</button>
+
+            <div class="cc-profile-dropdown" id="ccProfileDropdown">
+                <div class="cc-profile-button" id="ccProfileButton">
+                    <div class="cc-profile-loading" id="ccProfileLoading"></div>
+                    <div id="ccProfileContent" style="display: none;">
+                        <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
+                    </div>
+                </div>
+
+                <div class="cc-dropdown-menu" id="ccDropdownMenu">
+                    <div class="cc-dropdown-header">
+                        <div class="cc-dropdown-name" id="ccDropdownName">Guest</div>
+                        <div class="cc-dropdown-email" id="ccDropdownEmail"></div>
+                    </div>
+
+                    <a href='/dashboard' class="cc-dropdown-link">
+                        <span>📊</span> Dashboard
+                    </a>
+                    <a href='/essay-coach' class="cc-dropdown-link">
+                        <span>✍️</span> Essays
+                    </a>
+                    <a href="scholarship.html" class="cc-dropdown-link">
+                        <span>💰</span> Scholarships
+                    </a>
+                    <a href="myapp.html" class="cc-dropdown-link">
+                        <span>📋</span> My Applications
+                    </a>
+                    <a href='/profile' class="cc-dropdown-link">
+                        <span>👤</span> Profile
+                    </a>
+                    <a href="#" class="cc-dropdown-link cc-logout-link" id="ccLogoutBtn">
+                        <span>🚪</span> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="testprep-container">
+        <!-- Hero Section -->
+        <div class="hero-section fade-in">
+            <div class="hero-content">
+                <h1>🎯 AI-Powered Test Prep</h1>
+                <p>Master the SAT, ACT, and PSAT with personalized AI coaching that adapts to your learning style</p>
+                
+                <div class="hero-stats" id="heroStats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="dashboardXP">0</div>
+                        <div class="hero-stat-label">Total XP</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="dashboardLevel">1</div>
+                        <div class="hero-stat-label">Level</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="dashboardQuestions">0</div>
+                        <div class="hero-stat-label">Questions Completed</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="dashboardScore">--</div>
+                        <div class="hero-stat-label">Current Score</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="dashboardStreak">0</div>
+                        <div class="hero-stat-label">🔥 Study Streak</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendations -->
+        <div class="recommendations fade-in">
+            <div class="section-header">
+                <div class="section-icon">🤖</div>
+                <div>
+                    <div class="section-title">AI Recommendations</div>
+                    <p style="color: var(--text-secondary); margin: 0;">Personalized insights based on your performance</p>
+                </div>
+            </div>
+            <div id="aiRecommendations">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid fade-in">
+            <!-- Diagnostic Test -->
+            <div class="dashboard-card">
+                <div class="card-icon">📊</div>
+                <span class="test-badge sat">SAT • ACT • PSAT</span>
+                <h3 class="card-title">Take Diagnostic Test</h3>
+                <p class="card-description">
+                    Start with a comprehensive diagnostic to identify your strengths and weaknesses across all test sections.
+                </p>
+                <button class="card-cta" onclick="window.location.href='/testprep-practice?sessionType=diagnostic'">
+                    <i class="fas fa-clipboard-check"></i> Start Diagnostic
+                </button>
+            </div>
+
+            <!-- Adaptive Practice -->
+            <div class="dashboard-card">
+                <div class="card-icon">🎯</div>
+                <span class="test-badge act">Adaptive Learning</span>
+                <h3 class="card-title">Adaptive Practice</h3>
+                <p class="card-description">
+                    AI-powered practice sessions that focus on your weak areas and adjust difficulty in real-time.
+                </p>
+                <button class="card-cta" onclick="window.location.href='/testprep-practice'">
+                    <i class="fas fa-brain"></i> Start Practice
+                </button>
+            </div>
+
+            <!-- Subject-Specific -->
+            <div class="dashboard-card">
+                <div class="card-icon">📚</div>
+                <span class="test-badge psat">By Subject</span>
+                <h3 class="card-title">Subject-Specific Practice</h3>
+                <p class="card-description">
+                    Focus on specific subjects: Math, Reading, Writing, Science, or English to master each section.
+                </p>
+                <button class="card-cta secondary" onclick="showSubjectSelector()">
+                    <i class="fas fa-book-open"></i> Choose Subject
+                </button>
+            </div>
+
+            <!-- Full Practice Tests -->
+            <div class="dashboard-card">
+                <div class="card-icon">⏱️</div>
+                <span class="test-badge sat">Full Length</span>
+                <h3 class="card-title">Full Practice Tests</h3>
+                <p class="card-description">
+                    Take complete, timed practice tests that simulate the real testing experience.
+                </p>
+                <button class="card-cta secondary" onclick="window.location.href='/testprep-practice?sessionType=full-test'">
+                    <i class="fas fa-clock"></i> Take Full Test
+                </button>
+            </div>
+
+            <!-- Review Flagged -->
+            <div class="dashboard-card">
+                <div class="card-icon">🚩</div>
+                <span class="test-badge act">Review</span>
+                <h3 class="card-title">Review Flagged Questions</h3>
+                <p class="card-description">
+                    Revisit questions you've flagged for review using our spaced repetition system.
+                </p>
+                <button class="card-cta secondary" onclick="reviewFlaggedQuestions()">
+                    <i class="fas fa-flag"></i> Review (<span id="flaggedCount">0</span>)
+                </button>
+            </div>
+
+            <!-- Analytics -->
+            <div class="dashboard-card">
+                <div class="card-icon">📈</div>
+                <span class="test-badge psat">Analytics</span>
+                <h3 class="card-title">Performance Analytics</h3>
+                <p class="card-description">
+                    Deep dive into your performance data, track progress, and identify trends over time.
+                </p>
+                <button class="card-cta secondary" onclick="showAnalytics()">
+                    <i class="fas fa-chart-line"></i> View Analytics
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="progress-overview fade-in">
+            <div class="section-header">
+                <div class="section-icon">📊</div>
+                <div>
+                    <div class="section-title">Your Progress</div>
+                    <p style="color: var(--text-secondary); margin: 0;">Track your improvement across all test sections</p>
+                </div>
+            </div>
+
+            <div class="progress-grid" id="progressGrid">
+                <div class="progress-item">
+                    <div class="progress-label">SAT Math</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="satMathProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="satMathCorrect">0/0 correct</span>
+                        <span id="satMathScore">--</span>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">SAT Reading & Writing</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="satReadingProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="satReadingCorrect">0/0 correct</span>
+                        <span id="satReadingScore">--</span>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">ACT Math</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="actMathProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="actMathCorrect">0/0 correct</span>
+                        <span id="actMathScore">--</span>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">ACT English</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="actEnglishProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="actEnglishCorrect">0/0 correct</span>
+                        <span id="actEnglishScore">--</span>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">ACT Reading</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="actReadingProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="actReadingCorrect">0/0 correct</span>
+                        <span id="actReadingScore">--</span>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">ACT Science</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%" id="actScienceProgress"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="actScienceCorrect">0/0 correct</span>
+                        <span id="actScienceScore">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+
+        // Fetch with timeout helper (60 second timeout for API calls)
+        async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timed out. The server is taking too long to respond. Please try again.');
+                }
+                throw error;
+            }
+        }
+
+        // Initialize Firebase with environment-based config (same pattern as Essay Coach)
+        async function initializeFirebase() {
+            let firebaseConfig;
+
+            try {
+                // Try to load from environment first (production)
+                const response = await fetchWithTimeout('/api/config');
+                if (response.ok) {
+                    const config = await response.json();
+                    firebaseConfig = config.firebase;
+                    console.log('✅ Firebase config loaded from environment');
+                } else {
+                    throw new Error('Config API unavailable');
+                }
+            } catch (error) {
+                // Fallback to hardcoded config (development only)
+                console.warn('⚠️ Using fallback Firebase config (development mode)');
+                firebaseConfig = {
+                    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+                    authDomain: "collegeclimb-ai.firebaseapp.com",
+                    projectId: "collegeclimb-ai",
+                    storageBucket: "collegeclimb-ai.firebasestorage.app",
+                    messagingSenderId: "187139654658",
+                    appId: "1:187139654658:web:4a6cf4c43095f03212931b"
+                };
+            }
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            return { app, auth, db };
+        }
+
+        // Initialize Firebase
+        const firebasePromise = initializeFirebase();
+        let auth, db;
+
+        let currentUser = null;
+        let userData = null;
+        let testPrepData = null;
+
+        // ============================================
+        // OFFICIAL SAT/ACT SCORE CONVERSION TABLES
+        // Based on College Board and ACT scoring guides
+        // ============================================
+
+        // SAT Math: 58 questions total (20 no-calc + 38 calc)
+        const SAT_MATH_CONVERSION = {
+            0: 200, 1: 200, 2: 210, 3: 230, 4: 240, 5: 260, 6: 280, 7: 290, 8: 310,
+            9: 320, 10: 330, 11: 340, 12: 360, 13: 370, 14: 380, 15: 390, 16: 410,
+            17: 420, 18: 430, 19: 440, 20: 450, 21: 460, 22: 470, 23: 480, 24: 480,
+            25: 490, 26: 500, 27: 510, 28: 520, 29: 520, 30: 530, 31: 540, 32: 550,
+            33: 560, 34: 560, 35: 570, 36: 580, 37: 590, 38: 600, 39: 600, 40: 610,
+            41: 620, 42: 630, 43: 640, 44: 650, 45: 660, 46: 670, 47: 680, 48: 690,
+            49: 700, 50: 710, 51: 730, 52: 740, 53: 750, 54: 760, 55: 780, 56: 790,
+            57: 800, 58: 800
+        };
+
+        // SAT Reading/Writing: 52 questions
+        const SAT_READING_CONVERSION = {
+            0: 200, 1: 200, 2: 210, 3: 230, 4: 240, 5: 260, 6: 270, 7: 280, 8: 290,
+            9: 300, 10: 310, 11: 320, 12: 330, 13: 340, 14: 350, 15: 360, 16: 370,
+            17: 380, 18: 380, 19: 390, 20: 400, 21: 410, 22: 420, 23: 430, 24: 440,
+            25: 450, 26: 460, 27: 470, 28: 480, 29: 480, 30: 490, 31: 500, 32: 510,
+            33: 520, 34: 530, 35: 540, 36: 550, 37: 560, 38: 570, 39: 580, 40: 590,
+            41: 600, 42: 610, 43: 620, 44: 630, 45: 650, 46: 670, 47: 690, 48: 710,
+            49: 730, 50: 760, 51: 780, 52: 800
+        };
+
+        // ACT Scoring: Raw score to scaled score (1-36)
+        const ACT_CONVERSION = {
+            math: {
+                0: 1, 1: 1, 2: 5, 3: 8, 4: 10, 5: 11, 6: 12, 7: 13, 8: 14, 9: 14,
+                10: 15, 11: 15, 12: 16, 13: 16, 14: 17, 15: 17, 16: 18, 17: 18, 18: 18,
+                19: 19, 20: 19, 21: 19, 22: 20, 23: 20, 24: 20, 25: 21, 26: 21, 27: 21,
+                28: 22, 29: 22, 30: 23, 31: 23, 32: 24, 33: 24, 34: 25, 35: 25, 36: 26,
+                37: 26, 38: 27, 39: 27, 40: 28, 41: 28, 42: 28, 43: 29, 44: 29, 45: 30,
+                46: 30, 47: 31, 48: 31, 49: 32, 50: 33, 51: 33, 52: 34, 53: 34, 54: 35,
+                55: 35, 56: 36, 57: 36, 58: 36, 59: 36, 60: 36
+            },
+            english: {
+                0: 1, 5: 5, 10: 9, 15: 11, 20: 13, 25: 15, 30: 16, 35: 18, 40: 20,
+                45: 22, 50: 24, 55: 26, 60: 28, 65: 30, 70: 33, 75: 36
+            },
+            reading: {
+                0: 1, 2: 5, 4: 8, 6: 10, 8: 12, 10: 13, 12: 15, 14: 16, 16: 18,
+                18: 19, 20: 20, 22: 22, 24: 23, 26: 25, 28: 26, 30: 28, 32: 30,
+                34: 32, 36: 34, 38: 35, 40: 36
+            },
+            science: {
+                0: 1, 2: 5, 4: 8, 6: 10, 8: 12, 10: 13, 12: 15, 14: 16, 16: 18,
+                18: 19, 20: 20, 22: 22, 24: 23, 26: 25, 28: 26, 30: 28, 32: 30,
+                34: 32, 36: 34, 38: 35, 40: 36
+            }
+        };
+
+        function calculateSATScore(correctCount, totalQuestions, subject) {
+            let expectedTotal, conversionTable;
+
+            if (subject.includes('math')) {
+                expectedTotal = 58;
+                conversionTable = SAT_MATH_CONVERSION;
+            } else {
+                expectedTotal = 52;
+                conversionTable = SAT_READING_CONVERSION;
+            }
+
+            const accuracy = correctCount / totalQuestions;
+            const estimatedRawScore = Math.round(accuracy * expectedTotal);
+
+            return conversionTable[estimatedRawScore] || 200;
+        }
+
+        function calculateACTScore(correctCount, totalQuestions, subject) {
+            let sectionName = 'math';
+            if (subject.includes('english')) sectionName = 'english';
+            else if (subject.includes('reading')) sectionName = 'reading';
+            else if (subject.includes('science')) sectionName = 'science';
+
+            const conversionTable = ACT_CONVERSION[sectionName];
+            const expectedTotals = { math: 60, english: 75, reading: 40, science: 40 };
+            const expectedTotal = expectedTotals[sectionName];
+
+            const accuracy = correctCount / totalQuestions;
+            const estimatedRawScore = Math.round(accuracy * expectedTotal);
+
+            let closestKey = 0;
+            for (let key in conversionTable) {
+                if (parseInt(key) <= estimatedRawScore) {
+                    closestKey = parseInt(key);
+                }
+            }
+
+            return conversionTable[closestKey] || 1;
+        }
+
+        function calculateScore(correctCount, totalQuestions, subject) {
+            if (subject.startsWith('sat')) {
+                return calculateSATScore(correctCount, totalQuestions, subject);
+            } else if (subject.startsWith('act')) {
+                return calculateACTScore(correctCount, totalQuestions, subject);
+            } else if (subject.startsWith('psat')) {
+                const satScore = calculateSATScore(correctCount, totalQuestions, subject);
+                return Math.min(satScore, 760);
+            }
+            return 0;
+        }
+
+        // Initialize auth after Firebase is ready
+        (async () => {
+            const firebase = await firebasePromise;
+            auth = firebase.auth;
+            db = firebase.db;
+
+            // Initialize
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    await loadTestPrepData();
+                    initNavbar();
+                    updateDashboard();
+                    generateAIRecommendations();
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+        })();
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                    updateNavbarUI();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Load test prep data
+        async function loadTestPrepData() {
+            try {
+                const testPrepDoc = await getDoc(doc(db, 'testprep', currentUser.uid));
+                if (testPrepDoc.exists()) {
+                    testPrepData = testPrepDoc.data();
+
+                    // 🎮 ENSURE GAMIFICATION DATA EXISTS - Add if missing
+                    let needsUpdate = false;
+
+                    if (testPrepData.totalXP === undefined) {
+                        testPrepData.totalXP = 0;
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.level === undefined) {
+                        testPrepData.level = 1;
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.hearts === undefined) {
+                        testPrepData.hearts = 5;
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.heartRefillTime === undefined) {
+                        testPrepData.heartRefillTime = null;
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.unlockedBadges === undefined) {
+                        testPrepData.unlockedBadges = [];
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.soundEnabled === undefined) {
+                        testPrepData.soundEnabled = true;
+                        needsUpdate = true;
+                    }
+                    if (testPrepData.confettiEnabled === undefined) {
+                        testPrepData.confettiEnabled = true;
+                        needsUpdate = true;
+                    }
+
+                    if (needsUpdate) {
+                        await setDoc(doc(db, 'testprep', currentUser.uid), testPrepData, { merge: true });
+                    }
+                } else {
+                    // Initialize test prep data with full gamification
+                    testPrepData = {
+                        questionsCompleted: 0,
+                        currentScore: { sat: 0, act: 0, psat: 0 },
+                        initialScore: { sat: 0, act: 0, psat: 0 },
+                        studyStreak: 0,
+                        lastStudyDate: null,
+                        flaggedQuestions: [],
+                        subjectProgress: {
+                            satMath: { correct: 0, total: 0, score: 0 },
+                            satReading: { correct: 0, total: 0, score: 0 },
+                            actMath: { correct: 0, total: 0, score: 0 },
+                            actEnglish: { correct: 0, total: 0, score: 0 },
+                            actReading: { correct: 0, total: 0, score: 0 },
+                            actScience: { correct: 0, total: 0, score: 0 }
+                        },
+                        weakAreas: [],
+                        strongAreas: [],
+                        // 🎮 GAMIFICATION DATA
+                        totalXP: 0,
+                        level: 1,
+                        hearts: 5,
+                        heartRefillTime: null,
+                        unlockedBadges: [],
+                        soundEnabled: true,
+                        confettiEnabled: true
+                    };
+                    await setDoc(doc(db, 'testprep', currentUser.uid), testPrepData);
+                }
+            } catch (error) {
+                console.error('Error loading test prep data:', error);
+            }
+        }
+
+        // Update dashboard with user data
+        function updateDashboard() {
+            if (!testPrepData) return;
+
+            // 🎮 GAMIFICATION STATS - Update XP, Level, Questions, Score, Streak
+            const dashboardXP = document.getElementById('dashboardXP');
+            const dashboardLevel = document.getElementById('dashboardLevel');
+            const dashboardQuestions = document.getElementById('dashboardQuestions');
+            const dashboardScore = document.getElementById('dashboardScore');
+            const dashboardStreak = document.getElementById('dashboardStreak');
+
+            if (dashboardXP) {
+                const xp = testPrepData.totalXP || 0;
+                animateCounter(dashboardXP, 0, xp, 1000);
+            }
+
+            if (dashboardLevel) {
+                const level = testPrepData.level || 1;
+                animateCounter(dashboardLevel, 0, level, 800);
+            }
+
+            if (dashboardQuestions) {
+                const questions = testPrepData.questionsCompleted || 0;
+                animateCounter(dashboardQuestions, 0, questions, 1200);
+            }
+
+            if (dashboardScore) {
+                const currentScore = testPrepData.currentScore?.sat || testPrepData.currentScore?.act || 0;
+                if (currentScore > 0) {
+                    animateCounter(dashboardScore, 0, currentScore, 1000);
+                } else {
+                    dashboardScore.textContent = '--';
+                }
+            }
+
+            if (dashboardStreak) {
+                const streak = testPrepData.studyStreak || 0;
+                animateCounter(dashboardStreak, 0, streak, 600);
+            }
+
+            // Update progress bars
+            updateProgressBars();
+
+            // Update flagged count
+            document.getElementById('flaggedCount').textContent = testPrepData.flaggedQuestions?.length || 0;
+        }
+
+        // 🎮 ANIMATE COUNTER - Smooth number animations
+        function animateCounter(element, start, end, duration) {
+            if (!element) return;
+
+            const startTime = performance.now();
+            const difference = end - start;
+
+            function updateCounter(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth animation
+                const easeOutQuad = progress => 1 - (1 - progress) * (1 - progress);
+                const current = Math.floor(start + (difference * easeOutQuad(progress)));
+
+                element.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = end;
+                }
+            }
+
+            requestAnimationFrame(updateCounter);
+        }
+
+        function calculateImprovement() {
+            if (!testPrepData.initialScore || !testPrepData.currentScore) return 0;
+            
+            const satImprovement = (testPrepData.currentScore.sat || 0) - (testPrepData.initialScore.sat || 0);
+            const actImprovement = (testPrepData.currentScore.act || 0) - (testPrepData.initialScore.act || 0);
+            
+            return Math.max(satImprovement, actImprovement);
+        }
+
+        function updateProgressBars() {
+            const subjects = ['satMath', 'satReading', 'actMath', 'actEnglish', 'actReading', 'actScience'];
+            
+            subjects.forEach(subject => {
+                const data = testPrepData.subjectProgress[subject];
+                if (!data) return;
+
+                const percentage = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                
+                const progressBar = document.getElementById(`${subject}Progress`);
+                if (progressBar) {
+                    setTimeout(() => {
+                        progressBar.style.width = `${percentage}%`;
+                    }, 100);
+                }
+
+                const correctSpan = document.getElementById(`${subject}Correct`);
+                if (correctSpan) {
+                    correctSpan.textContent = `${data.correct}/${data.total} correct`;
+                }
+
+                const scoreSpan = document.getElementById(`${subject}Score`);
+                if (scoreSpan && data.score > 0) {
+                    scoreSpan.textContent = data.score;
+                }
+            });
+        }
+
+        // Generate AI recommendations
+        async function generateAIRecommendations() {
+            const container = document.getElementById('aiRecommendations');
+            
+            try {
+                const recommendations = [];
+
+                // Check if diagnostic is needed
+                if (testPrepData.questionsCompleted === 0) {
+                    recommendations.push({
+                        type: 'high-priority',
+                        icon: '🎯',
+                        title: 'Take Your Diagnostic Test',
+                        message: 'Start with a diagnostic test to establish your baseline and identify areas for improvement. This will help us create a personalized study plan just for you.'
+                    });
+                }
+
+                // Check for weak areas
+                if (testPrepData.weakAreas && testPrepData.weakAreas.length > 0) {
+                    const weakestArea = testPrepData.weakAreas[0];
+                    recommendations.push({
+                        type: 'high-priority',
+                        icon: '⚠️',
+                        title: `Focus on ${formatSubjectName(weakestArea)}`,
+                        message: `Your weakest area is ${formatSubjectName(weakestArea)}. We recommend dedicating 30 minutes daily to practice questions in this section.`
+                    });
+                }
+
+                // Check study streak
+                if (testPrepData.studyStreak >= 7) {
+                    recommendations.push({
+                        type: 'good-progress',
+                        icon: '🔥',
+                        title: 'Amazing Study Streak!',
+                        message: `You've maintained a ${testPrepData.studyStreak}-day study streak! Keep up the excellent work. Consistency is key to score improvement.`
+                    });
+                } else if (testPrepData.lastStudyDate) {
+                    const daysSince = Math.floor((Date.now() - new Date(testPrepData.lastStudyDate).getTime()) / (1000 * 60 * 60 * 24));
+                    if (daysSince > 2) {
+                        recommendations.push({
+                            type: 'normal',
+                            icon: '📅',
+                            title: 'Time to Practice',
+                            message: `It's been ${daysSince} days since your last practice session. Regular practice helps retain concepts and build test-taking skills.`
+                        });
+                    }
+                }
+
+                // Check flagged questions
+                if (testPrepData.flaggedQuestions && testPrepData.flaggedQuestions.length >= 10) {
+                    recommendations.push({
+                        type: 'normal',
+                        icon: '🚩',
+                        title: 'Review Flagged Questions',
+                        message: `You have ${testPrepData.flaggedQuestions.length} flagged questions for review. Revisiting these will help reinforce your understanding.`
+                    });
+                }
+
+                // Score improvement recommendation
+                const improvement = calculateImprovement();
+                if (improvement > 0) {
+                    recommendations.push({
+                        type: 'good-progress',
+                        icon: '📈',
+                        title: 'Great Progress!',
+                        message: `You've improved your score by ${improvement} points! Continue practicing to reach your target score.`
+                    });
+                }
+
+                // User profile-based recommendations
+                if (userData?.questionnaire) {
+                    const targetSchools = userData.questionnaire.targetSchools || [];
+                    if (targetSchools.length > 0) {
+                        const targetScore = calculateTargetScore(targetSchools);
+                        recommendations.push({
+                            type: 'normal',
+                            icon: '🎓',
+                            title: 'Target Score Guidance',
+                            message: `Based on your target schools (${targetSchools[0]}${targetSchools.length > 1 ? ' and others' : ''}), aim for a score of ${targetScore} or higher to be competitive.`
+                        });
+                    }
+                }
+
+                // Default recommendation if none exist
+                if (recommendations.length === 0) {
+                    recommendations.push({
+                        type: 'normal',
+                        icon: '🚀',
+                        title: 'Ready to Start?',
+                        message: 'Begin your test prep journey with a diagnostic test or jump straight into adaptive practice sessions tailored to your goals.'
+                    });
+                }
+
+                // Render recommendations
+                container.innerHTML = recommendations.map(rec => `
+                    <div class="recommendation-item ${rec.type}">
+                        <div style="display: flex; align-items: start; gap: 1rem;">
+                            <div style="font-size: 2rem;">${rec.icon}</div>
+                            <div style="flex: 1;">
+                                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+                                    ${rec.title}
+                                </h4>
+                                <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">
+                                    ${rec.message}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error generating recommendations:', error);
+                container.innerHTML = '<p style="color: var(--text-secondary);">Unable to load recommendations.</p>';
+            }
+        }
+
+        function formatSubjectName(subject) {
+            const names = {
+                'satMath': 'SAT Math',
+                'satReading': 'SAT Reading & Writing',
+                'actMath': 'ACT Math',
+                'actEnglish': 'ACT English',
+                'actReading': 'ACT Reading',
+                'actScience': 'ACT Science'
+            };
+            return names[subject] || subject;
+        }
+
+        function calculateTargetScore(schools) {
+            // Simplified target score calculation
+            const prestigiousSchools = ['Harvard University', 'Stanford University', 'MIT', 'Yale University', 'Princeton University'];
+            const hasPrestigious = schools.some(school => prestigiousSchools.includes(school));
+            
+            if (hasPrestigious) return '1500+ (SAT) / 34+ (ACT)';
+            return '1400+ (SAT) / 30+ (ACT)';
+        }
+
+        // Subject selector modal
+        window.showSubjectSelector = function() {
+            const subjects = [
+                { id: 'sat-math', name: 'SAT Math', icon: '🔢', test: 'SAT' },
+                { id: 'sat-reading', name: 'SAT Reading & Writing', icon: '📚', test: 'SAT' },
+                { id: 'act-math', name: 'ACT Math', icon: '📐', test: 'ACT' },
+                { id: 'act-english', name: 'ACT English', icon: '✍️', test: 'ACT' },
+                { id: 'act-reading', name: 'ACT Reading', icon: '📖', test: 'ACT' },
+                { id: 'act-science', name: 'ACT Science', icon: '🔬', test: 'ACT' }
+            ];
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(4px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: var(--primary-bg); border-radius: 24px; padding: 2.5rem; max-width: 800px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">Choose Subject</h2>
+                        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="width: 40px; height: 40px; border-radius: 50%; background: var(--secondary-bg); border: none; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        ${subjects.map(subject => `
+                            <button onclick="window.location.href='/testprep-practice?subject=${subject.id}'; this.closest('div').parentElement.parentElement.remove();" style="padding: 1.5rem; background: var(--secondary-bg); border: 2px solid rgba(160, 123, 204, 0.2); border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">${subject.icon}</div>
+                                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">${subject.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">${subject.test}</div>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        };
+
+        // Navbar functionality
+        function initNavbar() {
+            const themeToggle = document.getElementById('ccThemeToggle');
+            const profileButton = document.getElementById('ccProfileButton');
+            const dropdownMenu = document.getElementById('ccDropdownMenu');
+            const logoutBtn = document.getElementById('ccLogoutBtn');
+
+            // Theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            updateLogo(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const current = document.body.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                updateLogo(newTheme);
+            });
+
+            // Dropdown
+            profileButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('ccProfileDropdown').contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await signOut(auth);
+                window.location.href = '/login';
+            });
+        }
+
+        function updateLogo(theme) {
+            const logo = document.getElementById('ccNavbarLogo');
+            if (logo) {
+                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
+            }
+        }
+
+        function updateNavbarUI() {
+            const profileLoading = document.getElementById('ccProfileLoading');
+            const profileContent = document.getElementById('ccProfileContent');
+            const userAvatar = document.getElementById('ccUserAvatar');
+            const dropdownName = document.getElementById('ccDropdownName');
+            const dropdownEmail = document.getElementById('ccDropdownEmail');
+
+            if (profileLoading) profileLoading.style.display = 'none';
+            if (profileContent) profileContent.style.display = 'flex';
+
+            if (userAvatar && userData?.profilePhotoURL) {
+                userAvatar.src = userData.profilePhotoURL;
+            }
+
+            if (dropdownName) {
+                dropdownName.textContent = userData?.name || currentUser.displayName || currentUser.email.split('@')[0];
+            }
+
+            if (dropdownEmail) {
+                dropdownEmail.textContent = currentUser.email;
+            }
+        }
+
+        // Review Flagged Questions
+        function reviewFlaggedQuestions() {
+            if (!testPrepData || !testPrepData.flaggedQuestions || testPrepData.flaggedQuestions.length === 0) {
+                alert('You have no flagged questions yet. Flag questions during practice to review them later!');
+                return;
+            }
+
+            // Redirect to practice page with flagged filter
+            window.location.href = '/testprep-practice?sessionType=review-flagged';
+        }
+
+        // Show Analytics Modal
+        function showAnalytics() {
+            if (!testPrepData) {
+                alert('No data available yet. Complete some practice sessions to see your analytics!');
+                return;
+            }
+
+            // Create analytics modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(4px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                overflow-y: auto;
+            `;
+
+            // Calculate analytics data
+            const totalQuestions = testPrepData.questionsCompleted || 0;
+            const totalScore = testPrepData.currentScore?.sat || testPrepData.currentScore?.act || 0;
+            const improvement = calculateImprovement();
+            const streak = testPrepData.studyStreak || 0;
+
+            // Calculate subject-level stats
+            const subjectStats = [];
+            const subjects = ['satMath', 'satReading', 'actMath', 'actEnglish', 'actReading', 'actScience'];
+
+            subjects.forEach(subject => {
+                const data = testPrepData.subjectProgress?.[subject];
+                if (data && data.total > 0) {
+                    const accuracy = Math.round((data.correct / data.total) * 100);
+                    subjectStats.push({
+                        name: formatSubjectName(subject),
+                        correct: data.correct,
+                        total: data.total,
+                        accuracy: accuracy,
+                        score: data.score || 0
+                    });
+                }
+            });
+
+            // Calculate weak/strong areas
+            const weakAreas = testPrepData.weakAreas?.slice(0, 3).map(a => formatSubjectName(a)).join(', ') || 'None identified';
+            const strongAreas = testPrepData.strongAreas?.slice(0, 3).map(a => formatSubjectName(a)).join(', ') || 'None identified';
+
+            modal.innerHTML = `
+                <div style="background: var(--primary-bg); border-radius: 24px; padding: 2.5rem; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                            📈 Performance Analytics
+                        </h2>
+                        <button onclick="this.closest('div').parentElement.remove()" style="width: 40px; height: 40px; border-radius: 50%; background: var(--secondary-bg); border: none; cursor: pointer; font-size: 1.5rem; color: var(--text-primary);">×</button>
+                    </div>
+
+                    <!-- Overview Stats -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--accent-color);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Total Questions</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--text-primary);">${totalQuestions}</div>
+                        </div>
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--success-color);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Current Score</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--text-primary);">${totalScore > 0 ? totalScore : '--'}</div>
+                        </div>
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--warning-color);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Improvement</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--text-primary);">${improvement > 0 ? '+' + improvement : '--'}</div>
+                        </div>
+                        <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--danger-color);">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Study Streak</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--text-primary);">${streak} days</div>
+                        </div>
+                    </div>
+
+                    <!-- Subject Breakdown -->
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem;">Subject Performance</h3>
+                        <div style="display: grid; gap: 1rem;">
+                            ${subjectStats.length > 0 ? subjectStats.map(stat => `
+                                <div style="background: var(--secondary-bg); padding: 1.5rem; border-radius: 12px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <div style="font-weight: 700; color: var(--text-primary);">${stat.name}</div>
+                                        <div style="font-weight: 700; color: var(--accent-color);">${stat.score > 0 ? stat.score : '--'}</div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                        <span>${stat.correct}/${stat.total} correct</span>
+                                        <span>${stat.accuracy}% accuracy</span>
+                                    </div>
+                                    <div style="height: 8px; background: rgba(160, 123, 204, 0.15); border-radius: 8px; overflow: hidden;">
+                                        <div style="height: 100%; width: ${stat.accuracy}%; background: var(--gradient); border-radius: 8px; transition: width 0.5s ease;"></div>
+                                    </div>
+                                </div>
+                            `).join('') : '<p style="color: var(--text-secondary);">No subject data yet. Start practicing to see your performance!</p>'}
+                        </div>
+                    </div>
+
+                    <!-- Weak & Strong Areas -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--danger-color);">
+                            <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">⚠️ Weak Areas</h4>
+                            <p style="color: var(--text-secondary); margin: 0;">${weakAreas}</p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--success-color);">
+                            <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">✅ Strong Areas</h4>
+                            <p style="color: var(--text-secondary); margin: 0;">${strongAreas}</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <button onclick="this.closest('div').parentElement.remove(); window.location.href='/testprep-practice';" style="padding: 1rem; background: var(--gradient); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">
+                            Start Practice Session
+                        </button>
+                        <button onclick="this.closest('div').parentElement.remove();" style="padding: 1rem; background: var(--secondary-bg); color: var(--text-primary); border: 2px solid rgba(160, 123, 204, 0.2); border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        console.log('✅ Test Prep Dashboard initialized');
+    </script>
+</body>
+</html>
