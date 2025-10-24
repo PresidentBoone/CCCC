@@ -1204,6 +1204,13 @@
     <!-- Diagnostic Question Bank - NEW 160 Questions -->
     <script src="/js/diagnostic-questions-full.js"></script>
     <script src="/js/adaptive-diagnostic.js"></script>
+
+    <!-- 🎰 CASINO SYSTEM -->
+    <link rel="stylesheet" href="/css/casino-animations.css">
+    <script src="/js/casino-sound-system.js"></script>
+    <script src="/js/casino-game-engine.js"></script>
+    <script src="/js/casino-ui-components.js"></script>
+    <script src="/js/casino-leaderboard.js"></script>
 </head>
 <body data-theme="dark">
     <!-- Loading Overlay -->
@@ -1250,6 +1257,18 @@
                     <div class="xp-amount" id="xpAmount">0</div>
                 </div>
             </div>
+
+            <!-- 🎰 CASINO: Coin Display -->
+            <div class="coin-display" style="display: flex; align-items: center; gap: 0.5rem; background: var(--secondary-bg); padding: 0.5rem 1rem; border-radius: 20px;">
+                <span style="font-size: 1.2rem;">💰</span>
+                <span id="coinDisplay" style="font-weight: 700; color: var(--text-primary);">0</span>
+            </div>
+
+            <!-- 🎰 CASINO: Streak Display Container -->
+            <div id="streakDisplayContainer" style="min-width: 200px;"></div>
+
+            <!-- 🎰 CASINO: Daily Wheel Button -->
+            <button class="cc-theme-toggle" onclick="showDailyWheel()" aria-label="Spin daily bonus wheel" title="Daily Bonus Wheel">🎡</button>
 
             <button class="cc-theme-toggle" id="soundToggleBtn" onclick="toggleSoundEffects()" aria-label="Toggle sound effects on or off" aria-pressed="true">🔊</button>
 
@@ -1644,6 +1663,11 @@
         let sessionSubject = 'sat-math'; // Default
         let sessionType = 'practice'; // practice, diagnostic, or full-test
 
+        // 🎰 CASINO SYSTEM VARIABLES
+        let casinoEngine = null;
+        let streakDisplay = null;
+        let questionStartTime = Date.now();
+
         // Get subject and session type from URL
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('subject')) {
@@ -1794,6 +1818,9 @@
                     await loadTestPrepData();
                     initializeSession();
                     updateNavbarUI();
+
+                    // 🎰 Initialize Casino System
+                    await initializeCasinoSystem(user);
                 } else {
                     window.location.href = '/login';
                 }
@@ -3469,6 +3496,158 @@
             await leaderboardSystem.loadLeaderboardData(period);
         };
 
+        // ============================================
+        // 🎰 CASINO SYSTEM INITIALIZATION
+        // ============================================
+
+        async function initializeCasinoSystem(user) {
+            try {
+                console.log('🎰 Initializing Casino System...');
+
+                // Get Firestore
+                const { getFirestore } = await import(
+                    'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js'
+                );
+                const db = getFirestore();
+
+                // Initialize casino engine
+                casinoEngine = new CasinoGameEngine(db, user.uid);
+
+                // Initialize streak display
+                streakDisplay = new StreakDisplay('streakDisplayContainer');
+
+                // Upgrade existing leaderboard to casino version
+                if (window.leaderboardSystem) {
+                    const casinoLeaderboard = new CasinoLeaderboard(db, user.uid, user.displayName || 'Anonymous');
+                    // Copy over existing functionality
+                    window.leaderboardSystem.updateCasinoScore = (score, category) => {
+                        casinoLeaderboard.updateScore(score, category);
+                    };
+                    window.leaderboardSystem.showCasinoLeaderboard = () => {
+                        casinoLeaderboard.showLeaderboard();
+                    };
+                }
+
+                // Set up event listeners
+                setupCasinoEventListeners();
+
+                console.log('✅ Casino system initialized');
+            } catch (error) {
+                console.error('Failed to initialize casino system:', error);
+            }
+        }
+
+        function setupCasinoEventListeners() {
+            if (!casinoEngine) return;
+
+            // Correct answer event
+            casinoEngine.on('correctAnswer', async (data) => {
+                console.log('🎰 Correct answer processed:', data);
+
+                // Update streak display
+                if (streakDisplay) {
+                    streakDisplay.update(
+                        data.streak,
+                        data.multiplier,
+                        data.streakBonus?.label || ''
+                    );
+                }
+
+                // Show variable reward popup
+                if (data.variableReward && window.RewardPopup) {
+                    const popup = new RewardPopup();
+                    await popup.show(data.variableReward.rarity, data.variableReward.reward);
+                }
+
+                // Check for level up
+                if (data.leveledUp && window.LevelUpCelebration) {
+                    await LevelUpCelebration.show(
+                        data.leveledUp.newLevel,
+                        data.leveledUp.tier,
+                        data.leveledUp.tierUpgraded
+                    );
+                }
+
+                // Check for jackpot
+                if (data.jackpotTriggered) {
+                    const jackpot = await casinoEngine.triggerJackpot();
+                    if (window.JackpotAnimation) {
+                        await JackpotAnimation.show(jackpot.coins, jackpot.xp);
+                    }
+                }
+
+                // Update UI displays
+                updateCasinoUI(data.progress);
+            });
+
+            // Incorrect answer event
+            casinoEngine.on('incorrectAnswer', (data) => {
+                console.log('🎰 Incorrect answer processed:', data);
+
+                if (data.streakBroken && streakDisplay) {
+                    streakDisplay.reset();
+                }
+
+                updateCasinoUI(data.progress);
+            });
+
+            // Level up event
+            casinoEngine.on('levelUp', (data) => {
+                console.log('🎰 Level up!', data);
+                updateCasinoUI(data.progress);
+            });
+        }
+
+        function updateCasinoUI(progress) {
+            // Update coin display
+            const coinDisplay = document.getElementById('coinDisplay');
+            if (coinDisplay) {
+                coinDisplay.textContent = progress.coins.toLocaleString();
+            }
+
+            // Update XP display
+            const xpDisplay = document.getElementById('xpAmount');
+            if (xpDisplay) {
+                xpDisplay.textContent = progress.xp;
+            }
+
+            // Update level display
+            const levelDisplay = document.getElementById('levelNumber');
+            if (levelDisplay) {
+                levelDisplay.textContent = progress.level;
+            }
+
+            // Update XP bar (if exists)
+            const xpBar = document.getElementById('xpProgressBar');
+            if (xpBar && progress.xpToNextLevel) {
+                const percentage = (progress.xp / progress.xpToNextLevel) * 100;
+                xpBar.style.width = `${percentage}%`;
+            }
+        }
+
+        // Daily Wheel Function
+        async function showDailyWheel() {
+            if (!casinoEngine) {
+                alert('Please wait for the casino system to load...');
+                return;
+            }
+
+            // Create container if it doesn't exist
+            let container = document.getElementById('dailyWheelContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'dailyWheelContainer';
+                document.body.appendChild(container);
+            }
+
+            const wheel = new DailyWheelSpinner('dailyWheelContainer');
+            wheel.show();
+            wheel.drawWheel(0);
+        }
+
+        // Make showDailyWheel global
+        window.showDailyWheel = showDailyWheel;
+
         async function initializeSession() {
             try {
                 // Update title
@@ -4441,13 +4620,27 @@ Generate 10 questions now:`;
 
                     // 🎮 AWARD XP FOR CORRECT ANSWER
                     await awardXP(10, 'Correct Answer!');
+
+                    // 🎰 CASINO: Process correct answer through casino engine
+                    if (casinoEngine) {
+                        const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+                        await casinoEngine.processCorrectAnswer(question.difficulty || 5, timeSpent);
+                    }
                 } else {
                     // 🎮 PLAY WRONG ANSWER SOUND
                     soundEffects.play('wrong');
 
                     // 🎮 LOSE HEART FOR INCORRECT ANSWER
                     await loseHeart();
+
+                    // 🎰 CASINO: Process incorrect answer (breaks streak)
+                    if (casinoEngine) {
+                        await casinoEngine.processIncorrectAnswer();
+                    }
                 }
+
+                // 🎰 CASINO: Reset question timer for next question
+                questionStartTime = Date.now();
 
                 // Update buttons
                 document.getElementById('submitBtn').style.display = 'none';
