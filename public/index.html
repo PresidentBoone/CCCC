@@ -1934,7 +1934,9 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.addEventListener('click', toggleTheme);
     }
 });
+    </script>
 
+    <script>
 // ============================================
 // PRODUCTION SECURITY HELPERS
 // ============================================
@@ -1971,7 +1973,9 @@ function validateInput(input, type = 'text') {
             return sanitized.replace(/[^\d\+\-\(\) ]/g, '');
         case 'text':
         default:
-            return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            // Remove script tags (use string concat to avoid HTML parser seeing closing tag)
+            const scriptRegex = new RegExp('<script\\b[^<]*(?:(?!<\\/' + 'script>)<[^<]*)*<\\/' + 'script>', 'gi');
+            return sanitized.replace(scriptRegex, '');
     }
 }
 

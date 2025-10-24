@@ -812,7 +812,8 @@
                     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
                 case 'text':
                 default:
-                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                    const scriptRegex = new RegExp('<script\\b[^<]*(?:(?!<\\/' + 'script>)<[^<]*)*<\\/' + 'script>', 'gi');
+                    return sanitized.replace(scriptRegex, '');
             }
         }
 

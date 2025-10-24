@@ -1157,9 +1157,8 @@
                             </p>
                         </div>
                     </div>
-                    <input type="file" id="photoUpload" accept="image/*" style="display: none;">
                 </div>
-                
+
                 <form id="personalInfoForm" aria-label="Personal information form">
                     <div class="form-group">
                         <label class="form-label" for="displayName">Display Name</label>
@@ -1385,7 +1384,8 @@
                     return sanitized.replace(/[^\d\+\-\(\) ]/g, '');
                 case 'text':
                 default:
-                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                    const scriptRegex = new RegExp('<script\\b[^<]*(?:(?!<\\/' + 'script>)<[^<]*)*<\\/' + 'script>', 'gi');
+                    return sanitized.replace(scriptRegex, '');
             }
         }
 

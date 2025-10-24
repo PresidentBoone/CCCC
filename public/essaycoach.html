@@ -6048,7 +6048,8 @@ Limit to top 8 most important improvements.`
                 case 'text':
                 default:
                     // Remove script tags and dangerous content
-                    return sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                    const scriptRegex = new RegExp('<script\\b[^<]*(?:(?!<\\/' + 'script>)<[^<]*)*<\\/' + 'script>', 'gi');
+                    return sanitized.replace(scriptRegex, '');
             }
         }
 
@@ -6184,4 +6185,3 @@ Limit to top 8 most important improvements.`
     </script>
 </body>
 </html>
-<!-- Force rebuild Sun Oct 19 01:54:14 EDT 2025 -->
