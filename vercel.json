@@ -42,7 +42,7 @@
     },
     {
       "source": "/testprep",
-      "destination": "/testprep-enhanced.html"
+      "destination": "/testprep.html"
     },
     {
       "source": "/testprep-practice",
