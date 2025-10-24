@@ -34,13 +34,13 @@ const ENV = detectEnvironment();
 // Firebase Configuration
 // NOTE: This is intentionally exposed - Firebase handles security via rules, not key secrecy
 const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDYH_-88yBPK36KKUCYILqqV2aZiw4jQYs",
-    authDomain: "college-climb-cc.firebaseapp.com",
-    projectId: "college-climb-cc",
-    storageBucket: "college-climb-cc.firebasestorage.app",
-    messagingSenderId: "574834349559",
-    appId: "1:574834349559:web:6ce1d00de2b3a0f62cf91b",
-    measurementId: "G-BSWW7HD90M"
+    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+    authDomain: "collegeclimb-ai.firebaseapp.com",
+    projectId: "collegeclimb-ai",
+    storageBucket: "collegeclimb-ai.firebasestorage.app",
+    messagingSenderId: "187139654658",
+    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+    measurementId: "G-E0B2RQM9XS"
 };
 
 // API Endpoints
