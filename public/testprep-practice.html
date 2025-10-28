@@ -1201,9 +1201,31 @@
     <!-- Error Handling System -->
     <script src="/js/error-boundary.js"></script>
     <script src="/js/error-handler.js"></script>
+    <!-- Security & Performance -->
+    <script src="/js/core/script-loader.js"></script>
+    <script src="/js/security/sanitizer.js"></script>
     <!-- Diagnostic Question Bank - NEW 160 Questions -->
     <script src="/js/diagnostic-questions-full.js"></script>
     <script src="/js/adaptive-diagnostic.js"></script>
+    <!-- Casino Gamification Module -->
+    <script src="/js/casino/casino-config.js" defer></script>
+    <script src="/js/casino/utils/helpers.js" defer></script>
+    <script src="/js/casino/utils/formatters.js" defer></script>
+    <script src="/js/casino/utils/validators.js" defer></script>
+    <script src="/js/casino/core/StateManager.js" defer></script>
+    <script src="/js/casino/core/RewardCalculator.js" defer></script>
+    <script src="/js/casino/core/FirebaseSync.js" defer></script>
+    <script src="/js/casino/core/CasinoEngine.js" defer></script>
+    <script src="/js/casino/components/NavbarStats.js" defer></script>
+    <script src="/js/casino/components/StreakBonusPanel.js" defer></script>
+    <script src="/js/casino/components/MysteryRewardModal.js" defer></script>
+    <script src="/js/casino/components/ToastNotification.js" defer></script>
+    <script src="/js/casino/components/DailyWheelSpinner.js" defer></script>
+    <script src="/js/casino/components/LevelUpCelebration.js" defer></script>
+    <script src="/js/casino/components/JackpotRoundOverlay.js" defer></script>
+    <script src="/js/casino/components/LeaderboardModal.js" defer></script>
+    <script src="/js/casino/animations/ConfettiSystem.js" defer></script>
+    <script src="/js/casino/casino-init.js" defer></script>
 </head>
 <body data-theme="dark">
     <!-- Loading Overlay -->
@@ -1792,6 +1814,22 @@
                     currentUser = user;
                     await loadUserData();
                     await loadTestPrepData();
+
+                    // 🎰 Initialize Casino Module
+                    if (window.CasinoIntegration) {
+                        try {
+                            const casinoInitialized = await window.CasinoIntegration.initialize(user);
+                            if (casinoInitialized) {
+                                console.log('🎰 Casino gamification enabled');
+                            } else {
+                                console.warn('⚠️ Casino initialization failed - continuing without gamification');
+                            }
+                        } catch (error) {
+                            console.error('❌ Casino initialization error:', error);
+                            // Continue without casino - non-blocking
+                        }
+                    }
+
                     initializeSession();
                     updateNavbarUI();
                 } else {
@@ -4284,9 +4322,12 @@ Generate 10 questions now:`;
 
         function displayQuestion() {
             const question = currentQuestions[currentQuestionIndex];
-            
+
+            // 🎰 Track question start time for casino time-based rewards
+            window.questionStartTime = Date.now();
+
             // Update question number and metadata
-            document.getElementById('questionNumber').textContent = 
+            document.getElementById('questionNumber').textContent =
                 `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
 
@@ -4447,6 +4488,25 @@ Generate 10 questions now:`;
 
                     // 🎮 LOSE HEART FOR INCORRECT ANSWER
                     await loseHeart();
+                }
+
+                // 🎰 CASINO INTEGRATION: Process question reward
+                if (window.CasinoIntegration && window.CasinoIntegration.isInitialized()) {
+                    try {
+                        const timeSpent = Date.now() - (window.questionStartTime || Date.now());
+                        await window.CasinoIntegration.handleQuestionAnswered(
+                            {
+                                id: question.id,
+                                subject: question.category || 'SAT',
+                                difficulty: question.difficulty || 'medium'
+                            },
+                            isCorrect,
+                            timeSpent
+                        );
+                    } catch (error) {
+                        console.error('Casino reward processing error:', error);
+                        // Non-blocking - continue without casino rewards
+                    }
                 }
 
                 // Update buttons
@@ -5192,6 +5252,18 @@ Generate 10 questions now:`;
                 dropdownEmail.textContent = currentUser.email;
             }
         }
+
+        // 🎰 Casino Cleanup on Page Unload
+        window.addEventListener('beforeunload', async () => {
+            if (window.CasinoIntegration && window.CasinoIntegration.isInitialized()) {
+                try {
+                    await window.CasinoIntegration.cleanup();
+                    console.log('🎰 Casino state saved before exit');
+                } catch (error) {
+                    console.error('Casino cleanup error:', error);
+                }
+            }
+        });
     </script>
 </body>
 </html>

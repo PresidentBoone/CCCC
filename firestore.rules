@@ -15,6 +15,34 @@ service cloud.firestore {
       return email.matches('.*@.*\\..*');
     }
 
+    // ============================================
+    // CASINO MODULE SECURITY FUNCTIONS
+    // Added: Phase 1.4 - Engineering Overhaul
+    // ============================================
+
+    // Validate coin increment (anti-cheat)
+    function validateCoins(newCoins, oldCoins) {
+      let increment = newCoins - oldCoins;
+      return newCoins >= 0 && increment <= 5000;
+    }
+
+    // Validate XP increment (anti-cheat)
+    function validateXP(newXP, oldXP) {
+      let increment = newXP - oldXP;
+      return newXP >= 0 && increment <= 2000;
+    }
+
+    // Validate level increment (anti-cheat)
+    function validateLevel(newLevel, oldLevel) {
+      let increment = newLevel - oldLevel;
+      return newLevel >= 1 && increment <= 1;
+    }
+
+    // Validate streak value
+    function validateStreak(streak) {
+      return streak >= 0 && streak <= 1000;
+    }
+
     // Users collection
     match /users/{userId} {
       // Users can read their own data
@@ -43,6 +71,25 @@ service cloud.firestore {
 
       match /documents/{documentId} {
         allow read, write: if isOwner(userId);
+      }
+
+      // Casino Progress (with anti-cheat validation)
+      match /casinoProgress/{progressId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isOwner(userId)
+                      && validateCoins(request.resource.data.coins, resource.data.coins)
+                      && validateXP(request.resource.data.xp, resource.data.xp)
+                      && validateLevel(request.resource.data.level, resource.data.level)
+                      && validateStreak(request.resource.data.get('currentStreak', 0));
+        allow delete: if false;
+      }
+
+      // Casino History (immutable audit log)
+      match /casinoHistory/{eventId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update, delete: if false; // Immutable - no modifications allowed
       }
     }
 
@@ -227,6 +274,20 @@ service cloud.firestore {
       allow create: if isAuthenticated()
                     && request.resource.data.userId == request.auth.uid;
       allow update, delete: if false;
+    }
+
+    // Casino Leaderboards (read-only for users, Cloud Functions write only)
+    match /leaderboards/{leaderboardType} {
+      // Users can read leaderboard data
+      allow read: if isAuthenticated();
+      // Only Cloud Functions can write (via admin SDK)
+      allow write: if false;
+
+      // Individual leaderboard entries
+      match /entries/{userId} {
+        allow read: if isAuthenticated();
+        allow write: if false; // Cloud Functions only
+      }
     }
 
     // Block all other access
