@@ -44,7 +44,8 @@
     <script src="/js/empty-states.js"></script>
     <script src="/js/form-validator.js"></script>
     <script src="/js/accessibility-enhancer.js"></script>
-    
+    <script src="/js/highlight-overlay.js"></script>
+
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -901,6 +902,89 @@
         }
 
         [data-theme="dark"] mark.essay-highlight {
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           OVERLAY HIGHLIGHT SYSTEM
+           ============================================ */
+
+        /* Wrapper for textarea and overlay */
+        .highlight-overlay-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Overlay that sits behind the textarea */
+        .highlight-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: transparent;
+            pointer-events: none;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-word;
+            z-index: 1;
+            user-select: none;
+        }
+
+        /* Make highlights clickable */
+        .highlight-overlay .essay-highlight {
+            color: var(--text-primary);
+            pointer-events: auto;
+            position: relative;
+            z-index: 3;
+            margin: 0;
+            padding: 2px 0;
+            border-radius: 2px;
+        }
+
+        /* Remove layout-shifting transform on hover */
+        .highlight-overlay .essay-highlight:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* When textarea has focus, slightly dim highlights */
+        .essay-textarea:focus ~ .highlight-overlay {
+            opacity: 0.85;
+        }
+
+        /* Hide highlights during scroll for performance */
+        .highlight-overlay.scrolling {
+            opacity: 0.7;
+            transition: opacity 0.1s ease;
+        }
+
+        /* Ensure textarea stays on top for editing */
+        .highlight-overlay-wrapper .essay-textarea {
+            position: relative;
+            z-index: 2;
+            background: transparent !important;
+        }
+
+        /* Maintain background color when not highlighted */
+        .highlight-overlay-wrapper:not(:has(.highlight-overlay:not(:empty))) .essay-textarea {
+            background: var(--primary-bg) !important;
+        }
+
+        /* Dark theme adjustments */
+        [data-theme="dark"] .highlight-overlay {
+            color: transparent;
+        }
+
+        [data-theme="dark"] .highlight-overlay .essay-highlight {
             color: var(--text-primary);
         }
 
@@ -3000,136 +3084,78 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
         // Apply highlights to text
         // ============================================
-        // ROBUST HIGHLIGHTING SYSTEM
+        // OVERLAY-BASED HIGHLIGHTING SYSTEM
         // ============================================
 
+        // Global highlight overlay instance
+        let highlightOverlayInstance = null;
+
+        // Initialize highlight overlay system
+        function initializeHighlightOverlay() {
+            if (!highlightOverlayInstance) {
+                highlightOverlayInstance = new window.HighlightOverlay('essayTextarea');
+                const success = highlightOverlayInstance.init();
+
+                if (success) {
+                    // Set up event listeners for highlight interactions
+                    setupHighlightEventListeners();
+                }
+            }
+            return highlightOverlayInstance;
+        }
+
+        // Set up event listeners for highlight interactions
+        function setupHighlightEventListeners() {
+            // Handle highlight clicks
+            window.addEventListener('highlightClick', (e) => {
+                scrollToFeedbackCard(e.detail.index);
+            });
+
+            // Handle highlight hover
+            window.addEventListener('highlightHover', (e) => {
+                showHighlightTooltip(e.detail);
+            });
+
+            // Handle highlight hover out
+            window.addEventListener('highlightHoverOut', () => {
+                hideHighlightTooltip();
+            });
+        }
+
+        // Apply highlights using new overlay system
         function applyHighlights(highlights) {
             console.log('🎨 Applying highlights:', highlights);
 
             if (!highlights || highlights.length === 0) {
                 console.log('⚠️ No highlights to apply');
-                clearHighlights();
-                return;
-            }
-
-            // Get textarea OR editorDiv (in case of re-analysis)
-            let textarea = document.getElementById('essayTextarea');
-            let editorDiv = document.getElementById('essayEditor');
-
-            // If editorDiv exists, get text from it and restore textarea first
-            let text;
-            if (editorDiv && editorDiv._originalTextarea) {
-                text = editorDiv.textContent; // Get plain text from highlighted version
-                textarea = editorDiv._originalTextarea; // Get original textarea
-                clearHighlights(); // Restore textarea
-            } else if (textarea) {
-                text = textarea.value;
-            } else {
-                console.error('❌ Essay textarea not found');
-                return;
-            }
-
-            if (!text || text.trim().length === 0) {
-                console.error('❌ No essay text to highlight');
-                return;
-            }
-
-            // Sort highlights by start index in reverse to maintain correct positions
-            const sortedHighlights = [...highlights].sort((a, b) => b.startIndex - a.startIndex);
-
-            // Build highlighted HTML
-            let highlightedHTML = text;
-
-            sortedHighlights.forEach((highlight, index) => {
-                const { text: highlightedText, type, category, startIndex, endIndex } = highlight;
-
-                // Validate indices
-                if (typeof startIndex !== 'number' || typeof endIndex !== 'number') {
-                    console.warn('Invalid highlight indices:', highlight);
-                    return;
+                if (highlightOverlayInstance) {
+                    highlightOverlayInstance.clearHighlights();
                 }
-
-                if (startIndex < 0 || endIndex > text.length || startIndex >= endIndex) {
-                    console.warn('Highlight indices out of bounds:', highlight);
-                    return;
-                }
-
-                // Extract the actual text to highlight
-                const textToHighlight = text.substring(startIndex, endIndex);
-
-                // Category display names
-                const categoryNames = {
-                    'cliche': 'Cliché',
-                    'weak_verb': 'Weak Verb',
-                    'vague': 'Vague Statement',
-                    'show_dont_tell': 'Show, Don\'t Tell',
-                    'grammar': 'Grammar',
-                    'unclear': 'Unclear',
-                    'strength': 'Strength'
-                };
-                const categoryDisplay = categoryNames[category] || category || 'Feedback';
-
-                // Create highlight span with tooltip
-                const highlightSpan = `<mark class="essay-highlight highlight-${type}" data-index="${index}" data-category="${categoryDisplay}" title="Click to see feedback">${escapeHTML(textToHighlight)}</mark>`;
-
-                // Replace in the text
-                const before = highlightedHTML.substring(0, startIndex);
-                const after = highlightedHTML.substring(endIndex);
-                highlightedHTML = before + highlightSpan + after;
-            });
-
-            // Create or get the contenteditable div
-            editorDiv = document.getElementById('essayEditor');
-
-            if (!editorDiv) {
-                // Create new contenteditable div
-                editorDiv = document.createElement('div');
-                editorDiv.id = 'essayEditor';
-                editorDiv.className = 'essay-textarea essay-editor-highlighted';
-                editorDiv.contentEditable = true;
-                editorDiv.setAttribute('spellcheck', 'true');
-                editorDiv.style.whiteSpace = 'pre-wrap';
-                editorDiv.style.wordWrap = 'break-word';
-
-                // REPLACE textarea with editorDiv (not insert after)
-                textarea.parentNode.replaceChild(editorDiv, textarea);
-
-                // Keep reference to hidden textarea for form submission
-                editorDiv._originalTextarea = textarea;
-
-                // Add event listeners
-                editorDiv.addEventListener('input', function() {
-                    // Sync back to hidden textarea
-                    if (editorDiv._originalTextarea) {
-                        editorDiv._originalTextarea.value = editorDiv.textContent;
-                    }
-                    updateWordCount();
-                });
-
-                // Handle highlight clicks
-                editorDiv.addEventListener('click', handleHighlightClick);
-
-                // Show tooltip on hover
-                editorDiv.addEventListener('mouseover', handleHighlightHover);
-                editorDiv.addEventListener('mouseout', handleHighlightHoverOut);
+                return;
             }
 
-            // Set the highlighted content
-            editorDiv.innerHTML = highlightedHTML;
+            // Initialize overlay if needed
+            const overlay = initializeHighlightOverlay();
+            if (!overlay) {
+                console.error('❌ Failed to initialize highlight overlay');
+                return;
+            }
 
-            console.log(`✅ Applied ${sortedHighlights.length} highlights successfully`);
+            // Apply highlights
+            overlay.applyHighlights(highlights);
 
             // Show success message
             showHighlightSummary(highlights);
+
+            // Log performance metrics
+            const metrics = overlay.getPerformanceMetrics();
+            console.log('📊 Highlight Performance:', metrics);
         }
 
-        // Clear all highlights and restore textarea
+        // Clear all highlights
         function clearHighlights() {
-            const editorDiv = document.getElementById('essayEditor');
-            if (editorDiv && editorDiv._originalTextarea) {
-                // Restore the original textarea
-                const textarea = editorDiv._originalTextarea;
-                editorDiv.parentNode.replaceChild(textarea, editorDiv);
+            if (highlightOverlayInstance) {
+                highlightOverlayInstance.clearHighlights();
             }
 
             const summaryDiv = document.getElementById('highlightSummaryDiv');
@@ -3137,44 +3163,19 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 summaryDiv.remove();
             }
 
-            // Remove any highlight tooltips
-            const existingTooltip = document.getElementById('highlightTooltip');
-            if (existingTooltip) {
-                existingTooltip.remove();
-            }
+            hideHighlightTooltip();
         }
 
-        // Escape HTML to prevent XSS
+        // Escape HTML to prevent XSS (kept for compatibility)
         function escapeHTML(str) {
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
 
-        // Handle highlight clicks - scroll to feedback
-        function handleHighlightClick(e) {
-            const highlight = e.target.closest('.essay-highlight');
-            if (highlight) {
-                const index = parseInt(highlight.getAttribute('data-index'));
-                if (!isNaN(index)) {
-                    scrollToFeedbackCard(index);
-
-                    // Add visual feedback
-                    highlight.style.animation = 'pulse 0.5s ease-in-out';
-                    setTimeout(() => {
-                        highlight.style.animation = '';
-                    }, 500);
-                }
-            }
-        }
-
-        // Show tooltip on hover
-        function handleHighlightHover(e) {
-            const highlight = e.target.closest('.essay-highlight');
-            if (!highlight) return;
-
-            const category = highlight.getAttribute('data-category');
-            const index = highlight.getAttribute('data-index');
+        // Show tooltip for highlight
+        function showHighlightTooltip(detail) {
+            const { category, element } = detail;
 
             // Create tooltip if it doesn't exist
             let tooltip = document.getElementById('highlightTooltip');
@@ -3192,7 +3193,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
             `;
 
             // Position tooltip
-            const rect = highlight.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
             tooltip.style.left = rect.left + (rect.width / 2) + 'px';
             tooltip.style.top = (rect.top - 10) + 'px';
             tooltip.style.opacity = '1';
@@ -3200,13 +3201,11 @@ Don't forget to specify your target colleges and essay prompt for more personali
         }
 
         // Hide tooltip
-        function handleHighlightHoverOut(e) {
-            if (!e.target.closest('.essay-highlight')) {
-                const tooltip = document.getElementById('highlightTooltip');
-                if (tooltip) {
-                    tooltip.style.opacity = '0';
-                    tooltip.style.visibility = 'hidden';
-                }
+        function hideHighlightTooltip() {
+            const tooltip = document.getElementById('highlightTooltip');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+                tooltip.style.visibility = 'hidden';
             }
         }
 
