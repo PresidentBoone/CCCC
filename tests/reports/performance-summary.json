@@ -1,0 +1,220 @@
+{
+  "timestamp": "2025-10-29T23:07:39.420Z",
+  "testSuite": "Essay Coach Performance Benchmark",
+  "subsystems": {
+    "Autosave": {
+      "single_save_latency": {
+        "value": 2582.246459,
+        "target": 150,
+        "pass": false,
+        "unit": "ms"
+      },
+      "deduplication_latency": {
+        "value": 2578.907292000001,
+        "target": 100,
+        "pass": false,
+        "unit": "ms"
+      },
+      "large_doc_latency": {
+        "value": 2657.3406250000116,
+        "target": 200,
+        "pass": false,
+        "unit": "ms"
+      },
+      "concurrent_5_essays": {
+        "value": 2714.522542000006,
+        "target": 250,
+        "pass": false,
+        "unit": "ms"
+      },
+      "burst_p95_latency": {
+        "value": 2505.8589580000007,
+        "target": 100,
+        "pass": false,
+        "unit": "ms"
+      }
+    },
+    "FirebaseSync": {
+      "single_sync_latency": {
+        "value": 3.6781670000054874,
+        "target": 250,
+        "pass": true,
+        "unit": "ms"
+      },
+      "batch_5_essays": {
+        "value": 504.890333000003,
+        "target": 500,
+        "pass": false,
+        "unit": "ms"
+      },
+      "queue_processing_rate_per_sec": {
+        "value": 9.960863766262317,
+        "target": 5,
+        "pass": false,
+        "unit": "ms"
+      },
+      "retry_latency": {
+        "value": 0.9893749999901047,
+        "target": 500,
+        "pass": true,
+        "unit": "ms"
+      }
+    },
+    "Undo": {
+      "single_undo_latency": {
+        "value": 0.2869170000049053,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "single_redo_latency": {
+        "value": 0.36608400000841357,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "rapid_sequence_p95": {
+        "value": 0.2742500000022119,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "delta_computation": {
+        "value": 0.2010840000002645,
+        "target": 10,
+        "pass": true,
+        "unit": "ms"
+      },
+      "delta_apply": {
+        "value": 0.03158300000359304,
+        "target": 10,
+        "pass": true,
+        "unit": "ms"
+      }
+    },
+    "Throughput": {
+      "concurrent_sync_duration": {
+        "value": 5.6160410000011325,
+        "target": 1000,
+        "pass": true,
+        "unit": "ms"
+      },
+      "snapshot_creation_per_sec": {
+        "value": 357.12128064033965,
+        "target": 100,
+        "pass": false,
+        "unit": "ms"
+      },
+      "concurrent_ops_per_sec": {
+        "value": 1.9926902158045101,
+        "target": 100,
+        "pass": true,
+        "unit": "ms"
+      }
+    },
+    "Memory": {
+      "heap_increase_10_essays_mb": {
+        "value": 0.18111419677734375,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "snapshot_count_after_trim": {
+        "value": 50,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "autosave_queue_size": {
+        "value": 1,
+        "target": 10,
+        "pass": true,
+        "unit": "ms"
+      },
+      "sync_queue_size": {
+        "value": 19,
+        "target": 20,
+        "pass": true,
+        "unit": "ms"
+      },
+      "content_hash_cache_size": {
+        "value": 0,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      }
+    },
+    "Offline": {
+      "autosave_offline_latency": {
+        "value": 2656.1103749999893,
+        "target": 150,
+        "pass": false,
+        "unit": "ms"
+      },
+      "offline_to_online_sync": {
+        "value": 1.9851250000065193,
+        "target": 300,
+        "pass": true,
+        "unit": "ms"
+      },
+      "batch_recovery_duration": {
+        "value": 502.56333399994764,
+        "target": 1000,
+        "pass": true,
+        "unit": "ms"
+      },
+      "circuit_recovery_latency": {
+        "value": 1.5771660000318661,
+        "target": 300,
+        "pass": true,
+        "unit": "ms"
+      },
+      "persistence_retrieval": {
+        "value": 0.07545800000661984,
+        "target": 100,
+        "pass": true,
+        "unit": "ms"
+      }
+    },
+    "Stress": {
+      "very_large_essay_100kb": {
+        "value": 2706.328084000037,
+        "target": 500,
+        "pass": false,
+        "unit": "ms"
+      },
+      "rapid_500_snapshots_duration": {
+        "value": 1385.58383399999,
+        "target": 5000,
+        "pass": true,
+        "unit": "ms"
+      },
+      "delta_minimal_change": {
+        "value": 0.08312500000465661,
+        "target": 20,
+        "pass": true,
+        "unit": "ms"
+      },
+      "undo_at_max_capacity": {
+        "value": 0.2116249999962747,
+        "target": 50,
+        "pass": true,
+        "unit": "ms"
+      },
+      "combined_operation_latency": {
+        "value": 2657.1045420000446,
+        "target": 600,
+        "pass": false,
+        "unit": "ms"
+      }
+    }
+  },
+  "optimizations": [],
+  "summary": {
+    "totalTests": 32,
+    "passedTests": 21,
+    "failedTests": 11,
+    "passRate": "65.63%",
+    "testDuration": "2025-10-29T23:12:48.149Z"
+  }
+}
