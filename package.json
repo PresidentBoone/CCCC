@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "build": "node scripts/build.js",
+    "build:production": "node scripts/build-production.js",
+    "build:optimized": "node scripts/build-production.js",
     "preview": "node scripts/preview.js",
-    "build:production": "NODE_ENV=production node scripts/build.js",
     "vercel:dev": "vercel dev",
     "vercel:deploy": "npm run build:production && vercel --prod",
     "start": "npm run dev",
