@@ -410,6 +410,97 @@
         }
 
         /**
+         * Update highlights after text edit (preserve positions)
+         * @param {string} newText - New text content
+         * @param {number} editStart - Start position of edit
+         * @param {number} editEnd - End position of edit before change
+         * @param {number} lengthDelta - Change in length (can be negative)
+         */
+        updateHighlightsAfterEdit(newText, editStart, editEnd, lengthDelta) {
+            if (this.highlights.length === 0) return;
+
+            const updatedHighlights = [];
+
+            this.highlights.forEach(highlight => {
+                // Highlight ends before edit - no change needed
+                if (highlight.endIndex <= editStart) {
+                    updatedHighlights.push(highlight);
+                    return;
+                }
+
+                // Highlight starts after edit - shift by delta
+                if (highlight.startIndex >= editEnd) {
+                    updatedHighlights.push({
+                        ...highlight,
+                        startIndex: highlight.startIndex + lengthDelta,
+                        endIndex: highlight.endIndex + lengthDelta
+                    });
+                    return;
+                }
+
+                // Highlight overlaps edit region - invalidate it
+                console.log('Highlight invalidated by edit:', highlight);
+            });
+
+            // Update stored highlights
+            this.highlights = updatedHighlights;
+
+            // Re-render if we still have highlights
+            if (updatedHighlights.length > 0) {
+                this.applyHighlights(updatedHighlights);
+            } else {
+                this.clearHighlights();
+            }
+        }
+
+        /**
+         * Set up text edit tracking
+         * @param {Function} callback - Callback when edits occur
+         */
+        setupEditTracking(callback) {
+            if (!this.textarea) return;
+
+            let lastText = this.textarea.value;
+
+            this.textarea.addEventListener('input', (e) => {
+                const newText = this.textarea.value;
+                const selectionStart = this.textarea.selectionStart || 0;
+
+                // Calculate edit position and delta
+                const lengthDelta = newText.length - lastText.length;
+
+                // Find edit start (first difference)
+                let editStart = 0;
+                while (editStart < lastText.length && editStart < newText.length) {
+                    if (lastText[editStart] !== newText[editStart]) break;
+                    editStart++;
+                }
+
+                // Find edit end in old text
+                let editEnd = editStart;
+                if (lengthDelta < 0) {
+                    // Deletion
+                    editEnd = editStart - lengthDelta;
+                } else {
+                    // Insertion
+                    editEnd = editStart;
+                }
+
+                // Update highlights if we have any
+                if (this.highlights.length > 0) {
+                    this.updateHighlightsAfterEdit(newText, editStart, editEnd, lengthDelta);
+                }
+
+                // Call callback if provided
+                if (callback) {
+                    callback(newText, editStart, editEnd, lengthDelta);
+                }
+
+                lastText = newText;
+            });
+        }
+
+        /**
          * Get performance metrics
          * @returns {Object} Performance metrics
          */

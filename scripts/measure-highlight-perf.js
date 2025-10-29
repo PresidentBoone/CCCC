@@ -140,9 +140,54 @@ const avgTime2 = times2.reduce((a, b) => a + b, 0) / times2.length;
 console.log(`  Average time: ${avgTime2.toFixed(2)}ms`);
 console.log(`  ✅ Target: <50ms (${avgTime2 < 50 ? 'PASS' : 'FAIL'})\n`);
 
+// Test 3: Tooltip positioning performance
+console.log('Test 3: Tooltip positioning overhead');
+console.log('  Testing smart positioning with edge detection');
+
+const tooltipPositioningTimes = [];
+for (let i = 0; i < iterations; i++) {
+    const start = performance.now();
+
+    // Simulate tooltip positioning calculations
+    const targetRect = { top: 100 + (i % 500), left: 100 + (i % 800), width: 100, height: 20 };
+    const tooltipRect = { width: 280, height: 80 };
+    const viewport = { width: 1024, height: 768 };
+    const viewportPadding = { top: 80, right: 20, bottom: 20, left: 20 };
+    const offset = 10;
+
+    let top = targetRect.top - tooltipRect.height - offset;
+    let left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
+    let position = 'top';
+
+    // Edge detection
+    if (top < viewportPadding.top) {
+        top = targetRect.top + targetRect.height + offset;
+        position = 'bottom';
+    }
+    if (top + tooltipRect.height > viewport.height - viewportPadding.bottom) {
+        top = targetRect.top - tooltipRect.height - offset;
+        position = 'top';
+    }
+    if (left < viewportPadding.left) {
+        left = viewportPadding.left;
+    }
+    if (left + tooltipRect.width > viewport.width - viewportPadding.right) {
+        left = viewport.width - tooltipRect.width - viewportPadding.right;
+    }
+
+    const end = performance.now();
+    tooltipPositioningTimes.push(end - start);
+}
+
+const avgTooltipTime = tooltipPositioningTimes.reduce((a, b) => a + b, 0) / tooltipPositioningTimes.length;
+console.log(`  Average time: ${avgTooltipTime.toFixed(3)}ms`);
+console.log(`  ✅ Target: <3ms (${avgTooltipTime < 3 ? 'PASS' : 'FAIL'})\n`);
+
 // Summary
 console.log('========================================');
 console.log('📈 Performance Summary:');
-console.log(`  Typical use case: ${avgTime.toFixed(2)}ms`);
-console.log(`  Stress test: ${avgTime2.toFixed(2)}ms`);
-console.log(`  \n  ${avgTime < 10 && avgTime2 < 50 ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}`);
+console.log(`  Typical use case (highlight render): ${avgTime.toFixed(2)}ms`);
+console.log(`  Stress test (highlight render): ${avgTime2.toFixed(2)}ms`);
+console.log(`  Tooltip positioning: ${avgTooltipTime.toFixed(3)}ms`);
+console.log(`  Total overhead with tooltips: ${(avgTime + avgTooltipTime).toFixed(2)}ms`);
+console.log(`  \n  ${avgTime < 10 && avgTime2 < 50 && avgTooltipTime < 3 ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}`);

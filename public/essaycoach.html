@@ -45,6 +45,7 @@
     <script src="/js/form-validator.js"></script>
     <script src="/js/accessibility-enhancer.js"></script>
     <script src="/js/highlight-overlay.js"></script>
+    <script src="/js/tooltip-manager.js"></script>
 
     <style>
         :root {
@@ -986,6 +987,144 @@
 
         [data-theme="dark"] .highlight-overlay .essay-highlight {
             color: var(--text-primary);
+        }
+
+        /* ============================================
+           TOOLTIP SYSTEM
+           ============================================ */
+
+        .essay-tooltip {
+            position: fixed;
+            display: none;
+            max-width: 280px;
+            background: var(--primary-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 150ms ease;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Tooltip content */
+        .essay-tooltip-content {
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .tooltip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .tooltip-header i {
+            font-size: 1rem;
+        }
+
+        .tooltip-body {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .tooltip-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(160, 123, 204, 0.1);
+        }
+
+        /* Tooltip arrow */
+        .essay-tooltip-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+        }
+
+        /* Arrow pointing down (tooltip above target) */
+        .essay-tooltip[data-position="top"] .essay-tooltip-arrow {
+            bottom: -10px;
+            border-top: 8px solid var(--accent-color);
+        }
+
+        /* Arrow pointing up (tooltip below target) */
+        .essay-tooltip[data-position="bottom"] .essay-tooltip-arrow {
+            top: -10px;
+            border-bottom: 8px solid var(--accent-color);
+        }
+
+        /* Type-specific tooltip styling */
+        .essay-tooltip-red {
+            border-color: #ef4444;
+        }
+
+        .essay-tooltip-red .tooltip-header i {
+            color: #ef4444;
+        }
+
+        .essay-tooltip-red .essay-tooltip-arrow[data-position="top"] {
+            border-top-color: #ef4444;
+        }
+
+        .essay-tooltip-red .essay-tooltip-arrow[data-position="bottom"] {
+            border-bottom-color: #ef4444;
+        }
+
+        .essay-tooltip-yellow {
+            border-color: #f59e0b;
+        }
+
+        .essay-tooltip-yellow .tooltip-header i {
+            color: #f59e0b;
+        }
+
+        .essay-tooltip-yellow .essay-tooltip-arrow[data-position="top"] {
+            border-top-color: #f59e0b;
+        }
+
+        .essay-tooltip-yellow .essay-tooltip-arrow[data-position="bottom"] {
+            border-bottom-color: #f59e0b;
+        }
+
+        .essay-tooltip-green {
+            border-color: #10b981;
+        }
+
+        .essay-tooltip-green .tooltip-header i {
+            color: #10b981;
+        }
+
+        .essay-tooltip-green .essay-tooltip-arrow[data-position="top"] {
+            border-top-color: #10b981;
+        }
+
+        .essay-tooltip-green .essay-tooltip-arrow[data-position="bottom"] {
+            border-bottom-color: #10b981;
+        }
+
+        /* Dark theme tooltip adjustments */
+        [data-theme="dark"] .essay-tooltip {
+            background: var(--secondary-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="dark"] .tooltip-hint {
+            border-top-color: rgba(187, 134, 252, 0.2);
         }
 
         /* Word count and stats */
@@ -3089,6 +3228,8 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
         // Global highlight overlay instance
         let highlightOverlayInstance = null;
+        let tooltipManagerInstance = null;
+        let currentHighlights = [];
 
         // Initialize highlight overlay system
         function initializeHighlightOverlay() {
@@ -3101,6 +3242,12 @@ Don't forget to specify your target colleges and essay prompt for more personali
                     setupHighlightEventListeners();
                 }
             }
+
+            // Initialize tooltip manager
+            if (!tooltipManagerInstance) {
+                tooltipManagerInstance = new window.TooltipManager();
+            }
+
             return highlightOverlayInstance;
         }
 
@@ -3131,8 +3278,12 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 if (highlightOverlayInstance) {
                     highlightOverlayInstance.clearHighlights();
                 }
+                currentHighlights = [];
                 return;
             }
+
+            // Store highlights for tooltip access
+            currentHighlights = highlights;
 
             // Initialize overlay if needed
             const overlay = initializeHighlightOverlay();
@@ -3144,12 +3295,20 @@ Don't forget to specify your target colleges and essay prompt for more personali
             // Apply highlights
             overlay.applyHighlights(highlights);
 
+            // Set up edit tracking for highlight persistence
+            overlay.setupEditTracking((newText, editStart, editEnd, lengthDelta) => {
+                // Update current highlights array
+                currentHighlights = overlay.highlights;
+            });
+
             // Show success message
             showHighlightSummary(highlights);
 
             // Log performance metrics
             const metrics = overlay.getPerformanceMetrics();
+            const tooltipMetrics = tooltipManagerInstance ? tooltipManagerInstance.getPerformanceMetrics() : {};
             console.log('📊 Highlight Performance:', metrics);
+            console.log('📊 Tooltip Performance:', tooltipMetrics);
         }
 
         // Clear all highlights
@@ -3175,37 +3334,28 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
         // Show tooltip for highlight
         function showHighlightTooltip(detail) {
-            const { category, element } = detail;
+            if (!tooltipManagerInstance) return;
 
-            // Create tooltip if it doesn't exist
-            let tooltip = document.getElementById('highlightTooltip');
-            if (!tooltip) {
-                tooltip = document.createElement('div');
-                tooltip.id = 'highlightTooltip';
-                tooltip.className = 'highlight-tooltip';
-                document.body.appendChild(tooltip);
-            }
+            const { category, index, element } = detail;
 
-            // Set tooltip content
-            tooltip.innerHTML = `
-                <div class="tooltip-header">${category}</div>
-                <div class="tooltip-body">Click to see detailed feedback</div>
-            `;
+            // Get highlight data from current highlights
+            const highlightData = currentHighlights[parseInt(index)] || {};
 
-            // Position tooltip
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
-            tooltip.style.top = (rect.top - 10) + 'px';
-            tooltip.style.opacity = '1';
-            tooltip.style.visibility = 'visible';
+            // Prepare tooltip data
+            const tooltipData = {
+                category: category || 'Feedback',
+                feedback: highlightData.why || highlightData.feedback || 'Click for detailed feedback',
+                type: highlightData.type || 'default'
+            };
+
+            // Show tooltip with smart positioning
+            tooltipManagerInstance.show(element, tooltipData);
         }
 
         // Hide tooltip
         function hideHighlightTooltip() {
-            const tooltip = document.getElementById('highlightTooltip');
-            if (tooltip) {
-                tooltip.style.opacity = '0';
-                tooltip.style.visibility = 'hidden';
+            if (tooltipManagerInstance) {
+                tooltipManagerInstance.hide();
             }
         }
 
