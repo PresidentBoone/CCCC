@@ -2,11 +2,29 @@
  * Autosave Manager with IndexedDB
  *
  * Provides resilient local essay autosaving with:
- * - IndexedDB for offline persistence
+ * - IndexedDB for offline persistence (works completely offline)
  * - Debounced saves (2.5s) to prevent excessive writes
- * - Content hash deduplication
- * - Automatic sync when connectivity returns
+ * - Content hash deduplication (skips unchanged content)
+ * - Firebase background sync via sync hooks (non-blocking)
  * - Event-driven architecture for status updates
+ *
+ * Integration with Firebase (Step 4):
+ * Use syncToFirebase(essayId, syncFn) to upload drafts to Firebase.
+ * The syncFn should be created using createSyncFunction(firebaseSyncManager)
+ * from firebase-sync.js module.
+ *
+ * Example:
+ *   const autosave = new AutosaveManager();
+ *   const firebaseSync = new FirebaseSyncManager();
+ *   await autosave.init();
+ *   await firebaseSync.init();
+ *
+ *   // Manual sync
+ *   const syncFn = createSyncFunction(firebaseSync);
+ *   await autosave.syncToFirebase(essayId, syncFn);
+ *
+ *   // Or setup automatic background sync
+ *   setupAutoSync(autosave, firebaseSync);
  *
  * @module AutosaveManager
  */
