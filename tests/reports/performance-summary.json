@@ -1,28 +1,34 @@
 {
-  "timestamp": "2025-10-29T23:49:48.107Z",
+  "timestamp": "2025-10-30T12:52:57.533Z",
   "testSuite": "Essay Coach Performance Benchmark",
   "subsystems": {
     "Autosave": {
       "single_save_latency": {
-        "value": 2582.0762909999994,
+        "value": 76.39704100000017,
         "target": 150,
-        "pass": false,
+        "pass": true,
         "unit": "ms"
       },
       "deduplication_latency": {
-        "value": 2580.7807090000006,
+        "value": 76.83120800000006,
         "target": 100,
-        "pass": false,
+        "pass": true,
+        "unit": "ms"
+      },
+      "burst_p95_latency": {
+        "value": 0.15979199999992488,
+        "target": 100,
+        "pass": true,
         "unit": "ms"
       },
       "large_doc_latency": {
-        "value": 2653.8388330000016,
+        "value": 151.4376659999998,
         "target": 200,
-        "pass": false,
+        "pass": true,
         "unit": "ms"
       },
       "concurrent_5_essays": {
-        "value": 2707.1012919999994,
+        "value": 260.9368749999999,
         "target": 250,
         "pass": false,
         "unit": "ms"
@@ -30,25 +36,31 @@
     },
     "FirebaseSync": {
       "single_sync_latency": {
-        "value": 3.234249999994063,
+        "value": 2.7571670000002086,
         "target": 250,
         "pass": true,
         "unit": "ms"
       },
       "batch_5_essays": {
-        "value": 505.08508399999846,
+        "value": 502.2498330000003,
         "target": 500,
         "pass": false,
         "unit": "ms"
       },
+      "chunked_60kb_sync": {
+        "value": 3.224333999999999,
+        "target": 800,
+        "pass": true,
+        "unit": "ms"
+      },
       "queue_processing_rate_per_sec": {
-        "value": 9.974733590850347,
+        "value": 9.978916624786486,
         "target": 5,
         "pass": false,
         "unit": "ms"
       },
       "retry_latency": {
-        "value": 1.4209169999958249,
+        "value": 0.9537910000008196,
         "target": 500,
         "pass": true,
         "unit": "ms"
@@ -56,53 +68,71 @@
     },
     "Undo": {
       "single_undo_latency": {
-        "value": 0.46729100000084145,
+        "value": 0.3650419999994483,
         "target": 50,
         "pass": true,
         "unit": "ms"
       },
       "single_redo_latency": {
-        "value": 0.4905829999988782,
+        "value": 0.30262500000026193,
         "target": 50,
         "pass": true,
         "unit": "ms"
       },
       "rapid_sequence_p95": {
-        "value": 0.4720000000015716,
+        "value": 0.3298750000003565,
         "target": 50,
         "pass": true,
         "unit": "ms"
       },
       "delta_computation": {
-        "value": 0.28474999999889405,
+        "value": 0.23400000000037835,
         "target": 10,
         "pass": true,
         "unit": "ms"
       },
       "delta_apply": {
-        "value": 0.039625000004889444,
+        "value": 0.04208399999970425,
         "target": 10,
         "pass": true,
         "unit": "ms"
       }
     },
     "Throughput": {
+      "heavy_editing_chars_per_min": {
+        "value": 8195825.592854336,
+        "target": 10000,
+        "pass": false,
+        "unit": "ms"
+      },
+      "concurrent_ops_per_sec": {
+        "value": 79.63137578643783,
+        "target": 100,
+        "pass": true,
+        "unit": "ms"
+      },
       "concurrent_sync_duration": {
-        "value": 4.065291999999317,
+        "value": 4.417500000000473,
         "target": 1000,
         "pass": true,
         "unit": "ms"
       },
       "snapshot_creation_per_sec": {
-        "value": 404.7026447317814,
+        "value": 449.52827761226683,
         "target": 100,
+        "pass": false,
+        "unit": "ms"
+      },
+      "indexeddb_writes_per_sec": {
+        "value": 15.693419631447886,
+        "target": 10,
         "pass": false,
         "unit": "ms"
       }
     },
     "Memory": {
       "heap_increase_10_essays_mb": {
-        "value": -2.2847213745117188,
+        "value": -7.699653625488281,
         "target": 50,
         "pass": true,
         "unit": "ms"
@@ -126,7 +156,7 @@
         "unit": "ms"
       },
       "content_hash_cache_size": {
-        "value": 0,
+        "value": 10,
         "target": 50,
         "pass": true,
         "unit": "ms"
@@ -134,31 +164,31 @@
     },
     "Offline": {
       "autosave_offline_latency": {
-        "value": 2653.6591670000053,
+        "value": 202.50241599999936,
         "target": 150,
         "pass": false,
         "unit": "ms"
       },
       "offline_to_online_sync": {
-        "value": 4.172375000023749,
+        "value": 0.6671669999996084,
         "target": 300,
         "pass": true,
         "unit": "ms"
       },
       "batch_recovery_duration": {
-        "value": 501.85216699997545,
+        "value": 501.78441700000076,
         "target": 1000,
         "pass": true,
         "unit": "ms"
       },
       "circuit_recovery_latency": {
-        "value": 1.4597499999799766,
+        "value": 2.0495000000009895,
         "target": 300,
         "pass": true,
         "unit": "ms"
       },
       "persistence_retrieval": {
-        "value": 0.0565000000060536,
+        "value": 0.6120000000009895,
         "target": 100,
         "pass": true,
         "unit": "ms"
@@ -166,43 +196,43 @@
     },
     "Stress": {
       "very_large_essay_100kb": {
-        "value": 2705.2277920000197,
+        "value": 201.195416999999,
         "target": 500,
-        "pass": false,
+        "pass": true,
         "unit": "ms"
       },
       "rapid_500_snapshots_duration": {
-        "value": 1584.6004170000087,
+        "value": 1669.9363750000011,
         "target": 5000,
         "pass": true,
         "unit": "ms"
       },
       "delta_minimal_change": {
-        "value": 0.08595800001057796,
+        "value": 0.09625000000050932,
         "target": 20,
         "pass": true,
         "unit": "ms"
       },
       "undo_at_max_capacity": {
-        "value": 0.18674999999348074,
+        "value": 0.315959000001385,
         "target": 50,
         "pass": true,
         "unit": "ms"
       },
       "combined_operation_latency": {
-        "value": 2655.7237920000043,
+        "value": 207.80904100000043,
         "target": 600,
-        "pass": false,
+        "pass": true,
         "unit": "ms"
       }
     }
   },
   "optimizations": [],
   "summary": {
-    "totalTests": 30,
-    "passedTests": 20,
-    "failedTests": 10,
-    "passRate": "66.67%",
-    "testDuration": "2025-10-29T23:52:56.969Z"
+    "totalTests": 35,
+    "passedTests": 28,
+    "failedTests": 7,
+    "passRate": "80.00%",
+    "testDuration": "2025-10-30T12:53:06.459Z"
   }
 }
