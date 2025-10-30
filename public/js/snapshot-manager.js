@@ -200,7 +200,7 @@
          * Create snapshot of current essay state
          */
         async createSnapshot(essayId, content, metadata = {}) {
-            if (!essayId || !content) {
+            if (!essayId || content === null || content === undefined) {
                 throw new Error('Essay ID and content are required');
             }
 
@@ -421,11 +421,13 @@
                 return;
             }
 
-            // Reverse to get oldest first
-            snapshots.reverse();
+            // listSnapshots returns newest first, so snapshots[0] is the most recent
+            // For undo stack, we want oldest to newest, so reverse
+            const orderedSnapshots = [...snapshots].reverse();
 
-            this.undoStacks.set(essayId, snapshots);
-            this.currentSnapshots.set(essayId, snapshots[snapshots.length - 1]);
+            this.undoStacks.set(essayId, orderedSnapshots);
+            // Current snapshot is the newest (first in original array)
+            this.currentSnapshots.set(essayId, snapshots[0]);
             this.redoStacks.set(essayId, []);
 
             console.log(`📚 Loaded ${snapshots.length} snapshots for ${essayId}`);

@@ -643,10 +643,12 @@ describe('SnapshotManager', () => {
     describe('Helper functions', () => {
         test('setupKeyboardShortcuts registers listeners', () => {
             const getCurrentEssayId = jest.fn(() => 'essay-001');
+            const addEventListenerSpy = jest.spyOn(global.document, 'addEventListener');
 
             setupKeyboardShortcuts(manager, getCurrentEssayId);
 
-            expect(global.document.addEventListener).toHaveBeenCalledWith('keydown', expect.any(Function));
+            expect(addEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+            addEventListenerSpy.mockRestore();
         });
 
         test('setupAutoSnapshot integrates with autosave', () => {
