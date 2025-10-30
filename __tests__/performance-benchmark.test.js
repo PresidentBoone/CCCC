@@ -162,7 +162,21 @@ describe('Performance Benchmark Suite', () => {
     });
 
     afterEach(async () => {
-        // Cleanup - just reset references, no destroy methods needed
+        // Clear pending debounced saves to prevent "Database not initialized" errors
+        if (autosaveManager && autosaveManager.debounceTimers) {
+            for (const timer of autosaveManager.debounceTimers.values()) {
+                clearTimeout(timer);
+            }
+            autosaveManager.debounceTimers.clear();
+        }
+
+        // Close DB connections to allow deleteDatabase to succeed in next beforeEach
+        if (autosaveManager && autosaveManager.db) {
+            autosaveManager.close();
+        }
+        if (snapshotManager && snapshotManager.db) {
+            snapshotManager.close();
+        }
         autosaveManager = null;
         firebaseSyncManager = null;
         snapshotManager = null;
@@ -470,6 +484,8 @@ describe('Performance Benchmark Suite', () => {
         const duration = performance.now() - startTime;
         const opsPerSecond = (iterations * 5 / duration) * 1000;
 
+        await new Promise(resolve => setTimeout(resolve, 100)); // Wait for debounced saves to complete
+
         recordMetric('Throughput', 'concurrent_ops_per_sec', opsPerSecond, 100);
         expect(true).toBe(true);
     });
@@ -596,7 +612,7 @@ describe('Performance Benchmark Suite', () => {
             autosaveManager.saveDraft(id, `Content for ${id}`, { userId: 'test-user' }); // No await
         }
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150)); // Wait for debounced saves
 
         const cacheSize = autosaveManager.contentHashes.size;
 
@@ -703,6 +719,8 @@ describe('Performance Benchmark Suite', () => {
         const startTime = performance.now();
         const draft = await newManager.getDraft(essayId);
         const latency = performance.now() - startTime;
+
+        newManager.close(); // Close before afterEach runs
 
         recordMetric('Offline', 'persistence_retrieval', latency, 100);
         expect(latency).toBeLessThan(10000);
