@@ -634,4 +634,4 @@ class AccessibilityEnhancer {
 window.AccessibilityEnhancer = new AccessibilityEnhancer();
 
 // Export
-// export default window.AccessibilityEnhancer;
+export default window.AccessibilityEnhancer;

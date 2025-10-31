@@ -437,4 +437,4 @@ class FormValidator {
 
 // Export
 window.FormValidator = FormValidator;
-// export default FormValidator;
+export default FormValidator;

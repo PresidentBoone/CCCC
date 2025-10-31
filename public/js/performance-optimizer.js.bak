@@ -467,4 +467,4 @@ class PerformanceOptimizer {
 window.PerformanceOptimizer = new PerformanceOptimizer();
 
 // Export
-// export default window.PerformanceOptimizer;
+export default window.PerformanceOptimizer;

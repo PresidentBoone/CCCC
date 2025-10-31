@@ -349,6 +349,11 @@ class ErrorMonitor {
      * Report Error to Backend
      */
     async reportError(error) {
+        // Disable error reporting until backend endpoint is set up
+        // TODO: Implement /api/error-report endpoint before enabling
+        return;
+
+        /* Uncomment when backend is ready:
         // Only report in production
         if (window.location.hostname === 'localhost') return;
 
@@ -361,6 +366,7 @@ class ErrorMonitor {
         } catch (e) {
             // Silently fail if reporting doesn't work
         }
+        */
     }
 
     /**

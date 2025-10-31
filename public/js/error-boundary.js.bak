@@ -302,4 +302,4 @@ window.globalErrorBoundary = globalErrorBoundary;
 
 console.log('✅ Global Error Boundary active');
 
-// export default ErrorBoundary;
+export default ErrorBoundary;

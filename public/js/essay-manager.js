@@ -1482,17 +1482,23 @@ class EssayManager {
             highlightsFeedback.appendChild(skeletonCard);
         }
 
-        // Add skeleton to other sections
-        document.getElementById('overallFeedback').innerHTML = `
-            <div class="skeleton-line skeleton-line-long"></div>
-            <div class="skeleton-line skeleton-line-medium"></div>
-            <div class="skeleton-line skeleton-line-long"></div>
-        `;
+        // Add skeleton to other sections (with safety checks)
+        const overallFeedback = document.getElementById('overallFeedback');
+        if (overallFeedback) {
+            overallFeedback.innerHTML = `
+                <div class="skeleton-line skeleton-line-long"></div>
+                <div class="skeleton-line skeleton-line-medium"></div>
+                <div class="skeleton-line skeleton-line-long"></div>
+            `;
+        }
 
-        document.getElementById('collegeAdvice').innerHTML = `
-            <div class="skeleton-line skeleton-line-medium"></div>
-            <div class="skeleton-line skeleton-line-short"></div>
-        `;
+        const collegeAdvice = document.getElementById('collegeAdvice');
+        if (collegeAdvice) {
+            collegeAdvice.innerHTML = `
+                <div class="skeleton-line skeleton-line-medium"></div>
+                <div class="skeleton-line skeleton-line-short"></div>
+            `;
+        }
     }
 
     /**

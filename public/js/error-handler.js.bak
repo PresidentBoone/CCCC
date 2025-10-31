@@ -340,4 +340,4 @@ window.showInlineError = (element, message) => errorHandler.showInlineError(elem
 
 console.log('✅ Error Handler initialized');
 
-// export default errorHandler;
+export default errorHandler;
