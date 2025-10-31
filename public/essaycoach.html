@@ -2815,9 +2815,11 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
             try {
                 // Show loading
-                const analyzeBtn = document.querySelector('button[onclick="analyzeEssay()"]');
-                analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
-                analyzeBtn.disabled = true;
+                const analyzeBtn = document.querySelector('button[onclick*="analyzeEssay"]');
+                if (analyzeBtn) {
+                    analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
+                    analyzeBtn.disabled = true;
+                }
 
                 // Use AI Engine for analysis with user learning
                 let result;
@@ -2889,9 +2891,11 @@ Don't forget to specify your target colleges and essay prompt for more personali
                 showMessage('error', 'Failed to analyze essay: ' + error.message);
             } finally {
                 // Restore button
-                const analyzeBtn = document.querySelector('button[onclick="analyzeEssay()"]');
-                analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Essay';
-                analyzeBtn.disabled = false;
+                const analyzeBtn = document.querySelector('button[onclick*="analyzeEssay"]');
+                if (analyzeBtn) {
+                    analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Essay';
+                    analyzeBtn.disabled = false;
+                }
             }
         };
 
