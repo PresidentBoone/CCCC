@@ -33,7 +33,7 @@ describe('App Configuration', () => {
 
   test('Firebase config values are not empty', () => {
     expect(config.FIREBASE_CONFIG.apiKey.length).toBeGreaterThan(0);
-    expect(config.FIREBASE_CONFIG.projectId).toBe('college-climb-cc');
+    expect(config.FIREBASE_CONFIG.projectId).toBe('collegeclimb-ai');
   });
 
   test('has feature flags', () => {

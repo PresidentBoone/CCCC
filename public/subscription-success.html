@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Successful - College Climb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .success-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+        }
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: scaleIn 0.5s ease;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+        .button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: #2a357a;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease 0.6s both;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .loading {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">🎉</div>
+        <h1>Welcome to College Climb!</h1>
+        <p id="successMessage">Your subscription has been activated successfully.</p>
+        <a href="/dashboard.html" class="button">Go to Dashboard</a>
+        <div class="loading" id="verifyingMessage">Verifying your subscription...</div>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.appspot.com",
+            messagingSenderId: "187139654658",
+            appId: "1:187139654658:web:4a6cf4c43095f03212931b",
+            measurementId: "G-E0B2RQM9XS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Verify subscription
+        async function verifySubscription() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+
+            if (!sessionId) {
+                document.getElementById('successMessage').textContent = 'No session found. Redirecting...';
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
+                return;
+            }
+
+            try {
+                // Call API to verify session
+                const response = await fetch('/api/stripe/verify-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sessionId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('successMessage').textContent =
+                        `Your ${data.tier || 'premium'} subscription is now active!`;
+                    document.getElementById('verifyingMessage').style.display = 'none';
+                } else {
+                    throw new Error('Failed to verify subscription');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                document.getElementById('verifyingMessage').textContent =
+                    'Verification in progress. You can proceed to your dashboard.';
+            }
+        }
+
+        // Wait for auth
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                verifySubscription();
+            } else {
+                // Redirect to login if not authenticated
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+</body>
+</html>

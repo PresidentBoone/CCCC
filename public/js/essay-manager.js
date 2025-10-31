@@ -283,7 +283,7 @@ class EssayManager {
      */
     async saveEssay() {
         try {
-            const { doc, setDoc, serverTimestamp, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { doc, setDoc, serverTimestamp, collection, addDoc, getDocs, query } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
             const title = document.getElementById('essayTitle').value.trim() || 'Untitled Essay';
             const content = document.getElementById('essayTextarea').value.trim();
@@ -293,6 +293,26 @@ class EssayManager {
             if (!content) {
                 this.showMessage('error', 'Essay cannot be empty');
                 return;
+            }
+
+            // TIER ENFORCEMENT: Check if creating a new essay (not editing existing)
+            if (!this.currentEssayId && window.tierEnforcement) {
+                // Count existing essays
+                const essaysRef = collection(this.db, 'users', this.userId, 'essays');
+                const q = query(essaysRef);
+                const snapshot = await getDocs(q);
+                const currentEssayCount = snapshot.size;
+
+                // Check limit before creating new essay
+                const limitCheck = await window.tierEnforcement.checkLimit('maxEssays', currentEssayCount);
+
+                if (!limitCheck.allowed) {
+                    // Show upgrade prompt
+                    window.tierEnforcement.showLimitReached('maxEssays', limitCheck);
+                    return; // Block essay creation
+                }
+
+                console.log(`✅ Essay limit check passed: ${currentEssayCount + 1}/${limitCheck.limit}`);
             }
 
             const wordCount = content.split(/\s+/).length;
@@ -731,6 +751,9 @@ class EssayManager {
             analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
             analyzeBtn.disabled = true;
 
+            // Show skeleton screens while loading
+            this.showSkeletonLoading();
+
             // Call API
             const response = await fetch('/api/essay-analyze', {
                 method: 'POST',
@@ -754,7 +777,7 @@ class EssayManager {
             // Store analysis
             this.analysisResult = result;
 
-            // Display results
+            // Display results (replaces skeleton)
             this.displayAnalysisResults(result);
 
             // Apply highlights (non-destructive)
@@ -765,6 +788,8 @@ class EssayManager {
         } catch (error) {
             console.error('Analysis error:', error);
             this.showMessage('error', 'Failed to analyze essay: ' + error.message);
+            // Hide skeleton on error
+            this.hideSkeletonLoading();
         } finally {
             // Restore button
             const analyzeBtn = document.querySelector('button[onclick*="analyzeEssay"]');
@@ -888,6 +913,9 @@ class EssayManager {
             <div class="feedback-card-section suggestion">
                 <div class="feedback-label"><i class="fas fa-lightbulb"></i> Suggestion:</div>
                 <div class="feedback-text">${highlight.suggestion}</div>
+                <button class="copy-suggestion-btn" onclick="window.essayManager.copySuggestion('${highlight.suggestion.replace(/'/g, "\\'")}', ${index})" title="Copy suggestion to clipboard">
+                    <i class="fas fa-copy"></i> Copy Suggestion
+                </button>
             </div>
             ` : ''}
         `;
@@ -967,15 +995,15 @@ class EssayManager {
     }
 
     /**
-     * Get highlight color
+     * Get highlight color with improved contrast
      */
     getHighlightColor(type) {
         const colors = {
-            'red': 'rgba(239, 68, 68, 0.25)',
-            'yellow': 'rgba(245, 158, 11, 0.25)',
-            'green': 'rgba(16, 185, 129, 0.25)'
+            'red': 'rgba(239, 68, 68, 0.3)',
+            'yellow': 'rgba(245, 158, 11, 0.3)',
+            'green': 'rgba(16, 185, 129, 0.3)'
         };
-        return colors[type] || 'rgba(160, 123, 204, 0.25)';
+        return colors[type] || 'rgba(160, 123, 204, 0.3)';
     }
 
     /**
@@ -1307,6 +1335,174 @@ class EssayManager {
      */
     async refreshDeadlines() {
         await this.loadEssayDeadlines();
+    }
+
+    /**
+     * Copy suggestion to clipboard
+     * @param {string} suggestion - The suggestion text to copy
+     * @param {number} index - Index of the highlight for visual feedback
+     */
+    async copySuggestion(suggestion, index) {
+        try {
+            // Use modern clipboard API
+            await navigator.clipboard.writeText(suggestion);
+
+            // Show success toast
+            this.showToast(`✅ Copied! Paste into your essay.`, 'success');
+
+            // Add visual feedback to the button
+            const buttons = document.querySelectorAll(`.feedback-card-header [data-highlight-index="${index}"] .copy-suggestion-btn, .highlight-feedback-card[data-highlight-index="${index}"] .copy-suggestion-btn`);
+            buttons.forEach(btn => {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+
+        } catch (error) {
+            console.error('Failed to copy suggestion:', error);
+
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = suggestion;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+
+            try {
+                document.execCommand('copy');
+                this.showToast(`✅ Copied! Paste into your essay.`, 'success');
+            } catch (err) {
+                this.showToast('❌ Failed to copy. Please copy manually.', 'error');
+            }
+
+            document.body.removeChild(textArea);
+        }
+    }
+
+    /**
+     * Show toast notification
+     * @param {string} message - Toast message
+     * @param {string} type - Toast type (success, error, info)
+     */
+    showToast(message, type = 'info') {
+        // Check if toast container exists
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;';
+            document.body.appendChild(container);
+        }
+
+        // Create toast
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.style.cssText = `
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 500;
+            animation: slideInRight 0.3s ease;
+            min-width: 250px;
+        `;
+        toast.textContent = message;
+
+        // Add animation keyframes if not already added
+        if (!document.getElementById('toast-animations')) {
+            const style = document.createElement('style');
+            style.id = 'toast-animations';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        container.appendChild(toast);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideInRight 0.3s ease reverse';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    /**
+     * Show skeleton loading cards while analysis is in progress
+     */
+    showSkeletonLoading() {
+        const highlightsFeedback = document.getElementById('highlightsFeedback');
+        const resultsDiv = document.getElementById('analysisResults');
+
+        if (!highlightsFeedback || !resultsDiv) return;
+
+        // Make results section visible
+        resultsDiv.style.display = 'block';
+
+        // Clear existing content
+        highlightsFeedback.innerHTML = '';
+
+        // Create 3 skeleton cards (typical analysis returns 3-5 highlights)
+        for (let i = 0; i < 3; i++) {
+            const skeletonCard = document.createElement('div');
+            skeletonCard.className = 'highlight-feedback-card skeleton-card';
+            skeletonCard.innerHTML = `
+                <div class="skeleton-header">
+                    <div class="skeleton-badge"></div>
+                    <div class="skeleton-line skeleton-line-title"></div>
+                </div>
+                <div class="skeleton-body">
+                    <div class="skeleton-line skeleton-line-short"></div>
+                    <div class="skeleton-line skeleton-line-medium"></div>
+                    <div class="skeleton-line skeleton-line-long"></div>
+                    <div class="skeleton-line skeleton-line-medium"></div>
+                </div>
+                <div class="skeleton-footer">
+                    <div class="skeleton-button"></div>
+                </div>
+            `;
+            highlightsFeedback.appendChild(skeletonCard);
+        }
+
+        // Add skeleton to other sections
+        document.getElementById('overallFeedback').innerHTML = `
+            <div class="skeleton-line skeleton-line-long"></div>
+            <div class="skeleton-line skeleton-line-medium"></div>
+            <div class="skeleton-line skeleton-line-long"></div>
+        `;
+
+        document.getElementById('collegeAdvice').innerHTML = `
+            <div class="skeleton-line skeleton-line-medium"></div>
+            <div class="skeleton-line skeleton-line-short"></div>
+        `;
+    }
+
+    /**
+     * Hide skeleton loading (called on error)
+     */
+    hideSkeletonLoading() {
+        const highlightsFeedback = document.getElementById('highlightsFeedback');
+        if (highlightsFeedback) {
+            highlightsFeedback.innerHTML = '';
+        }
     }
 }
 

@@ -39,7 +39,12 @@ module.exports = async (req, res) => {
                     '/api/testprep-generate',
                     '/api/timeline',
                     '/api/scrape-scholarships',
-                    '/api/intelligence'
+                    '/api/intelligence',
+                    '/api/stripe/create-checkout-session',
+                    '/api/stripe/create-portal-session',
+                    '/api/stripe/webhook',
+                    '/api/stripe/subscription-status',
+                    '/api/send-email'
                 ]
             });
         }
@@ -82,6 +87,38 @@ module.exports = async (req, res) => {
         if (path.startsWith('/api/intelligence')) {
             const intelligenceHandler = require('./handlers/intelligence');
             return intelligenceHandler(req, res);
+        }
+
+        // Stripe payment endpoints
+        if (path.startsWith('/api/stripe/create-checkout-session')) {
+            const stripeCheckoutHandler = require('./handlers/stripe-create-checkout');
+            return stripeCheckoutHandler(req, res);
+        }
+
+        if (path.startsWith('/api/stripe/create-portal-session')) {
+            const stripePortalHandler = require('./handlers/stripe-create-portal');
+            return stripePortalHandler(req, res);
+        }
+
+        if (path.startsWith('/api/stripe/webhook')) {
+            const stripeWebhookHandler = require('./handlers/stripe-webhook');
+            return stripeWebhookHandler(req, res);
+        }
+
+        if (path.startsWith('/api/stripe/subscription-status')) {
+            const stripeStatusHandler = require('./handlers/stripe-subscription-status');
+            return stripeStatusHandler(req, res);
+        }
+
+        if (path.startsWith('/api/stripe/verify-session')) {
+            const stripeVerifyHandler = require('./handlers/stripe-verify-session');
+            return stripeVerifyHandler(req, res);
+        }
+
+        // Email endpoint
+        if (path.startsWith('/api/send-email')) {
+            const emailHandler = require('./handlers/send-email');
+            return emailHandler(req, res);
         }
 
         // 404 for unknown routes

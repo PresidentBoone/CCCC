@@ -464,8 +464,8 @@
             </div>
             <div class="pricing-card popular">
                 <div class="popular-badge">Most Popular</div>
-                <div class="plan-name">Premium</div>
-                <div class="plan-price">$10</div>
+                <div class="plan-name">Basic</div>
+                <div class="plan-price">$19.99</div>
                 <div class="plan-period">per month</div>
                 <ul class="plan-features">
                     <li><span class="plan-feature-icon">🚀</span> Advanced AI College Counselor</li>
@@ -475,11 +475,11 @@
                     <li><span class="plan-feature-icon">🎓</span> Full College Database Access</li>
                     <li><span class="plan-feature-icon">🎤</span> Interview Prep Tools</li>
                 </ul>
-                <button class="plan-button" style="background: linear-gradient(90deg, #bb86fc 0%, #a07bcc 100%); color: #fff; font-size:1.15rem; font-weight:800; border:2px solid #fff; box-shadow:0 8px 32px #bb86fc44; animation: pulseGlow 1.5s infinite alternate;">Choose Premium</button>
+                <button class="plan-button" style="background: linear-gradient(90deg, #bb86fc 0%, #a07bcc 100%); color: #fff; font-size:1.15rem; font-weight:800; border:2px solid #fff; box-shadow:0 8px 32px #bb86fc44; animation: pulseGlow 1.5s infinite alternate;">Choose Basic</button>
             </div>
             <div class="pricing-card pro" style="border: 2.5px solid #bb86fc; box-shadow: 0 0 32px 0 #bb86fc55, 0 0 64px 0 #a07bcc33; animation: proPulseGlow 1.6s infinite alternate;">
                 <div class="plan-name" style="color:#bb86fc;">Pro</div>
-                <div class="plan-price" style="color:#bb86fc;">$25</div>
+                <div class="plan-price" style="color:#bb86fc;">$39.99</div>
                 <div class="plan-period">per month</div>
                 <ul class="plan-features">
                     <li><span class="plan-feature-icon">👑</span> Expert AI College Counselor</li>
@@ -685,5 +685,11 @@
         }
     });
     </script>
+
+    <!-- Payment System (Mock + Real Stripe) -->
+    <script src="js/payment/subscription-config.js"></script>
+    <script src="js/payment/mock-payment-system.js"></script>
+    <script src="js/payment/stripe-manager.js"></script>
+    <script type="module" src="js/payment/pricing-init.js"></script>
 </body>
 </html>

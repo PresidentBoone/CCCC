@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - College Climb</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+        import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAs6WBvM8k5s_gkXjkH9dEGHPU3CKpBbjQ",
+            authDomain: "collegeclimb-ai.firebaseapp.com",
+            projectId: "collegeclimb-ai",
+            storageBucket: "collegeclimb-ai.firebasestorage.app",
+            messagingSenderId: "1054374402933",
+            appId: "1:1054374402933:web:7f1834a8ced9d8f959a37f",
+            measurementId: "G-KD30DV9ZSR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.firebaseLoaded = true;
+    </script>
+
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9ff;
+            --accent-bg: #2a357a;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #a07bcc;
+            --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
+            --shadow: 0 8px 32px rgba(42, 53, 122, 0.12);
+            --border-radius: 16px;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --accent-bg: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #bb86fc;
+            --gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .admin-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .admin-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Main Container */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--primary-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card-icon.users {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .stat-card-icon.revenue {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .stat-card-icon.subscriptions {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .stat-card-icon.growth {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-card-trend {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-card-trend.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card-trend.negative {
+            color: var(--danger-color);
+        }
+
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .admin-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .admin-tab:hover {
+            color: var(--accent-color);
+        }
+
+        .admin-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* Panel Content */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        /* Table */
+        .admin-table-container {
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .admin-table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-table-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .admin-search {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .admin-search input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .admin-search input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table thead {
+            background: var(--secondary-bg);
+        }
+
+        .admin-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .admin-table tbody tr:hover {
+            background: var(--secondary-bg);
+        }
+
+        .tier-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tier-badge.free {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .tier-badge.basic {
+            background: linear-gradient(135deg, #a07bcc 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .tier-badge.pro {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.canceled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .admin-table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .admin-search {
+                max-width: 100%;
+            }
+
+            .admin-table {
+                font-size: 0.85rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* Access Denied */
+        .access-denied {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .access-denied i {
+            font-size: 4rem;
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+
+        .access-denied h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-denied p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="admin-header">
+        <div class="admin-header-content">
+            <h1>
+                <i class="fas fa-shield-alt"></i>
+                Admin Panel
+            </h1>
+            <div class="admin-header-actions">
+                <div class="admin-user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="adminEmail">Loading...</span>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='/dashboard.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+                <button class="btn btn-danger" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="admin-container" id="adminContent">
+        <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading admin panel...</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel JavaScript -->
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+        import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc, updateDoc, deleteDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+        const auth = window.auth;
+        const db = window.db;
+
+        let currentUser = null;
+        let allUsers = [];
+        let currentTab = 'overview';
+
+        // Admin emails (you can add more)
+        const ADMIN_EMAILS = [
+            'dylonboone@gmail.com',  // Your email
+            'admin@collegeclimb.com'
+        ];
+
+        // Check admin access
+        async function checkAdminAccess(user) {
+            if (!user) return false;
+
+            // Check if user email is in admin list
+            if (ADMIN_EMAILS.includes(user.email)) {
+                return true;
+            }
+
+            // Check Firestore for admin role
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    return userData.role === 'admin' || userData.isAdmin === true;
+                }
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+            }
+
+            return false;
+        }
+
+        // Show access denied
+        function showAccessDenied() {
+            document.getElementById('adminContent').innerHTML = `
+                <div class="access-denied">
+                    <i class="fas fa-ban"></i>
+                    <h2>Access Denied</h2>
+                    <p>You don't have permission to access the admin panel.</p>
+                    <button class="btn btn-primary" onclick="window.location.href='/dashboard.html'">
+                        Go to Dashboard
+                    </button>
+                </div>
+            `;
+        }
+
+        // Initialize admin panel
+        async function initAdminPanel() {
+            try {
+                // Load all data
+                await Promise.all([
+                    loadUsers(),
+                    loadStats()
+                ]);
+
+                // Render admin interface
+                renderAdminInterface();
+
+                // Show overview tab by default
+                showTab('overview');
+
+            } catch (error) {
+                console.error('Error initializing admin panel:', error);
+                document.getElementById('adminContent').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Loading Admin Panel</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load all users
+        async function loadUsers() {
+            try {
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+
+                allUsers = [];
+                snapshot.forEach(doc => {
+                    allUsers.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                console.log(`Loaded ${allUsers.length} users`);
+                return allUsers;
+            } catch (error) {
+                console.error('Error loading users:', error);
+                return [];
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            const stats = {
+                totalUsers: allUsers.length,
+                freeUsers: allUsers.filter(u => !u.subscription || u.subscription.tier === 'free').length,
+                basicUsers: allUsers.filter(u => u.subscription?.tier === 'basic').length,
+                proUsers: allUsers.filter(u => u.subscription?.tier === 'pro').length,
+                totalRevenue: 0,
+                monthlyRevenue: 0,
+                activeSubscriptions: 0
+            };
+
+            // Calculate revenue
+            allUsers.forEach(user => {
+                if (user.subscription && user.subscription.status === 'active') {
+                    stats.activeSubscriptions++;
+
+                    if (user.subscription.tier === 'basic') {
+                        stats.monthlyRevenue += 19.99;
+                    } else if (user.subscription.tier === 'pro') {
+                        stats.monthlyRevenue += 39.99;
+                    }
+                }
+            });
+
+            stats.totalRevenue = stats.monthlyRevenue * 12; // ARR
+
+            window.adminStats = stats;
+            return stats;
+        }
+
+        // Render admin interface
+        function renderAdminInterface() {
+            const stats = window.adminStats;
+
+            document.getElementById('adminContent').innerHTML = `
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-value">${stats.totalUsers}</div>
+                                <div class="stat-card-label">Total Users</div>
+                                <div class="stat-card-trend positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+12% this month</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-value">$${stats.monthlyRevenue.toFixed(2)}</div>
+                                <div class="stat-card-label">Monthly Revenue (MRR)</div>
+                                <div class="stat-card-trend positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>ARR: $${stats.totalRevenue.toFixed(0)}</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-icon revenue">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-value">${stats.activeSubscriptions}</div>
+                                <div class="stat-card-label">Active Subscriptions</div>
+                                <div class="stat-card-trend positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>${((stats.activeSubscriptions / stats.totalUsers) * 100).toFixed(1)}% conversion</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-icon subscriptions">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-value">${stats.basicUsers + stats.proUsers}</div>
+                                <div class="stat-card-label">Paid Users</div>
+                                <div class="stat-card-trend">
+                                    <span>Basic: ${stats.basicUsers} | Pro: ${stats.proUsers}</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-icon growth">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="window.showTab('overview')">
+                        <i class="fas fa-chart-bar"></i> Overview
+                    </button>
+                    <button class="admin-tab" onclick="window.showTab('users')">
+                        <i class="fas fa-users"></i> Users (${stats.totalUsers})
+                    </button>
+                    <button class="admin-tab" onclick="window.showTab('subscriptions')">
+                        <i class="fas fa-crown"></i> Subscriptions (${stats.activeSubscriptions})
+                    </button>
+                    <button class="admin-tab" onclick="window.showTab('revenue')">
+                        <i class="fas fa-dollar-sign"></i> Revenue
+                    </button>
+                </div>
+
+                <!-- Panels -->
+                <div id="overviewPanel" class="admin-panel active">
+                    ${renderOverviewPanel()}
+                </div>
+
+                <div id="usersPanel" class="admin-panel">
+                    ${renderUsersPanel()}
+                </div>
+
+                <div id="subscriptionsPanel" class="admin-panel">
+                    ${renderSubscriptionsPanel()}
+                </div>
+
+                <div id="revenuePanel" class="admin-panel">
+                    ${renderRevenuePanel()}
+                </div>
+            `;
+        }
+
+        // Render overview panel
+        function renderOverviewPanel() {
+            const stats = window.adminStats;
+
+            return `
+                <div class="chart-container">
+                    <div class="chart-title">📊 User Distribution</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #6b7280;">${stats.freeUsers}</div>
+                            <div style="color: var(--text-secondary);">Free Users</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                ${((stats.freeUsers / stats.totalUsers) * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #a07bcc;">${stats.basicUsers}</div>
+                            <div style="color: var(--text-secondary);">Basic Users</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                ${((stats.basicUsers / stats.totalUsers) * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">${stats.proUsers}</div>
+                            <div style="color: var(--text-secondary);">Pro Users</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                ${((stats.proUsers / stats.totalUsers) * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">💰 Revenue Breakdown</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #10b981;">$${stats.monthlyRevenue.toFixed(2)}</div>
+                            <div style="color: var(--text-secondary);">MRR</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Monthly Recurring Revenue
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">$${stats.totalRevenue.toFixed(0)}</div>
+                            <div style="color: var(--text-secondary);">ARR</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Annual Recurring Revenue
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">$${(stats.monthlyRevenue / stats.activeSubscriptions || 0).toFixed(2)}</div>
+                            <div style="color: var(--text-secondary);">ARPU</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                Average Revenue Per User
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render users panel
+        function renderUsersPanel() {
+            return `
+                <div class="admin-table-container">
+                    <div class="admin-table-header">
+                        <div class="admin-table-title">All Users</div>
+                        <div class="admin-search">
+                            <input type="text" id="userSearch" placeholder="Search users..." onkeyup="window.filterUsers(this.value)">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Tier</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Last Active</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                ${renderUsersTableRows(allUsers)}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render users table rows
+        function renderUsersTableRows(users) {
+            if (users.length === 0) {
+                return '<tr><td colspan="6" class="empty-state">No users found</td></tr>';
+            }
+
+            return users.map(user => {
+                const tier = user.subscription?.tier || 'free';
+                const status = user.subscription?.status || 'active';
+                const joinedDate = user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString() : 'N/A';
+                const lastActive = user.lastActive?.toDate ? user.lastActive.toDate().toLocaleDateString() : 'N/A';
+
+                return `
+                    <tr>
+                        <td>${user.email || 'N/A'}</td>
+                        <td><span class="tier-badge ${tier}">${tier}</span></td>
+                        <td><span class="status-badge ${status}">${status}</span></td>
+                        <td>${joinedDate}</td>
+                        <td>${lastActive}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-info btn-small" onclick="window.viewUserDetails('${user.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render subscriptions panel
+        function renderSubscriptionsPanel() {
+            const paidUsers = allUsers.filter(u => u.subscription && u.subscription.tier !== 'free');
+
+            return `
+                <div class="admin-table-container">
+                    <div class="admin-table-header">
+                        <div class="admin-table-title">Active Subscriptions</div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Tier</th>
+                                    <th>Status</th>
+                                    <th>MRR</th>
+                                    <th>Started</th>
+                                    <th>Next Billing</th>
+                                    <th>Mock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${renderSubscriptionsTableRows(paidUsers)}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render subscriptions table rows
+        function renderSubscriptionsTableRows(users) {
+            if (users.length === 0) {
+                return '<tr><td colspan="7" class="empty-state">No active subscriptions</td></tr>';
+            }
+
+            return users.map(user => {
+                const tier = user.subscription.tier;
+                const status = user.subscription.status;
+                const mrr = tier === 'basic' ? 19.99 : tier === 'pro' ? 39.99 : 0;
+                const startDate = user.subscription.createdAt?.toDate ? user.subscription.createdAt.toDate().toLocaleDateString() : 'N/A';
+                const nextBilling = user.subscription.currentPeriodEnd?.toDate ? user.subscription.currentPeriodEnd.toDate().toLocaleDateString() : 'N/A';
+                const isMock = user.subscription.isMock ? '✅' : '❌';
+
+                return `
+                    <tr>
+                        <td>${user.email || 'N/A'}</td>
+                        <td><span class="tier-badge ${tier}">${tier}</span></td>
+                        <td><span class="status-badge ${status}">${status}</span></td>
+                        <td>$${mrr.toFixed(2)}</td>
+                        <td>${startDate}</td>
+                        <td>${nextBilling}</td>
+                        <td>${isMock}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render revenue panel
+        function renderRevenuePanel() {
+            const stats = window.adminStats;
+            const basicRevenue = stats.basicUsers * 19.99;
+            const proRevenue = stats.proUsers * 39.99;
+
+            return `
+                <div class="chart-container">
+                    <div class="chart-title">💰 Revenue by Tier</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                        <div style="padding: 1.5rem; background: linear-gradient(135deg, #a07bcc 0%, #8b5cf6 100%); border-radius: 12px; color: white;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">Basic Tier MRR</div>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">$${basicRevenue.toFixed(2)}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.9;">${stats.basicUsers} subscribers × $19.99</div>
+                        </div>
+                        <div style="padding: 1.5rem; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 12px; color: #78350f;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">Pro Tier MRR</div>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">$${proRevenue.toFixed(2)}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.9;">${stats.proUsers} subscribers × $39.99</div>
+                        </div>
+                        <div style="padding: 1.5rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; color: white;">
+                            <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">Total MRR</div>
+                            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">$${stats.monthlyRevenue.toFixed(2)}</div>
+                            <div style="font-size: 0.85rem; opacity: 0.9;">ARR: $${stats.totalRevenue.toFixed(0)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">📈 Growth Metrics</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">$${(stats.totalRevenue * 6).toFixed(0)}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Valuation (6x ARR)</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">${((stats.activeSubscriptions / stats.totalUsers) * 100).toFixed(1)}%</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Conversion Rate</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">$${(stats.monthlyRevenue / (stats.activeSubscriptions || 1)).toFixed(2)}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">ARPU</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--secondary-bg); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">${stats.totalUsers}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Users</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show tab
+        window.showTab = function(tabName) {
+            // Hide all panels
+            document.querySelectorAll('.admin-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+
+            // Remove active class from tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected panel
+            document.getElementById(`${tabName}Panel`).classList.add('active');
+
+            // Add active class to tab
+            event.target.classList.add('active');
+
+            currentTab = tabName;
+        };
+
+        // Filter users
+        window.filterUsers = function(searchTerm) {
+            const filtered = allUsers.filter(user => {
+                const email = (user.email || '').toLowerCase();
+                const tier = (user.subscription?.tier || 'free').toLowerCase();
+                return email.includes(searchTerm.toLowerCase()) || tier.includes(searchTerm.toLowerCase());
+            });
+
+            document.getElementById('usersTableBody').innerHTML = renderUsersTableRows(filtered);
+        };
+
+        // View user details
+        window.viewUserDetails = function(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            alert(`User Details:\n\nEmail: ${user.email}\nTier: ${user.subscription?.tier || 'free'}\nStatus: ${user.subscription?.status || 'active'}\nJoined: ${user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString() : 'N/A'}`);
+        };
+
+        // Handle logout
+        window.handleLogout = async function() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = '/';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Failed to logout');
+                }
+            }
+        };
+
+        // Auth state listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('adminEmail').textContent = user.email;
+
+                // Check admin access
+                const isAdmin = await checkAdminAccess(user);
+
+                if (isAdmin) {
+                    console.log('✅ Admin access granted');
+                    await initAdminPanel();
+                } else {
+                    console.log('❌ Admin access denied');
+                    showAccessDenied();
+                }
+            } else {
+                // Not logged in, redirect to login
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+</body>
+</html>

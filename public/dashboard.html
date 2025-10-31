@@ -447,6 +447,38 @@
             box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.5);
         }
 
+        /* Tier Badge Styles */
+        .cc-tier-badge {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cc-tier-badge.tier-free {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .cc-tier-badge.tier-basic {
+            background: linear-gradient(135deg, #a07bcc 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .cc-tier-badge.tier-pro {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+        }
+
+        [data-theme="dark"] .cc-tier-badge.tier-free {
+            background: #374151;
+            color: #9ca3af;
+        }
+
         /* ============================================
            DASHBOARD SPECIFIC STYLES
            ============================================ */
@@ -1879,6 +1911,13 @@
                         <span>Profile</span>
                     </a>
 
+                    <!-- Subscription Management -->
+                    <a href="#" class="cc-dropdown-link" id="ccManageSubscription">
+                        <span class="cc-dropdown-link-icon">💳</span>
+                        <span>Manage Subscription</span>
+                        <span class="cc-tier-badge" id="ccTierBadge">Free</span>
+                    </a>
+
                     <!-- Divider -->
                     <div class="cc-dropdown-divider"></div>
 
@@ -1972,6 +2011,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Usage Meters Section -->
+        <div id="usageMetersContainer"></div>
 
         <!-- AI School Matching Section -->
         <div class="school-match-section">
@@ -3193,6 +3235,90 @@
             updateScholarshipStats();
         });
 
+        // ============================================
+        // SUBSCRIPTION MANAGEMENT
+        // ============================================
+
+        async function loadUserSubscription() {
+            if (!auth.currentUser) return;
+
+            try {
+                const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+                const subscription = userDoc.exists() ? userDoc.data().subscription : null;
+
+                const tier = subscription?.tier || 'free';
+                const tierBadge = document.getElementById('ccTierBadge');
+
+                if (tierBadge) {
+                    // Update badge text
+                    tierBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+
+                    // Update badge class
+                    tierBadge.className = 'cc-tier-badge';
+                    tierBadge.classList.add(`tier-${tier}`);
+                }
+
+                console.log(`💳 User subscription: ${tier}`);
+
+                // Initialize and render usage meters
+                if (window.UsageMeters) {
+                    const container = document.getElementById('usageMetersContainer');
+                    if (container) {
+                        const meters = new window.UsageMeters(db, auth.currentUser.uid);
+                        await meters.initialize();
+                        await meters.render(container);
+                        console.log('📊 Usage meters rendered');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load subscription:', error);
+            }
+        }
+
+        // Handle "Manage Subscription" button click
+        document.getElementById('ccManageSubscription')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            if (!auth.currentUser) {
+                alert('Please log in first');
+                return;
+            }
+
+            try {
+                // Get user's subscription data
+                const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+                const subscription = userDoc.exists() ? userDoc.data().subscription : null;
+                const customerId = subscription?.customerId;
+                const tier = subscription?.tier || 'free';
+
+                // If free tier, redirect to pricing
+                if (tier === 'free') {
+                    window.location.href = '/pricing.html';
+                    return;
+                }
+
+                // Otherwise, open billing portal (mock or real)
+                if (window.mockPaymentSystem && window.mockPaymentSystem.isEnabled()) {
+                    window.mockPaymentSystem.showMockPortal(auth.currentUser.uid);
+                } else if (customerId && window.stripeManager) {
+                    await window.stripeManager.redirectToCustomerPortal(customerId, auth.currentUser.uid);
+                } else {
+                    // Fallback: go to pricing
+                    window.location.href = '/pricing.html';
+                }
+            } catch (error) {
+                console.error('Error opening subscription management:', error);
+                alert('Failed to open subscription management. Please try again.');
+            }
+        });
+
+        // Load subscription on auth state change
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                await loadUserSubscription();
+            }
+        });
+
         console.log('🎉 Dashboard script loaded and ready!');
 
         // ============================================
@@ -3315,5 +3441,12 @@
         window.logger = logger;
 
     </script>
+
+    <!-- Payment System Scripts (Mock + Real Stripe) -->
+    <script src="js/payment/subscription-config.js"></script>
+    <script src="js/payment/mock-payment-system.js"></script>
+    <script src="js/payment/stripe-manager.js"></script>
+    <script src="js/payment/tier-enforcement.js"></script>
+    <script src="js/usage-meters.js"></script>
 </body>
 </html>

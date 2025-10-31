@@ -3545,6 +3545,28 @@
                 // Show loading
                 document.getElementById('loadingScreen').style.display = 'flex';
 
+                // TIER ENFORCEMENT: Check daily practice limit
+                if (window.tierEnforcement) {
+                    // Get today's practice count from testPrepData
+                    const today = new Date().toDateString();
+                    const todaysPracticeCount = testPrepData.dailyPracticeCount?.[today] || 0;
+
+                    // Check if user can start another practice session
+                    const limitCheck = await window.tierEnforcement.checkLimit('practiceQuestionsPerDay', todaysPracticeCount);
+
+                    if (!limitCheck.allowed) {
+                        // Hide loading
+                        document.getElementById('loadingScreen').style.display = 'none';
+                        // Show upgrade prompt
+                        window.tierEnforcement.showLimitReached('practiceQuestionsPerDay', limitCheck);
+                        // Redirect back to test prep home after a delay
+                        setTimeout(() => window.location.href = '/testprep.html', 3000);
+                        return;
+                    }
+
+                    console.log(`✅ Practice limit check passed: ${todaysPracticeCount + 1}/${limitCheck.limit} today`);
+                }
+
                 // Check if this is a diagnostic session
                 if (sessionType === 'diagnostic') {
                     await generateDiagnosticQuestions();
@@ -5265,5 +5287,9 @@ Generate 10 questions now:`;
             }
         });
     </script>
+
+    <!-- Payment & Tier Enforcement Scripts -->
+    <script src="js/payment/subscription-config.js"></script>
+    <script src="js/payment/tier-enforcement.js"></script>
 </body>
 </html>
