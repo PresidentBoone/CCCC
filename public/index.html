@@ -36,7 +36,6 @@
     <script src="/js/pwa-installer.js"></script>
     <script src="/js/personalization-engine.js"></script>
     <script src="/js/milestone-celebration.js"></script>
-    <script type="module" src="/index.js"></script>
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -48,7 +47,7 @@
             --gradient: linear-gradient(135deg, #2a357a 0%, #a07bcc 100%);
             --shadow: 0 4px 20px rgba(42, 53, 122, 0.1);
             --border-radius: 12px;
-            --logo-image: url('blackcc.png');
+            --logo-image: url('images/blackcc.png');
         }
 
         [data-theme="dark"] {
@@ -816,18 +815,18 @@
 
         <div class="hero-form" role="region" aria-label="Sign up form">
           <h3>Start Your Journey Today</h3>
-          <form class="hero-signup-form" aria-label="Create account">
-            <input type="text" placeholder="Full Name" required aria-label="Full name" aria-required="true">
-            <input type="email" placeholder="Email Address" required aria-label="Email address" aria-required="true">
-            <select required aria-label="Graduation class" aria-required="true">
+          <form class="hero-signup-form" id="heroSignupForm" aria-label="Create account">
+            <input type="text" name="fullName" placeholder="Full Name" required aria-label="Full name" aria-required="true">
+            <input type="email" name="email" placeholder="Email Address" required aria-label="Email address" aria-required="true">
+            <select name="graduationYear" required aria-label="Graduation class" aria-required="true">
               <option value="">Class of...</option>
-              <option value="2025">2026</option>
-              <option value="2026">2027</option>
-              <option value="2027">2028</option>
-              <option value="2028">2029</option>
-              <option value="2029">2030</option>
-              <option value="2030">2031</option>
-              <option value="2031">2032</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+              <option value="2031">2031</option>
+              <option value="2032">2032</option>
             </select>
             <button type="submit" class="hero-cta-button" aria-label="Get started with free trial">Get Started Free</button>
           </form>
@@ -1639,9 +1638,9 @@
     <section id="signup" class="cta-section fade-in-up">
         <h2>Ready to Climb Higher?</h2>
         <p>Join thousands of students who've transformed their college admissions journey with College Climb.</p>
-        <form class="signup-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
+        <form class="signup-form" id="ctaSignupForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
             <button type="submit">Try It Free</button>
         </form>
     </section>
@@ -1765,18 +1764,23 @@
   function updateAuthUI(user) {
     const notLoggedIn = document.getElementById('notLoggedIn');
     const loggedIn = document.getElementById('loggedIn');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navAccountText = document.getElementById('navAccountText');
+    const dropdownWelcome = document.getElementById('dropdownWelcome');
+    const dropdownDisplayName = document.getElementById('dropdownDisplayName');
+
     if (user) {
         if (notLoggedIn) notLoggedIn.style.display = 'none';
         if (loggedIn) loggedIn.style.display = 'block';
 
         // Show avatar if available, otherwise show "Account"
-        if (currentUserData && currentUserData.profilePhotoURL) {
+        if (currentUserData && currentUserData.profilePhotoURL && navUserAvatar) {
             navUserAvatar.src = currentUserData.profilePhotoURL;
             navUserAvatar.style.display = 'block';
-            navAccountText.style.display = 'none';
+            if (navAccountText) navAccountText.style.display = 'none';
         } else {
-            navUserAvatar.style.display = 'none';
-            navAccountText.style.display = 'inline';
+            if (navUserAvatar) navUserAvatar.style.display = 'none';
+            if (navAccountText) navAccountText.style.display = 'inline';
         }
 
         // Show welcome message in dropdown with display name only
@@ -1790,8 +1794,8 @@
     } else {
         if (notLoggedIn) notLoggedIn.style.display = 'block';
         if (loggedIn) loggedIn.style.display = 'none';
-        navUserAvatar.style.display = 'none';
-        navAccountText.style.display = 'inline';
+        if (navUserAvatar) navUserAvatar.style.display = 'none';
+        if (navAccountText) navAccountText.style.display = 'inline';
         if (dropdownWelcome) dropdownWelcome.style.display = 'none';
     }
 }
@@ -1891,49 +1895,56 @@ if (logoutBtn) {
     });
 }
 
-// ============================================
-// UNIVERSAL NAVBAR JAVASCRIPT
-// ============================================
+// Hero signup form handler
+document.addEventListener('DOMContentLoaded', () => {
+    const heroForm = document.getElementById('heroSignupForm');
+    if (heroForm) {
+        heroForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(heroForm);
+            const data = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                graduationYear: formData.get('graduationYear')
+            };
 
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.setAttribute('data-theme', savedTheme);
-    updateThemeButton(savedTheme);
-    updateLogo(savedTheme);
-}
+            // Store in localStorage for signup page
+            localStorage.setItem('signupData', JSON.stringify(data));
 
-function updateThemeButton(theme) {
-    const themeToggle = document.getElementById('ccThemeToggle');
-    if (themeToggle) {
-        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            // Redirect to signup page
+            window.location.href = '/signup';
+        });
     }
-}
 
-function updateLogo(theme) {
-    const logo = document.getElementById('ccNavbarLogo');
-    if (logo) {
-        logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'blackcc.png';
+    // CTA signup form handler
+    const ctaForm = document.getElementById('ctaSignupForm');
+    if (ctaForm) {
+        ctaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(ctaForm);
+
+            localStorage.setItem('signupData', JSON.stringify({
+                fullName: formData.get('name'),
+                email: formData.get('email')
+            }));
+
+            window.location.href = '/signup';
+        });
     }
-}
 
-function toggleTheme() {
-    const currentTheme = document.body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.body.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeButton(newTheme);
-    updateLogo(newTheme);
-}
-
-// Initialize navbar
-document.addEventListener('DOMContentLoaded', function() {
-    initTheme();
-
-    const themeToggle = document.getElementById('ccThemeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-    }
+    // Pricing button handlers
+    const pricingButtons = document.querySelectorAll('#pricing button');
+    pricingButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const plans = ['free', 'premium', 'pro'];
+            const plan = plans[index] || 'free';
+            localStorage.setItem('selectedPlan', plan);
+            window.location.href = '/signup';
+        });
+    });
 });
+
+// Theme toggle is already initialized above, no need for duplicate logic
     </script>
 
     <script>
