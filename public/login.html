@@ -690,7 +690,7 @@
     <div class="login-container">
         <div class="login-card" role="main" aria-label="Login form">
             <div class="login-logo">
-                <img src="blackcc.png" alt="College Climb Logo" class="login-logo-img">
+                <img src="images/whiteclearcc.png" alt="College Climb Logo" class="login-logo-img">
             </div>
             <h1 class="login-title">Welcome Back</h1>
 
@@ -726,12 +726,16 @@
         // The unified-auth.js handles all auth state management automatically
 
         // Theme Toggle Functionality
-        const themeToggle = document.getElementById('themeToggle');
+        const themeToggle = document.getElementById('ccThemeToggle');
         const body = document.body;
         const starryBg = document.getElementById('starryBg');
 
         function updateLogos(theme) {
-            const logoSrc = theme === 'light' ? 'blackcc.png' : 'images/whiteclearcc.png';
+            const logoSrc = theme === 'light' ? 'images/blackcc.png' : 'images/whiteclearcc.png';
+            const ccNavbarLogo = document.getElementById('ccNavbarLogo');
+            if (ccNavbarLogo) {
+                ccNavbarLogo.src = logoSrc;
+            }
             document.querySelectorAll('.logo-img, .login-logo-img').forEach(img => {
                 img.src = logoSrc;
             });
@@ -742,22 +746,26 @@
         updateThemeIcon(savedTheme);
         updateLogos(savedTheme);
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-            updateLogos(newTheme);
-            
-            if (newTheme === 'dark') {
-                createStars();
-            }
-        });
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+                updateLogos(newTheme);
+
+                if (newTheme === 'dark') {
+                    createStars();
+                }
+            });
+        }
 
         function updateThemeIcon(theme) {
-            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+            if (themeToggle) {
+                themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+            }
         }
 
         function createStars() {
@@ -990,21 +998,7 @@
             }
         });
 
-        // Mobile menu toggle
-        window.toggleMobileMenu = function() {
-            const dropdown = document.getElementById('mobileDropdown');
-            dropdown.classList.toggle('show');
-        };
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('mobileDropdown');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!hamburger.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
+        // Mobile menu code removed - using new cc-navbar without mobile menu
 
         // Enter key submission
         document.getElementById('loginPassword').addEventListener('keypress', function(e) {
