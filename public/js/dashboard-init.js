@@ -180,7 +180,7 @@ class DashboardManager {
     }
 
     /**
-     * Load user statistics
+     * Load user statistics from Firestore
      */
     async loadUserStats() {
         try {
@@ -189,18 +189,29 @@ class DashboardManager {
                 throw new Error('No user logged in');
             }
 
-            // Load REAL essay data from Firestore
-            const essayStats = await this.loadEssayStats(user.uid);
+            // Load all stats in parallel for better performance
+            const [essayStats, applicationCount, testScoreData, scholarshipData] = await Promise.all([
+                this.loadEssayStats(user.uid),
+                this.loadApplicationCount(user.uid),
+                this.loadTestScores(user.uid),
+                this.loadScholarships()
+            ]);
 
-            // TODO: Load from Firestore for other stats
-            // For now, return mix of real and mock data
+            // Calculate overall progress dynamically
+            const progress = this.calculateOverallProgress({
+                essays: essayStats,
+                applications: applicationCount,
+                testScores: testScoreData,
+                scholarships: scholarshipData
+            });
+
             return {
-                applications: 5,
+                applications: applicationCount,
                 essays: essayStats.total,
-                essayDetails: essayStats, // Include full essay details
-                scholarships: '$15,000',
-                testScore: 1450,
-                progress: 65
+                essayDetails: essayStats,
+                scholarships: `$${scholarshipData.totalValue.toLocaleString()}`,
+                testScore: testScoreData.highestScore || 0,
+                progress
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -218,6 +229,121 @@ class DashboardManager {
                 testScore: 0,
                 progress: 0
             };
+        }
+    }
+
+    /**
+     * Load application count from Firestore
+     */
+    async loadApplicationCount(userId) {
+        try {
+            if (!window.firebaseDb) {
+                return 0;
+            }
+
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            const applicationsRef = collection(window.firebaseDb, 'applications');
+            const q = query(
+                applicationsRef,
+                where('userId', '==', userId)
+            );
+
+            const snapshot = await getDocs(q);
+            console.log(`📋 Loaded ${snapshot.size} applications from Firestore`);
+            return snapshot.size;
+        } catch (error) {
+            console.error('Error loading application count:', error);
+            return 0;
+        }
+    }
+
+    /**
+     * Load test scores from Firestore
+     */
+    async loadTestScores(userId) {
+        try {
+            if (!window.firebaseDb) {
+                return { highestScore: 0, tests: [] };
+            }
+
+            const { collection, query, where, getDocs, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            const testScoresRef = collection(window.firebaseDb, 'testScores');
+            const q = query(
+                testScoresRef,
+                where('userId', '==', userId),
+                orderBy('score', 'desc')
+            );
+
+            const snapshot = await getDocs(q);
+            const tests = [];
+            let highestScore = 0;
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const score = data.score || 0;
+                tests.push({
+                    testType: data.testType || 'SAT',
+                    score,
+                    date: data.date
+                });
+                if (score > highestScore) {
+                    highestScore = score;
+                }
+            });
+
+            console.log(`📝 Loaded ${tests.length} test scores, highest: ${highestScore}`);
+            return { highestScore, tests };
+        } catch (error) {
+            console.error('Error loading test scores:', error);
+            return { highestScore: 0, tests: [] };
+        }
+    }
+
+    /**
+     * Calculate overall progress based on user data
+     */
+    calculateOverallProgress(data) {
+        try {
+            let totalProgress = 0;
+            let weights = 0;
+
+            // Essays progress (30% weight)
+            if (data.essays && data.essays.total > 0) {
+                const essayProgress = (data.essays.completed / Math.max(data.essays.total, 5)) * 100;
+                totalProgress += Math.min(essayProgress, 100) * 0.3;
+                weights += 0.3;
+            }
+
+            // Applications progress (30% weight)
+            if (data.applications > 0) {
+                const appProgress = (data.applications / 8) * 100; // Assume target of 8 applications
+                totalProgress += Math.min(appProgress, 100) * 0.3;
+                weights += 0.3;
+            }
+
+            // Test scores progress (20% weight)
+            if (data.testScores && data.testScores.highestScore > 0) {
+                const testProgress = (data.testScores.highestScore / 1600) * 100; // SAT max score
+                totalProgress += Math.min(testProgress, 100) * 0.2;
+                weights += 0.2;
+            }
+
+            // Scholarships progress (20% weight)
+            if (data.scholarships && data.scholarships.saved > 0) {
+                const scholarshipProgress = (data.scholarships.saved / 10) * 100; // Target of 10 scholarships
+                totalProgress += Math.min(scholarshipProgress, 100) * 0.2;
+                weights += 0.2;
+            }
+
+            // Normalize based on actual weights
+            const progress = weights > 0 ? Math.round(totalProgress / weights) : 0;
+            console.log(`📊 Calculated overall progress: ${progress}%`);
+            return progress;
+        } catch (error) {
+            console.error('Error calculating progress:', error);
+            return 0;
         }
     }
 
@@ -292,32 +418,42 @@ class DashboardManager {
     }
 
     /**
-     * Load school recommendations
+     * Load school recommendations from Firestore
      */
     async loadSchoolRecommendations() {
         try {
-            // TODO: Load from API
-            // For now, return mock data
-            return [
-                {
-                    name: 'Stanford University',
-                    match: 85,
-                    acceptanceRate: 4,
-                    tuition: 56169
-                },
-                {
-                    name: 'MIT',
-                    match: 82,
-                    acceptanceRate: 7,
-                    tuition: 53790
-                },
-                {
-                    name: 'UC Berkeley',
-                    match: 78,
-                    acceptanceRate: 17,
-                    tuition: 14253
-                }
-            ];
+            const user = window.authManager.getCurrentUser();
+            if (!user || !window.firebaseDb) {
+                console.warn('Firebase not available, returning empty schools');
+                return [];
+            }
+
+            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            // Query school recommendations collection
+            const schoolsRef = collection(window.firebaseDb, 'schoolRecommendations');
+            const q = query(
+                schoolsRef,
+                where('userId', '==', user.uid),
+                orderBy('matchScore', 'desc'),
+                limit(6)
+            );
+
+            const snapshot = await getDocs(q);
+            const schools = [];
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                schools.push({
+                    name: data.name || 'Unknown School',
+                    match: data.matchScore || 0,
+                    acceptanceRate: data.acceptanceRate || 0,
+                    tuition: data.tuition || 0
+                });
+            });
+
+            console.log(`🎓 Loaded ${schools.length} school recommendations from Firestore`);
+            return schools;
         } catch (error) {
             console.error('Error loading schools:', error);
             return [];
@@ -325,32 +461,49 @@ class DashboardManager {
     }
 
     /**
-     * Load timeline
+     * Load timeline from Firestore tasks
      */
     async loadTimeline() {
         try {
-            // TODO: Load from API/Firestore
-            // For now, return mock data
-            return [
-                {
-                    title: 'Complete Common App',
-                    date: '2025-11-01',
-                    status: 'pending',
-                    category: 'applications'
-                },
-                {
-                    title: 'Finish Personal Statement',
-                    date: '2025-10-15',
-                    status: 'in_progress',
-                    category: 'essays'
-                },
-                {
-                    title: 'SAT Test',
-                    date: '2025-12-07',
-                    status: 'upcoming',
-                    category: 'tests'
+            const user = window.authManager.getCurrentUser();
+            if (!user || !window.firebaseDb) {
+                console.warn('Firebase not available, returning empty timeline');
+                return [];
+            }
+
+            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            // Query tasks collection for upcoming tasks
+            const tasksRef = collection(window.firebaseDb, 'tasks');
+            const q = query(
+                tasksRef,
+                where('userId', '==', user.uid),
+                orderBy('dueDate', 'asc'),
+                limit(10)
+            );
+
+            const snapshot = await getDocs(q);
+            const tasks = [];
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                // Convert Firestore timestamp to date string
+                let dateStr = '';
+                if (data.dueDate) {
+                    const dueDate = data.dueDate.toDate ? data.dueDate.toDate() : new Date(data.dueDate);
+                    dateStr = dueDate.toISOString().split('T')[0];
                 }
-            ];
+
+                tasks.push({
+                    title: data.title || 'Untitled Task',
+                    date: dateStr,
+                    status: data.status || 'pending',
+                    category: data.category || 'applications'
+                });
+            });
+
+            console.log(`📅 Loaded ${tasks.length} timeline tasks from Firestore`);
+            return tasks;
         } catch (error) {
             console.error('Error loading timeline:', error);
             return [];
@@ -358,17 +511,58 @@ class DashboardManager {
     }
 
     /**
-     * Load scholarships
+     * Load scholarships from Firestore
      */
     async loadScholarships() {
         try {
-            // TODO: Load from localStorage/Firestore
-            // For now, return mock data
+            const user = window.authManager.getCurrentUser();
+            if (!user || !window.firebaseDb) {
+                console.warn('Firebase not available, returning empty scholarships');
+                return {
+                    saved: 0,
+                    totalValue: 0,
+                    applied: 0,
+                    pending: 0
+                };
+            }
+
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+            // Query scholarships collection
+            const scholarshipsRef = collection(window.firebaseDb, 'scholarships');
+            const q = query(
+                scholarshipsRef,
+                where('userId', '==', user.uid)
+            );
+
+            const snapshot = await getDocs(q);
+            let totalValue = 0;
+            let saved = 0;
+            let applied = 0;
+            let pending = 0;
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const amount = data.amount || 0;
+                const status = data.status || 'saved';
+
+                saved++;
+                totalValue += amount;
+
+                if (status === 'applied') {
+                    applied++;
+                } else if (status === 'saved') {
+                    pending++;
+                }
+            });
+
+            console.log(`💰 Loaded ${saved} scholarships worth $${totalValue} from Firestore`);
+
             return {
-                saved: 8,
-                totalValue: 15000,
-                applied: 3,
-                pending: 5
+                saved,
+                totalValue,
+                applied,
+                pending
             };
         } catch (error) {
             console.error('Error loading scholarships:', error);
