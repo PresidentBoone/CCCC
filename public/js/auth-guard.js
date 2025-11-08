@@ -157,7 +157,7 @@ class AuthGuard {
         try {
             const firebaseConfig = window.firebaseConfigInstance;
             if (firebaseConfig && firebaseConfig.auth) {
-                const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                const { signOut } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
                 await signOut(firebaseConfig.auth);
             }
             this.currentUser = null;
@@ -180,7 +180,7 @@ class AuthGuard {
 
         try {
             const firebaseConfig = window.firebaseConfigInstance;
-            const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+            const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
             
             const userDoc = await getDoc(doc(firebaseConfig.db, 'users', this.currentUser.uid));
             

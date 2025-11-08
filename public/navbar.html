@@ -627,7 +627,7 @@
     // Load User Data from Firestore
     async function loadNavbarUserData(userId) {
         try {
-            const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+            const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
             const userDoc = await getDoc(doc(window.db, 'users', userId));
             
             if (userDoc.exists()) {
@@ -697,7 +697,7 @@
         closeDropdown();
         
         try {
-            const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js');
+            const { signOut } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
             await signOut(window.auth);
             window.location.href = '/login';
         } catch (error) {

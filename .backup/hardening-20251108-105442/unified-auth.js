@@ -144,8 +144,8 @@ class UnifiedAuthManager {
         if (user) {
             // User is signed in
             this.user = user;
-
-            // Save to session with timestamp (with iOS Safari compatibility)
+            
+            // Save to session with timestamp
             const session = {
                 uid: user.uid,
                 email: user.email,
@@ -153,14 +153,7 @@ class UnifiedAuthManager {
                 photoURL: user.photoURL,
                 timestamp: Date.now()
             };
-
-            if (this.isLocalStorageAvailable()) {
-                try {
-                    localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
-                } catch (error) {
-                    console.warn('Failed to save session to localStorage:', error);
-                }
-            }
+            localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
 
             // Mark initial auth check as complete
             this.initialAuthCheckComplete = true;
@@ -263,37 +256,10 @@ class UnifiedAuthManager {
     }
 
     /**
-     * Check if localStorage is available (iOS Safari private mode compatibility)
-     */
-    isLocalStorageAvailable() {
-        try {
-            const test = '__storage_test__';
-            localStorage.setItem(test, test);
-            localStorage.removeItem(test);
-            return true;
-        } catch (e) {
-            console.warn('localStorage not available (iOS private mode?)');
-            return false;
-        }
-    }
-
-    /**
-     * Get current session (with iOS Safari fallback)
+     * Get current session
      */
     getSession() {
         try {
-            if (!this.isLocalStorageAvailable()) {
-                // Fallback to memory-only session (won't persist across reloads)
-                console.warn('Using memory-only session storage');
-                return this.user ? {
-                    uid: this.user.uid,
-                    email: this.user.email,
-                    displayName: this.user.displayName,
-                    photoURL: this.user.photoURL,
-                    timestamp: Date.now()
-                } : null;
-            }
-
             const sessionStr = localStorage.getItem(this.SESSION_KEY);
             return sessionStr ? JSON.parse(sessionStr) : null;
         } catch (error) {

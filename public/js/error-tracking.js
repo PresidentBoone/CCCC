@@ -33,11 +33,12 @@
             dsn: SENTRY_DSN,
             environment: window.APP_CONFIG.ENV.isProduction ? 'production' : 'development',
 
-            // Sample rate for performance monitoring (10% in production)
-            tracesSampleRate: window.APP_CONFIG.ENV.isProduction ? 0.1 : 1.0,
+            // Sample rate for performance monitoring
+            // Production hardening: 20% for first 48 hours, then reduce to 10%
+            tracesSampleRate: window.APP_CONFIG.ENV.isProduction ? 0.2 : 1.0,
 
-            // Replay sessions for debugging
-            replaysSessionSampleRate: 0.1, // 10% of sessions
+            // Replay sessions for debugging (production hardening: 20%)
+            replaysSessionSampleRate: window.APP_CONFIG.ENV.isProduction ? 0.2 : 1.0,
             replaysOnErrorSampleRate: 1.0, // 100% of error sessions
 
             // Integrate with browser APIs
@@ -52,11 +53,21 @@
                 'top.GLOBALS',
                 'chrome-extension',
                 'moz-extension',
-                // Network errors (handled elsewhere)
+                // Network errors (handled by network-monitor.js)
                 'NetworkError',
                 'Failed to fetch',
+                'Network request failed',
+                'Load failed',
+                'Network unavailable',
+                // Firestore expected errors (handled by safeFirestoreOperation)
+                'permission-denied',
+                'unavailable',
+                'unauthenticated',
                 // Ad blockers
                 'adsbygoogle',
+                // iOS Safari private mode localStorage errors (handled by unified-auth.js)
+                'QuotaExceededError',
+                'NS_ERROR_FILE_CORRUPTED',
             ],
 
             // Add context
@@ -89,7 +100,7 @@
     // Load Sentry SDK dynamically
     const loadSentrySDK = () => {
         const script = document.createElement('script');
-        script.src = 'https://browser.sentry-cdn.com/7.x.x/bundle.min.js';
+        script.src = 'https://browser.sentry-cdn.com/8.38.0/bundle.min.js';
         script.crossOrigin = 'anonymous';
         script.onload = initSentry;
         script.onerror = () => console.error('❌ Failed to load Sentry SDK');

@@ -54,8 +54,18 @@ service cloud.firestore {
                     && isValidEmail(request.resource.data.email);
 
       // Users can update their own profile
+      // Prevent modification of immutable fields and subscription data
       allow update: if isOwner(userId)
-                    && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'createdAt']));
+                    && (!request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny([
+                          'uid',
+                          'createdAt',
+                          'subscription.tier',
+                          'subscription.status',
+                          'subscription.isMock',
+                          'subscription.stripeCustomerId',
+                          'subscription.stripeSubscriptionId'
+                        ]));
 
       // Users cannot delete their profile (handle via auth deletion)
       allow delete: if false;

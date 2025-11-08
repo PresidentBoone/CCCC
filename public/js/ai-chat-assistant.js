@@ -162,7 +162,7 @@ class AIChatAssistant {
      */
     async getDeadlinesResponse() {
         try {
-            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
             const appsQuery = query(
                 collection(this.db, 'applications'),

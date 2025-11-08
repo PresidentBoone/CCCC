@@ -25,11 +25,11 @@ class UserProfileSystem {
 
             // Import Firestore
             const { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } = await import(
-                'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
+                'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js'
             );
 
             const { getApps } = await import(
-                'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js'
+                'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js'
             );
 
             const apps = getApps();

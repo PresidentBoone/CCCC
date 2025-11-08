@@ -20,24 +20,36 @@ class AccessibilityEnhancer {
      * Initialize accessibility enhancements
      */
     init() {
+        // Wait for DOM to be ready before initializing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initEnhancements());
+        } else {
+            this.initEnhancements();
+        }
+    }
+
+    /**
+     * Run all accessibility enhancements (after DOM is ready)
+     */
+    initEnhancements() {
         // Create screen reader announcer
         this.createAnnouncer();
-        
+
         // Add skip links
         this.addSkipLinks();
-        
+
         // Enhance keyboard navigation
         this.enhanceKeyboardNav();
-        
+
         // Add focus indicators
         this.addFocusIndicators();
-        
+
         // Fix missing ARIA labels
         this.fixMissingARIA();
-        
+
         // Enable focus trapping in modals
         this.setupModalFocusTrap();
-        
+
         // Add keyboard shortcuts help
         this.addKeyboardShortcutsHelp();
     }
@@ -65,8 +77,13 @@ class AccessibilityEnhancer {
             white-space: nowrap;
             border-width: 0;
         `;
-        
-        document.body.appendChild(this.announcer);
+
+        // Safely append to body
+        if (document.body) {
+            document.body.appendChild(this.announcer);
+        } else {
+            console.warn('Accessibility: document.body not ready, deferring announcer creation');
+        }
     }
 
     /**

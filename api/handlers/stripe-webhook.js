@@ -27,19 +27,23 @@ module.exports = async (req, res) => {
     let event;
 
     try {
-        // Verify webhook signature
+        // Verify webhook signature (REQUIRED for production security)
         const signature = req.headers['stripe-signature'];
 
         if (!webhookSecret) {
-            console.warn('⚠️ Webhook secret not configured, skipping signature verification');
-            event = req.body;
-        } else {
-            event = stripe.webhooks.constructEvent(
-                req.body,
-                signature,
-                webhookSecret
-            );
+            console.error('❌ STRIPE_WEBHOOK_SECRET not configured - webhooks disabled for security');
+            return res.status(500).json({
+                error: 'Webhook secret not configured',
+                message: 'Contact administrator to configure STRIPE_WEBHOOK_SECRET'
+            });
         }
+
+        // Verify signature to prevent webhook spoofing
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            webhookSecret
+        );
 
         console.log(`📨 Webhook received: ${event.type}`);
 
@@ -67,6 +71,14 @@ module.exports = async (req, res) => {
 
             case 'invoice.payment_failed':
                 await handlePaymentFailed(event.data.object);
+                break;
+
+            case 'charge.refunded':
+                await handleChargeRefunded(event.data.object);
+                break;
+
+            case 'customer.subscription.trial_will_end':
+                await handleTrialWillEnd(event.data.object);
                 break;
 
             default:
@@ -184,6 +196,64 @@ async function handlePaymentFailed(invoice) {
     console.log(`⚠️ Payment failed for subscription ${subscriptionId}`);
 
     // Could send payment failure notification email here
+}
+
+/**
+ * Handle charge refunded
+ * Downgrades user to free tier and logs refund
+ */
+async function handleChargeRefunded(charge) {
+    const customerId = charge.customer;
+    const refundAmount = charge.amount_refunded;
+    const refundReason = charge.refund.reason || 'requested_by_customer';
+
+    console.log(`💸 Refund processed for customer ${customerId}: $${refundAmount / 100}`);
+
+    try {
+        // Find user by Stripe customer ID
+        const usersSnapshot = await db.collection('users')
+            .where('subscription.stripeCustomerId', '==', customerId)
+            .limit(1)
+            .get();
+
+        if (usersSnapshot.empty) {
+            console.warn(`No user found for customer ${customerId}`);
+            return;
+        }
+
+        const userId = usersSnapshot.docs[0].id;
+
+        // Downgrade to free tier
+        await db.collection('users').doc(userId).set({
+            subscription: {
+                tier: 'free',
+                status: 'refunded',
+                refundedAt: admin.firestore.FieldValue.serverTimestamp(),
+                refundReason: refundReason,
+                refundAmount: refundAmount / 100,
+                previousTier: usersSnapshot.docs[0].data().subscription?.tier || 'unknown',
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            }
+        }, { merge: true });
+
+        console.log(`✅ User ${userId} downgraded to free tier after refund`);
+    } catch (error) {
+        console.error('Error handling refund:', error);
+        throw error;
+    }
+}
+
+/**
+ * Handle trial will end notification
+ * Send reminder email before trial ends
+ */
+async function handleTrialWillEnd(subscription) {
+    const userId = subscription.metadata?.userId;
+    const trialEnd = new Date(subscription.trial_end * 1000);
+
+    console.log(`⏰ Trial ending soon for user ${userId} on ${trialEnd.toLocaleDateString()}`);
+
+    // Could send trial ending reminder email here
 }
 
 /**

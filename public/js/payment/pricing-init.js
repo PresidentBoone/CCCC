@@ -3,7 +3,7 @@
  * Handles subscription button clicks and Stripe checkout
  */
 
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
 // Stripe publishable key (set this from environment or config)
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_51QSb8pP9rVeYC5tKyBBPUDmQLG1r6cKATrg2Xfq6Xh6Mf4z4N16QoJ4YSbJNg7Pz9mHpG5YqZRz2h5Xg8Vf7FqQN00y7mEqG8t'; // Replace with actual key

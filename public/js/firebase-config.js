@@ -24,10 +24,10 @@ class FirebaseConfig {
 
     try {
       // Dynamically import Firebase modules
-      const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-      const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
-      const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-      const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js');
+      const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js');
+      const { getAuth } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
+      const { getFirestore } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+      const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js');
 
       // Check if Firebase is already initialized
       const apps = getApps();

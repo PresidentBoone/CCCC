@@ -6,6 +6,9 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, deleteDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
+// NOTE: Auth middleware will be applied in the main API router
+// Individual handlers receive authenticated req.user from the router
+
 // Rate limiting helper
 const rateLimitMap = new Map();
 function checkRateLimit(identifier, limit = 100, windowMs = 60000) {
@@ -27,14 +30,29 @@ let db = null;
 let useFirebase = false;
 
 try {
+  // Validate required environment variables
+  const requiredEnvVars = [
+    'FIREBASE_API_KEY',
+    'FIREBASE_AUTH_DOMAIN',
+    'FIREBASE_PROJECT_ID',
+    'FIREBASE_STORAGE_BUCKET',
+    'FIREBASE_MESSAGING_SENDER_ID',
+    'FIREBASE_APP_ID'
+  ];
+
+  const missingVars = requiredEnvVars.filter(key => !process.env[key]);
+  if (missingVars.length > 0) {
+    throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+  }
+
   const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY || "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "collegeclimb-ai.firebaseapp.com",
-    projectId: process.env.FIREBASE_PROJECT_ID || "collegeclimb-ai",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "collegeclimb-ai.firebasestorage.app",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "187139654658",
-    appId: process.env.FIREBASE_APP_ID || "1:187139654658:web:4a6cf4c43095f03212931b",
-    measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-E0B2RQM9XS"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID || null
   };
 
   const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

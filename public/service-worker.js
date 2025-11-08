@@ -1,8 +1,8 @@
 // College Climb Service Worker
 // Provides offline caching and improved performance
 
-const CACHE_NAME = 'college-climb-v2.1.0';  // UPDATED VERSION - forces cache refresh
-const RUNTIME_CACHE = 'college-climb-runtime-v2.1.0';
+const CACHE_NAME = 'college-climb-v2.2.0';  // UPDATED VERSION - Firebase 11.x.x migration
+const RUNTIME_CACHE = 'college-climb-runtime-v2.2.0';
 
 // Assets to cache on install
 const STATIC_ASSETS = [

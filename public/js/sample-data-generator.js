@@ -14,7 +14,7 @@ class SampleDataGenerator {
      */
     async hasData() {
         try {
-            const { collection, query, where, getDocs, limit } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+            const { collection, query, where, getDocs, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
             const checks = await Promise.all([
                 getDocs(query(collection(this.db, 'applications'), where('userId', '==', this.userId), limit(1))),
@@ -55,7 +55,7 @@ class SampleDataGenerator {
      * Create sample college applications
      */
     async createSampleApplications() {
-        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
         const sampleApps = [
             {
@@ -110,7 +110,7 @@ class SampleDataGenerator {
      * Create sample tasks
      */
     async createSampleTasks() {
-        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -185,7 +185,7 @@ class SampleDataGenerator {
      * Create sample school recommendations
      */
     async createSampleSchools() {
-        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
         const sampleSchools = [
             {
@@ -261,7 +261,7 @@ class SampleDataGenerator {
      * Create sample test score
      */
     async createSampleTestScore() {
-        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
         const sampleScore = {
             userId: this.userId,

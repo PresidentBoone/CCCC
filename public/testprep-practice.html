@@ -1475,9 +1475,9 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
 
         // Initialize Firebase with environment-based config (same pattern as Essay Coach)
         async function initializeFirebase() {
@@ -3248,7 +3248,7 @@
             // Fetch top users from Firestore
             async fetchLeaderboard(period = 'alltime') {
                 try {
-                    const { collection, query, orderBy, limit, getDocs, where } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+                    const { collection, query, orderBy, limit, getDocs, where } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
                     let leaderboardQuery;
 

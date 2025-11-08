@@ -56,10 +56,10 @@ async function minifyJavaScript(code, filename) {
     const result = await minify(code, {
       compress: {
         dead_code: true,
-        drop_console: false, // Keep console for debugging
-        drop_debugger: true,
-        pure_funcs: ['console.debug'],
-        passes: 2
+        drop_console: true,  // Remove console.log, console.info, console.debug in production
+        drop_debugger: true, // Remove debugger statements
+        pure_funcs: ['console.log', 'console.info', 'console.debug'], // Additional console removal
+        passes: 2            // Multiple optimization passes
       },
       mangle: {
         keep_classnames: true, // Preserve class names for debugging

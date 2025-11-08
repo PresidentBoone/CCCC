@@ -73,13 +73,20 @@ export default defineConfig({
     assetsDir: 'assets',
 
     // Generate source maps for debugging
-    sourcemap: false, // Disabled for now - causing issues with inline scripts
+    sourcemap: false, // Disabled - inline scripts don't need source maps
 
-    // Minification - disabled for static HTML with inline scripts
-    minify: false,
+    // Minification - ENABLED for production optimization
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,     // Remove console statements in production
+        drop_debugger: true,    // Remove debugger statements
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+      },
+    },
 
-    // CSS code splitting
-    cssCodeSplit: false, // Disabled - keep CSS inline for now
+    // CSS code splitting - ENABLED for better caching
+    cssCodeSplit: true,
 
     // Chunk size warnings
     chunkSizeWarningLimit: 1000, // 1MB

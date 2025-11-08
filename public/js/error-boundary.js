@@ -266,7 +266,8 @@ class ErrorBoundary {
         ...context
       };
 
-      navigator.sendBeacon('/api/log-error', JSON.stringify(errorData));
+      // TODO: Create /api/log-error endpoint before enabling
+      // navigator.sendBeacon('/api/log-error', JSON.stringify(errorData));
     }
   }
 

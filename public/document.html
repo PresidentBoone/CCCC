@@ -1902,8 +1902,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <iframe id="pdfViewer" class="pdf-viewer"></iframe>
-                <img id="imageViewer" class="document-preview" style="display: none;">
+                <iframe id="pdfViewer" class="pdf-viewer" title="Document PDF Viewer"></iframe>
+                <img id="imageViewer" class="document-preview" alt="Document preview image" style="display: none;">
             </div>
         </div>
     </div>
@@ -2090,7 +2090,7 @@
         // Load User Data from Firestore
         async function loadNavbarUserData(userId) {
             try {
-                const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js');
+                const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
                 const userDoc = await getDoc(doc(window.db, 'users', userId));
                 
                 if (userDoc.exists()) {
@@ -2158,7 +2158,7 @@
             closeDropdown();
             
             try {
-                const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js');
+                const { signOut } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
                 await signOut(window.auth);
                 window.location.href = '/login';
             } catch (error) {
@@ -2242,10 +2242,10 @@
         // EXISTING DOCUMENT MANAGER CODE
         // ============================================
 
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js';
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js';
 
         // Firebase configuration
         const firebaseConfig = {

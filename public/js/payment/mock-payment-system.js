@@ -8,7 +8,9 @@
  * 3. All existing code will work with real Stripe
  */
 
-const ENABLE_MOCK_PAYMENTS = true; // Set to false when ready for real Stripe
+// PRODUCTION SAFETY: Mock payments disabled for production
+// Only enable in development/testing environments
+const ENABLE_MOCK_PAYMENTS = process.env.NODE_ENV !== 'production' && false;
 
 class MockPaymentSystem {
     constructor() {

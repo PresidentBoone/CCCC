@@ -46,10 +46,16 @@ class SmartAlerts {
         `;
         alertsButton.onclick = () => this.toggleAlertsPanel();
 
-        // Insert before theme toggle
+        // Insert before theme toggle (with safety checks)
         const themeToggle = document.getElementById('ccThemeToggle');
-        if (themeToggle) {
+        if (themeToggle && themeToggle.parentNode === navbar) {
             navbar.insertBefore(alertsButton, themeToggle);
+        } else if (navbar) {
+            // Fallback: just append if theme toggle not found or not in navbar
+            navbar.appendChild(alertsButton);
+        } else {
+            console.warn('Smart Alerts: Cannot create UI - navbar not found');
+            return;
         }
 
         this.notificationBadge = document.getElementById('alertsBadge');

@@ -2,6 +2,8 @@
 // Handles both general college counseling chat AND essay-specific chat
 // CONSOLIDATES: chat.js + essay-chat.js
 
+const { verifyAuthToken, getUserSubscription } = require('../middleware/auth');
+
 // Rate limiting
 const rateLimitMap = new Map();
 
@@ -289,20 +291,31 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate limiting
-  const identifier = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'unknown';
+  // AUTHENTICATION REQUIRED
+  try {
+    const decodedToken = await verifyAuthToken(req);
+    req.user = { uid: decodedToken.uid, email: decodedToken.email };
+  } catch (error) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'Please log in to use the AI chat feature',
+    });
+  }
+
+  // Rate limiting (now by authenticated user)
+  const identifier = req.user.uid;
   const rateCheck = checkRateLimit(identifier, 10, 60000);
-  
+
   if (!rateCheck.allowed) {
-    return res.status(429).json({ 
+    return res.status(429).json({
       error: 'Too many requests. Please wait a moment.',
-      retryAfter: rateCheck.retryAfter 
+      retryAfter: rateCheck.retryAfter
     });
   }
 
   if (!process.env.OPENAI_API_KEY) {
     console.error('OPENAI_API_KEY not found');
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'Server configuration error - API key missing'
     });
   }

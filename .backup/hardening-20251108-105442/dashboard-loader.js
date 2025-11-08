@@ -13,39 +13,6 @@ class DashboardLoader {
     }
 
     /**
-     * Firestore Error Guard - wraps all Firestore operations
-     * Checks network availability before operations
-     * Provides user-friendly error handling
-     */
-    async safeFirestoreOperation(operationName, operation) {
-        // Check network availability first (iOS Safari compatible)
-        if (window.networkMonitor && !window.networkMonitor.checkBeforeOperation()) {
-            const error = new Error(`Network unavailable - cannot ${operationName}`);
-            error.code = 'network-unavailable';
-            throw error;
-        }
-
-        try {
-            return await operation();
-        } catch (error) {
-            console.error(`❌ Firestore ${operationName} failed:`, error);
-
-            // Provide user-friendly error messages
-            if (error.code === 'network-unavailable') {
-                this.showErrorToast(`You're offline. Cannot ${operationName}.`);
-            } else if (error.code === 'permission-denied') {
-                this.showErrorToast(`Permission denied. Please check your account settings.`);
-            } else if (error.code === 'unavailable') {
-                this.showErrorToast(`Service temporarily unavailable. Please try again.`);
-            } else {
-                this.showErrorToast(`Failed to ${operationName}. Please try again.`);
-            }
-
-            throw error;
-        }
-    }
-
-    /**
      * Initialize dashboard with all data
      */
     async initialize() {
@@ -84,7 +51,7 @@ class DashboardLoader {
      * Load user data from Firestore
      */
     async loadUserData() {
-        return this.safeFirestoreOperation('load user data', async () => {
+        try {
             const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
             const userDoc = await getDoc(doc(this.db, 'users', this.user.uid));
 
@@ -104,7 +71,10 @@ class DashboardLoader {
                 await setDoc(doc(this.db, 'users', this.user.uid), this.userData);
                 console.log('✅ Created new user document');
             }
-        });
+        } catch (error) {
+            console.error('Error loading user data:', error);
+            throw error;
+        }
     }
 
     /**
@@ -112,41 +82,39 @@ class DashboardLoader {
      */
     async loadApplicationStats() {
         try {
-            await this.safeFirestoreOperation('load applications', async () => {
-                const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const applicationsQuery = query(
-                    collection(this.db, 'applications'),
-                    where('userId', '==', this.user.uid)
-                );
+            const applicationsQuery = query(
+                collection(this.db, 'applications'),
+                where('userId', '==', this.user.uid)
+            );
 
-                const snapshot = await getDocs(applicationsQuery);
-                const count = snapshot.size;
+            const snapshot = await getDocs(applicationsQuery);
+            const count = snapshot.size;
 
-                // Calculate trend
-                const recentApps = snapshot.docs.filter(doc => {
-                    const data = doc.data();
-                    const createdAt = data.createdAt?.toDate() || new Date(0);
-                    const weekAgo = new Date();
-                    weekAgo.setDate(weekAgo.getDate() - 7);
-                    return createdAt >= weekAgo;
-                }).length;
+            // Calculate trend
+            const recentApps = snapshot.docs.filter(doc => {
+                const data = doc.data();
+                const createdAt = data.createdAt?.toDate() || new Date(0);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return createdAt >= weekAgo;
+            }).length;
 
-                // Update UI
-                const countElement = document.getElementById('applicationsCount');
-                const trendElement = document.getElementById('applicationsTrend');
+            // Update UI
+            const countElement = document.getElementById('applicationsCount');
+            const trendElement = document.getElementById('applicationsTrend');
 
-                if (countElement) {
-                    countElement.textContent = count;
-                    countElement.classList.add('loaded');
-                }
+            if (countElement) {
+                countElement.textContent = count;
+                countElement.classList.add('loaded');
+            }
 
-                if (trendElement) {
-                    trendElement.textContent = recentApps > 0 ? `+${recentApps} this week` : 'No new apps';
-                }
+            if (trendElement) {
+                trendElement.textContent = recentApps > 0 ? `+${recentApps} this week` : 'No new apps';
+            }
 
-                console.log(`✅ Applications: ${count} (${recentApps} this week)`);
-            });
+            console.log(`✅ Applications: ${count} (${recentApps} this week)`);
         } catch (error) {
             console.error('Error loading applications:', error);
             this.showStatError('applicationsCount', '0');
@@ -158,38 +126,36 @@ class DashboardLoader {
      */
     async loadEssayStats() {
         try {
-            await this.safeFirestoreOperation('load essays', async () => {
-                const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const essaysQuery = query(
-                    collection(this.db, 'essays'),
-                    where('userId', '==', this.user.uid)
-                );
+            const essaysQuery = query(
+                collection(this.db, 'essays'),
+                where('userId', '==', this.user.uid)
+            );
 
-                const snapshot = await getDocs(essaysQuery);
-                const count = snapshot.size;
+            const snapshot = await getDocs(essaysQuery);
+            const count = snapshot.size;
 
-                // Count essays in review
-                const inReview = snapshot.docs.filter(doc => {
-                    const data = doc.data();
-                    return data.status === 'in_review' || data.status === 'draft';
-                }).length;
+            // Count essays in review
+            const inReview = snapshot.docs.filter(doc => {
+                const data = doc.data();
+                return data.status === 'in_review' || data.status === 'draft';
+            }).length;
 
-                // Update UI
-                const countElement = document.getElementById('essaysCount');
-                const trendElement = document.getElementById('essaysTrend');
+            // Update UI
+            const countElement = document.getElementById('essaysCount');
+            const trendElement = document.getElementById('essaysTrend');
 
-                if (countElement) {
-                    countElement.textContent = count;
-                    countElement.classList.add('loaded');
-                }
+            if (countElement) {
+                countElement.textContent = count;
+                countElement.classList.add('loaded');
+            }
 
-                if (trendElement) {
-                    trendElement.textContent = inReview > 0 ? `${inReview} in review` : 'All complete';
-                }
+            if (trendElement) {
+                trendElement.textContent = inReview > 0 ? `${inReview} in review` : 'All complete';
+            }
 
-                console.log(`✅ Essays: ${count} (${inReview} in review)`);
-            });
+            console.log(`✅ Essays: ${count} (${inReview} in review)`);
         } catch (error) {
             console.error('Error loading essays:', error);
             this.showStatError('essaysCount', '0');
@@ -201,43 +167,41 @@ class DashboardLoader {
      */
     async loadScholarshipStats() {
         try {
-            await this.safeFirestoreOperation('load scholarships', async () => {
-                const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const scholarshipsQuery = query(
-                    collection(this.db, 'scholarships'),
-                    where('userId', '==', this.user.uid)
-                );
+            const scholarshipsQuery = query(
+                collection(this.db, 'scholarships'),
+                where('userId', '==', this.user.uid)
+            );
 
-                const snapshot = await getDocs(scholarshipsQuery);
+            const snapshot = await getDocs(scholarshipsQuery);
 
-                // Calculate total potential value
-                let totalValue = 0;
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    totalValue += data.amount || 0;
-                });
-
-                // Format value
-                const formattedValue = totalValue >= 1000 ?
-                    `$${(totalValue / 1000).toFixed(1)}K` :
-                    `$${totalValue}`;
-
-                // Update UI
-                const amountElement = document.getElementById('scholarshipAmount');
-                const trendElement = document.getElementById('scholarshipTrend');
-
-                if (amountElement) {
-                    amountElement.textContent = formattedValue;
-                    amountElement.classList.add('loaded');
-                }
-
-                if (trendElement) {
-                    trendElement.textContent = `${snapshot.size} opportunities`;
-                }
-
-                console.log(`✅ Scholarships: ${formattedValue} in ${snapshot.size} opportunities`);
+            // Calculate total potential value
+            let totalValue = 0;
+            snapshot.docs.forEach(doc => {
+                const data = doc.data();
+                totalValue += data.amount || 0;
             });
+
+            // Format value
+            const formattedValue = totalValue >= 1000 ?
+                `$${(totalValue / 1000).toFixed(1)}K` :
+                `$${totalValue}`;
+
+            // Update UI
+            const amountElement = document.getElementById('scholarshipAmount');
+            const trendElement = document.getElementById('scholarshipTrend');
+
+            if (amountElement) {
+                amountElement.textContent = formattedValue;
+                amountElement.classList.add('loaded');
+            }
+
+            if (trendElement) {
+                trendElement.textContent = `${snapshot.size} opportunities`;
+            }
+
+            console.log(`✅ Scholarships: ${formattedValue} in ${snapshot.size} opportunities`);
         } catch (error) {
             console.error('Error loading scholarships:', error);
             this.showStatError('scholarshipAmount', '$0');
@@ -249,8 +213,7 @@ class DashboardLoader {
      */
     async loadTestPrepStats() {
         try {
-            await this.safeFirestoreOperation('load test prep stats', async () => {
-                const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
             // Get latest SAT score
             const satQuery = query(
@@ -334,8 +297,7 @@ class DashboardLoader {
                 }
             }
 
-                console.log(`✅ Test Prep: ${score} ${testType} (${improvement > 0 ? '+' : ''}${improvement})`);
-            });
+            console.log(`✅ Test Prep: ${score} ${testType} (${improvement > 0 ? '+' : ''}${improvement})`);
         } catch (error) {
             console.error('Error loading test prep stats:', error);
             this.showStatError('testprepScore', '--');
@@ -347,33 +309,31 @@ class DashboardLoader {
      */
     async loadOverallProgress() {
         try {
-            await this.safeFirestoreOperation('load overall progress', async () => {
-                // Calculate progress based on completed tasks
-                const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            // Calculate progress based on completed tasks
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const tasksQuery = query(
-                    collection(this.db, 'tasks'),
-                    where('userId', '==', this.user.uid)
-                );
+            const tasksQuery = query(
+                collection(this.db, 'tasks'),
+                where('userId', '==', this.user.uid)
+            );
 
-                const snapshot = await getDocs(tasksQuery);
-                const totalTasks = snapshot.size;
+            const snapshot = await getDocs(tasksQuery);
+            const totalTasks = snapshot.size;
 
-                if (totalTasks === 0) {
-                    this.updateProgressDisplay(0);
-                    return;
-                }
+            if (totalTasks === 0) {
+                this.updateProgressDisplay(0);
+                return;
+            }
 
-                const completedTasks = snapshot.docs.filter(doc =>
-                    doc.data().status === 'completed'
-                ).length;
+            const completedTasks = snapshot.docs.filter(doc =>
+                doc.data().status === 'completed'
+            ).length;
 
-                const progressPercent = Math.round((completedTasks / totalTasks) * 100);
+            const progressPercent = Math.round((completedTasks / totalTasks) * 100);
 
-                this.updateProgressDisplay(progressPercent);
+            this.updateProgressDisplay(progressPercent);
 
-                console.log(`✅ Overall Progress: ${progressPercent}% (${completedTasks}/${totalTasks})`);
-            });
+            console.log(`✅ Overall Progress: ${progressPercent}% (${completedTasks}/${totalTasks})`);
         } catch (error) {
             console.error('Error loading progress:', error);
             this.updateProgressDisplay(0);
@@ -419,43 +379,41 @@ class DashboardLoader {
             const schoolGrid = document.getElementById('schoolGrid');
             if (!schoolGrid) return;
 
-            await this.safeFirestoreOperation('load school recommendations', async () => {
-                // Try to load saved recommendations
-                const { collection, query, where, getDocs, limit, orderBy } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            // Try to load saved recommendations
+            const { collection, query, where, getDocs, limit, orderBy } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const recsQuery = query(
-                    collection(this.db, 'schoolRecommendations'),
-                    where('userId', '==', this.user.uid),
-                    orderBy('matchScore', 'desc'),
-                    limit(6)
-                );
+            const recsQuery = query(
+                collection(this.db, 'schoolRecommendations'),
+                where('userId', '==', this.user.uid),
+                orderBy('matchScore', 'desc'),
+                limit(6)
+            );
 
-                const snapshot = await getDocs(recsQuery);
+            const snapshot = await getDocs(recsQuery);
 
-                if (snapshot.empty) {
-                    schoolGrid.innerHTML = `
-                        <div class="empty-state" style="grid-column: 1 / -1;">
-                            <i class="fas fa-university"></i>
-                            <h3>No Recommendations Yet</h3>
-                            <p>Complete your profile to get personalized school recommendations</p>
-                            <button class="btn-primary" onclick="window.location.href='/profile'">
-                                Complete Profile
-                            </button>
-                        </div>
-                    `;
-                    return;
-                }
+            if (snapshot.empty) {
+                schoolGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-university"></i>
+                        <h3>No Recommendations Yet</h3>
+                        <p>Complete your profile to get personalized school recommendations</p>
+                        <button class="btn-primary" onclick="window.location.href='/profile'">
+                            Complete Profile
+                        </button>
+                    </div>
+                `;
+                return;
+            }
 
-                schoolGrid.innerHTML = '';
+            schoolGrid.innerHTML = '';
 
-                snapshot.docs.forEach(doc => {
-                    const school = doc.data();
-                    const card = this.createSchoolCard(school);
-                    schoolGrid.appendChild(card);
-                });
-
-                console.log(`✅ Loaded ${snapshot.size} school recommendations`);
+            snapshot.docs.forEach(doc => {
+                const school = doc.data();
+                const card = this.createSchoolCard(school);
+                schoolGrid.appendChild(card);
             });
+
+            console.log(`✅ Loaded ${snapshot.size} school recommendations`);
         } catch (error) {
             console.error('Error loading school recommendations:', error);
             const schoolGrid = document.getElementById('schoolGrid');
@@ -517,43 +475,41 @@ class DashboardLoader {
      */
     async loadTasks() {
         try {
-            await this.safeFirestoreOperation('load tasks', async () => {
-                const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+            const { collection, query, where, getDocs, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
-                const tasksQuery = query(
-                    collection(this.db, 'tasks'),
-                    where('userId', '==', this.user.uid),
-                    where('status', '!=', 'completed'),
-                    orderBy('status'),
-                    orderBy('dueDate', 'asc'),
-                    limit(5)
-                );
+            const tasksQuery = query(
+                collection(this.db, 'tasks'),
+                where('userId', '==', this.user.uid),
+                where('status', '!=', 'completed'),
+                orderBy('status'),
+                orderBy('dueDate', 'asc'),
+                limit(5)
+            );
 
-                const snapshot = await getDocs(tasksQuery);
-                const taskList = document.getElementById('taskList');
+            const snapshot = await getDocs(tasksQuery);
+            const taskList = document.getElementById('taskList');
 
-                if (!taskList) return;
+            if (!taskList) return;
 
-                if (snapshot.empty) {
-                    taskList.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                            <p>No pending tasks! You're all caught up.</p>
-                        </div>
-                    `;
-                    return;
-                }
+            if (snapshot.empty) {
+                taskList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No pending tasks! You're all caught up.</p>
+                    </div>
+                `;
+                return;
+            }
 
-                taskList.innerHTML = '';
+            taskList.innerHTML = '';
 
-                snapshot.docs.forEach(doc => {
-                    const task = doc.data();
-                    const taskElement = this.createTaskElement(doc.id, task);
-                    taskList.appendChild(taskElement);
-                });
-
-                console.log(`✅ Loaded ${snapshot.size} tasks`);
+            snapshot.docs.forEach(doc => {
+                const task = doc.data();
+                const taskElement = this.createTaskElement(doc.id, task);
+                taskList.appendChild(taskElement);
             });
+
+            console.log(`✅ Loaded ${snapshot.size} tasks`);
         } catch (error) {
             console.error('Error loading tasks:', error);
         }
@@ -699,25 +655,11 @@ class DashboardLoader {
 
 // Global task toggle handler
 window.handleTaskToggle = async function(taskId, completed) {
-    // Check network availability first
-    if (window.networkMonitor && !window.networkMonitor.checkBeforeOperation()) {
-        console.warn('Cannot update task - network unavailable');
-        // Revert checkbox state
-        const checkbox = document.getElementById(`task-${taskId}`);
-        if (checkbox) {
-            checkbox.checked = !completed;
-        }
-        return;
-    }
-
     try {
         const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
 
         if (!window.db) {
             console.error('Database not available');
-            if (window.showToast) {
-                window.showToast('Database not available. Please refresh the page.', 'error', 5000);
-            }
             return;
         }
 
@@ -733,24 +675,7 @@ window.handleTaskToggle = async function(taskId, completed) {
             await window.dashboardLoader.refresh();
         }
     } catch (error) {
-        console.error('❌ Error updating task:', error);
-
-        // Provide user-friendly error message
-        if (window.showToast) {
-            if (error.code === 'permission-denied') {
-                window.showToast('Permission denied. Cannot update task.', 'error', 5000);
-            } else if (error.code === 'unavailable') {
-                window.showToast('Service unavailable. Please try again.', 'error', 5000);
-            } else {
-                window.showToast('Failed to update task. Please try again.', 'error', 5000);
-            }
-        }
-
-        // Revert checkbox state
-        const checkbox = document.getElementById(`task-${taskId}`);
-        if (checkbox) {
-            checkbox.checked = !completed;
-        }
+        console.error('Error updating task:', error);
     }
 };
 
