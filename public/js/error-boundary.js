@@ -38,18 +38,23 @@ class ErrorBoundary {
     }
 
     const error = event.error || new Error(event.message);
-    
+
+    // Filter out non-critical errors that shouldn't show UI
+    const shouldShowUI = this.isCriticalError(error, event);
+
     if (this.options.logToConsole) {
       console.error('💥 Application Error:', {
         message: error.message,
         stack: error.stack,
         filename: event.filename,
         lineno: event.lineno,
-        colno: event.colno
+        colno: event.colno,
+        critical: shouldShowUI
       });
     }
 
-    if (this.options.showErrorUI) {
+    // Only show UI for critical errors
+    if (this.options.showErrorUI && shouldShowUI) {
       this.showErrorUI(error, 'error');
     }
 
@@ -75,15 +80,20 @@ class ErrorBoundary {
 
     const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
 
+    // Filter out non-critical promise rejections
+    const shouldShowUI = this.isCriticalError(error, event);
+
     if (this.options.logToConsole) {
       console.error('💥 Unhandled Promise Rejection:', {
         message: error.message,
         stack: error.stack,
-        promise: event.promise
+        promise: event.promise,
+        critical: shouldShowUI
       });
     }
 
-    if (this.options.showErrorUI) {
+    // Only show UI for critical errors
+    if (this.options.showErrorUI && shouldShowUI) {
       this.showErrorUI(error, 'promise');
     }
 
@@ -121,6 +131,86 @@ class ErrorBoundary {
         });
       }
     }
+  }
+
+  /**
+   * Determine if an error is critical enough to show UI
+   * Filters out common non-critical errors
+   */
+  isCriticalError(error, event) {
+    const errorMessage = error.message?.toLowerCase() || '';
+    const errorStack = error.stack?.toLowerCase() || '';
+
+    // List of non-critical error patterns to ignore
+    const nonCriticalPatterns = [
+      // Network errors (handled by network-monitor.js)
+      'network',
+      'failed to fetch',
+      'load failed',
+      'networkerror',
+
+      // Firestore errors (handled by safeFirestoreOperation)
+      'permission-denied',
+      'unavailable',
+      'unauthenticated',
+      'firestore',
+
+      // Browser extension errors
+      'chrome-extension',
+      'moz-extension',
+      'extension',
+
+      // Third-party script errors
+      'script error',
+      'adsbygoogle',
+
+      // iOS Safari errors (handled by unified-auth)
+      'quotaexceedederror',
+      'ns_error_file_corrupted',
+      'localstorage',
+
+      // CORS errors (expected in some cases)
+      'cors',
+      'cross-origin',
+
+      // Timeout errors (not critical)
+      'timeout',
+
+      // AbortController errors (expected)
+      'aborted',
+      'abort',
+
+      // ResizeObserver errors (benign)
+      'resizeobserver'
+    ];
+
+    // Check if error matches any non-critical pattern
+    for (const pattern of nonCriticalPatterns) {
+      if (errorMessage.includes(pattern) || errorStack.includes(pattern)) {
+        return false; // Not critical, don't show UI
+      }
+    }
+
+    // Critical errors that should always show UI
+    const criticalPatterns = [
+      'syntaxerror',
+      'referenceerror',
+      'typeerror: null',
+      'typeerror: undefined',
+      'cannot read property',
+      'cannot read properties of null',
+      'cannot read properties of undefined'
+    ];
+
+    // Only show UI for actual critical errors
+    for (const pattern of criticalPatterns) {
+      if (errorMessage.includes(pattern) || errorStack.includes(pattern)) {
+        return true; // Critical error, show UI
+      }
+    }
+
+    // Default: don't show UI for unknown errors (just log them)
+    return false;
   }
 
   showErrorUI(error, type = 'error') {
