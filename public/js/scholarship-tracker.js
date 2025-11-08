@@ -17,13 +17,20 @@ class ScholarshipTracker {
     async initialize(userId) {
         try {
             this.userId = userId;
-            
-            // Get Firebase instance
-            if (typeof firebase !== 'undefined' && firebase.firestore) {
+
+            // Check if Firebase is available via unified-auth.js (Firebase v11)
+            if (window.firebaseDb) {
+                this.db = window.firebaseDb;
+                await this.loadSavedScholarships();
+                this.initialized = true;
+                console.log('✅ Scholarship Tracker initialized with Firebase v11');
+                return true;
+            } else if (typeof firebase !== 'undefined' && firebase.firestore) {
+                // Fallback to old Firebase SDK (v9/v10 - deprecated)
                 this.db = firebase.firestore();
                 await this.loadSavedScholarships();
                 this.initialized = true;
-                console.log('✅ Scholarship Tracker initialized');
+                console.log('✅ Scholarship Tracker initialized with legacy Firebase');
                 return true;
             } else {
                 console.warn('⚠️ Firebase not available, using local storage');

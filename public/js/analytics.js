@@ -39,6 +39,17 @@
                 gtag('event', eventName, params);
             }
         },
+        // Error tracking method (called by error-monitor.js)
+        trackError: (errorType, errorMessage, errorDetails) => {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'exception', {
+                    description: errorMessage,
+                    error_type: errorType,
+                    fatal: false,
+                    ...errorDetails
+                });
+            }
+        },
         // Test Prep Analytics
         diagnosticComplete: (satScore, actScore, duration) => {
             window.analytics.track('diagnostic_complete', { satScore, actScore, duration });

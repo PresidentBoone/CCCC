@@ -123,7 +123,12 @@ const networkMonitor = new NetworkMonitor();
 // Make globally available
 window.networkMonitor = networkMonitor;
 
-// Export for modules
-export default networkMonitor;
+// Export for Node.js/CommonJS compatibility (server-side only)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = networkMonitor;
+}
+
+// Note: ES6 exports removed to allow loading as regular script tag
+// All functionality is available on window.networkMonitor
 
 console.log('🌐 Network Monitor loaded');
