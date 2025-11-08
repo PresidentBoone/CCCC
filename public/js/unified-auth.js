@@ -515,7 +515,7 @@ if (typeof window !== 'undefined') {
     });
 }
 
-// Export for use in other modules
+// Export for use in other modules (Node.js/CommonJS only)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = authManager;
 }
@@ -523,31 +523,32 @@ if (typeof module !== 'undefined' && module.exports) {
 // Make globally available
 window.authManager = authManager;
 
-// Helper getters for ES6 modules (these resolve after initialization)
-export function getAuth() {
+// Helper getters (attached to window for global access instead of ES6 exports)
+window.getAuth = function() {
     if (!authManager.auth) {
         console.warn('Auth not initialized. Call await authManager.initialize() first or use window.firebaseAuth');
         return window.firebaseAuth || null;
     }
     return authManager.auth;
-}
+};
 
-export function getDb() {
+window.getDb = function() {
     if (!authManager.db) {
         console.warn('Firestore not initialized. Call await authManager.initialize() first or use window.firebaseDb');
         return window.firebaseDb || null;
     }
     return authManager.db;
-}
+};
 
-export function getApp() {
+window.getApp = function() {
     if (!authManager.app) {
         console.warn('Firebase app not initialized. Call await authManager.initialize() first or use window.firebaseApp');
         return window.firebaseApp || null;
     }
     return authManager.app;
-}
+};
 
-export default authManager;
+// Note: ES6 exports removed to allow loading as regular script tag
+// All functions are available on window object for global access
 
 console.log('🎯 Unified Auth Manager loaded');
