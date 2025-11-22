@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Get instant AI-powered feedback on your college essays. Improve clarity, impact, and authenticity with College Climb's Essay Coach.">
+    <meta name="description"
+        content="Get instant AI-powered feedback on your college essays. Improve clarity, impact, and authenticity with College Climb's Essay Coach.">
     <meta name="theme-color" content="#2563eb">
     <title>AI Essay Coach - College Climb</title>
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/images/whiteclearcc.png">
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/mobile-responsive.css">
     <link rel="stylesheet" href="/css/empty-states.css">
     <link rel="stylesheet" href="/css/enhanced-error-handler.css">
     <link rel="stylesheet" href="/css/form-validator.css">
-    
+
     <!-- Production Infrastructure - MUST LOAD FIRST -->
     <script src="/js/config.js"></script>
     <script src="/js/error-tracking.js"></script>
@@ -44,7 +47,7 @@
     <script src="/js/empty-states.js"></script>
     <script src="/js/form-validator.js"></script>
     <script src="/js/accessibility-enhancer.js"></script>
-    
+
     <style>
         :root {
             --primary-bg: #ffffff;
@@ -428,7 +431,9 @@
         }
 
         @keyframes cc-spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Main Container */
@@ -881,9 +886,12 @@
 
         /* Pulse animation for clicked highlights */
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
                 box-shadow: 0 0 20px rgba(160, 123, 204, 0.5);
@@ -895,6 +903,7 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -954,7 +963,7 @@
             font-size: 0.8rem;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             color: var(--text-primary);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] .keyboard-shortcuts-hint kbd {
@@ -1957,12 +1966,21 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes flash {
-            0%, 100% { background: var(--primary-bg); }
-            50% { background: rgba(160, 123, 204, 0.2); }
+
+            0%,
+            100% {
+                background: var(--primary-bg);
+            }
+
+            50% {
+                background: rgba(160, 123, 204, 0.2);
+            }
         }
 
         /* Responsive */
@@ -1970,12 +1988,12 @@
             .essay-main-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .essay-controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .control-group {
                 justify-content: center;
             }
@@ -2057,10 +2075,14 @@
         }
 
         @keyframes typing {
-            0%, 60%, 100% {
+
+            0%,
+            60%,
+            100% {
                 transform: translateY(0);
                 opacity: 0.7;
             }
+
             30% {
                 transform: translateY(-10px);
                 opacity: 1;
@@ -2142,15 +2164,19 @@
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
         }
 
         @keyframes skeletonPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
@@ -2177,6 +2203,7 @@
     <script src="/js/error-boundary.js"></script>
     <script src="/js/error-handler.js"></script>
 </head>
+
 <body>
     <!-- ============================================
          UNIVERSAL NAVBAR
@@ -2205,7 +2232,7 @@
                 <div class="cc-profile-button" id="ccProfileButton">
                     <!-- Loading state initially -->
                     <div class="cc-profile-loading" id="ccProfileLoading"></div>
-                    
+
                     <!-- Profile content (hidden initially) -->
                     <div id="ccProfileContent" style="display: none;">
                         <img id="ccUserAvatar" class="cc-user-avatar" src="images/default-avatar.png" alt="Profile">
@@ -2226,32 +2253,32 @@
                         <span class="cc-dropdown-link-icon">📊</span>
                         <span>Dashboard</span>
                     </a>
-                    
+
                     <a href='/essay-coach' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">✍️</span>
                         <span>Essays</span>
                     </a>
-                    
+
                     <a href='/timeline' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📅</span>
                         <span>Timeline</span>
                     </a>
-                    
+
                     <a href='/testprep' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📊</span>
                         <span>Test Prep</span>
                     </a>
-                    
+
                     <a href="scholarship.html" class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">💰</span>
                         <span>Scholarships</span>
                     </a>
-                    
+
                     <a href="document.html" class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">📄</span>
                         <span>Documents</span>
                     </a>
-                    
+
                     <a href='/profile' class="cc-dropdown-link">
                         <span class="cc-dropdown-link-icon">👤</span>
                         <span>Profile</span>
@@ -2275,7 +2302,8 @@
         <!-- Header -->
         <div class="essay-header">
             <h1><i class="fas fa-pen-fancy"></i> AI Essay Coach</h1>
-            <p>Get personalized feedback, improve your writing, and create compelling college essays that tell your unique story.</p>
+            <p>Get personalized feedback, improve your writing, and create compelling college essays that tell your
+                unique story.</p>
         </div>
 
         <!-- Success/Error Messages -->
@@ -2302,23 +2330,32 @@
                 <!-- Essay Controls -->
                 <div class="essay-controls">
                     <div class="control-group">
-                        <input type="text" id="essayTitle" class="input-field" aria-label="Essay title" placeholder="Essay Title" style="width: 200px;">
-                        <input type="text" id="essayPrompt" class="input-field" aria-label="Essay prompt" placeholder="Essay Prompt" style="width: 300px;">
+                        <input type="text" id="essayTitle" class="input-field" aria-label="Essay title"
+                            placeholder="Essay Title" style="width: 200px;">
+                        <input type="text" id="essayPrompt" class="input-field" aria-label="Essay prompt"
+                            placeholder="Essay Prompt" style="width: 300px;">
                     </div>
                     <div class="control-group">
-                        <input type="text" id="targetColleges" class="input-field" aria-label="Target colleges" placeholder="Target Colleges (comma separated)" style="width: 250px;">
-                        <button class="btn btn-secondary" onclick="loadEssayVersions()" aria-label="View essay versions">
+                        <input type="text" id="targetColleges" class="input-field" aria-label="Target colleges"
+                            placeholder="Target Colleges (comma separated)" style="width: 250px;">
+                        <button class="btn btn-secondary" onclick="loadEssayVersions()"
+                            aria-label="View essay versions">
                             <i class="fas fa-history"></i> Versions
                         </button>
                     </div>
                     <div class="control-group">
-                        <button class="btn btn-primary" onclick="window.essayManager && window.essayManager.analyzeEssay()" aria-label="Analyze essay with AI feedback">
+                        <button class="btn btn-primary"
+                            onclick="window.essayManager && window.essayManager.analyzeEssay()"
+                            aria-label="Analyze essay with AI feedback">
                             <i class="fas fa-search"></i> Analyze Essay
                         </button>
-                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.saveEssay()" aria-label="Save essay">
+                        <button class="btn btn-secondary"
+                            onclick="window.essayManager && window.essayManager.saveEssay()" aria-label="Save essay">
                             <i class="fas fa-save"></i> Save
                         </button>
-                        <button class="btn btn-secondary" onclick="window.essayManager && window.essayManager.createVersion()" aria-label="Create new version">
+                        <button class="btn btn-secondary"
+                            onclick="window.essayManager && window.essayManager.createVersion()"
+                            aria-label="Create new version">
                             <i class="fas fa-code-branch"></i> New Version
                         </button>
                     </div>
@@ -2368,9 +2405,7 @@
 
                 <!-- Essay Editor -->
                 <div class="essay-editor">
-                    <textarea role="textbox" aria-label="Essay content" 
-                        id="essayTextarea" 
-                        class="essay-textarea" 
+                    <textarea role="textbox" aria-label="Essay content" id="essayTextarea" class="essay-textarea"
                         placeholder="Start writing your essay here... 
 
 Tip: After you write your essay, click 'Analyze Essay' to get AI feedback with color-coded highlights:
@@ -2379,15 +2414,15 @@ Tip: After you write your essay, click 'Analyze Essay' to get AI feedback with c
 • Green highlights show your strongest content
 
 Don't forget to specify your target colleges and essay prompt for more personalized feedback!"
-                        oninput="updateWordCount()"
-                    ></textarea>
+                        oninput="updateWordCount()"></textarea>
                 </div>
 
                 <!-- Essay Stats -->
                 <div class="essay-stats" role="region" aria-label="Essay statistics and metrics" aria-live="polite">
                     <div>
                         <strong>Word Count:</strong> <span id="wordCount">0</span>
-                        <span style="margin-left: 1rem;"><strong>Characters:</strong> <span id="charCount">0</span></span>
+                        <span style="margin-left: 1rem;"><strong>Characters:</strong> <span
+                                id="charCount">0</span></span>
                     </div>
                     <div>
                         <span>Last saved: <span id="lastSaved">Never</span></span>
@@ -2450,28 +2485,28 @@ Don't forget to specify your target colleges and essay prompt for more personali
                         </h3>
                         <div id="overallFeedback" class="feedback-content"></div>
                     </div>
-                    
+
                     <div class="feedback-section">
                         <h3 class="feedback-title">
                             <i class="fas fa-university"></i> College-Specific Advice
                         </h3>
                         <div id="collegeAdvice" class="feedback-content"></div>
                     </div>
-                    
+
                     <div class="feedback-section">
                         <h3 class="feedback-title">
                             <i class="fas fa-thumbs-up"></i> Strengths to Lean Into
                         </h3>
                         <ul id="strengthsList" class="feedback-list"></ul>
                     </div>
-                    
+
                     <div class="feedback-section">
                         <h3 class="feedback-title">
                             <i class="fas fa-arrow-up"></i> Areas to Improve
                         </h3>
                         <ul id="improvementsList" class="feedback-list"></ul>
                     </div>
-                    
+
                     <div class="feedback-section">
                         <h3 class="feedback-title">
                             <i class="fas fa-tasks"></i> Next Steps
@@ -2530,7 +2565,8 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
                 <!-- Essay Deadlines -->
                 <div class="sidebar-section">
-                    <div class="sidebar-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="sidebar-title"
+                        style="display: flex; justify-content: space-between; align-items: center;">
                         <span><i class="fas fa-calendar-alt"></i> Upcoming Deadlines</span>
                         <a href="/timeline" class="btn-icon-link" title="View Timeline">
                             <i class="fas fa-external-link-alt"></i>
@@ -2550,22 +2586,22 @@ Don't forget to specify your target colleges and essay prompt for more personali
                         <i class="fas fa-comments"></i> Ask the AI Coach
                     </h3>
                     <div class="essay-chat" role="region" aria-label="AI writing assistant chat">
-                        <div id="chatMessages" class="chat-messages" role="log" aria-label="Chat conversation" aria-live="polite">
+                        <div id="chatMessages" class="chat-messages" role="log" aria-label="Chat conversation"
+                            aria-live="polite">
                             <div class="chat-message message-ai">
                                 <div class="message-bubble">
-                                    Hi! I'm your AI essay coach. I'm here to help you improve your essay. Feel free to ask me questions about your writing, college admissions, or anything else related to your essays!
+                                    Hi! I'm your AI essay coach. I'm here to help you improve your essay. Feel free to
+                                    ask me questions about your writing, college admissions, or anything else related to
+                                    your essays!
                                 </div>
                             </div>
                         </div>
                         <div class="chat-input-container">
-                            <input 
-                                type="text" 
-                                id="chatInput" aria-label="Type your question or request" 
-                                class="chat-input" 
-                                placeholder="Ask about your essay..."
-                                onkeypress="handleChatKeyPress(event)"
-                            >
-                            <button class="chat-send" onclick="sendChatMessage()" aria-label="Send message to AI assistant">
+                            <input type="text" id="chatInput" aria-label="Type your question or request"
+                                class="chat-input" placeholder="Ask about your essay..."
+                                onkeypress="handleChatKeyPress(event)">
+                            <button class="chat-send" onclick="sendChatMessage()"
+                                aria-label="Send message to AI assistant">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -2574,30 +2610,30 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
                 <!-- Past Essays -->
                 <div class="sidebar-section">
-                    <div class="sidebar-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="sidebar-title"
+                        style="display: flex; justify-content: space-between; align-items: center;">
                         <span><i class="fas fa-folder-open"></i> My Essays</span>
-                        <button class="btn-icon" onclick="window.essayManager && window.essayManager.createNewEssay()" title="New Essay">
+                        <button class="btn-icon" onclick="window.essayManager && window.essayManager.createNewEssay()"
+                            title="New Essay">
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
 
                     <!-- Search & Filter -->
                     <div class="essay-library-controls">
-                        <input
-                            type="text"
-                            id="essaySearchInput"
-                            class="essay-search-input"
+                        <input type="text" id="essaySearchInput" class="essay-search-input"
                             placeholder="Search essays..."
-                            oninput="window.essayManager && window.essayManager.filterEssays()"
-                        >
-                        <select id="essayFilterSelect" class="essay-filter-select" onchange="window.essayManager && window.essayManager.filterEssays()">
+                            oninput="window.essayManager && window.essayManager.filterEssays()">
+                        <select id="essayFilterSelect" class="essay-filter-select"
+                            onchange="window.essayManager && window.essayManager.filterEssays()">
                             <option value="all">All Essays</option>
                             <option value="draft">Drafts</option>
                             <option value="reviewed">Reviewed</option>
                             <option value="final">Final</option>
                             <option value="submitted">Submitted</option>
                         </select>
-                        <select id="essaySortSelect" class="essay-filter-select" onchange="window.essayManager && window.essayManager.filterEssays()">
+                        <select id="essaySortSelect" class="essay-filter-select"
+                            onchange="window.essayManager && window.essayManager.filterEssays()">
                             <option value="updated">Recently Updated</option>
                             <option value="created">Recently Created</option>
                             <option value="title">Title A-Z</option>
@@ -2677,7 +2713,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
 
         // Initialize Firebase and then start the app
         const firebasePromise = initializeFirebase();
-        
+
         // Expose Firestore functions globally for standalone AI Engine
         window.getFirestoreDoc = getDoc;
         window.setFirestoreDoc = setDoc;
@@ -2686,7 +2722,7 @@ Don't forget to specify your target colleges and essay prompt for more personali
         window.firestoreCollection = collection;
         window.firestoreAddDoc = addDoc;
         window.firestoreServerTimestamp = serverTimestamp;
-        
+
         // For AI Engine compatibility - expose additional names
         window.getDoc = getDoc;
         window.setDoc = setDoc;
@@ -2698,3791 +2734,90 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Global variables
         let currentUser = null;
         let userProfile = null;
-        let essayManager = null;
-        let essayChatAssistant = null;
-        let essayTemplates = null;
-        let currentEssayId = null;
-        let essayAutoSaver = null;
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Wait for Firebase to initialize first
-            const { auth, db } = await firebasePromise;
-            await initializeAuth(auth, db);
-        });
-
-        // Initialize Essay Coach Systems
-        async function initializeEssaySystems(user, userData, db) {
+        // Initialize Application
+        async function initApp() {
             try {
-                // Initialize Essay Manager
-                window.essayManager = new EssayManager(db, user.uid, userData);
-                await window.essayManager.initialize();
+                console.log('🚀 Initializing Essay Coach...');
 
-                // Initialize Essay Chat Assistant
-                window.essayChatAssistant = new EssayChatAssistant(db, user.uid, userData);
-                window.essayChatAssistant.initialize();
+                // Wait for Firebase
+                const { auth, db } = await firebasePromise;
 
-                // Initialize Essay Templates
-                window.essayTemplates = new EssayTemplates();
-                window.essayTemplates.initialize();
+                // Auth State Listener
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        console.log('👤 User authenticated:', user.uid);
+                        currentUser = user;
 
-                // Initialize Auto-Save System
-                initializeAutoSave(user, db);
+                        // Load User Profile
+                        try {
+                            const userDoc = await getDoc(doc(db, 'users', user.uid));
+                            if (userDoc.exists()) {
+                                userProfile = userDoc.data();
+                            }
+                        } catch (e) {
+                            console.error('Error loading profile:', e);
+                        }
 
-                console.log('✅ All Essay Coach systems initialized');
+                        // Update Navbar
+                        if (window.updateNavbarWithUserData) {
+                            window.updateNavbarWithUserData(user);
+                        }
+
+                        // Initialize Essay Manager
+                        if (window.EssayManager) {
+                            window.essayManager = new EssayManager(db, user.uid, userProfile);
+                            await window.essayManager.initialize();
+                        } else {
+                            console.error('❌ EssayManager class not found!');
+                        }
+
+                        // Initialize Chat Assistant
+                        if (window.EssayChatAssistant) {
+                            window.chatAssistant = new EssayChatAssistant(db, user.uid, userProfile);
+                            window.chatAssistant.initialize();
+                        }
+
+                    } else {
+                        console.log('👋 User not logged in, redirecting...');
+                        window.location.href = '/login.html';
+                    }
+                });
+
             } catch (error) {
-                console.error('Error initializing Essay Coach systems:', error);
+                console.error('❌ Critical Initialization Error:', error);
             }
         }
 
-        // Initialize Auto-Save
-        function initializeAutoSave(user, db) {
-            if (!window.AutoSave) {
-                console.warn('⚠️ AutoSave class not loaded');
-                return;
-            }
+        // Start App
+        initApp();
 
-            const statusElement = document.getElementById('saveStatus');
-
-            essayAutoSaver = new window.AutoSave({
-                debounceMs: 3000, // Save 3 seconds after last edit
-                statusElement: statusElement,
-
-                dataGetter: () => {
-                    return {
-                        title: document.getElementById('essayTitle')?.value?.trim() || 'Untitled Essay',
-                        essay: document.getElementById('essayTextarea')?.value?.trim() || '',
-                        prompt: document.getElementById('essayPrompt')?.value?.trim() || '',
-                        colleges: document.getElementById('targetColleges')?.value?.trim().split(',').map(c => c.trim()).filter(c => c) || []
-                    };
-                },
-
-                saveFunction: async (data) => {
-                    if (!data.essay) {
-                        return; // Don't save empty essays
-                    }
-
-                    const response = await fetch(`/api/essay-storage?userId=${user.uid}&action=save${currentEssayId ? '&essayId=' + currentEssayId : ''}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(result.error || 'Failed to auto-save');
-                    }
-
-                    // Update currentEssayId if this is a new essay
-                    if (result.essayId && !currentEssayId) {
-                        currentEssayId = result.essayId;
-                    }
-
-                    // Update last saved time display
-                    const lastSavedElement = document.getElementById('lastSaved');
-                    if (lastSavedElement) {
-                        lastSavedElement.textContent = new Date().toLocaleTimeString();
-                    }
-
-                    return result;
-                },
-
-                onError: (error) => {
-                    console.error('Auto-save error:', error);
-                },
-
-                onSuccess: (data) => {
-                    console.log('Auto-saved successfully');
-                }
-            });
-
-            // Attach listeners to essay fields
-            const essayTextarea = document.getElementById('essayTextarea');
-            const essayTitle = document.getElementById('essayTitle');
-            const essayPrompt = document.getElementById('essayPrompt');
-            const targetColleges = document.getElementById('targetColleges');
-
-            if (essayTextarea) {
-                essayTextarea.addEventListener('input', () => essayAutoSaver.markDirty());
-            }
-            if (essayTitle) {
-                essayTitle.addEventListener('input', () => essayAutoSaver.markDirty());
-            }
-            if (essayPrompt) {
-                essayPrompt.addEventListener('input', () => essayAutoSaver.markDirty());
-            }
-            if (targetColleges) {
-                targetColleges.addEventListener('input', () => essayAutoSaver.markDirty());
-            }
-
-            console.log('✅ Auto-save initialized');
-        }
-
-        // Auth state management
-        async function initializeAuth(auth, db) {
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    currentUser = user;
-                    await loadUserProfile(db);
-                    await updateNavbarWithUserData(user); // Update navbar with user data
-
-                    // Initialize Essay Coach systems
-                    await initializeEssaySystems(user, userProfile || {}, db);
-                } else {
-                    window.location.href = '/login';
-                }
-            });
-        }
-
-        // Load user profile for personalization
-        async function loadUserProfile(db) {
-            if (!currentUser) return;
-
-            try {
-                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-                if (userDoc.exists()) {
-                    userProfile = userDoc.data();
-                }
-            } catch (error) {
-                console.error('Error loading user profile:', error);
-            }
-        }
-
-        // Theme management
-        window.toggleTheme = function() {
+        // Theme Toggle
+        window.toggleTheme = function () {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             const icon = document.querySelector('.cc-theme-toggle i');
-            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            if (icon) {
+                icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
         };
 
         // Initialize theme on page load
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        document.body.setAttribute('data-theme', savedTheme);
-        
+
         // Update theme icon after DOM is ready
-        setTimeout(() => {
+        window.addEventListener('DOMContentLoaded', () => {
             const themeIcon = document.querySelector('.cc-theme-toggle i');
             if (themeIcon) {
                 themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             }
-        }, 100);
-
-        // Word count update
-        window.updateWordCount = function() {
-            const textarea = document.getElementById('essayTextarea');
-            const text = textarea.value;
-            const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-            const charCount = text.length;
-
-            document.getElementById('wordCount').textContent = wordCount;
-            document.getElementById('charCount').textContent = charCount;
-
-            // Update writing metrics if there's content
-            if (wordCount > 20) {
-                updateWritingMetrics(text);
-                document.getElementById('writingMetrics').style.display = 'block';
-            } else {
-                document.getElementById('writingMetrics').style.display = 'none';
-            }
-        };
-
-        // Calculate and update writing metrics
-        function updateWritingMetrics(text) {
-            if (!text || text.trim().length < 20) return;
-
-            // Split into sentences
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const words = text.trim().split(/\s+/);
-            const wordCount = words.length;
-
-            // 1. READING LEVEL (Flesch-Kincaid Grade Level)
-            const syllableCount = words.reduce((count, word) => count + countSyllables(word), 0);
-            const avgSentenceLength = wordCount / Math.max(sentences.length, 1);
-            const avgSyllablesPerWord = syllableCount / Math.max(wordCount, 1);
-
-            const fleschKincaid = (0.39 * avgSentenceLength) + (11.8 * avgSyllablesPerWord) - 15.59;
-            const gradeLevel = Math.max(1, Math.min(18, Math.round(fleschKincaid)));
-
-            const readingLevelEl = document.getElementById('readingLevel');
-            const readingDetailEl = document.getElementById('readingLevelDetail');
-            readingLevelEl.textContent = `Grade ${gradeLevel}`;
-
-            if (gradeLevel >= 10 && gradeLevel <= 12) {
-                readingLevelEl.className = 'metric-value good';
-                readingDetailEl.textContent = 'Perfect for college essays';
-            } else if (gradeLevel < 8) {
-                readingLevelEl.className = 'metric-value warning';
-                readingDetailEl.textContent = 'Too simple - add complexity';
-            } else if (gradeLevel > 14) {
-                readingLevelEl.className = 'metric-value warning';
-                readingDetailEl.textContent = 'Too complex - simplify';
-            } else {
-                readingLevelEl.className = 'metric-value';
-                readingDetailEl.textContent = 'Good readability';
-            }
-
-            // 2. SENTENCE VARIETY
-            const sentenceLengths = sentences.map(s => s.trim().split(/\s+/).length);
-            const avgLength = Math.round(sentenceLengths.reduce((a, b) => a + b, 0) / Math.max(sentenceLengths.length, 1));
-            const variance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgLength, 2), 0) / Math.max(sentenceLengths.length, 1);
-            const variety = Math.round(variance);
-
-            const avgSentLenEl = document.getElementById('avgSentenceLength');
-            const varietyEl = document.getElementById('sentenceVariety');
-            avgSentLenEl.textContent = `${avgLength} words`;
-
-            if (variety > 20) {
-                avgSentLenEl.className = 'metric-value good';
-                varietyEl.textContent = 'Excellent variety';
-            } else if (variety < 10) {
-                avgSentLenEl.className = 'metric-value warning';
-                varietyEl.textContent = 'Too monotonous';
-            } else {
-                avgSentLenEl.className = 'metric-value';
-                varietyEl.textContent = 'Good variety';
-            }
-
-            // 3. PASSIVE VOICE DETECTION
-            const passivePatterns = [
-                /\b(am|is|are|was|were|be|been|being)\s+\w+ed\b/gi,
-                /\b(am|is|are|was|were|be|been|being)\s+\w+en\b/gi
-            ];
-
-            let passiveCount = 0;
-            sentences.forEach(sentence => {
-                passivePatterns.forEach(pattern => {
-                    if (pattern.test(sentence)) {
-                        passiveCount++;
-                    }
-                });
-            });
-
-            const passivePercent = Math.round((passiveCount / Math.max(sentences.length, 1)) * 100);
-            const passiveEl = document.getElementById('passiveVoice');
-            passiveEl.textContent = `${passivePercent}%`;
-
-            if (passivePercent < 10) {
-                passiveEl.className = 'metric-value good';
-            } else if (passivePercent > 25) {
-                passiveEl.className = 'metric-value poor';
-            } else {
-                passiveEl.className = 'metric-value warning';
-            }
-
-            // 4. TONE ANALYSIS
-            const formalWords = ['therefore', 'furthermore', 'consequently', 'nevertheless', 'moreover', 'thus', 'hence', 'wherein'];
-            const casualWords = ['really', 'very', 'pretty', 'kind of', 'sort of', 'like', 'just', 'actually'];
-            const emotionalWords = ['love', 'hate', 'amazing', 'terrible', 'wonderful', 'horrible', 'excited', 'passionate'];
-
-            const textLower = text.toLowerCase();
-            const formalScore = formalWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
-            const casualScore = casualWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
-            const emotionalScore = emotionalWords.reduce((score, word) => score + (textLower.split(word).length - 1), 0);
-
-            const toneEl = document.getElementById('essayTone');
-            const toneDetailEl = document.getElementById('toneDetail');
-
-            if (formalScore > casualScore && emotionalScore < 3) {
-                toneEl.textContent = 'Formal';
-                toneEl.className = 'metric-value';
-                toneDetailEl.textContent = 'Academic tone';
-            } else if (casualScore > formalScore) {
-                toneEl.textContent = 'Casual';
-                toneEl.className = 'metric-value warning';
-                toneDetailEl.textContent = 'Consider more formal language';
-            } else if (emotionalScore > 5) {
-                toneEl.textContent = 'Emotional';
-                toneEl.className = 'metric-value good';
-                toneDetailEl.textContent = 'Shows genuine feeling';
-            } else {
-                toneEl.textContent = 'Balanced';
-                toneEl.className = 'metric-value good';
-                toneDetailEl.textContent = 'Good mix of personal & formal';
-            }
-        }
-
-        // Count syllables in a word (simplified algorithm)
-        function countSyllables(word) {
-            word = word.toLowerCase().replace(/[^a-z]/g, '');
-            if (word.length <= 3) return 1;
-
-            const vowels = 'aeiouy';
-            let count = 0;
-            let previousWasVowel = false;
-
-            for (let i = 0; i < word.length; i++) {
-                const isVowel = vowels.includes(word[i]);
-                if (isVowel && !previousWasVowel) {
-                    count++;
-                }
-                previousWasVowel = isVowel;
-            }
-
-            // Adjust for silent 'e'
-            if (word.endsWith('e')) {
-                count--;
-            }
-
-            // Ensure at least 1 syllable
-            return Math.max(1, count);
-        }
-
-        // Show message function
-        function showMessage(type, text) {
-            const messageEl = document.getElementById(type + 'Message');
-            const textEl = document.getElementById(type + 'Text');
-            
-            textEl.textContent = text;
-            messageEl.classList.add('show');
-            
-            setTimeout(() => {
-                messageEl.classList.remove('show');
-            }, 5000);
-        }
-
-        // ============================================
-        // 🔧 UTILITY FUNCTIONS
-        // ============================================
-
-        // Fetch with timeout helper (60 second default for AI operations)
-        async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                return response;
-            } catch (error) {
-                clearTimeout(timeoutId);
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timed out. The AI is taking too long to respond. Please try again.');
-                }
-                throw error;
-            }
-        }
-
-        // Essay analysis
-        window.analyzeEssay = async function() {
-            const essay = document.getElementById('essayTextarea').value.trim();
-            const prompt = document.getElementById('essayPrompt').value.trim();
-            const colleges = document.getElementById('targetColleges').value.trim().split(',').map(c => c.trim()).filter(c => c);
-            
-            if (!essay) {
-                showMessage('error', 'Please write your essay before analyzing.');
-                return;
-            }
-
-            try {
-                // Show loading
-                const analyzeBtn = document.querySelector('button[onclick="analyzeEssay()"]');
-                analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
-                analyzeBtn.disabled = true;
-
-                // Use AI Engine for analysis with user learning
-                let result;
-                
-                if (aiEngine) {
-                    // AI Engine analyzes and learns from user preferences
-                    result = await aiEngine.analyzeEssay(essay, {
-                        colleges: colleges,
-                        prompt: prompt,
-                        userProfile: userProfile
-                    });
-                } else {
-                    // Fallback to API endpoint
-                    const response = await fetch('/api/essay-analyze', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            essay: essay,
-                            colleges: colleges,
-                            userProfile: userProfile,
-                            prompt: prompt
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Failed to analyze essay');
-                    }
-
-                    result = await response.json();
-                }
-                
-                // Validate result structure
-                if (!result || typeof result !== 'object') {
-                    throw new Error('Invalid response from analysis service');
-                }
-                
-                // Ensure all required fields exist with defaults
-                result = {
-                    highlights: Array.isArray(result.highlights) ? result.highlights : [],
-                    overallFeedback: result.overallFeedback || 'Analysis complete. See feedback below.',
-                    collegeSpecificAdvice: result.collegeSpecificAdvice || 'Add target colleges for specific advice.',
-                    strengthsToLeanInto: Array.isArray(result.strengthsToLeanInto) ? result.strengthsToLeanInto : [],
-                    areasToImprove: Array.isArray(result.areasToImprove) ? result.areasToImprove : [],
-                    nextSteps: Array.isArray(result.nextSteps) ? result.nextSteps : ['Review feedback', 'Revise essay']
-                };
-                
-                // Save essay to Firebase with analysis
-                if (currentUser) {
-                    const essayRef = await addDoc(collection(db, 'essays'), {
-                        userId: currentUser.uid,
-                        content: essay,
-                        prompt: prompt,
-                        colleges: colleges,
-                        analysis: result,
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp()
-                    });
-                    currentEssayId = essayRef.id;
-                }
-
-                displayAnalysisResults(result);
-                applyHighlights(result.highlights || []);
-                showMessage('success', 'Essay analysis complete! Check the highlights and feedback below.');
-
-            } catch (error) {
-                console.error('Analysis error:', error);
-                showMessage('error', 'Failed to analyze essay: ' + error.message);
-            } finally {
-                // Restore button
-                const analyzeBtn = document.querySelector('button[onclick="analyzeEssay()"]');
-                analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Essay';
-                analyzeBtn.disabled = false;
-            }
-        };
-
-        // Display analysis results
-        function displayAnalysisResults(result) {
-            const resultsDiv = document.getElementById('analysisResults');
-            
-            // Display detailed highlights feedback
-            const highlightsFeedback = document.getElementById('highlightsFeedback');
-            highlightsFeedback.innerHTML = '';
-            
-            if (result.highlights && result.highlights.length > 0) {
-                result.highlights.forEach((highlight, index) => {
-                    const feedbackCard = document.createElement('div');
-                    feedbackCard.className = `highlight-feedback-card highlight-${highlight.type}`;
-                    
-                    // Get category display name
-                    const categoryNames = {
-                        'cliche': 'Cliché',
-                        'weak_verb': 'Weak Verb',
-                        'vague': 'Vague Statement',
-                        'show_dont_tell': 'Show, Don\'t Tell',
-                        'grammar': 'Grammar',
-                        'unclear': 'Unclear',
-                        'strength': 'Strength'
-                    };
-                    const categoryDisplay = categoryNames[highlight.category] || highlight.category || 'Feedback';
-                    
-                    // Get icon based on type
-                    const icons = {
-                        'red': 'fas fa-exclamation-triangle',
-                        'yellow': 'fas fa-exclamation-circle',
-                        'green': 'fas fa-check-circle'
-                    };
-                    const icon = icons[highlight.type] || 'fas fa-info-circle';
-                    
-                    feedbackCard.innerHTML = `
-                        <div class="feedback-card-header">
-                            <div class="feedback-card-title">
-                                <i class="${icon}"></i>
-                                <span class="feedback-number">#${index + 1}</span>
-                                <span class="feedback-category">${categoryDisplay}</span>
-                            </div>
-                            <span class="feedback-type-badge ${highlight.type}">${highlight.type.toUpperCase()}</span>
-                        </div>
-                        <div class="feedback-card-text">
-                            <strong>Highlighted text:</strong> "${highlight.text}"
-                        </div>
-                        <div class="feedback-card-section">
-                            <div class="feedback-label"><i class="fas fa-question-circle"></i> Why this is highlighted:</div>
-                            <div class="feedback-text">${highlight.why || highlight.feedback || 'See overall feedback for details.'}</div>
-                        </div>
-                        <div class="feedback-card-section">
-                            <div class="feedback-label"><i class="fas fa-wrench"></i> How to improve:</div>
-                            <div class="feedback-text">${highlight.how || 'Consider revising this section based on the why explanation above.'}</div>
-                        </div>
-                        ${highlight.suggestion ? `
-                        <div class="feedback-card-section suggestion">
-                            <div class="feedback-label"><i class="fas fa-lightbulb"></i> Suggestion:</div>
-                            <div class="feedback-text">${highlight.suggestion}</div>
-                        </div>
-                        ` : ''}
-                    `;
-                    
-                    highlightsFeedback.appendChild(feedbackCard);
-                });
-            } else {
-                highlightsFeedback.innerHTML = '<p class="no-highlights">No specific highlights. See overall feedback below.</p>';
-            }
-            
-            document.getElementById('overallFeedback').textContent = result.overallFeedback || 'No overall feedback available.';
-            document.getElementById('collegeAdvice').textContent = result.collegeSpecificAdvice || 'Add target colleges for specific advice.';
-            
-            // Strengths
-            const strengthsList = document.getElementById('strengthsList');
-            strengthsList.innerHTML = '';
-            (result.strengthsToLeanInto || []).forEach(strength => {
-                const li = document.createElement('li');
-                li.textContent = strength;
-                strengthsList.appendChild(li);
-            });
-            
-            // Improvements
-            const improvementsList = document.getElementById('improvementsList');
-            improvementsList.innerHTML = '';
-            (result.areasToImprove || []).forEach(area => {
-                const li = document.createElement('li');
-                li.textContent = area;
-                improvementsList.appendChild(li);
-            });
-            
-            // Next steps
-            const nextStepsList = document.getElementById('nextStepsList');
-            nextStepsList.innerHTML = '';
-            (result.nextSteps || []).forEach(step => {
-                const li = document.createElement('li');
-                li.textContent = step;
-                nextStepsList.appendChild(li);
-            });
-            
-            resultsDiv.style.display = 'block';
-            
-            // Scroll to results
-            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // Apply highlights to text
-        // ============================================
-        // ROBUST HIGHLIGHTING SYSTEM
-        // ============================================
-
-        function applyHighlights(highlights) {
-            console.log('🎨 Applying highlights:', highlights);
-
-            if (!highlights || highlights.length === 0) {
-                console.log('⚠️ No highlights to apply');
-                clearHighlights();
-                return;
-            }
-
-            // Get textarea OR editorDiv (in case of re-analysis)
-            let textarea = document.getElementById('essayTextarea');
-            let editorDiv = document.getElementById('essayEditor');
-
-            // If editorDiv exists, get text from it and restore textarea first
-            let text;
-            if (editorDiv && editorDiv._originalTextarea) {
-                text = editorDiv.textContent; // Get plain text from highlighted version
-                textarea = editorDiv._originalTextarea; // Get original textarea
-                clearHighlights(); // Restore textarea
-            } else if (textarea) {
-                text = textarea.value;
-            } else {
-                console.error('❌ Essay textarea not found');
-                return;
-            }
-
-            if (!text || text.trim().length === 0) {
-                console.error('❌ No essay text to highlight');
-                return;
-            }
-
-            // Sort highlights by start index in reverse to maintain correct positions
-            const sortedHighlights = [...highlights].sort((a, b) => b.startIndex - a.startIndex);
-
-            // Build highlighted HTML
-            let highlightedHTML = text;
-
-            sortedHighlights.forEach((highlight, index) => {
-                const { text: highlightedText, type, category, startIndex, endIndex } = highlight;
-
-                // Validate indices
-                if (typeof startIndex !== 'number' || typeof endIndex !== 'number') {
-                    console.warn('Invalid highlight indices:', highlight);
-                    return;
-                }
-
-                if (startIndex < 0 || endIndex > text.length || startIndex >= endIndex) {
-                    console.warn('Highlight indices out of bounds:', highlight);
-                    return;
-                }
-
-                // Extract the actual text to highlight
-                const textToHighlight = text.substring(startIndex, endIndex);
-
-                // Category display names
-                const categoryNames = {
-                    'cliche': 'Cliché',
-                    'weak_verb': 'Weak Verb',
-                    'vague': 'Vague Statement',
-                    'show_dont_tell': 'Show, Don\'t Tell',
-                    'grammar': 'Grammar',
-                    'unclear': 'Unclear',
-                    'strength': 'Strength'
-                };
-                const categoryDisplay = categoryNames[category] || category || 'Feedback';
-
-                // Create highlight span with tooltip
-                const highlightSpan = `<mark class="essay-highlight highlight-${type}" data-index="${index}" data-category="${categoryDisplay}" title="Click to see feedback">${escapeHTML(textToHighlight)}</mark>`;
-
-                // Replace in the text
-                const before = highlightedHTML.substring(0, startIndex);
-                const after = highlightedHTML.substring(endIndex);
-                highlightedHTML = before + highlightSpan + after;
-            });
-
-            // Create or get the contenteditable div
-            editorDiv = document.getElementById('essayEditor');
-
-            if (!editorDiv) {
-                // Create new contenteditable div
-                editorDiv = document.createElement('div');
-                editorDiv.id = 'essayEditor';
-                editorDiv.className = 'essay-textarea essay-editor-highlighted';
-                editorDiv.contentEditable = true;
-                editorDiv.setAttribute('spellcheck', 'true');
-                editorDiv.style.whiteSpace = 'pre-wrap';
-                editorDiv.style.wordWrap = 'break-word';
-
-                // REPLACE textarea with editorDiv (not insert after)
-                textarea.parentNode.replaceChild(editorDiv, textarea);
-
-                // Keep reference to hidden textarea for form submission
-                editorDiv._originalTextarea = textarea;
-
-                // Add event listeners
-                editorDiv.addEventListener('input', function() {
-                    // Sync back to hidden textarea
-                    if (editorDiv._originalTextarea) {
-                        editorDiv._originalTextarea.value = editorDiv.textContent;
-                    }
-                    updateWordCount();
-                });
-
-                // Handle highlight clicks
-                editorDiv.addEventListener('click', handleHighlightClick);
-
-                // Show tooltip on hover
-                editorDiv.addEventListener('mouseover', handleHighlightHover);
-                editorDiv.addEventListener('mouseout', handleHighlightHoverOut);
-            }
-
-            // Set the highlighted content
-            editorDiv.innerHTML = highlightedHTML;
-
-            console.log(`✅ Applied ${sortedHighlights.length} highlights successfully`);
-
-            // Show success message
-            showHighlightSummary(highlights);
-        }
-
-        // Clear all highlights and restore textarea
-        function clearHighlights() {
-            const editorDiv = document.getElementById('essayEditor');
-            if (editorDiv && editorDiv._originalTextarea) {
-                // Restore the original textarea
-                const textarea = editorDiv._originalTextarea;
-                editorDiv.parentNode.replaceChild(textarea, editorDiv);
-            }
-
-            const summaryDiv = document.getElementById('highlightSummaryDiv');
-            if (summaryDiv) {
-                summaryDiv.remove();
-            }
-
-            // Remove any highlight tooltips
-            const existingTooltip = document.getElementById('highlightTooltip');
-            if (existingTooltip) {
-                existingTooltip.remove();
-            }
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHTML(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // Handle highlight clicks - scroll to feedback
-        function handleHighlightClick(e) {
-            const highlight = e.target.closest('.essay-highlight');
-            if (highlight) {
-                const index = parseInt(highlight.getAttribute('data-index'));
-                if (!isNaN(index)) {
-                    scrollToFeedbackCard(index);
-
-                    // Add visual feedback
-                    highlight.style.animation = 'pulse 0.5s ease-in-out';
-                    setTimeout(() => {
-                        highlight.style.animation = '';
-                    }, 500);
-                }
-            }
-        }
-
-        // Show tooltip on hover
-        function handleHighlightHover(e) {
-            const highlight = e.target.closest('.essay-highlight');
-            if (!highlight) return;
-
-            const category = highlight.getAttribute('data-category');
-            const index = highlight.getAttribute('data-index');
-
-            // Create tooltip if it doesn't exist
-            let tooltip = document.getElementById('highlightTooltip');
-            if (!tooltip) {
-                tooltip = document.createElement('div');
-                tooltip.id = 'highlightTooltip';
-                tooltip.className = 'highlight-tooltip';
-                document.body.appendChild(tooltip);
-            }
-
-            // Set tooltip content
-            tooltip.innerHTML = `
-                <div class="tooltip-header">${category}</div>
-                <div class="tooltip-body">Click to see detailed feedback</div>
-            `;
-
-            // Position tooltip
-            const rect = highlight.getBoundingClientRect();
-            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
-            tooltip.style.top = (rect.top - 10) + 'px';
-            tooltip.style.opacity = '1';
-            tooltip.style.visibility = 'visible';
-        }
-
-        // Hide tooltip
-        function handleHighlightHoverOut(e) {
-            if (!e.target.closest('.essay-highlight')) {
-                const tooltip = document.getElementById('highlightTooltip');
-                if (tooltip) {
-                    tooltip.style.opacity = '0';
-                    tooltip.style.visibility = 'hidden';
-                }
-            }
-        }
-
-        // Show summary of highlights
-        function showHighlightSummary(highlights) {
-            const redCount = highlights.filter(h => h.type === 'red').length;
-            const yellowCount = highlights.filter(h => h.type === 'yellow').length;
-            const greenCount = highlights.filter(h => h.type === 'green').length;
-
-            let summaryHTML = `<div class="highlight-summary">
-                <strong>✨ Analysis Complete!</strong>
-                <div class="summary-counts">`;
-
-            if (redCount > 0) {
-                summaryHTML += `<span class="count-red"><i class="fas fa-exclamation-circle"></i> ${redCount} area${redCount !== 1 ? 's' : ''} to improve</span>`;
-            }
-            if (yellowCount > 0) {
-                summaryHTML += `<span class="count-yellow"><i class="fas fa-lightbulb"></i> ${yellowCount} suggestion${yellowCount !== 1 ? 's' : ''}</span>`;
-            }
-            if (greenCount > 0) {
-                summaryHTML += `<span class="count-green"><i class="fas fa-check-circle"></i> ${greenCount} strength${greenCount !== 1 ? 's' : ''}</span>`;
-            }
-
-            summaryHTML += `</div>
-                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
-                    <i class="fas fa-hand-pointer"></i> Click any highlight to see detailed feedback below
-                </p>
-            </div>`;
-
-            // Insert summary above the editor
-            const editor = document.getElementById('essayEditor');
-            if (editor) {
-                let summaryDiv = document.getElementById('highlightSummaryDiv');
-                if (!summaryDiv) {
-                    summaryDiv = document.createElement('div');
-                    summaryDiv.id = 'highlightSummaryDiv';
-                    editor.parentNode.insertBefore(summaryDiv, editor);
-                }
-                summaryDiv.innerHTML = summaryHTML;
-            }
-        }
-
-        // Scroll to feedback card when highlight is clicked
-        function scrollToFeedbackCard(index) {
-            const feedbackCards = document.querySelectorAll('.highlight-feedback-card');
-            if (feedbackCards[index]) {
-                feedbackCards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Add flash animation
-                feedbackCards[index].style.animation = 'flash 1s ease-in-out';
-                setTimeout(() => {
-                    feedbackCards[index].style.animation = '';
-                }, 1000);
-            }
-        }
-
-        // Save essay
-        window.saveEssay = async function() {
-            if (!currentUser) {
-                showMessage('error', 'Please log in to save essays.');
-                return;
-            }
-
-            const title = document.getElementById('essayTitle').value.trim() || 'Untitled Essay';
-            const essay = document.getElementById('essayTextarea').value.trim();
-            const prompt = document.getElementById('essayPrompt').value.trim();
-            const colleges = document.getElementById('targetColleges').value.trim().split(',').map(c => c.trim()).filter(c => c);
-
-            if (!essay) {
-                showMessage('error', 'Please write your essay before saving.');
-                return;
-            }
-
-            try {
-                const saveBtn = document.querySelector('button[onclick="saveEssay()"]');
-                saveBtn.innerHTML = '<div class="spinner"></div> Saving...';
-                saveBtn.disabled = true;
-
-                const response = await fetch(`/api/essay-storage?userId=${currentUser.uid}&action=save${currentEssayId ? '&essayId=' + currentEssayId : ''}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        essay: essay,
-                        prompt: prompt,
-                        colleges: colleges
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to save essay');
-                }
-
-                currentEssayId = result.essayId;
-                document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
-                showMessage('success', result.message);
-                loadUserEssays();
-
-                // Reset auto-save dirty flag since we just manually saved
-                if (essayAutoSaver) {
-                    essayAutoSaver.isDirty = false;
-                    essayAutoSaver.lastSaveTime = new Date();
-                    essayAutoSaver.updateStatus('All changes saved', 'success');
-                }
-
-            } catch (error) {
-                console.error('Save error:', error);
-                showMessage('error', 'Failed to save essay: ' + error.message);
-            } finally {
-                const saveBtn = document.querySelector('button[onclick="saveEssay()"]');
-                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
-                saveBtn.disabled = false;
-            }
-        };
-
-        // Create new version
-        window.createNewVersion = async function() {
-            if (!currentEssayId) {
-                showMessage('error', 'Please save the essay first before creating a version.');
-                return;
-            }
-
-            const essay = document.getElementById('essayTextarea').value.trim();
-            if (!essay) {
-                showMessage('error', 'Please write your essay before creating a version.');
-                return;
-            }
-
-            try {
-                const versionBtn = document.querySelector('button[onclick="createNewVersion()"]');
-                versionBtn.innerHTML = '<div class="spinner"></div> Creating...';
-                versionBtn.disabled = true;
-
-                const response = await fetch(`/api/essay-storage?userId=${currentUser.uid}&essayId=${currentEssayId}&action=version`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        essay: essay,
-                        title: document.getElementById('essayTitle').value.trim(),
-                        prompt: document.getElementById('essayPrompt').value.trim(),
-                        colleges: document.getElementById('targetColleges').value.trim().split(',').map(c => c.trim()).filter(c => c)
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to create version');
-                }
-
-                showMessage('success', `Version ${result.version} created successfully!`);
-                loadUserEssays();
-
-            } catch (error) {
-                console.error('Version creation error:', error);
-                showMessage('error', 'Failed to create version: ' + error.message);
-            } finally {
-                const versionBtn = document.querySelector('button[onclick="createNewVersion()"]');
-                versionBtn.innerHTML = '<i class="fas fa-code-branch"></i> New Version';
-                versionBtn.disabled = false;
-            }
-        };
-
-        // Load user essays
-        async function loadUserEssays() {
-            if (!currentUser) return;
-
-            try {
-                const response = await fetch(`/api/essay-storage?userId=${currentUser.uid}&action=list`);
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to load essays');
-                }
-
-                displayEssayList(result.essays || []);
-
-            } catch (error) {
-                console.error('Load essays error:', error);
-                document.getElementById('essayList').innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Failed to load essays</p>';
-            }
-        }
-
-        // Display essay list
-        function displayEssayList(essays) {
-            const listContainer = document.getElementById('essayList');
-            
-            if (essays.length === 0) {
-                listContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No essays yet. Start writing!</p>';
-                return;
-            }
-
-            listContainer.innerHTML = essays.map(essay => `
-                <div class="essay-item" onclick="loadEssay('${essay.id}')">
-                    <div class="essay-info">
-                        <div class="essay-title">${essay.title}</div>
-                        <div class="essay-meta">
-                            ${essay.wordCount || 0} words • 
-                            ${essay.versionCount || 0} versions • 
-                            ${essay.createdAt ? new Date(essay.createdAt.seconds * 1000).toLocaleDateString() : 'No date'}
-                        </div>
-                    </div>
-                    <div>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Load specific essay
-        window.loadEssay = async function(essayId) {
-            try {
-                const response = await fetch(`/api/essay-storage?userId=${currentUser.uid}&essayId=${essayId}`);
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to load essay');
-                }
-
-                const essay = result.essay;
-                currentEssayId = essayId;
-                
-                document.getElementById('essayTitle').value = essay.title || '';
-                document.getElementById('essayTextarea').value = essay.content || '';
-                document.getElementById('essayPrompt').value = essay.prompt || '';
-                document.getElementById('targetColleges').value = (essay.targetColleges || []).join(', ');
-                
-                updateWordCount();
-                showMessage('success', 'Essay loaded successfully!');
-
-            } catch (error) {
-                console.error('Load essay error:', error);
-                showMessage('error', 'Failed to load essay: ' + error.message);
-            }
-        };
-
-        // Chat functionality
-        window.handleChatKeyPress = function(event) {
-            if (event.key === 'Enter') {
-                sendChatMessage();
-            }
-        };
-
-        window.sendChatMessage = async function() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            // Add user message to chat
-            addChatMessage(message, 'user');
-            input.value = '';
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        essay: document.getElementById('essayTextarea').value,
-                        userProfile: userProfile,
-                        colleges: document.getElementById('targetColleges').value.trim().split(',').map(c => c.trim()).filter(c => c),
-                        prompt: document.getElementById('essayPrompt').value.trim(),
-                        chatHistory: chatHistory.slice(-10) // Last 10 messages for context
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to get response');
-                }
-
-                addChatMessage(result.response, 'ai');
-
-            } catch (error) {
-                console.error('Chat error:', error);
-                addChatMessage('Sorry, I encountered an error. Please try again.', 'ai');
-            }
-        };
-
-        function addChatMessage(message, sender) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message message-${sender}`;
-            
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.className = 'message-bubble';
-            bubbleDiv.textContent = message;
-            
-            messageDiv.appendChild(bubbleDiv);
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Add to chat history
-            chatHistory.push({ role: sender === 'user' ? 'user' : 'assistant', content: message });
-        }
-
-        // Load essay versions
-        window.loadEssayVersions = async function() {
-            if (!currentEssayId) {
-                showMessage('error', 'Please save the essay first to view versions.');
-                return;
-            }
-
-            try {
-                const { collection, query, getDocs, orderBy } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
-
-                // Load all versions
-                const versionsRef = collection(db, 'users', currentUser.uid, 'essays', currentEssayId, 'versions');
-                const q = query(versionsRef, orderBy('createdAt', 'desc'));
-                const snapshot = await getDocs(q);
-
-                const versions = [];
-                snapshot.forEach(doc => {
-                    versions.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-
-                if (versions.length === 0) {
-                    showMessage('info', 'No versions yet. Click "New Version" to save your current essay as a version.');
-                    return;
-                }
-
-                // Open version comparison modal
-                openVersionComparisonModal(versions);
-
-            } catch (error) {
-                console.error('Error loading versions:', error);
-                showMessage('error', 'Failed to load versions');
-            }
-        };
-
-        // ============================================
-        // VERSION COMPARISON MODAL SYSTEM
-        // ============================================
-
-        function openVersionComparisonModal(versions) {
-            // Create modal
-            const modal = document.createElement('div');
-            modal.className = 'version-modal';
-            modal.id = 'versionModal';
-            modal.innerHTML = generateVersionModalHTML(versions);
-
-            document.body.appendChild(modal);
-            addVersionModalStyles();
-
-            // Initialize with first two versions (or current + version 1)
-            if (versions.length >= 2) {
-                compareVersions(versions[0], versions[1]);
-            } else if (versions.length === 1) {
-                compareCurrentWithVersion(versions[0]);
-            }
-
-            // Animate in
-            setTimeout(() => modal.classList.add('open'), 10);
-        }
-
-        function generateVersionModalHTML(versions) {
-            return `
-                <div class="version-modal-overlay" onclick="closeVersionModal()"></div>
-                <div class="version-modal-content">
-                    <div class="version-modal-header">
-                        <h2><i class="fas fa-code-branch"></i> Version History & Comparison</h2>
-                        <button class="version-close-btn" onclick="closeVersionModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-
-                    <div class="version-modal-body">
-                        <!-- Version Timeline -->
-                        <div class="version-timeline-section">
-                            <h3><i class="fas fa-history"></i> Version Timeline</h3>
-                            <div class="version-timeline">
-                                <!-- Current Version -->
-                                <div class="version-timeline-item current" onclick="selectVersionForComparison('current', 'left')" data-version="current">
-                                    <div class="version-timeline-badge current">
-                                        <i class="fas fa-edit"></i>
-                                    </div>
-                                    <div class="version-timeline-content">
-                                        <div class="version-timeline-title">Current Draft</div>
-                                        <div class="version-timeline-meta">
-                                            ${getCurrentWordCount()} words • Editing now
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Version History -->
-                                ${versions.map((version, index) => `
-                                    <div class="version-timeline-item" onclick="selectVersionForComparison('${version.id}', 'left')" data-version="${version.id}">
-                                        <div class="version-timeline-badge">
-                                            <span>${version.version}</span>
-                                        </div>
-                                        <div class="version-timeline-content">
-                                            <div class="version-timeline-title">
-                                                Version ${version.version}
-                                                ${index === 0 ? '<span class="version-badge-latest">Latest</span>' : ''}
-                                            </div>
-                                            <div class="version-timeline-meta">
-                                                ${version.wordCount || 0} words • ${formatVersionDate(version.createdAt)}
-                                            </div>
-                                            <div class="version-actions">
-                                                <button class="btn-version-action" onclick="event.stopPropagation(); restoreVersion('${version.id}')" title="Restore this version">
-                                                    <i class="fas fa-undo"></i> Restore
-                                                </button>
-                                                <button class="btn-version-action" onclick="event.stopPropagation(); selectVersionForComparison('${version.id}', 'left')" title="Compare">
-                                                    <i class="fas fa-columns"></i> Compare
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Comparison View -->
-                        <div class="version-comparison-section">
-                            <div class="comparison-header">
-                                <h3><i class="fas fa-columns"></i> Side-by-Side Comparison</h3>
-                                <div class="comparison-controls">
-                                    <label>
-                                        <input type="checkbox" id="highlightDiffsToggle" checked onchange="toggleDiffHighlighting()">
-                                        Highlight Differences
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="comparison-selectors">
-                                <div class="comparison-selector">
-                                    <label>Left Side:</label>
-                                    <select id="leftVersionSelect" onchange="updateComparison()">
-                                        <option value="current">Current Draft</option>
-                                        ${versions.map(v => `<option value="${v.id}">Version ${v.version}</option>`).join('')}
-                                    </select>
-                                </div>
-                                <div class="comparison-swap" onclick="swapComparisonSides()">
-                                    <i class="fas fa-exchange-alt"></i>
-                                </div>
-                                <div class="comparison-selector">
-                                    <label>Right Side:</label>
-                                    <select id="rightVersionSelect" onchange="updateComparison()">
-                                        <option value="current">Current Draft</option>
-                                        ${versions.map(v => `<option value="${v.id}">Version ${v.version}</option>`).join('')}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Comparison Display -->
-                            <div class="comparison-display">
-                                <div class="comparison-pane left">
-                                    <div class="comparison-pane-header">
-                                        <h4 id="leftVersionTitle">Current Draft</h4>
-                                        <span class="comparison-word-count" id="leftWordCount">0 words</span>
-                                    </div>
-                                    <div class="comparison-pane-content" id="leftVersionContent">
-                                        Select versions to compare
-                                    </div>
-                                </div>
-                                <div class="comparison-divider"></div>
-                                <div class="comparison-pane right">
-                                    <div class="comparison-pane-header">
-                                        <h4 id="rightVersionTitle">Version 1</h4>
-                                        <span class="comparison-word-count" id="rightWordCount">0 words</span>
-                                    </div>
-                                    <div class="comparison-pane-content" id="rightVersionContent">
-                                        Select versions to compare
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Diff Summary -->
-                            <div class="diff-summary" id="diffSummary" style="display: none;">
-                                <div class="diff-stat additions">
-                                    <i class="fas fa-plus-circle"></i>
-                                    <span id="additionsCount">0</span> additions
-                                </div>
-                                <div class="diff-stat deletions">
-                                    <i class="fas fa-minus-circle"></i>
-                                    <span id="deletionsCount">0</span> deletions
-                                </div>
-                                <div class="diff-stat changes">
-                                    <i class="fas fa-exchange-alt"></i>
-                                    <span id="changesCount">0</span> words changed
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Store versions data globally for comparison
-        let versionsData = {};
-
-        function selectVersionForComparison(versionId, side) {
-            const select = document.getElementById(side === 'left' ? 'leftVersionSelect' : 'rightVersionSelect');
-            if (select) {
-                select.value = versionId;
-                updateComparison();
-            }
-        }
-
-        async function updateComparison() {
-            try {
-                const leftId = document.getElementById('leftVersionSelect').value;
-                const rightId = document.getElementById('rightVersionSelect').value;
-
-                const leftData = await getVersionData(leftId);
-                const rightData = await getVersionData(rightId);
-
-                displayComparison(leftData, rightData, leftId, rightId);
-            } catch (error) {
-                console.error('Error updating comparison:', error);
-                showMessage('error', 'Failed to update version comparison. Please try again.');
-            }
-        }
-
-        async function getVersionData(versionId) {
-            if (versionId === 'current') {
-                return {
-                    title: 'Current Draft',
-                    content: document.getElementById('essayTextarea').value,
-                    wordCount: document.getElementById('essayTextarea').value.split(/\s+/).filter(w => w).length
-                };
-            }
-
-            // Check cache
-            if (versionsData[versionId]) {
-                return versionsData[versionId];
-            }
-
-            // Load from Firestore
-            try {
-                const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
-                const versionRef = doc(db, 'users', currentUser.uid, 'essays', currentEssayId, 'versions', versionId);
-                const versionDoc = await getDoc(versionRef);
-
-                if (versionDoc.exists()) {
-                    const data = versionDoc.data();
-                    versionsData[versionId] = {
-                        title: `Version ${data.version}`,
-                        content: data.content || '',
-                        wordCount: data.wordCount || 0,
-                        version: data.version
-                    };
-                    return versionsData[versionId];
-                }
-            } catch (error) {
-                console.error('Error loading version:', error);
-            }
-
-            return { title: 'Error', content: 'Failed to load version', wordCount: 0 };
-        }
-
-        function displayComparison(leftData, rightData, leftId, rightId) {
-            // Update titles
-            document.getElementById('leftVersionTitle').textContent = leftData.title;
-            document.getElementById('rightVersionTitle').textContent = rightData.title;
-            document.getElementById('leftWordCount').textContent = `${leftData.wordCount} words`;
-            document.getElementById('rightWordCount').textContent = `${rightData.wordCount} words`;
-
-            const highlightDiffs = document.getElementById('highlightDiffsToggle').checked;
-
-            if (highlightDiffs) {
-                // Show diff highlighting
-                const diff = computeWordDiff(leftData.content, rightData.content);
-                document.getElementById('leftVersionContent').innerHTML = diff.left;
-                document.getElementById('rightVersionContent').innerHTML = diff.right;
-
-                // Update diff summary
-                document.getElementById('additionsCount').textContent = diff.additions;
-                document.getElementById('deletionsCount').textContent = diff.deletions;
-                document.getElementById('changesCount').textContent = diff.additions + diff.deletions;
-                document.getElementById('diffSummary').style.display = 'flex';
-            } else {
-                // Show plain text
-                document.getElementById('leftVersionContent').innerHTML = `<pre>${escapeHtml(leftData.content)}</pre>`;
-                document.getElementById('rightVersionContent').innerHTML = `<pre>${escapeHtml(rightData.content)}</pre>`;
-                document.getElementById('diffSummary').style.display = 'none';
-            }
-        }
-
-        function computeWordDiff(leftText, rightText) {
-            const leftWords = leftText.split(/(\s+)/);
-            const rightWords = rightText.split(/(\s+)/);
-
-            let leftHtml = '';
-            let rightHtml = '';
-            let additions = 0;
-            let deletions = 0;
-
-            // Simple word-by-word diff (basic implementation)
-            const maxLen = Math.max(leftWords.length, rightWords.length);
-
-            for (let i = 0; i < maxLen; i++) {
-                const leftWord = leftWords[i] || '';
-                const rightWord = rightWords[i] || '';
-
-                if (leftWord === rightWord) {
-                    leftHtml += escapeHtml(leftWord);
-                    rightHtml += escapeHtml(rightWord);
-                } else {
-                    if (leftWord && !rightWords.includes(leftWord)) {
-                        leftHtml += `<span class="diff-deleted">${escapeHtml(leftWord)}</span>`;
-                        deletions++;
-                    } else {
-                        leftHtml += escapeHtml(leftWord);
-                    }
-
-                    if (rightWord && !leftWords.includes(rightWord)) {
-                        rightHtml += `<span class="diff-added">${escapeHtml(rightWord)}</span>`;
-                        additions++;
-                    } else {
-                        rightHtml += escapeHtml(rightWord);
-                    }
-                }
-            }
-
-            return {
-                left: `<pre class="diff-content">${leftHtml}</pre>`,
-                right: `<pre class="diff-content">${rightHtml}</pre>`,
-                additions,
-                deletions
-            };
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function toggleDiffHighlighting() {
-            updateComparison();
-        }
-
-        function swapComparisonSides() {
-            const leftSelect = document.getElementById('leftVersionSelect');
-            const rightSelect = document.getElementById('rightVersionSelect');
-
-            const temp = leftSelect.value;
-            leftSelect.value = rightSelect.value;
-            rightSelect.value = temp;
-
-            updateComparison();
-        }
-
-        async function restoreVersion(versionId) {
-            if (!confirm('This will replace your current essay with this version. Continue?')) {
-                return;
-            }
-
-            try {
-                const versionData = await getVersionData(versionId);
-                document.getElementById('essayTextarea').value = versionData.content;
-
-                if (window.essayManager) {
-                    window.essayManager.updateWordCount();
-                }
-
-                showMessage('success', `Version ${versionData.version} restored! Remember to save.`);
-                closeVersionModal();
-
-            } catch (error) {
-                console.error('Error restoring version:', error);
-                showMessage('error', 'Failed to restore version');
-            }
-        }
-
-        function closeVersionModal() {
-            const modal = document.getElementById('versionModal');
-            if (modal) {
-                modal.classList.remove('open');
-                setTimeout(() => modal.remove(), 300);
-            }
-            versionsData = {}; // Clear cache
-        }
-
-        function getCurrentWordCount() {
-            const textarea = document.getElementById('essayTextarea');
-            if (!textarea) return 0;
-            return textarea.value.split(/\s+/).filter(w => w).length;
-        }
-
-        function formatVersionDate(timestamp) {
-            if (!timestamp) return 'Unknown date';
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMins / 60);
-            const diffDays = Math.floor(diffHours / 24);
-
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
-            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        }
-
-        function compareVersions(version1, version2) {
-            const leftSelect = document.getElementById('leftVersionSelect');
-            const rightSelect = document.getElementById('rightVersionSelect');
-
-            if (leftSelect && rightSelect) {
-                leftSelect.value = version1.id;
-                rightSelect.value = version2.id;
-                updateComparison();
-            }
-        }
-
-        function compareCurrentWithVersion(version) {
-            const leftSelect = document.getElementById('leftVersionSelect');
-            const rightSelect = document.getElementById('rightVersionSelect');
-
-            if (leftSelect && rightSelect) {
-                leftSelect.value = 'current';
-                rightSelect.value = version.id;
-                updateComparison();
-            }
-        }
-
-        // ============================================
-        // AI WRITING TOOLS SYSTEM
-        // ============================================
-
-        // Toggle AI Tools Panel
-        function toggleAIToolsPanel() {
-            const panel = document.querySelector('.ai-tools-panel');
-            if (panel) {
-                panel.classList.toggle('collapsed');
-            }
-        }
-
-        // Make header clickable too
-        document.addEventListener('DOMContentLoaded', function() {
-            const header = document.querySelector('.ai-tools-header');
-            if (header) {
-                header.addEventListener('click', toggleAIToolsPanel);
-            }
         });
-
-        // 1. OPENING HOOK SUGGESTIONS
-        async function generateOpeningHooks() {
-            const textarea = document.getElementById('essayTextarea');
-            const essay = textarea.value.trim();
-
-            if (!essay || essay.length < 100) {
-                showMessage('error', 'Please write at least 100 characters before generating opening hooks.');
-                return;
-            }
-
-            // Get button and add loading state
-            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="generateOpeningHooks"]');
-            const originalHTML = button?.innerHTML;
-
-            try {
-                // Update button to loading state
-                if (button) {
-                    button.disabled = true;
-                    button.innerHTML = `
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <div class="ai-tool-info">
-                            <div class="ai-tool-name">Generating...</div>
-                            <div class="ai-tool-desc">AI is working...</div>
-                        </div>
-                    `;
-                }
-
-                showMessage('info', 'AI is generating 5 alternative opening hooks...');
-
-                const response = await fetchWithTimeout('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are an expert college essay coach specializing in compelling opening hooks. Analyze the student's essay and generate 5 different opening hook alternatives that are:
-1. Engaging and attention-grabbing
-2. Authentic to the student's voice
-3. Different styles (dialogue, scene, question, bold statement, sensory detail)
-4. Each 1-3 sentences maximum
-5. Set up the essay's main theme
-
-For each hook, explain why it works.
-
-Format your response EXACTLY as:
-HOOK 1: [hook text]
-WHY: [explanation]
-
-HOOK 2: [hook text]
-WHY: [explanation]
-
-... and so on for all 5 hooks.`
-                            },
-                            {
-                                role: 'user',
-                                content: `Essay:\n\n${essay}\n\nPlease analyze my essay and generate 5 compelling alternative opening hooks with explanations.`
-                            }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.response) {
-                    displayOpeningHooksModal(data.response, essay);
-                } else {
-                    throw new Error('No response from AI');
-                }
-
-            } catch (error) {
-                console.error('Error generating opening hooks:', error);
-                showMessage('error', 'Failed to generate opening hooks. Please try again.');
-            } finally {
-                // Restore button to original state
-                if (button && originalHTML) {
-                    button.disabled = false;
-                    button.innerHTML = originalHTML;
-                }
-            }
-        }
-
-        function displayOpeningHooksModal(aiResponse, currentEssay) {
-            // Parse hooks from AI response
-            const hookMatches = aiResponse.matchAll(/HOOK (\d+):\s*(.+?)\s*WHY:\s*(.+?)(?=HOOK \d+:|$)/gs);
-            const hooks = [];
-
-            for (const match of hookMatches) {
-                hooks.push({
-                    number: match[1],
-                    text: match[2].trim(),
-                    why: match[3].trim()
-                });
-            }
-
-            if (hooks.length === 0) {
-                showMessage('error', 'Failed to parse AI response. Please try again.');
-                return;
-            }
-
-            // Get current opening (first 2-3 sentences)
-            const sentences = currentEssay.split(/[.!?]+/).filter(s => s.trim());
-            const currentOpening = sentences.slice(0, 3).join('. ') + '.';
-
-            const modal = document.createElement('div');
-            modal.className = 'ai-results-modal';
-            modal.id = 'openingHooksModal';
-            modal.innerHTML = `
-                <div class="ai-modal-overlay" onclick="closeAIModal('openingHooksModal')"></div>
-                <div class="ai-modal-content">
-                    <div class="ai-modal-header">
-                        <h2><i class="fas fa-bolt"></i> Opening Hook Suggestions</h2>
-                        <button class="ai-modal-close" onclick="closeAIModal('openingHooksModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="ai-modal-body">
-                        <div class="ai-current-section">
-                            <h3>Your Current Opening:</h3>
-                            <div class="ai-current-text">${escapeHtml(currentOpening)}</div>
-                        </div>
-
-                        <div class="ai-suggestions-section">
-                            <h3>Alternative Hooks:</h3>
-                            <div class="ai-suggestions-list">
-                                ${hooks.map(hook => `
-                                    <div class="ai-suggestion-card">
-                                        <div class="ai-suggestion-header">
-                                            <span class="ai-suggestion-number">Hook ${hook.number}</span>
-                                            <button class="btn-use-suggestion" onclick="replaceOpening(\`${hook.text.replace(/`/g, '\\`')}\`)">
-                                                <i class="fas fa-check"></i> Use This
-                                            </button>
-                                        </div>
-                                        <div class="ai-suggestion-text">"${escapeHtml(hook.text)}"</div>
-                                        <div class="ai-suggestion-why">
-                                            <strong>Why it works:</strong> ${escapeHtml(hook.why)}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            addAIModalStyles();
-            setTimeout(() => modal.classList.add('open'), 10);
-        }
-
-        function replaceOpening(newHook) {
-            const textarea = document.getElementById('essayTextarea');
-            const essay = textarea.value;
-
-            // Find the end of the first 2-3 sentences
-            const sentences = essay.split(/([.!?]+\s*)/);
-            let charCount = 0;
-            let sentenceCount = 0;
-
-            for (let i = 0; i < sentences.length && sentenceCount < 3; i++) {
-                charCount += sentences[i].length;
-                if (sentences[i].match(/[.!?]/)) {
-                    sentenceCount++;
-                }
-            }
-
-            // Replace opening
-            const restOfEssay = essay.substring(charCount).trim();
-            textarea.value = newHook + (newHook.endsWith('.') ? '' : '.') + '\n\n' + restOfEssay;
-
-            if (window.essayManager) {
-                window.essayManager.updateWordCount();
-            }
-
-            showMessage('success', 'Opening replaced! Remember to save your changes.');
-            closeAIModal('openingHooksModal');
-        }
-
-        // 2. CLICHÉ DETECTOR
-        async function detectCliches() {
-            const textarea = document.getElementById('essayTextarea');
-            const essay = textarea.value.trim();
-
-            if (!essay || essay.length < 50) {
-                showMessage('error', 'Please write your essay before detecting clichés.');
-                return;
-            }
-
-            // Get button and add loading state
-            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="detectCliches"]');
-            const originalHTML = button?.innerHTML;
-
-            try {
-                // Update button to loading state
-                if (button) {
-                    button.disabled = true;
-                    button.innerHTML = `
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <div class="ai-tool-info">
-                            <div class="ai-tool-name">Scanning...</div>
-                            <div class="ai-tool-desc">Finding clichés...</div>
-                        </div>
-                    `;
-                }
-
-                showMessage('info', 'AI is scanning for clichés...');
-
-                const response = await fetchWithTimeout('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are an expert at identifying clichés in college application essays. Scan the essay and identify ALL clichéd phrases including:
-- Overused metaphors ("journey", "rollercoaster", "stepping stone")
-- Generic statements ("gave 110%", "think outside the box", "comfort zone")
-- Vague accomplishments ("learned so much", "grew as a person")
-- Tired college essay tropes ("the game/match", "the big game")
-
-For each cliché found, provide:
-1. The exact phrase (quote it)
-2. Why it's a cliché
-3. A specific, original alternative
-
-Format EXACTLY as:
-CLICHÉ: "[exact phrase from essay]"
-WHY: [explanation]
-BETTER: [specific alternative using concrete details]
-
----
-
-If no clichés found, respond with: NO_CLICHES_FOUND`
-                            },
-                            {
-                                role: 'user',
-                                content: `Essay:\n\n${essay}\n\nPlease identify all clichés and suggest better alternatives.`
-                            }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.response) {
-                    if (data.response.includes('NO_CLICHES_FOUND')) {
-                        showMessage('success', 'Great! No clichés detected in your essay.');
-                    } else {
-                        displayClichesModal(data.response, essay);
-                    }
-                } else {
-                    throw new Error('No response from AI');
-                }
-
-            } catch (error) {
-                console.error('Error detecting clichés:', error);
-                showMessage('error', 'Failed to detect clichés. Please try again.');
-            } finally {
-                // Restore button to original state
-                if (button && originalHTML) {
-                    button.disabled = false;
-                    button.innerHTML = originalHTML;
-                }
-            }
-        }
-
-        function displayClichesModal(aiResponse, essay) {
-            // Parse clichés
-            const clicheMatches = aiResponse.matchAll(/CLICHÉ:\s*"(.+?)"\s*WHY:\s*(.+?)\s*BETTER:\s*(.+?)(?=CLICHÉ:|$)/gs);
-            const cliches = [];
-
-            for (const match of clicheMatches) {
-                cliches.push({
-                    phrase: match[1].trim(),
-                    why: match[2].trim(),
-                    better: match[3].trim()
-                });
-            }
-
-            if (cliches.length === 0) {
-                showMessage('info', 'No clichés detected or failed to parse response.');
-                return;
-            }
-
-            // Highlight clichés in essay
-            let highlightedEssay = essay;
-            cliches.forEach((cliche, index) => {
-                const regex = new RegExp(escapeRegex(cliche.phrase), 'gi');
-                highlightedEssay = highlightedEssay.replace(regex,
-                    `<span class="cliche-highlight" data-cliche="${index}">${cliche.phrase}</span>`
-                );
-            });
-
-            const modal = document.createElement('div');
-            modal.className = 'ai-results-modal';
-            modal.id = 'clichesModal';
-            modal.innerHTML = `
-                <div class="ai-modal-overlay" onclick="closeAIModal('clichesModal')"></div>
-                <div class="ai-modal-content">
-                    <div class="ai-modal-header">
-                        <h2><i class="fas fa-exclamation-triangle"></i> Clichés Detected (${cliches.length})</h2>
-                        <button class="ai-modal-close" onclick="closeAIModal('clichesModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="ai-modal-body">
-                        <div class="ai-split-view">
-                            <div class="ai-split-pane">
-                                <h3>Your Essay (Clichés Highlighted)</h3>
-                                <div class="ai-highlighted-text">${highlightedEssay}</div>
-                            </div>
-                            <div class="ai-split-pane">
-                                <h3>Clichés Found & Alternatives</h3>
-                                <div class="ai-cliches-list">
-                                    ${cliches.map((cliche, index) => `
-                                        <div class="ai-cliche-card">
-                                            <div class="ai-cliche-phrase">"${escapeHtml(cliche.phrase)}"</div>
-                                            <div class="ai-cliche-why">
-                                                <strong>Why it's a cliché:</strong> ${escapeHtml(cliche.why)}
-                                            </div>
-                                            <div class="ai-cliche-better">
-                                                <strong>Better alternative:</strong> ${escapeHtml(cliche.better)}
-                                            </div>
-                                            <button class="btn-replace-cliche" onclick="replaceCliche('${escapeHtml(cliche.phrase)}', \`${cliche.better.replace(/`/g, '\\`')}\`)">
-                                                <i class="fas fa-exchange-alt"></i> Replace
-                                            </button>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            addAIModalStyles();
-            setTimeout(() => modal.classList.add('open'), 10);
-        }
-
-        function replaceCliche(cliche, better) {
-            const textarea = document.getElementById('essayTextarea');
-            const regex = new RegExp(escapeRegex(cliche), 'i');
-            textarea.value = textarea.value.replace(regex, better);
-
-            if (window.essayManager) {
-                window.essayManager.updateWordCount();
-            }
-
-            showMessage('success', 'Cliché replaced! Remember to save.');
-        }
-
-        function escapeRegex(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        // 3. WORD CHOICE ENHANCEMENT
-        async function enhanceWordChoice() {
-            const textarea = document.getElementById('essayTextarea');
-            const essay = textarea.value.trim();
-
-            if (!essay || essay.length < 50) {
-                showMessage('error', 'Please write your essay before enhancing word choice.');
-                return;
-            }
-
-            // Get button and add loading state
-            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="enhanceWordChoice"]');
-            const originalHTML = button?.innerHTML;
-
-            try {
-                // Update button to loading state
-                if (button) {
-                    button.disabled = true;
-                    button.innerHTML = `
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <div class="ai-tool-info">
-                            <div class="ai-tool-name">Analyzing...</div>
-                            <div class="ai-tool-desc">Finding weak words...</div>
-                        </div>
-                    `;
-                }
-
-                showMessage('info', 'AI is analyzing word choice...');
-
-                const response = await fetchWithTimeout('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are an expert at improving word choice in college essays. Identify weak or overused words and suggest stronger, more precise alternatives that maintain the student's voice.
-
-Focus on:
-- Weak intensifiers (very, really, extremely, quite, pretty)
-- Vague words (thing, stuff, good, bad, nice, interesting)
-- Overused verbs (get, got, make, do, go)
-- Generic adjectives (big, small, great, amazing)
-
-For each weak word, suggest 2-3 context-specific alternatives.
-
-Format EXACTLY as:
-WEAK: "[exact word or phrase from essay]"
-CONTEXT: [the sentence it appears in]
-ALTERNATIVES: [alternative 1] | [alternative 2] | [alternative 3]
-WHY: [brief explanation]
-
----
-
-Limit to top 10 most impactful improvements.`
-                            },
-                            {
-                                role: 'user',
-                                content: `Essay:\n\n${essay}\n\nPlease identify weak word choices and suggest stronger alternatives.`
-                            }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.response) {
-                    displayWordChoiceModal(data.response, essay);
-                } else {
-                    throw new Error('No response from AI');
-                }
-
-            } catch (error) {
-                console.error('Error enhancing word choice:', error);
-                showMessage('error', 'Failed to analyze word choice. Please try again.');
-            } finally {
-                // Restore button to original state
-                if (button && originalHTML) {
-                    button.disabled = false;
-                    button.innerHTML = originalHTML;
-                }
-            }
-        }
-
-        function displayWordChoiceModal(aiResponse, essay) {
-            // Parse weak words
-            const wordMatches = aiResponse.matchAll(/WEAK:\s*"(.+?)"\s*CONTEXT:\s*(.+?)\s*ALTERNATIVES:\s*(.+?)\s*WHY:\s*(.+?)(?=WEAK:|$)/gs);
-            const weakWords = [];
-
-            for (const match of wordMatches) {
-                const alternatives = match[3].split('|').map(alt => alt.trim());
-                weakWords.push({
-                    word: match[1].trim(),
-                    context: match[2].trim(),
-                    alternatives: alternatives,
-                    why: match[4].trim()
-                });
-            }
-
-            if (weakWords.length === 0) {
-                showMessage('success', 'Great! No weak words detected in your essay.');
-                return;
-            }
-
-            // Highlight weak words
-            let highlightedEssay = essay;
-            weakWords.forEach((item, index) => {
-                const regex = new RegExp(`\\b${escapeRegex(item.word)}\\b`, 'gi');
-                highlightedEssay = highlightedEssay.replace(regex,
-                    `<span class="weak-word-highlight" data-word="${index}">${item.word}</span>`
-                );
-            });
-
-            const modal = document.createElement('div');
-            modal.className = 'ai-results-modal';
-            modal.id = 'wordChoiceModal';
-            modal.innerHTML = `
-                <div class="ai-modal-overlay" onclick="closeAIModal('wordChoiceModal')"></div>
-                <div class="ai-modal-content">
-                    <div class="ai-modal-header">
-                        <h2><i class="fas fa-spell-check"></i> Word Choice Enhancements (${weakWords.length})</h2>
-                        <button class="ai-modal-close" onclick="closeAIModal('wordChoiceModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="ai-modal-body">
-                        <div class="ai-split-view">
-                            <div class="ai-split-pane">
-                                <h3>Your Essay (Weak Words Highlighted)</h3>
-                                <div class="ai-highlighted-text">${highlightedEssay}</div>
-                            </div>
-                            <div class="ai-split-pane">
-                                <h3>Suggested Improvements</h3>
-                                <div class="ai-words-list">
-                                    ${weakWords.map((item, index) => `
-                                        <div class="ai-word-card">
-                                            <div class="ai-word-weak">"${escapeHtml(item.word)}"</div>
-                                            <div class="ai-word-context">
-                                                <strong>Context:</strong> ${escapeHtml(item.context)}
-                                            </div>
-                                            <div class="ai-word-alternatives">
-                                                <strong>Alternatives:</strong>
-                                                <div class="ai-word-options">
-                                                    ${item.alternatives.map(alt => `
-                                                        <button class="btn-word-option" onclick="replaceWord('${escapeHtml(item.word)}', '${escapeHtml(alt)}')">
-                                                            ${escapeHtml(alt)}
-                                                        </button>
-                                                    `).join('')}
-                                                </div>
-                                            </div>
-                                            <div class="ai-word-why">
-                                                ${escapeHtml(item.why)}
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            addAIModalStyles();
-            setTimeout(() => modal.classList.add('open'), 10);
-        }
-
-        function replaceWord(oldWord, newWord) {
-            const textarea = document.getElementById('essayTextarea');
-            const regex = new RegExp(`\\b${escapeRegex(oldWord)}\\b`, 'i');
-            textarea.value = textarea.value.replace(regex, newWord);
-
-            if (window.essayManager) {
-                window.essayManager.updateWordCount();
-            }
-
-            showMessage('success', `Replaced "${oldWord}" with "${newWord}"`);
-        }
-
-        // 4. SHOW DON'T TELL CHECKER
-        async function checkShowDontTell() {
-            const textarea = document.getElementById('essayTextarea');
-            const essay = textarea.value.trim();
-
-            if (!essay || essay.length < 100) {
-                showMessage('error', 'Please write at least 100 characters before checking Show Don\'t Tell.');
-                return;
-            }
-
-            // Get button and add loading state
-            const button = event?.target?.closest('.ai-tool-btn') || document.querySelector('.ai-tool-btn[onclick*="checkShowDontTell"]');
-            const originalHTML = button?.innerHTML;
-
-            try {
-                // Update button to loading state
-                if (button) {
-                    button.disabled = true;
-                    button.innerHTML = `
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <div class="ai-tool-info">
-                            <div class="ai-tool-name">Checking...</div>
-                            <div class="ai-tool-desc">Finding tell statements...</div>
-                        </div>
-                    `;
-                }
-
-                showMessage('info', 'AI is analyzing your essay for abstract statements...');
-
-                const response = await fetchWithTimeout('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are an expert at teaching "Show Don't Tell" in college essays. Identify abstract or "tell" statements that should be replaced with concrete "show" examples.
-
-Look for:
-- Claims about character traits ("I am hardworking", "I'm passionate", "I'm determined")
-- Abstract lessons ("I learned perseverance", "this taught me responsibility")
-- Vague feelings ("I felt proud", "I was nervous")
-- Generic accomplishments without specifics
-
-For each "tell" statement, create a concrete "show" rewrite with specific details, actions, or scenes.
-
-Format EXACTLY as:
-TELL: "[exact phrase from essay]"
-PROBLEM: [why this is abstract/telling]
-SHOW: [concrete rewrite with specific details, scenes, or actions]
-
----
-
-Limit to top 8 most important improvements.`
-                            },
-                            {
-                                role: 'user',
-                                content: `Essay:\n\n${essay}\n\nPlease identify "tell" statements and suggest "show" rewrites.`
-                            }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-
-                if (data.response) {
-                    displayShowDontTellModal(data.response, essay);
-                } else {
-                    throw new Error('No response from AI');
-                }
-
-            } catch (error) {
-                console.error('Error checking Show Don\'t Tell:', error);
-                showMessage('error', 'Failed to analyze essay. Please try again.');
-            } finally {
-                // Restore button to original state
-                if (button && originalHTML) {
-                    button.disabled = false;
-                    button.innerHTML = originalHTML;
-                }
-            }
-        }
-
-        function displayShowDontTellModal(aiResponse, essay) {
-            // Parse tell statements
-            const tellMatches = aiResponse.matchAll(/TELL:\s*"(.+?)"\s*PROBLEM:\s*(.+?)\s*SHOW:\s*(.+?)(?=TELL:|$)/gs);
-            const tellStatements = [];
-
-            for (const match of tellMatches) {
-                tellStatements.push({
-                    tell: match[1].trim(),
-                    problem: match[2].trim(),
-                    show: match[3].trim()
-                });
-            }
-
-            if (tellStatements.length === 0) {
-                showMessage('success', 'Great! Your essay shows effectively with concrete details.');
-                return;
-            }
-
-            // Highlight tell statements
-            let highlightedEssay = essay;
-            tellStatements.forEach((item, index) => {
-                const regex = new RegExp(escapeRegex(item.tell), 'gi');
-                highlightedEssay = highlightedEssay.replace(regex,
-                    `<span class="tell-highlight" data-tell="${index}">${item.tell}</span>`
-                );
-            });
-
-            const modal = document.createElement('div');
-            modal.className = 'ai-results-modal';
-            modal.id = 'showDontTellModal';
-            modal.innerHTML = `
-                <div class="ai-modal-overlay" onclick="closeAIModal('showDontTellModal')"></div>
-                <div class="ai-modal-content">
-                    <div class="ai-modal-header">
-                        <h2><i class="fas fa-eye"></i> Show Don't Tell Analysis (${tellStatements.length})</h2>
-                        <button class="ai-modal-close" onclick="closeAIModal('showDontTellModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="ai-modal-body">
-                        <div class="ai-split-view">
-                            <div class="ai-split-pane">
-                                <h3>Your Essay (Abstract Statements Highlighted)</h3>
-                                <div class="ai-highlighted-text">${highlightedEssay}</div>
-                            </div>
-                            <div class="ai-split-pane">
-                                <h3>Show Don't Tell Improvements</h3>
-                                <div class="ai-tell-list">
-                                    ${tellStatements.map((item, index) => `
-                                        <div class="ai-tell-card">
-                                            <div class="ai-tell-statement">
-                                                <span class="ai-label-tell">TELL:</span> "${escapeHtml(item.tell)}"
-                                            </div>
-                                            <div class="ai-tell-problem">
-                                                <strong>Problem:</strong> ${escapeHtml(item.problem)}
-                                            </div>
-                                            <div class="ai-tell-show">
-                                                <span class="ai-label-show">SHOW:</span> ${escapeHtml(item.show)}
-                                            </div>
-                                            <button class="btn-replace-tell" onclick="replaceTell('${escapeHtml(item.tell)}', \`${item.show.replace(/`/g, '\\`')}\`)">
-                                                <i class="fas fa-exchange-alt"></i> Replace with "Show"
-                                            </button>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            addAIModalStyles();
-            setTimeout(() => modal.classList.add('open'), 10);
-        }
-
-        function replaceTell(tell, show) {
-            const textarea = document.getElementById('essayTextarea');
-            const regex = new RegExp(escapeRegex(tell), 'i');
-            textarea.value = textarea.value.replace(regex, show);
-
-            if (window.essayManager) {
-                window.essayManager.updateWordCount();
-            }
-
-            showMessage('success', 'Replaced with concrete "show" example! Remember to save.');
-        }
-
-        // Close AI Modal
-        function closeAIModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('open');
-                setTimeout(() => modal.remove(), 300);
-            }
-        }
-
-        // Add AI Modal Styles
-        function addAIModalStyles() {
-            if (document.getElementById('ai-modal-styles')) return;
-
-            const style = document.createElement('style');
-            style.id = 'ai-modal-styles';
-            style.textContent = `
-                .ai-results-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 35000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-
-                .ai-results-modal.open {
-                    opacity: 1;
-                }
-
-                .ai-modal-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.8);
-                    backdrop-filter: blur(4px);
-                }
-
-                .ai-modal-content {
-                    position: relative;
-                    background: var(--primary-bg);
-                    border-radius: 20px;
-                    width: 95%;
-                    max-width: 1200px;
-                    max-height: 90vh;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-                    animation: slideUp 0.3s ease;
-                }
-
-                .ai-modal-header {
-                    padding: 2rem;
-                    border-bottom: 2px solid rgba(160, 123, 204, 0.2);
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .ai-modal-header h2 {
-                    margin: 0;
-                    font-size: 1.75rem;
-                    color: var(--text-primary);
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                }
-
-                .ai-modal-close {
-                    background: none;
-                    border: none;
-                    color: var(--text-secondary);
-                    font-size: 1.75rem;
-                    cursor: pointer;
-                    padding: 0.5rem;
-                    transition: all 0.2s;
-                    border-radius: 8px;
-                }
-
-                .ai-modal-close:hover {
-                    background: rgba(160, 123, 204, 0.1);
-                    color: var(--text-primary);
-                }
-
-                .ai-modal-body {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 2rem;
-                }
-
-                /* Current Section */
-                .ai-current-section {
-                    margin-bottom: 2rem;
-                }
-
-                .ai-current-section h3 {
-                    font-size: 1.2rem;
-                    color: var(--text-primary);
-                    margin-bottom: 1rem;
-                }
-
-                .ai-current-text {
-                    background: var(--secondary-bg);
-                    padding: 1.5rem;
-                    border-radius: 12px;
-                    border-left: 4px solid var(--info-color);
-                    font-size: 1.05rem;
-                    line-height: 1.8;
-                }
-
-                /* Suggestions Section */
-                .ai-suggestions-section h3 {
-                    font-size: 1.2rem;
-                    color: var(--text-primary);
-                    margin-bottom: 1rem;
-                }
-
-                .ai-suggestions-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.5rem;
-                }
-
-                .ai-suggestion-card {
-                    background: var(--secondary-bg);
-                    border-radius: 12px;
-                    padding: 1.5rem;
-                    border: 2px solid rgba(160, 123, 204, 0.1);
-                }
-
-                .ai-suggestion-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1rem;
-                }
-
-                .ai-suggestion-number {
-                    font-weight: 700;
-                    color: var(--accent-color);
-                    font-size: 1.1rem;
-                }
-
-                .btn-use-suggestion {
-                    background: var(--accent-color);
-                    color: white;
-                    border: none;
-                    padding: 0.5rem 1rem;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    transition: all 0.2s;
-                }
-
-                .btn-use-suggestion:hover {
-                    background: #8b5cf6;
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(160, 123, 204, 0.4);
-                }
-
-                .ai-suggestion-text {
-                    font-size: 1.1rem;
-                    color: var(--text-primary);
-                    margin-bottom: 1rem;
-                    font-style: italic;
-                    line-height: 1.8;
-                }
-
-                .ai-suggestion-why {
-                    font-size: 0.95rem;
-                    color: var(--text-secondary);
-                    line-height: 1.6;
-                }
-
-                /* Split View */
-                .ai-split-view {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 2rem;
-                }
-
-                .ai-split-pane h3 {
-                    font-size: 1.2rem;
-                    color: var(--text-primary);
-                    margin-bottom: 1rem;
-                }
-
-                .ai-highlighted-text {
-                    background: var(--secondary-bg);
-                    padding: 1.5rem;
-                    border-radius: 12px;
-                    line-height: 1.8;
-                    max-height: 600px;
-                    overflow-y: auto;
-                }
-
-                /* Highlighting Styles */
-                .cliche-highlight {
-                    background: rgba(245, 158, 11, 0.3);
-                    border-bottom: 2px solid var(--warning-color);
-                    padding: 0.125rem 0.25rem;
-                    border-radius: 3px;
-                    cursor: help;
-                }
-
-                .weak-word-highlight {
-                    background: rgba(59, 130, 246, 0.2);
-                    border-bottom: 2px solid var(--info-color);
-                    padding: 0.125rem 0.25rem;
-                    border-radius: 3px;
-                    cursor: help;
-                }
-
-                .tell-highlight {
-                    background: rgba(239, 68, 68, 0.2);
-                    border-bottom: 2px solid var(--danger-color);
-                    padding: 0.125rem 0.25rem;
-                    border-radius: 3px;
-                    cursor: help;
-                }
-
-                /* Cliché Cards */
-                .ai-cliches-list,
-                .ai-words-list,
-                .ai-tell-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.5rem;
-                    max-height: 600px;
-                    overflow-y: auto;
-                }
-
-                .ai-cliche-card,
-                .ai-word-card,
-                .ai-tell-card {
-                    background: var(--secondary-bg);
-                    padding: 1.5rem;
-                    border-radius: 12px;
-                    border-left: 4px solid var(--warning-color);
-                }
-
-                .ai-word-card {
-                    border-left-color: var(--info-color);
-                }
-
-                .ai-tell-card {
-                    border-left-color: var(--danger-color);
-                }
-
-                .ai-cliche-phrase,
-                .ai-word-weak {
-                    font-size: 1.2rem;
-                    font-weight: 700;
-                    color: var(--warning-color);
-                    margin-bottom: 0.75rem;
-                }
-
-                .ai-word-weak {
-                    color: var(--info-color);
-                }
-
-                .ai-cliche-why,
-                .ai-cliche-better,
-                .ai-word-context,
-                .ai-word-alternatives,
-                .ai-word-why,
-                .ai-tell-problem,
-                .ai-tell-show {
-                    margin: 0.75rem 0;
-                    font-size: 0.95rem;
-                    line-height: 1.6;
-                }
-
-                .ai-cliche-better {
-                    color: var(--success-color);
-                    font-weight: 600;
-                }
-
-                .ai-word-options {
-                    display: flex;
-                    gap: 0.5rem;
-                    flex-wrap: wrap;
-                    margin-top: 0.5rem;
-                }
-
-                .btn-word-option {
-                    background: var(--primary-bg);
-                    border: 2px solid var(--info-color);
-                    color: var(--text-primary);
-                    padding: 0.5rem 1rem;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    transition: all 0.2s;
-                }
-
-                .btn-word-option:hover {
-                    background: var(--info-color);
-                    color: white;
-                    transform: translateY(-2px);
-                }
-
-                .btn-replace-cliche,
-                .btn-replace-tell {
-                    background: var(--accent-color);
-                    color: white;
-                    border: none;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    margin-top: 1rem;
-                    transition: all 0.2s;
-                }
-
-                .btn-replace-cliche:hover,
-                .btn-replace-tell:hover {
-                    background: #8b5cf6;
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(160, 123, 204, 0.4);
-                }
-
-                /* Show Don't Tell Specific */
-                .ai-tell-statement {
-                    margin-bottom: 0.75rem;
-                }
-
-                .ai-label-tell {
-                    display: inline-block;
-                    background: var(--danger-color);
-                    color: white;
-                    padding: 0.25rem 0.75rem;
-                    border-radius: 6px;
-                    font-size: 0.8rem;
-                    font-weight: 700;
-                    margin-right: 0.5rem;
-                }
-
-                .ai-label-show {
-                    display: inline-block;
-                    background: var(--success-color);
-                    color: white;
-                    padding: 0.25rem 0.75rem;
-                    border-radius: 6px;
-                    font-size: 0.8rem;
-                    font-weight: 700;
-                    margin-right: 0.5rem;
-                }
-
-                .ai-tell-show {
-                    background: rgba(16, 185, 129, 0.1);
-                    padding: 1rem;
-                    border-radius: 8px;
-                    margin-top: 1rem;
-                }
-
-                /* Mobile Responsive */
-                @media (max-width: 1024px) {
-                    .ai-split-view {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .ai-modal-content {
-                        width: 100%;
-                        height: 100vh;
-                        max-height: 100vh;
-                        border-radius: 0;
-                    }
-                }
-
-                @media (max-width: 768px) {
-                    .ai-modal-header {
-                        padding: 1.5rem;
-                    }
-
-                    .ai-modal-header h2 {
-                        font-size: 1.25rem;
-                    }
-
-                    .ai-modal-body {
-                        padding: 1.5rem;
-                    }
-
-                    .ai-suggestions-list,
-                    .ai-cliches-list,
-                    .ai-words-list,
-                    .ai-tell-list {
-                        gap: 1rem;
-                    }
-                }
-            `;
-
-            document.head.appendChild(style);
-        }
-
-        // Add CSS styles for version modal
-        function addVersionModalStyles() {
-            if (document.getElementById('version-modal-styles')) return;
-
-            const style = document.createElement('style');
-            style.id = 'version-modal-styles';
-            style.textContent = `
-                .version-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 30000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-
-                .version-modal.open {
-                    opacity: 1;
-                }
-
-                .version-modal-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.75);
-                    backdrop-filter: blur(4px);
-                }
-
-                .version-modal-content {
-                    position: relative;
-                    background: var(--primary-bg);
-                    border-radius: 20px;
-                    width: 95%;
-                    max-width: 1400px;
-                    height: 90vh;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-                    animation: slideUp 0.3s ease;
-                }
-
-                @keyframes slideUp {
-                    from { transform: translateY(30px); }
-                    to { transform: translateY(0); }
-                }
-
-                .version-modal-header {
-                    padding: 2rem;
-                    border-bottom: 2px solid rgba(160, 123, 204, 0.2);
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .version-modal-header h2 {
-                    margin: 0;
-                    font-size: 1.75rem;
-                    color: var(--text-primary);
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                }
-
-                .version-close-btn {
-                    background: none;
-                    border: none;
-                    color: var(--text-secondary);
-                    font-size: 1.75rem;
-                    cursor: pointer;
-                    padding: 0.5rem;
-                    transition: all 0.2s;
-                    border-radius: 8px;
-                }
-
-                .version-close-btn:hover {
-                    background: rgba(160, 123, 204, 0.1);
-                    color: var(--text-primary);
-                }
-
-                .version-modal-body {
-                    flex: 1;
-                    display: grid;
-                    grid-template-columns: 350px 1fr;
-                    gap: 0;
-                    overflow: hidden;
-                }
-
-                .version-timeline-section {
-                    padding: 2rem;
-                    background: var(--secondary-bg);
-                    border-right: 2px solid rgba(160, 123, 204, 0.1);
-                    overflow-y: auto;
-                }
-
-                .version-timeline-section h3 {
-                    font-size: 1.2rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    margin-bottom: 1.5rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                }
-
-                .version-timeline {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-
-                .version-timeline-item {
-                    display: flex;
-                    gap: 1rem;
-                    padding: 1rem;
-                    background: var(--primary-bg);
-                    border-radius: 12px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    border: 2px solid transparent;
-                }
-
-                .version-timeline-item:hover {
-                    border-color: var(--accent-color);
-                    transform: translateX(4px);
-                    box-shadow: 0 4px 16px rgba(160, 123, 204, 0.2);
-                }
-
-                .version-timeline-item.current {
-                    border-color: var(--accent-color);
-                    background: linear-gradient(135deg, rgba(160, 123, 204, 0.1) 0%, rgba(160, 123, 204, 0.05) 100%);
-                }
-
-                .version-timeline-badge {
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 50%;
-                    background: var(--secondary-bg);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    flex-shrink: 0;
-                }
-
-                .version-timeline-badge.current {
-                    background: var(--accent-color);
-                    color: white;
-                }
-
-                .version-timeline-content {
-                    flex: 1;
-                }
-
-                .version-timeline-title {
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    margin-bottom: 0.25rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                }
-
-                .version-badge-latest {
-                    background: var(--success-color);
-                    color: white;
-                    padding: 0.125rem 0.5rem;
-                    border-radius: 12px;
-                    font-size: 0.7rem;
-                    font-weight: 600;
-                }
-
-                .version-timeline-meta {
-                    font-size: 0.85rem;
-                    color: var(--text-secondary);
-                    margin-bottom: 0.5rem;
-                }
-
-                .version-actions {
-                    display: flex;
-                    gap: 0.5rem;
-                    margin-top: 0.5rem;
-                }
-
-                .btn-version-action {
-                    padding: 0.4rem 0.75rem;
-                    background: var(--secondary-bg);
-                    border: 1px solid rgba(160, 123, 204, 0.2);
-                    border-radius: 6px;
-                    font-size: 0.8rem;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    color: var(--text-primary);
-                    font-weight: 500;
-                }
-
-                .btn-version-action:hover {
-                    background: var(--accent-color);
-                    color: white;
-                    border-color: var(--accent-color);
-                }
-
-                .version-comparison-section {
-                    padding: 2rem;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                }
-
-                .comparison-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1.5rem;
-                }
-
-                .comparison-header h3 {
-                    font-size: 1.2rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                }
-
-                .comparison-controls label {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    font-size: 0.9rem;
-                    color: var(--text-secondary);
-                    cursor: pointer;
-                }
-
-                .comparison-controls input[type="checkbox"] {
-                    width: 18px;
-                    height: 18px;
-                    cursor: pointer;
-                }
-
-                .comparison-selectors {
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                    margin-bottom: 1.5rem;
-                    padding: 1.5rem;
-                    background: var(--secondary-bg);
-                    border-radius: 12px;
-                }
-
-                .comparison-selector {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-
-                .comparison-selector label {
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    color: var(--text-secondary);
-                }
-
-                .comparison-selector select {
-                    padding: 0.75rem;
-                    border: 2px solid rgba(160, 123, 204, 0.2);
-                    border-radius: 8px;
-                    background: var(--primary-bg);
-                    color: var(--text-primary);
-                    font-size: 1rem;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-
-                .comparison-selector select:hover {
-                    border-color: var(--accent-color);
-                }
-
-                .comparison-selector select:focus {
-                    outline: none;
-                    border-color: var(--accent-color);
-                    box-shadow: 0 0 0 3px rgba(160, 123, 204, 0.1);
-                }
-
-                .comparison-swap {
-                    padding: 0.75rem 1rem;
-                    background: var(--accent-color);
-                    color: white;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    font-size: 1.25rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 44px;
-                    height: 44px;
-                    margin-top: 1.5rem;
-                }
-
-                .comparison-swap:hover {
-                    transform: rotate(180deg);
-                    box-shadow: 0 4px 16px rgba(160, 123, 204, 0.4);
-                }
-
-                .comparison-display {
-                    flex: 1;
-                    display: grid;
-                    grid-template-columns: 1fr 2px 1fr;
-                    gap: 0;
-                    border: 2px solid rgba(160, 123, 204, 0.2);
-                    border-radius: 12px;
-                    overflow: hidden;
-                }
-
-                .comparison-pane {
-                    display: flex;
-                    flex-direction: column;
-                    background: var(--primary-bg);
-                }
-
-                .comparison-pane-header {
-                    padding: 1rem 1.5rem;
-                    background: var(--secondary-bg);
-                    border-bottom: 2px solid rgba(160, 123, 204, 0.1);
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .comparison-pane-header h4 {
-                    margin: 0;
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                }
-
-                .comparison-word-count {
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    color: var(--accent-color);
-                }
-
-                .comparison-pane-content {
-                    flex: 1;
-                    padding: 1.5rem;
-                    overflow-y: auto;
-                    font-family: 'Courier New', monospace;
-                    font-size: 0.95rem;
-                    line-height: 1.8;
-                }
-
-                .comparison-pane-content pre {
-                    margin: 0;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                    font-family: inherit;
-                    color: var(--text-primary);
-                }
-
-                .comparison-divider {
-                    background: linear-gradient(180deg, rgba(160, 123, 204, 0.3) 0%, rgba(160, 123, 204, 0.1) 100%);
-                }
-
-                .diff-content {
-                    margin: 0;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-
-                .diff-added {
-                    background: rgba(16, 185, 129, 0.2);
-                    color: var(--success-color);
-                    padding: 0.125rem 0.25rem;
-                    border-radius: 3px;
-                    font-weight: 600;
-                }
-
-                .diff-deleted {
-                    background: rgba(239, 68, 68, 0.2);
-                    color: var(--danger-color);
-                    padding: 0.125rem 0.25rem;
-                    border-radius: 3px;
-                    text-decoration: line-through;
-                    font-weight: 600;
-                }
-
-                .diff-summary {
-                    display: flex;
-                    justify-content: center;
-                    gap: 2rem;
-                    padding: 1.5rem;
-                    margin-top: 1.5rem;
-                    background: var(--secondary-bg);
-                    border-radius: 12px;
-                }
-
-                .diff-stat {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    font-weight: 600;
-                    font-size: 1rem;
-                }
-
-                .diff-stat.additions { color: var(--success-color); }
-                .diff-stat.deletions { color: var(--danger-color); }
-                .diff-stat.changes { color: var(--info-color); }
-
-                .diff-stat span {
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                }
-
-                @media (max-width: 1024px) {
-                    .version-modal-body {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .version-timeline-section {
-                        border-right: none;
-                        border-bottom: 2px solid rgba(160, 123, 204, 0.1);
-                        max-height: 300px;
-                    }
-
-                    .comparison-display {
-                        grid-template-columns: 1fr;
-                        grid-template-rows: 1fr auto 1fr;
-                    }
-
-                    .comparison-divider {
-                        height: 2px;
-                        width: 100%;
-                    }
-
-                    .comparison-selectors {
-                        flex-direction: column;
-                    }
-
-                    .comparison-swap {
-                        transform: rotate(90deg);
-                        margin: 0;
-                    }
-                }
-
-                @media (max-width: 768px) {
-                    .version-modal-content {
-                        width: 100%;
-                        height: 100vh;
-                        border-radius: 0;
-                    }
-
-                    .version-modal-header {
-                        padding: 1.5rem;
-                    }
-
-                    .version-modal-header h2 {
-                        font-size: 1.25rem;
-                    }
-
-                    .version-timeline-section,
-                    .version-comparison-section {
-                        padding: 1.5rem;
-                    }
-
-                    .diff-summary {
-                        flex-direction: column;
-                        gap: 1rem;
-                    }
-                }
-            `;
-
-            document.head.appendChild(style);
-        }
-
-        // ============================================
-        // UNIVERSAL NAVBAR FUNCTIONALITY
-        // ============================================
-
-        // Theme Management
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.setAttribute('data-theme', savedTheme);
-            updateThemeButton(savedTheme);
-            updateLogo(savedTheme);
-        }
-
-        function updateThemeButton(theme) {
-            const themeToggle = document.getElementById('ccThemeToggle');
-            if (themeToggle) {
-                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-            }
-        }
-
-        function updateLogo(theme) {
-            const logo = document.getElementById('ccNavbarLogo');
-            if (logo) {
-                logo.src = theme === 'dark' ? 'images/whiteclearcc.png' : 'images/blackcc.png';
-            }
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeButton(newTheme);
-            updateLogo(newTheme);
-        }
-
-        // Dropdown Management
-        function toggleDropdown() {
-            const dropdown = document.getElementById('ccDropdownMenu');
-            const container = document.getElementById('ccProfileDropdown');
-            
-            if (dropdown && container) {
-                const isOpen = dropdown.classList.contains('show');
-                if (isOpen) {
-                    closeDropdown();
-                } else {
-                    openDropdown();
-                }
-            }
-        }
-
-        function openDropdown() {
-            const dropdown = document.getElementById('ccDropdownMenu');
-            const container = document.getElementById('ccProfileDropdown');
-            
-            if (dropdown && container) {
-                dropdown.classList.add('show');
-                container.classList.add('open');
-            }
-        }
-
-        function closeDropdown() {
-            const dropdown = document.getElementById('ccDropdownMenu');
-            const container = document.getElementById('ccProfileDropdown');
-            
-            if (dropdown && container) {
-                dropdown.classList.remove('show');
-                container.classList.remove('open');
-            }
-        }
-
-        // Update navbar with user data
-        async function updateNavbarWithUserData(user) {
-            try {
-                // Hide loading, show profile
-                const profileLoading = document.getElementById('ccProfileLoading');
-                const profileContent = document.getElementById('ccProfileContent');
-                
-                if (profileLoading) profileLoading.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'block';
-
-                // Get user data from Firestore
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                const userData = userDoc.exists() ? userDoc.data() : {};
-
-                // Update avatar
-                const avatar = document.getElementById('ccUserAvatar');
-                if (avatar) {
-                    avatar.src = userData.profilePhotoURL || user.photoURL || 'images/default-avatar.png';
-                }
-
-                // Update dropdown header
-                const dropdownName = document.getElementById('ccDropdownName');
-                const dropdownEmail = document.getElementById('ccDropdownEmail');
-                
-                if (dropdownName) {
-                    dropdownName.textContent = userData.name || user.displayName || 'Student';
-                }
-                if (dropdownEmail) {
-                    dropdownEmail.textContent = user.email || '';
-                }
-
-                console.log('✅ Navbar updated with user data');
-            } catch (error) {
-                console.error('Error updating navbar:', error);
-                // Show default state on error
-                const profileLoading = document.getElementById('ccProfileLoading');
-                const profileContent = document.getElementById('ccProfileContent');
-                if (profileLoading) profileLoading.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'block';
-            }
-        }
-
-        // Logout handler
-        async function handleLogout() {
-            try {
-                await auth.signOut();
-                window.location.href = '/';
-            } catch (error) {
-                console.error('Logout error:', error);
-                showMessage('error', 'Failed to logout. Please try again.');
-            }
-        }
-
-        // Initialize Navbar
-        function initNavbar() {
-            console.log('🎯 Initializing Essay Coach Navbar...');
-            
-            // Initialize theme
-            initTheme();
-            
-            // Set up event listeners
-            const themeToggle = document.getElementById('ccThemeToggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', toggleTheme);
-            }
-
-            const profileButton = document.getElementById('ccProfileButton');
-            if (profileButton) {
-                profileButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleDropdown();
-                });
-            }
-
-            // Logout button
-            const logoutBtn = document.getElementById('ccLogoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    handleLogout();
-                });
-            }
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                const dropdown = document.getElementById('ccProfileDropdown');
-                if (dropdown && !dropdown.contains(e.target)) {
-                    closeDropdown();
-                }
-            });
-
-            // Close dropdown on escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeDropdown();
-                }
-
-                // Keyboard shortcuts for Essay Coach
-                const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-                const modKey = isMac ? e.metaKey : e.ctrlKey;
-
-                // Cmd/Ctrl + S: Save Essay
-                if (modKey && e.key === 's') {
-                    e.preventDefault();
-                    if (window.essayManager) {
-                        window.essayManager.saveEssay();
-                        console.log('🎹 Keyboard shortcut: Save essay (Cmd/Ctrl+S)');
-                    }
-                    return false;
-                }
-
-                // Cmd/Ctrl + E: Analyze Essay
-                if (modKey && e.key === 'e') {
-                    e.preventDefault();
-                    if (window.essayManager) {
-                        window.essayManager.analyzeEssay();
-                        console.log('🎹 Keyboard shortcut: Analyze essay (Cmd/Ctrl+E)');
-                    }
-                    return false;
-                }
-
-                // Cmd/Ctrl + Z: Undo (native browser undo in textarea)
-                // This is already handled by browser, but we log it
-                if (modKey && e.key === 'z') {
-                    console.log('🎹 Keyboard shortcut: Undo (Cmd/Ctrl+Z)');
-                }
-            });
-            
-            // Update navbar when user is authenticated
-            if (currentUser) {
-                updateNavbarWithUserData(currentUser);
-            }
-            
-            console.log('✅ Essay Coach Navbar initialized successfully!');
-        }
-
-        // Initialize navbar when page loads
-        initNavbar();
-        
-        // ============================================
-        // ESSAY COACH FUNCTIONALITY
-        // ============================================
-        
-        let currentEssay = '';
-        let analysisResults = null;
-        
-        // Duplicate displayAnalysisResults removed - using the one from earlier in the file
-        
-        // Highlight text in essay
-        // ============================================
-        // REMOVED: Old broken highlighting functions
-        // Now using robust applyHighlights() system above
-        // ============================================
-        
-        // Duplicate sendChatMessage removed - using the one from earlier in the file
-        
-        // Chat Helper Functions
-        function addMessageToChat(message, sender) {
-            const chatMessages = document.querySelector('.chat-messages') || 
-                               document.getElementById('chat-messages') || 
-                               document.querySelector('#chatMessages');
-            
-            if (!chatMessages) return;
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${sender}`;
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    ${sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>'}
-                    <span>${message}</span>
-                </div>
-                <div class="message-timestamp">${new Date().toLocaleTimeString()}</div>
-            `;
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        function addTypingIndicator() {
-            const chatMessages = document.querySelector('.chat-messages') || 
-                               document.getElementById('chat-messages') || 
-                               document.querySelector('#chatMessages');
-            
-            if (!chatMessages) return;
-            
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'chat-message ai typing';
-            typingDiv.id = 'typing-indicator';
-            typingDiv.innerHTML = `
-                <div class="message-content">
-                    <i class="fas fa-robot"></i>
-                    <span><i class="fas fa-ellipsis-h fa-pulse"></i> AI is thinking...</span>
-                </div>
-            `;
-            
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-        
-        function getChatHistory() {
-            const messages = document.querySelectorAll('.chat-message:not(.typing)');
-            return Array.from(messages).map(msg => ({
-                sender: msg.classList.contains('user') ? 'user' : 'ai',
-                content: msg.querySelector('span')?.textContent || ''
-            }));
-        }
-        
-        // Notification System
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                    <span>${message}</span>
-                    <button onclick="this.closest('.notification').remove()" class="notification-close">&times;</button>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
-        
-        // Essay Statistics
-        function updateEssayStats() {
-            const textarea = document.getElementById('essay-content') || 
-                           document.querySelector('.essay-textarea') || 
-                           document.querySelector('textarea');
-            
-            if (!textarea) return;
-            
-            const text = textarea.value;
-            const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-            const charCount = text.length;
-            const charCountNoSpaces = text.replace(/\s/g, '').length;
-            
-            // Update word count display
-            const wordCountDisplay = document.querySelector('.word-count') || 
-                                   document.getElementById('word-count');
-            if (wordCountDisplay) {
-                wordCountDisplay.textContent = `${wordCount} words`;
-            }
-            
-            // Update character count display
-            const charCountDisplay = document.querySelector('.char-count') || 
-                                   document.getElementById('char-count');
-            if (charCountDisplay) {
-                charCountDisplay.textContent = `${charCount} characters`;
-            }
-            
-            // Check limits and provide feedback
-            const limitFeedback = document.querySelector('.limit-feedback');
-            if (limitFeedback) {
-                if (wordCount > 650) {
-                    limitFeedback.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Essay is over the recommended 650 word limit';
-                    limitFeedback.className = 'limit-feedback warning';
-                } else if (wordCount < 250) {
-                    limitFeedback.innerHTML = '<i class="fas fa-info-circle"></i> Consider adding more detail (aim for 500-650 words)';
-                    limitFeedback.className = 'limit-feedback info';
-                } else {
-                    limitFeedback.innerHTML = '<i class="fas fa-check-circle"></i> Good length for a college essay';
-                    limitFeedback.className = 'limit-feedback success';
-                }
-            }
-        }
-        
-        // Auto-save functionality
-        let autoSaveTimeout;
-        function autoSaveEssay() {
-            const textarea = document.getElementById('essay-content') || 
-                           document.querySelector('.essay-textarea') || 
-                           document.querySelector('textarea');
-            
-            if (!textarea) return;
-            
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(() => {
-                const content = textarea.value;
-                localStorage.setItem('college-climb-essay-draft', content);
-                
-                // Show save indicator
-                const saveIndicator = document.querySelector('.save-indicator');
-                if (saveIndicator) {
-                    saveIndicator.innerHTML = '<i class="fas fa-check"></i> Auto-saved';
-                    saveIndicator.style.opacity = '1';
-                    setTimeout(() => {
-                        saveIndicator.style.opacity = '0.5';
-                    }, 2000);
-                }
-            }, 2000);
-        }
-        
-        // Load saved essay
-        function loadSavedEssay() {
-            const saved = localStorage.getItem('college-climb-essay-draft');
-            if (saved) {
-                const textarea = document.getElementById('essay-content') || 
-                               document.querySelector('.essay-textarea') || 
-                               document.querySelector('textarea');
-                
-                if (textarea && !textarea.value) {
-                    textarea.value = saved;
-                    updateEssayStats();
-                    
-                    showNotification('Loaded your saved essay draft', 'info');
-                }
-            }
-        }
-        
-        // Initialize Essay Coach
-        function initEssayCoach() {
-            console.log('✍️ Initializing Essay Coach...');
-            
-            // Load saved essay
-            loadSavedEssay();
-            
-            // Set up textarea event listeners
-            const textarea = document.getElementById('essay-content') || 
-                           document.querySelector('.essay-textarea') || 
-                           document.querySelector('textarea');
-            
-            if (textarea) {
-                textarea.addEventListener('input', () => {
-                    updateEssayStats();
-                    autoSaveEssay();
-                });
-                
-                // Initial stats update
-                updateEssayStats();
-            }
-            
-            // Set up analyze button
-            const analyzeBtn = document.querySelector('.analyze-btn, #analyzeBtn, [onclick*="analyze"]');
-            if (analyzeBtn) {
-                analyzeBtn.addEventListener('click', analyzeEssay);
-            }
-            
-            // Set up chat input
-            const chatInput = document.getElementById('chat-input') || 
-                            document.querySelector('.chat-input') || 
-                            document.querySelector('#chatInput');
-            
-            if (chatInput) {
-                chatInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendChatMessage();
-                    }
-                });
-            }
-            
-            // Set up chat send button
-            const chatSendBtn = document.querySelector('.chat-send, #chat-send, [onclick*="sendChat"]');
-            if (chatSendBtn) {
-                chatSendBtn.addEventListener('click', sendChatMessage);
-            }
-            
-            console.log('✅ Essay Coach initialized successfully!');
-        }
-
-        // ========================================
-        // XSS PROTECTION HELPERS
-        // ========================================
-
-        /**
-         * Sanitize HTML to prevent XSS attacks
-         * Converts HTML to text, then back to HTML (escapes dangerous chars)
-         */
-        function sanitizeHTML(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        /**
-         * Safely set HTML content - prefer textContent when possible
-         * Only use innerHTML when content has legitimate HTML tags
-         */
-        function safeSetHTML(element, content) {
-            if (!element || content === null || content === undefined) return;
-
-            // If content has no HTML tags, use textContent (safer)
-            if (!/<[a-z][\s\S]*>/i.test(content)) {
-                element.textContent = content;
-                return;
-            }
-
-            // Otherwise, sanitize before setting
-            element.innerHTML = sanitizeHTML(content);
-        }
-
-        // ========================================
-        // INPUT VALIDATION HELPERS
-        // ========================================
-
-        /**
-         * Validate and sanitize user input
-         * @param {*} input - The input to validate
-         * @param {string} type - Type of validation (text, email, number, url)
-         * @returns {string|number} - Sanitized input
-         */
-        function validateInput(input, type = 'text') {
-            if (!input) return '';
-
-            let sanitized = String(input).trim();
-
-            switch (type) {
-                case 'number':
-                    sanitized = parseInt(sanitized, 10);
-                    return isNaN(sanitized) ? 0 : sanitized;
-
-                case 'email':
-                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitized) ? sanitized : '';
-
-                case 'url':
-                    try {
-                        new URL(sanitized);
-                        return sanitized;
-                    } catch {
-                        return '';
-                    }
-
-                case 'text':
-                default:
-                    // Remove script tags and dangerous content
-                    const scriptRegex = new RegExp('<script\\b[^<]*(?:(?!<\\/' + 'script>)<[^<]*)*<\\/' + 'script>', 'gi');
-                    return sanitized.replace(scriptRegex, '');
-            }
-        }
-
-        // ========================================
-        // OFFLINE DETECTION
-        // ========================================
-
-        let isOffline = !navigator.onLine;
-
-        window.addEventListener('online', () => {
-            isOffline = false;
-            console.log('✅ Back online');
-
-            // Show user notification
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            notification.textContent = '✅ Connection restored';
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        });
-
-        window.addEventListener('offline', () => {
-            isOffline = true;
-            console.log('⚠️ Connection lost');
-
-            // Show offline notification
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            notification.textContent = '⚠️ You are offline - changes may not save';
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 5000);
-        });
-
-        /**
-         * Check if user is online before making API calls
-         */
-        function checkOnline() {
-            if (isOffline) {
-                showErrorMessage('You are offline. Please check your internet connection.');
-                return false;
-            }
-            return true;
-        }
-
-        // ========================================
-        // PRODUCTION-SAFE LOGGING
-        // ========================================
-
-        const logger = {
-            log: (...args) => {
-                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
-                    console.log(...args);
-                }
-            },
-            error: (...args) => {
-                console.error(...args);
-                // Report to Sentry if available
-                if (window.reportError && args[0] instanceof Error) {
-                    window.reportError(args[0], { context: args.slice(1) });
-                }
-            },
-            warn: (...args) => {
-                if (window.APP_CONFIG && window.APP_CONFIG.FEATURES && window.APP_CONFIG.FEATURES.enableDebugLogs) {
-                    console.warn(...args);
-                }
-            }
-        };
-
-        // ========================================
-        // USER-FACING ERROR MESSAGES
-        // ========================================
-
-        /**
-         * Show error message to user
-         */
-        function showErrorMessage(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            if (errorDiv && errorText) {
-                safeSetHTML(errorText, message);
-                errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 5000);
-            }
-        }
-
-        /**
-         * Show success message to user
-         */
-        function showSuccessMessage(message) {
-            const successDiv = document.getElementById('successMessage');
-            const successText = document.getElementById('successText');
-            if (successDiv && successText) {
-                safeSetHTML(successText, message);
-                successDiv.style.display = 'block';
-                setTimeout(() => {
-                    successDiv.style.display = 'none';
-                }, 3000);
-            }
-        }
-
-        /**
-         * Show info message to user
-         */
-        function showInfoMessage(message) {
-            const infoDiv = document.getElementById('infoMessage');
-            const infoText = document.getElementById('infoText');
-            if (infoDiv && infoText) {
-                safeSetHTML(infoText, message);
-                infoDiv.style.display = 'block';
-                setTimeout(() => {
-                    infoDiv.style.display = 'none';
-                }, 4000);
-            }
-        }
-
-        // Make error handlers global
-        window.showErrorMessage = showErrorMessage;
-        window.showSuccessMessage = showSuccessMessage;
-        window.showInfoMessage = showInfoMessage;
-        window.sanitizeHTML = sanitizeHTML;
-        window.safeSetHTML = safeSetHTML;
-        window.validateInput = validateInput;
-        window.checkOnline = checkOnline;
-        window.logger = logger;
-
-        // Initialize essay coach when page loads
-        initEssayCoach();
-
-        // Note: analyzeEssay and sendChatMessage are already
-        // defined and exported to window earlier (lines 2806, 3459)
     </script>
 
     <!-- Payment & Tier Enforcement Scripts -->
