@@ -1598,6 +1598,45 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(160, 123, 204, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Print Styles */
+        @media print {
+            .cc-navbar, .chat-widget, .chat-toggle, .footer, .starry-bg {
+                display: none !important;
+            }
+
+            .dashboard-container {
+                margin-top: 0;
+                padding: 0;
+            }
+
+            .stat-card, .school-card, .timeline-content {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+        }
+        ::-webkit-scrollbar {
             width: 8px;
         }
 

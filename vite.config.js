@@ -97,10 +97,16 @@ export default defineConfig({
       input: htmlFiles,
 
       output: {
-        // Keep simple structure for now
-        assetFileNames: 'assets/[name].[ext]',
-        chunkFileNames: 'assets/[name].js',
-        entryFileNames: 'assets/[name].js'
+        // Smart chunk splitting
+        manualChunks: {
+          'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+          'vendor-charts': ['chart.js'],
+          'vendor-utils': ['canvas-confetti']
+        },
+        // Cache-busting filenames
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js'
       }
     },
 
