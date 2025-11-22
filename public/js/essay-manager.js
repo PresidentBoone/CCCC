@@ -748,8 +748,10 @@ class EssayManager {
         try {
             // Show loading
             const originalHTML = analyzeBtn.innerHTML;
-            analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
-            analyzeBtn.disabled = true;
+            if (analyzeBtn) {
+                analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
+                analyzeBtn.disabled = true;
+            }
 
             // Show skeleton screens while loading
             this.showSkeletonLoading();
@@ -823,8 +825,11 @@ class EssayManager {
         }
 
         // Display overall feedback
-        document.getElementById('overallFeedback').textContent = result.overallFeedback || 'No overall feedback available.';
-        document.getElementById('collegeAdvice').textContent = result.collegeSpecificAdvice || 'Add target colleges for specific advice.';
+        const overallFeedbackEl = document.getElementById('overallFeedback');
+        if (overallFeedbackEl) overallFeedbackEl.textContent = result.overallFeedback || 'No overall feedback available.';
+
+        const collegeAdviceEl = document.getElementById('collegeAdvice');
+        if (collegeAdviceEl) collegeAdviceEl.textContent = result.collegeSpecificAdvice || 'Add target colleges for specific advice.';
 
         // Display strengths
         const strengthsList = document.getElementById('strengthsList');
@@ -981,8 +986,10 @@ class EssayManager {
 
         // Position overlay relative to textarea
         const editorContainer = textarea.parentElement;
-        editorContainer.style.position = 'relative';
-        editorContainer.appendChild(overlay);
+        if (editorContainer) {
+            editorContainer.style.position = 'relative';
+            editorContainer.appendChild(overlay);
+        }
 
         // Add click handlers to highlights
         overlay.querySelectorAll('[data-highlight-index]').forEach(highlightEl => {
@@ -1038,8 +1045,8 @@ class EssayManager {
         const textarea = document.getElementById('essayTextarea');
         if (!textarea) return;
 
-        const text = textarea.value;
-        const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        const text = (textarea.value || '').trim();
+        const wordCount = text === '' ? 0 : text.split(/\s+/).length;
         const charCount = text.length;
 
         const wordCountEl = document.getElementById('wordCount');

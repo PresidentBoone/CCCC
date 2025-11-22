@@ -50,6 +50,12 @@ export async function initializeFirebase() {
 
         console.log('✅ Firebase initialized successfully');
 
+        // Expose globally for legacy scripts
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.db = db;
+        window.firebaseAnalytics = analytics;
+
         return { app, auth, db, analytics };
     } catch (error) {
         console.error('❌ Firebase initialization failed:', error);

@@ -10,7 +10,7 @@
  * 5. Include this script in your HTML: <script src="/js/error-tracking.js"></script>
  */
 
-(function() {
+(function () {
     'use strict';
 
     // Only enable in production
@@ -43,7 +43,12 @@
 
             // Integrate with browser APIs
             integrations: [
-                new Sentry.BrowserTracing(),
+                // Safely initialize BrowserTracing
+                ...(typeof Sentry.BrowserTracing === 'function'
+                    ? [new Sentry.BrowserTracing()]
+                    : (Sentry.Integrations && Sentry.Integrations.BrowserTracing
+                        ? [new Sentry.Integrations.BrowserTracing()]
+                        : [])),
                 new Sentry.Replay(),
             ],
 

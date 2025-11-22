@@ -2661,58 +2661,10 @@ Don't forget to specify your target colleges and essay prompt for more personali
     <script src="js/essay-chat-assistant.js"></script>
     <script src="js/essay-templates.js"></script>
 
-    <!-- Firebase Scripts -->
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
-
-        // Initialize Firebase with environment configuration
-        // SECURITY: Credentials are loaded from /api/config (environment variables)
-        // Fallback to hardcoded values ONLY for development/testing
-
-        async function initializeFirebase() {
-            let firebaseConfig;
-
-            try {
-                // Try to load from environment first (production)
-                const response = await fetch('/api/config');
-                if (response.ok) {
-                    const config = await response.json();
-                    firebaseConfig = config.firebase;
-                    console.log('✅ Firebase config loaded from environment');
-                } else {
-                    throw new Error('Config API unavailable');
-                }
-            } catch (error) {
-                // Fallback to hardcoded config (development only)
-                console.warn('⚠️ Using fallback Firebase config (development mode)');
-                firebaseConfig = {
-                    apiKey: "AIzaSyDqL5ZoTKp36sk8J5TxuHn_y6ji4i9h20s",
-                    authDomain: "collegeclimb-ai.firebaseapp.com",
-                    projectId: "collegeclimb-ai",
-                    storageBucket: "collegeclimb-ai.firebasestorage.app",
-                    messagingSenderId: "187139654658",
-                    appId: "1:187139654658:web:4a6cf4c43095f03212931b",
-                    measurementId: "G-E0B2RQM9XS"
-                };
-            }
-
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-
-            // Make Firebase available globally
-            window.firebaseApp = app;
-            window.firebaseAuth = auth;
-            window.firebaseDb = db;
-
-            return { app, auth, db };
-        }
-
-        // Initialize Firebase and then start the app
-        const firebasePromise = initializeFirebase();
+        import { initializeFirebase } from '/js/firebase-init.js';
+        import { getDoc, setDoc, updateDoc, doc, collection, addDoc, serverTimestamp, getFirestore } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
         // Expose Firestore functions globally for standalone AI Engine
         window.getFirestoreDoc = getDoc;
@@ -2738,10 +2690,17 @@ Don't forget to specify your target colleges and essay prompt for more personali
         // Initialize Application
         async function initApp() {
             try {
-                console.log('🚀 Initializing Essay Coach...');
+                // Initialize Firebase using the shared module
+                const { app, auth, db } = await initializeFirebase();
 
-                // Wait for Firebase
-                const { auth, db } = await firebasePromise;
+                // Make Firebase available globally for legacy scripts
+                window.firebaseApp = app;
+                window.firebaseAuth = auth;
+                window.firebaseDb = db;
+                window.db = db; // For scripts expecting just 'db'
+
+                console.log('✅ App initialized with shared Firebase config');
+                console.log('🚀 Initializing Essay Coach...');
 
                 // Auth State Listener
                 onAuthStateChanged(auth, async (user) => {
@@ -2824,4 +2783,5 @@ Don't forget to specify your target colleges and essay prompt for more personali
     <script src="js/payment/subscription-config.js"></script>
     <script src="js/payment/tier-enforcement.js"></script>
 </body>
+
 </html>
